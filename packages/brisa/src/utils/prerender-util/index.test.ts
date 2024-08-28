@@ -117,7 +117,7 @@ describe('utils', () => {
 			export default function App() {
 				return __prerender__macro({
 					componentPath: "@/foo",
-					componentModuleName: "default",
+					componentModuleName: "Foo",
 					componentProps: {foo: "bar"}
 				});
 			}
@@ -145,7 +145,7 @@ describe('utils', () => {
 			export default function App() {
 				return __prerender__macro({
 						componentPath: "@/foo",
-						componentModuleName: "default",
+						componentModuleName: "Foo",
 						componentProps: {foo: "bar"}
 				});
 			}
@@ -180,6 +180,36 @@ describe('utils', () => {
 				);
 			}
 		`);
+
+    const output = getOutput(code);
+    expect(output).toEqual(expectedCode);
+  });
+
+  it('should detect _Brisa_SSRWebComponent and add the componentPath correctly without having an import', () => {
+    const code = `
+		import Foo from '@/foo';
+
+		export default function App() {
+			return (
+				<div>
+					<_Brisa_SSRWebComponent Component={Foo} selector="web-component" renderOn="build" foo="bar" />
+				</div>
+			);
+		}
+	`;
+    const expectedCode = toExpected(`
+		import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+		import Foo from '@/foo';
+
+		export default function App() {
+			return jsxDEV("div", {children: __prerender__macro({
+					componentPath: "brisa/server",
+					componentModuleName: "SSRWebComponent",
+					componentProps: {Component: Foo,selector: "web-component",foo: "bar"}
+				})}, undefined, false, undefined, this
+			);
+		}
+	`);
 
     const output = getOutput(code);
     expect(output).toEqual(expectedCode);

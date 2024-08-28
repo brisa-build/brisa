@@ -1,5 +1,5 @@
 import type { ESTree } from 'meriyah';
-import { JSX_NAME } from '../ast/constants';
+import { JSX_NAME } from '@/utils/ast/constants';
 
 export default function getPrerenderUtil() {
   const allImportsWithPath = new Map<string, string>();
@@ -43,7 +43,16 @@ export default function getPrerenderUtil() {
       return value;
     }
 
+    const name = value.arguments[0].name;
+    let componentModuleName = 'default';
+    let componentPath = allImportsWithPath.get(name);
+
     needsPrerenderImport = true;
+
+    if (name === '_Brisa_SSRWebComponent') {
+      componentModuleName = 'SSRWebComponent';
+      componentPath = 'brisa/server';
+    }
 
     return {
       type: 'CallExpression',
@@ -63,7 +72,7 @@ export default function getPrerenderUtil() {
               },
               value: {
                 type: 'Literal',
-                value: allImportsWithPath.get(value.arguments[0].name),
+                value: componentPath,
               },
               kind: 'init',
               computed: false,
@@ -78,7 +87,7 @@ export default function getPrerenderUtil() {
               },
               value: {
                 type: 'Literal',
-                value: 'default',
+                value: componentModuleName,
               },
               kind: 'init',
               computed: false,
