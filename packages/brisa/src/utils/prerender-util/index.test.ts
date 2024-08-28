@@ -295,13 +295,44 @@ describe('utils', () => {
     const output = getOutput(code);
     expect(output).toEqual(expectedCode);
   });
+
+  it('should detect _Brisa_SSRWebComponent and add the componentPath correctly without having any import', () => {
+    const code = `
+		export default function App() {
+			return (
+				<div>
+					<_Brisa_SSRWebComponent Component={Foo} selector="web-component" renderOn="build" foo="bar" />
+				</div>
+			);
+		}
+	`;
+    const expectedCode = toExpected(`
+		import {__prerender__macro} from 'brisa/server' with { type: "macro" };
+
+		export default function App() {
+			return jsxDEV("div", {children: __prerender__macro({
+					componentPath: "brisa/server",
+					componentModuleName: "SSRWebComponent",
+					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
+				})}, undefined, false, undefined, this
+			);
+		}
+	`);
+
+    const webComponents = new Map<string, string>([['@/foo', 'Foo']]);
+
+    const output = getOutput(code, webComponents);
+    expect(output).toEqual(expectedCode);
+  });
 });
 
-function getOutput(code: string) {
+function getOutput(code: string, webComponents?: Map<string, string>) {
   const ast = parseCodeToAST(code);
   const p = getPrerenderUtil();
   const newAst = JSON.parse(
-    JSON.stringify(ast, p.step1_modifyJSXToPrerenderComponents),
+    JSON.stringify(ast, (k, v) =>
+      p.step1_modifyJSXToPrerenderComponents(k, v, webComponents),
+    ),
   );
 
   p.step2_addPrerenderImport(newAst);

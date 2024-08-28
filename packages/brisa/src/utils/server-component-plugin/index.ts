@@ -152,7 +152,11 @@ export default function serverComponentPlugin(
           });
         }
       }
-      return prerenderUtil.step1_modifyJSXToPrerenderComponents(key, value);
+      return prerenderUtil.step1_modifyJSXToPrerenderComponents(
+        key,
+        value,
+        usedWebComponents,
+      );
     }
 
     if (isActionsFlag && FN_DECLARATIONS.has(value?.declaration?.type)) {
@@ -456,7 +460,11 @@ export default function serverComponentPlugin(
     if (value?._hasActions) this._hasActions = true;
     if (value?._actionPropagation) this._actionPropagation = true;
 
-    return prerenderUtil.step1_modifyJSXToPrerenderComponents(key, value);
+    return prerenderUtil.step1_modifyJSXToPrerenderComponents(
+      key,
+      value,
+      usedWebComponents,
+    );
   }
 
   let modifiedAst = JSON.parse(
