@@ -106,7 +106,7 @@ const defaultConfig = {
   assetPrefix: '',
   basePath: '',
   extendPlugins: (plugins: BunPlugin[]) => plugins,
-  output: 'server',
+  output: 'bun',
   clustering: IS_PRODUCTION && OS_CAN_LOAD_BALANCE,
 };
 

@@ -1038,11 +1038,12 @@ export type Configuration = {
    *
    * The `output` config property is used to change the output type.
    *
-   * The default value is `server`.
+   * The default value is `bun`.
    *
-   * Difference between `server`, `static` and `desktop`:
+   * All different outputs:
    *
-   * - `server`: The output is a server that can be deployed to a server.
+   * - `bun`: The output is a Bun.js serve that can be deployed to a server.
+   * - `node`: The output is a Node.js server that can be deployed to a server.
    * - `static`: The output is a static export that can be deployed to a static hosting.
    * - `desktop`: The output is a desktop app that can be deployed to a desktop.
    * - `android`: The output is an Android app that can be deployed to an Android device.
@@ -1058,7 +1059,7 @@ export type Configuration = {
    *
    * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
-  output?: 'static' | 'server' | 'desktop' | 'android' | 'ios';
+  output?: 'bun' | 'node' | 'static' | 'desktop' | 'android' | 'ios';
 
   /**
    * Description:

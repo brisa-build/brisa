@@ -58,7 +58,7 @@ const config: Configuration = {
 
   /**
    * `output` configuration
-   * Default: 'server'
+   * Default: 'bun'
    */
   output: "static", // Output type of the application
 };

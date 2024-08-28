@@ -27,6 +27,10 @@ pub extern "C" fn add(a: isize, b: isize) -> isize {
 }
 ```
 
+> [!CAUTION]
+>
+> If you are using `node` as output, this documentation does not apply. You need to find the equivalent in Node.js.
+
 ## Compile Your Files
 
 You need to compile it before using it in your Brisa app.
