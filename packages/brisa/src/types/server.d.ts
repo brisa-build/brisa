@@ -1,5 +1,5 @@
 import type { MatchedBrisaRoute } from '@/types';
-import type { ServeOptions } from 'bun';
+import type { ServeOptions, Server } from 'bun';
 
 export type Options = {
   request: Request | RequestContext;
@@ -140,5 +140,11 @@ export interface RenderInitiatorType {
   readonly SPA_NAVIGATION: 'SPA_NAVIGATION';
   readonly SERVER_ACTION: 'SERVER_ACTION';
 }
+
+export function serve(options: ServeOptions): {
+  port: number;
+  hostname: string;
+  server: Server;
+};
 
 export const RenderInitiator: RenderInitiatorType;
