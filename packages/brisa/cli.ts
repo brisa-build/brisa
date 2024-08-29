@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 
-const { yellowLog, redLog } = require('@/utils/log/log-color');
+const { blueLog, yellowLog, redLog } = require('@/utils/log/log-color');
 const cp = require('child_process');
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const process = require('node:process');
-const { packageManager } = require('./package.json');
+const { version, packageManager } = require('./package.json');
 const outPath = path
   .join(import.meta.dir, 'out')
   // There are some cases where the CLI is executed from the node_modules/.bin folder
@@ -23,6 +23,7 @@ const buildStandaloneFilePath = path.join(
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
+const INFO = blueLog('[ info ] ') + ' ';
 
 async function main({
   currentBunVersion,
@@ -295,12 +296,15 @@ async function main({
             return process.exit(0);
         }
       }
-
-      cp.spawnSync(
-        BUN_EXEC,
-        [serveFilepath, PORT.toString(), 'PROD'],
-        prodOptions,
+      const isNode = OUTPUT === 'node';
+      const exec = isNode ? 'node' : BUN_EXEC;
+      console.log(
+        INFO,
+        `🚀 Brisa ${version}: Runtime on ` +
+          (isNode ? `Node.js ${process.version}` : `Bun.js ${Bun.version}`),
       );
+
+      cp.spawnSync(exec, [serveFilepath, PORT.toString(), 'PROD'], prodOptions);
     }
 
     // Add integrations like mdx, tailwindcss, etc
