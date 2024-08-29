@@ -2,7 +2,7 @@
 description: Get the serve options of Brisa to make a custom server.
 ---
 
-# getServeOptions
+# `getServeOptions`
 
 ## Reference
 
@@ -16,23 +16,25 @@ The `getServeOptions` function is used to get the serve options of Brisa to make
 
 Example usage:
 
-```tsx
-import { getServeOptions } from "brisa/server";
+```tsx 3
+import { getServeOptions, serve } from "brisa/server";
 
 const serveOptions = await getServeOptions();
 
-// See Bun.js serve options: https://bun.sh/docs/api/http
-const server = Bun.serve({
+const { server, port, hostname } = serve({
   ...serveOptions,
+  fetch(req, server) {
+    // Your implementation here ...
+
+    // Brisa handler
+    return serveOptions.fetch(req, server);
+  },
   port: 3001,
 });
 
-// Necessary for Brisa internals
-globalThis.brisaServer = server;
-
 console.log(
   "Server ready 🥳",
-  `listening on http://${server.hostname}:${server.port}...`,
+  `listening on http://${hostname}:${port}...`,
 );
 ```
 
