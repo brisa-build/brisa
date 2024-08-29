@@ -92,9 +92,6 @@ process.on(
   'uncaughtExceptionMonitor',
   handleError('Uncaught Exception Monitor'),
 );
-process.setUncaughtExceptionCaptureCallback(
-  handleError('Uncaught Exception Capture Callback'),
-);
 
 const serveOptions = await getServeOptions();
 
