@@ -100,7 +100,7 @@ const server = http.createServer(handler).listen(3001);
 > ```tsx
 > import { serve } from "brisa/server/node";
 >
-> const server = serve({ port: 3001 });
+> const {server, port, hostname} = serve({ port: 3001 });
 > ```
 
 If you want to use a custom handler, you can use the Brisa `handler` function after your custom handler:
