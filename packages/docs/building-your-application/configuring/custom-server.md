@@ -11,23 +11,35 @@ By default, Brisa includes its own server with `brisa start`. If you have an exi
 Take a look at the following example of a custom server:
 
 ```tsx
-import { getServeOptions } from "brisa/server";
+import { getServeOptions, serve } from "brisa/server";
 
-const serveOptions = await getServeOptions();
-
-// See Bun.js serve options: https://bun.sh/docs/api/http
-const server = Bun.serve({
-  ...serveOptions,
+const { server, port, hostname } = serve({
+  ...await getServeOptions(),
   port: 3001,
 });
 
-// Necessary for Brisa internals to work well in development
-globalThis.brisaServer = server;
-
 console.log(
   "Server ready 🥳",
-  `listening on http://${server.hostname}:${server.port}...`,
+  `listening on http://${hostname}:${port}...`,
 );
+```
+
+If you want a custom handler, you can use the following:
+
+```tsx
+import { getServeOptions, serve } from "brisa/server";
+
+const serveOptions = await getServeOptions();
+
+const { server, port, hostname } = serve({
+  fetch(req, server) {
+    // Your implementation here ...
+
+    // Brisa handler
+    return serveOptions.fetch(req, server);
+  },
+  port: 3001,
+});
 ```
 
 > [!NOTE]
@@ -84,7 +96,7 @@ const server = http.createServer(handler).listen(3001);
 
 > [!NOTE]
 >
-> You can use the `serve` function for the same behavior:
+> You can use the `serve` function from `brisa/server/node` for the same behavior:
 > ```tsx
 > import { serve } from "brisa/server/node";
 >

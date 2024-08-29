@@ -6,6 +6,7 @@ import rerenderInAction from '@/utils/rerender-in-action';
 import { getServeOptions } from '@/cli/serve/serve-options';
 import { RenderInitiator } from '@/public-constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
+import serve from '@/cli/serve/bun-serve';
 
 export {
   SSRWebComponent,
@@ -16,4 +17,5 @@ export {
   getServeOptions,
   RenderInitiator,
   fileSystemRouter,
+  serve,
 };
