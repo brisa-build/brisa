@@ -22,15 +22,24 @@ export default async function build() {
     LOG_PREFIX,
     BUILD_DIR,
     ROOT_DIR,
+    VERSION,
     IS_STATIC_EXPORT,
     CONFIG,
+    JS_RUNTIME,
   } = constants;
   const prebuildPath = path.join(ROOT_DIR, 'prebuild');
 
   console.log(
+    LOG_PREFIX.INFO,
+    `🚀 Brisa ${VERSION}:` +
+      (JS_RUNTIME === 'node'
+        ? ` Running on Node.js ${process.version}`
+        : ` Running on Bun.js ${Bun.version}`),
+  );
+  console.log(
     LOG_PREFIX.WAIT,
     IS_PRODUCTION
-      ? `🚀 Brisa: building your ${outputText[CONFIG.output ?? 'bun']}...`
+      ? `building your ${outputText[CONFIG.output ?? 'bun']}...`
       : 'starting the development server...',
   );
 

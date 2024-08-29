@@ -9,6 +9,7 @@ import nodeServe from './node-serve';
 import bunServe from './bun-serve';
 
 const { LOG_PREFIX, JS_RUNTIME } = constants;
+const isNode = JS_RUNTIME === 'node';
 
 async function init(options: ServeOptions) {
   if (cluster.isPrimary && constants.CONFIG?.clustering) {
@@ -41,10 +42,9 @@ async function init(options: ServeOptions) {
   }
 
   try {
-    const serve =
-      JS_RUNTIME === 'node'
-        ? nodeServe.bind(null, { port: Number(options.port) })
-        : bunServe.bind(null, options);
+    const serve = isNode
+      ? nodeServe.bind(null, { port: Number(options.port) })
+      : bunServe.bind(null, options);
 
     const { hostname, port } = await serve();
     const listeningMsg = `listening on http://${hostname}:${port}`;
