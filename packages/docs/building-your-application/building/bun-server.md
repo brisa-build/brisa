@@ -36,6 +36,10 @@ brisa start --port 8080
 
 After running `brisa build`, Brisa will generate a Bun server that serves your application on the port 8080.
 
+> [!TIP]
+>
+> If you want, you can use `NODE_ENV=production bun run build/server.js` to start your application with Bun.js without Brisa CLI.
+
 ## Custom server
 
 If you want to use a custom server, you can follow this guide: [Custom Server](/building-your-application/configuring/custom-server#custom-server).
