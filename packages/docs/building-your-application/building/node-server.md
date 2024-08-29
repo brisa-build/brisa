@@ -42,7 +42,7 @@ After running `brisa build`, Brisa will generate a Bun server that serves your a
 
 > [!TIP]
 >
-> Although you can still use the Bun tooling to start your application in Node.js, if you want, you can use `node build/server.js` to start your application with Node.js.
+> Although you can still use the Bun tooling to start your application in Node.js, if you want, you can use `NODE_ENV=production node build/server.js` to start your application with Node.js without Brisa CLI.
 
 ## Custom server
 
