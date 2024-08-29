@@ -4,6 +4,7 @@ import compileAll from '@/utils/compile-all';
 import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
+import compileServeIntoBuild from '@/utils/compile-serve-into-build';
 
 const outputText = {
   bun: 'Bun.js Web Service App',
@@ -13,6 +14,8 @@ const outputText = {
   ios: 'iOS App',
   desktop: 'Desktop App',
 };
+
+const SERVER_OUTPUTS = new Set(['bun', 'node']);
 
 export default async function build() {
   const constants = getConstants();
@@ -130,6 +133,10 @@ export default async function build() {
       `Adapting output to ${CONFIG.outputAdapter.name}...`,
     );
     await CONFIG.outputAdapter.adapt(constants, generated);
+  }
+
+  if (IS_PRODUCTION && SERVER_OUTPUTS.has(CONFIG.output ?? 'bun')) {
+    await compileServeIntoBuild();
   }
 
   const end = Bun.nanoseconds();
