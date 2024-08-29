@@ -519,6 +519,27 @@ export default defineConfig({
                 text: 'fileSystemRouter',
                 link: '/api-reference/server-apis/fileSystemRouter',
               },
+              {
+                text: 'RenderInitiator',
+                link: '/api-reference/server-apis/RenderInitiator',
+              },
+              {
+                text: 'serve',
+                link: '/api-reference/server-apis/serve',
+              },
+              {
+                text: 'Node.js APIs',
+                items: [
+                  {
+                    text: 'serve',
+                    link: '/api-reference/server-apis/node/serve',
+                  },
+                  {
+                    text: 'handler',
+                    link: '/api-reference/server-apis/node/handler',
+                  },
+                ],
+              },
             ],
           },
           {
