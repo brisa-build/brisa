@@ -23,6 +23,7 @@ const mockConstants = {
 } as any;
 let mockLog: ReturnType<typeof spyOn>;
 
+// Note: these tests require Brisa build process first
 describe('utils/compileServeIntoBuild', () => {
   beforeEach(() => {
     mockLog = spyOn(console, 'log');
@@ -36,12 +37,26 @@ describe('utils/compileServeIntoBuild', () => {
     fs.rmSync(BUILD_DIR, { recursive: true, force: true });
   });
 
-  // Note: this test require Brisa build process first
   it('should compile the server with hardcoded ROOT_DIR, WORKSPACE and BUILD_DIR', async () => {
     await compileServeIntoBuild(SERVE_FILE);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
     expect(server).toContain(mockConstants.ROOT_DIR);
     expect(server).toContain(mockConstants.BUILD_DIR);
     expect(server).toContain(mockConstants.WORKSPACE);
+    expect(mockLog.mock.calls.flat().join()).toContain(
+      'Node.js Server compiled into build folder',
+    );
+  });
+
+  it('should work with Bun.js runtime', async () => {
+    mockConstants.CONFIG.output = 'bun';
+    await compileServeIntoBuild(SERVE_FILE);
+    const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
+    expect(server).toContain(mockConstants.ROOT_DIR);
+    expect(server).toContain(mockConstants.BUILD_DIR);
+    expect(server).toContain(mockConstants.WORKSPACE);
+    expect(mockLog.mock.calls.flat().join()).toContain(
+      'Bun.js Server compiled into build folder',
+    );
   });
 });
