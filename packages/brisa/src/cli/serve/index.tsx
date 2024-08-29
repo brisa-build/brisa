@@ -5,10 +5,12 @@ import { getServeOptions } from './serve-options';
 import type { ServeOptions, Server } from 'bun';
 import { blueLog, boldLog } from '@/utils/log/log-color';
 import { logError } from '@/utils/log/log-build';
+import nodeServe from './node-serve';
+import bunServe from './bun-serve';
 
-const { LOG_PREFIX } = constants;
+const { LOG_PREFIX, JS_RUNTIME } = constants;
 
-function init(options: ServeOptions) {
+async function init(options: ServeOptions) {
   if (cluster.isPrimary && constants.CONFIG?.clustering) {
     console.log(
       LOG_PREFIX.INFO,
@@ -39,10 +41,13 @@ function init(options: ServeOptions) {
   }
 
   try {
-    const server = Bun.serve(options);
-    const listeningMsg = `listening on http://${server.hostname}:${server.port}`;
+    const serve =
+      JS_RUNTIME === 'node'
+        ? nodeServe.bind(null, { port: Number(options.port) })
+        : bunServe.bind(null, options);
 
-    globalThis.brisaServer = server;
+    const { hostname, port } = await serve();
+    const listeningMsg = `listening on http://${hostname}:${port}`;
 
     if (!constants.CONFIG?.clustering) {
       console.log(LOG_PREFIX.INFO, listeningMsg);
