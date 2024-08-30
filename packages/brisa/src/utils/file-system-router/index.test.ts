@@ -12,15 +12,16 @@ describe('utils', () => {
 
       expect(router.routes).toEqual([
         ['/', path.join(dir, 'index.tsx')],
-        ['/[test]/a', path.join(dir, '[test]', 'a', 'index.js')],
-        [
-          '/[test]/a/[test2]/lala',
-          path.join(dir, '[test]', 'a', '[test2]', 'lala.js'),
-        ],
         ['/about-us', path.join(dir, 'about-us.tsx')],
+        ['/admin', path.join(dir, 'admin', 'index.tsx')],
+        ['/admin/business', path.join(dir, 'admin', 'business', 'index.tsx')],
         [
           '/admin/[businessId]',
           path.join(dir, 'admin', '[businessId]', 'index.tsx'),
+        ],
+        [
+          '/admin/[businessId]/providers/create',
+          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/admin/[businessId]/providers',
@@ -47,10 +48,6 @@ describe('utils', () => {
             '[providerId]',
             'edit.tsx',
           ),
-        ],
-        [
-          '/admin/[businessId]/providers/create',
-          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         ['/blog', path.join(dir, 'blog', 'index.js')],
         ['/blog/[slug]', path.join(dir, 'blog', '[slug].js')],
@@ -91,6 +88,11 @@ describe('utils', () => {
         ['/rest/[...s]', path.join(dir, 'rest', '[...s].tsx')],
         ['/rest2/[...s]', path.join(dir, 'rest2', '[...s]', 'index.tsx')],
         ['/user/[username]', path.join(dir, 'user', '[username].tsx')],
+        ['/[test]/a', path.join(dir, '[test]', 'a', 'index.js')],
+        [
+          '/[test]/a/[test2]/lala',
+          path.join(dir, '[test]', 'a', '[test2]', 'lala.js'),
+        ],
       ]);
     });
 
@@ -102,15 +104,16 @@ describe('utils', () => {
 
       expect(router.routes).toEqual([
         ['/', path.join(dir, 'index.tsx')],
-        ['/[test]/a', path.join(dir, '[test]', 'a', 'index.js')],
-        [
-          '/[test]/a/[test2]/lala',
-          path.join(dir, '[test]', 'a', '[test2]', 'lala.js'),
-        ],
         ['/about-us', path.join(dir, 'about-us.tsx')],
+        ['/admin', path.join(dir, 'admin', 'index.tsx')],
+        ['/admin/business', path.join(dir, 'admin', 'business', 'index.tsx')],
         [
           '/admin/[businessId]',
           path.join(dir, 'admin', '[businessId]', 'index.tsx'),
+        ],
+        [
+          '/admin/[businessId]/providers/create',
+          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/admin/[businessId]/providers',
@@ -137,10 +140,6 @@ describe('utils', () => {
             '[providerId]',
             'edit.tsx',
           ),
-        ],
-        [
-          '/admin/[businessId]/providers/create',
-          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         ['/blog', path.join(dir, 'blog', 'index.js')],
         ['/blog/[slug]', path.join(dir, 'blog', '[slug].js')],
@@ -181,6 +180,11 @@ describe('utils', () => {
         ['/rest/[...s]', path.join(dir, 'rest', '[...s].tsx')],
         ['/rest2/[...s]', path.join(dir, 'rest2', '[...s]', 'index.tsx')],
         ['/user/[username]', path.join(dir, 'user', '[username].tsx')],
+        ['/[test]/a', path.join(dir, '[test]', 'a', 'index.js')],
+        [
+          '/[test]/a/[test2]/lala',
+          path.join(dir, '[test]', 'a', '[test2]', 'lala.js'),
+        ],
       ]);
     });
 
@@ -193,9 +197,15 @@ describe('utils', () => {
       expect(router.routes).toEqual([
         ['/', path.join(dir, 'index.tsx')],
         ['/about-us', path.join(dir, 'about-us.tsx')],
+        ['/admin', path.join(dir, 'admin', 'index.tsx')],
+        ['/admin/business', path.join(dir, 'admin', 'business', 'index.tsx')],
         [
           '/admin/[businessId]',
           path.join(dir, 'admin', '[businessId]', 'index.tsx'),
+        ],
+        [
+          '/admin/[businessId]/providers/create',
+          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/admin/[businessId]/providers',
@@ -222,10 +232,6 @@ describe('utils', () => {
             '[providerId]',
             'edit.tsx',
           ),
-        ],
-        [
-          '/admin/[businessId]/providers/create',
-          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/catchall/[[...catchAll]]',
@@ -249,11 +255,6 @@ describe('utils', () => {
       });
 
       expect(router.routes).toEqual([
-        ['/[test]/a', path.join(dir, '[test]', 'a', 'index.js')],
-        [
-          '/[test]/a/[test2]/lala',
-          path.join(dir, '[test]', 'a', '[test2]', 'lala.js'),
-        ],
         ['/blog', path.join(dir, 'blog', 'index.js')],
         ['/blog/[slug]', path.join(dir, 'blog', '[slug].js')],
         [
@@ -268,6 +269,11 @@ describe('utils', () => {
             '[quux]',
             'index.js',
           ),
+        ],
+        ['/[test]/a', path.join(dir, '[test]', 'a', 'index.js')],
+        [
+          '/[test]/a/[test2]/lala',
+          path.join(dir, '[test]', 'a', '[test2]', 'lala.js'),
         ],
       ]);
     });
@@ -313,6 +319,7 @@ describe('utils', () => {
       '/admin/1/providers/2/delete',
       '/admin/1/providers/2/edit',
       '/admin/1/providers/create',
+      '/admin/business',
       '/blog',
       '/blog/abc-123',
 

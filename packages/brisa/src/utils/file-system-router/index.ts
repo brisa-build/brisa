@@ -10,11 +10,12 @@ const MULTI_SLASH_REGEX = /(?<!:)\/{2,}/g;
 const TRAILING_SLASH_REGEX = /\/$/;
 const EXTRACT_PARAM_KEY_REGEX = /\[|\]|\./g;
 const WINDOWS_PATH_REGEX = /\\/g;
+const REGEX_SYMBOLS = /[^a-zA-Z0-9]/g;
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = Object.entries(resolveRoutes(options)).sort(
-    naturalOrderCompare,
+    sortPathsBySegments,
   );
 
   function match(routeToMatch: string): MatchedBrisaRoute | null {
@@ -145,15 +146,29 @@ function resolveRoutes({
 }
 
 // Be sure in all OS the order is the same
-function naturalOrderCompare([a]: [string, string], [b]: [string, string]) {
-  const nameA = a.toLowerCase();
-  const nameB = b.toLowerCase();
+function sortPathsBySegments([a]: [string, string], [b]: [string, string]) {
+  const partsA = a.split('/');
+  const partsB = b.split('/');
 
-  if (nameA.startsWith('index') && !nameB.startsWith('index')) return -1;
-  if (!nameA.startsWith('index') && nameB.startsWith('index')) return 1;
+  const len = Math.min(partsA.length, partsB.length);
 
-  if (nameA.startsWith('[') && !nameB.startsWith('[')) return -1;
-  if (!nameA.startsWith('[') && nameB.startsWith('[')) return 1;
+  for (let i = 0; i < len; i++) {
+    const partA = partsA[i];
+    const partB = partsB[i];
+    const isPartASymbol = REGEX_SYMBOLS.test(partA[0]);
+    const isPartBSymbol = REGEX_SYMBOLS.test(partB[0]);
 
-  return nameA.localeCompare(nameB);
+    if (isPartASymbol && !isPartBSymbol) {
+      return 1;
+    }
+
+    if (!isPartASymbol && isPartBSymbol) {
+      return -1;
+    }
+
+    const comparison = partA.localeCompare(partB);
+    if (comparison !== 0) return comparison;
+  }
+
+  return partsA.length - partsB.length;
 }
