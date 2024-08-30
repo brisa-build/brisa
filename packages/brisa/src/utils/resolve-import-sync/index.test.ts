@@ -14,6 +14,8 @@ describe('utils/resolve-import-sync', () => {
         '..',
         '..',
         '..',
+        'node_modules',
+        'brisa',
         'out',
         'core',
         'index.js',

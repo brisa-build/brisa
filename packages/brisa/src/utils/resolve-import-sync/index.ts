@@ -7,7 +7,7 @@ import { createRequire } from 'node:module';
  * for converting relative imports or TypeScript aliases to absolute paths.
  */
 export default function resolveImportSync(id: string, parent?: string) {
-  const req = createRequire(parent ?? path.resolve(process.cwd(), 'src'));
+  const req = createRequire(parent ?? import.meta.url);
 
   return req.resolve(id, {
     paths: parent
