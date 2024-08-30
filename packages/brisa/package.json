@@ -100,6 +100,7 @@
     "release": "bun run build && npm publish && bun run clean",
     "release:alpha": "bun run build && npm publish --tag next && bun run clean",
     "test": "bun test",
+    "test:node": "node --test \"**/*.node-test.js\"",
     "test:coverage": "bun test --coverage",
     "tsc:check": "tsc --noEmit --skipLibCheck"
   },
