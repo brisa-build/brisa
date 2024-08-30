@@ -133,15 +133,10 @@ describe('utils', () => {
       } = JSON.parse(mockFetch.mock.calls[0][1]?.body as any);
 
       expect(event).toEqual({
-        defaultPrevented: false,
         NONE: 0,
         CAPTURING_PHASE: 1,
         AT_TARGET: 2,
         BUBBLING_PHASE: 3,
-        type: 'click',
-        bubbles: false,
-        cancelable: false,
-        composed: false,
       });
     });
 

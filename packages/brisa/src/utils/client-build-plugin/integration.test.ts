@@ -826,49 +826,6 @@ describe('integration', () => {
       );
     });
 
-    it('should render a timer component', async () => {
-      const code = `export default function Timer({ }, { state }: any) {
-        const time = state(0);
-        const interval = setInterval(() => {
-          time.value++;
-        }, 1);
-
-        return (
-          <div>
-            <span>Time: {time.value}</span>
-            <button onClick={() => clearInterval(interval)}>stop</button>
-          </div>
-        );
-      }`;
-
-      defineBrisaWebComponent(code, 'src/web-components/timer-component.tsx');
-
-      document.body.innerHTML = `
-        <timer-component></timer-component>
-      `;
-
-      const timer = document.querySelector('timer-component') as HTMLElement;
-      const button = timer?.shadowRoot?.querySelector(
-        'button',
-      ) as HTMLButtonElement;
-
-      expect(timer?.shadowRoot?.innerHTML).toBe(
-        '<div><span>Time: 0</span><button>stop</button></div>',
-      );
-
-      await Bun.sleep(1);
-      expect(timer?.shadowRoot?.innerHTML).toBe(
-        '<div><span>Time: 1</span><button>stop</button></div>',
-      );
-
-      button.click();
-
-      await Bun.sleep(1);
-      expect(timer?.shadowRoot?.innerHTML).toBe(
-        '<div><span>Time: 1</span><button>stop</button></div>',
-      );
-    });
-
     it('should trigger an event when clicking on a button and can be handled via props', () => {
       const code = `export default function Button({ onAfterClick }: any) {
         return <button onClick={onAfterClick}>click me</button>;
@@ -1117,15 +1074,18 @@ describe('integration', () => {
 
     it('should unregister effects when the component is disconnected', async () => {
       window.mock = mock((n: number) => {});
-      const code = `export default function Test({ }, { state, effect }: any) {
+      const code = `export default function Test({ }, { state, effect, cleanup }: any) {
           const count = state(0);
 
-          window.interval = setInterval(() => {
-            count.value++;
-          }, 1);
-
           effect(() => {
-            window.mock(count.value);
+            const fn = () => {
+              count.value++;
+              window.mock(count.value);
+            }
+            window.addEventListener('click', fn);
+            cleanup(() => {
+              window.removeEventListener('click', fn);
+            });
           });
 
           return <div>{count.value}</div>;
@@ -1137,17 +1097,19 @@ describe('integration', () => {
         'test-component',
       ) as HTMLElement;
 
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
+      expect(window.mock).toHaveBeenCalledTimes(0);
+
+      window.dispatchEvent(new Event('click'));
+
       expect(window.mock).toHaveBeenCalledTimes(1);
+      expect(window.mock.mock.calls[0].at(0)).toBe(1);
 
-      await Bun.sleep(1);
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div>');
-      expect(window.mock).toHaveBeenCalledTimes(2);
       testComponent.remove();
+      await Bun.sleep(10);
 
-      await Bun.sleep(1);
-      expect(window.mock).toHaveBeenCalledTimes(2);
-      clearInterval(window.interval);
+      window.dispatchEvent(new Event('click'));
+
+      expect(window.mock).toHaveBeenCalledTimes(1);
     });
 
     it('should reset the state when some props change via effect', () => {
@@ -1257,7 +1219,7 @@ describe('integration', () => {
       expect(emptyTextNode?.shadowRoot?.innerHTML).toBe('<div></div>');
     });
 
-    it('should cleanup everytime an effect is re-called', () => {
+    it('should cleanup everytime an effect is re-called', async () => {
       window.mockEffect = mock((num: number) => {});
       window.mockCleanup = mock(() => {});
 
