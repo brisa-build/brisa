@@ -422,21 +422,17 @@ describe('utils', () => {
       );
     });
 
-    it('should render a timer component', async () => {
+    it('should be possible to react with external event without an effect', async () => {
       function Timer({}, { state }: any) {
         const time = state(0);
-        const interval = setInterval(() => {
-          time.value++;
-        }, 1);
 
-        return [
-          'div',
-          {},
-          [
-            ['span', {}, () => `Time: ${time.value}`],
-            ['button', { onClick: () => clearInterval(interval) }, 'stop'],
-          ],
-        ];
+        const fn = () => {
+          time.value++;
+        };
+
+        window.addEventListener('click', fn);
+
+        return ['div', {}, [['span', {}, () => `Time: ${time.value}`]]];
       }
 
       customElements.define('timer-component', brisaElement(Timer));
@@ -446,28 +442,20 @@ describe('utils', () => {
       `;
 
       const timer = document.querySelector('timer-component') as HTMLElement;
-      const button = timer?.shadowRoot?.querySelector(
-        'button',
-      ) as HTMLButtonElement;
 
       expect(timer?.shadowRoot?.innerHTML).toBe(
-        '<div><span>Time: 0</span><button>stop</button></div>',
+        '<div><span>Time: 0</span></div>',
       );
 
-      await Bun.sleep(1);
-      expect(timer?.shadowRoot?.innerHTML).toBe(
-        '<div><span>Time: 1</span><button>stop</button></div>',
-      );
+      window.dispatchEvent(new Event('click'));
+      await Bun.sleep(0);
 
-      button.click();
-
-      await Bun.sleep(1);
       expect(timer?.shadowRoot?.innerHTML).toBe(
-        '<div><span>Time: 1</span><button>stop</button></div>',
+        '<div><span>Time: 1</span></div>',
       );
     });
 
-    it('should trigger an event when clicking on a button and can be handled via props', () => {
+    it('should trigger an event when clicking on a button and can be handled via props', async () => {
       function Button({ onAfterClick }: any) {
         return ['button', { onClick: onAfterClick }, 'click me'];
       }
@@ -489,6 +477,7 @@ describe('utils', () => {
       ) as HTMLButtonElement;
 
       button.click();
+      await Bun.sleep(0);
 
       expect(onAfterClickMock).toHaveBeenCalled();
     });
@@ -913,15 +902,13 @@ describe('utils', () => {
       const mockEffect = mock((n: number) => {});
       let interval: any;
 
-      function Test({}, { state, effect }: any) {
+      function Test({}, { state, effect, cleanup }: any) {
         const count = state(0);
 
-        interval = setInterval(() => {
-          count.value++;
-        }, 1);
-
         effect(() => {
-          mockEffect(count.value);
+          const fn = () => mockEffect(count.value);
+          window.addEventListener('click', fn);
+          cleanup(() => window.removeEventListener('click', fn));
         });
 
         return ['div', {}, () => count.value];
@@ -934,16 +921,19 @@ describe('utils', () => {
       ) as HTMLElement;
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>0</div>');
+      expect(mockEffect).toHaveBeenCalledTimes(0);
+
+      window.dispatchEvent(new Event('click'));
+      await Bun.sleep(0);
+
       expect(mockEffect).toHaveBeenCalledTimes(1);
 
-      await Bun.sleep(1);
-      expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>1</div>');
-      expect(mockEffect).toHaveBeenCalledTimes(2);
       testComponent.remove();
+      await Bun.sleep(0);
+      window.dispatchEvent(new Event('click'));
+      await Bun.sleep(0);
 
-      await Bun.sleep(1);
-      expect(mockEffect).toHaveBeenCalledTimes(2);
-      clearInterval(interval);
+      expect(mockEffect).toHaveBeenCalledTimes(1);
     });
 
     it('should reset the state when some props change via effect', () => {

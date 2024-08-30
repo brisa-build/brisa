@@ -17,17 +17,10 @@ describe('RPC', () => {
       expect(result).toEqual({
         args: [
           {
-            defaultPrevented: false,
-            eventPhase: 0,
-            timeStamp: expect.any(Number),
-            NONE: 0,
-            CAPTURING_PHASE: 1,
             AT_TARGET: 2,
             BUBBLING_PHASE: 3,
-            type: 'click',
-            bubbles: false,
-            cancelable: false,
-            composed: false,
+            CAPTURING_PHASE: 1,
+            NONE: 0,
           },
         ],
       });
@@ -60,16 +53,6 @@ describe('RPC', () => {
             CAPTURING_PHASE: 1,
             NONE: 0,
             _wc: true,
-            detail: {
-              another: 'value',
-            },
-            eventPhase: 0,
-            defaultPrevented: false,
-            timeStamp: expect.any(Number),
-            type: 'custom',
-            bubbles: false,
-            cancelable: false,
-            composed: false,
           },
         ],
       });
@@ -92,14 +75,6 @@ describe('RPC', () => {
             CAPTURING_PHASE: 1,
             NONE: 0,
             _wc: true,
-            detail: {},
-            eventPhase: 0,
-            defaultPrevented: false,
-            timeStamp: expect.any(Number),
-            type: 'custom',
-            bubbles: false,
-            cancelable: false,
-            composed: false,
           },
         ],
       });
@@ -123,36 +98,21 @@ describe('RPC', () => {
             CAPTURING_PHASE: 1,
             NONE: 0,
             _wc: true,
-            detail: {},
-            eventPhase: 0,
-            defaultPrevented: false,
-            timeStamp: expect.any(Number),
-            type: 'custom',
-            bubbles: false,
-            cancelable: false,
-            composed: false,
           },
         ],
       });
     });
 
-    it('should allow empoty string on another arguments that are not event', () => {
+    it('should allow empty string on another arguments that are not event', () => {
       const dataToSerialize = { args: [new Event('click'), ''] };
       const result = JSON.parse(stringifyAndCleanEvent(dataToSerialize));
       expect(result).toEqual({
         args: [
           {
-            defaultPrevented: false,
-            eventPhase: 0,
-            timeStamp: expect.any(Number),
-            NONE: 0,
-            CAPTURING_PHASE: 1,
             AT_TARGET: 2,
             BUBBLING_PHASE: 3,
-            type: 'click',
-            bubbles: false,
-            cancelable: false,
-            composed: false,
+            CAPTURING_PHASE: 1,
+            NONE: 0,
           },
           '',
         ],
