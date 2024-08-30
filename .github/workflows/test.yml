@@ -70,4 +70,4 @@ jobs:
           node-version: '22'
 
       - name: Run Node.js tests
-        run: bun run test:node
+        run: npm run test:node
