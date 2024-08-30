@@ -347,41 +347,41 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         expect(mockLog.mock.calls[2]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/_404.html prerendered '),
-        ]);
-        expect(mockLog.mock.calls[3]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/_500.html prerendered in '),
-        ]);
-        expect(mockLog.mock.calls[4]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
           expect.stringContaining('/foo.html prerendered in '),
         ]);
-        expect(mockLog.mock.calls[5]).toEqual([
+        expect(mockLog.mock.calls[3]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining(
             '/page-with-web-component.html prerendered in ',
           ),
         ]);
-        expect(mockLog.mock.calls[6]).toEqual([
+        expect(mockLog.mock.calls[4]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining('/somepage.html prerendered in '),
         ]);
-        expect(mockLog.mock.calls[7]).toEqual([
+        expect(mockLog.mock.calls[5]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining(
             '/somepage-with-context.html prerendered in ',
           ),
         ]);
-        expect(mockLog.mock.calls[8]).toEqual([
+        expect(mockLog.mock.calls[6]).toEqual([
           constants.LOG_PREFIX.INFO,
           constants.LOG_PREFIX.TICK,
           expect.stringContaining('/user/testUserName.html prerendered in '),
+        ]);
+        expect(mockLog.mock.calls[7]).toEqual([
+          constants.LOG_PREFIX.INFO,
+          constants.LOG_PREFIX.TICK,
+          expect.stringContaining('/_404.html prerendered '),
+        ]);
+        expect(mockLog.mock.calls[8]).toEqual([
+          constants.LOG_PREFIX.INFO,
+          constants.LOG_PREFIX.TICK,
+          expect.stringContaining('/_500.html prerendered in '),
         ]);
       });
 

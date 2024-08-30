@@ -1,7 +1,3 @@
-import type { WebContext } from '@/types';
-
-export default function WebComponent({}, { i18n }: WebContext) {
-  console.log(process.env.BRISA_PUBLIC_TEST, i18n.t('hello'));
-  // @ts-ignore
-  return <native-some-example />;
+export default function WebComponent() {
+  return <h1>Hello World</h1>;
 }

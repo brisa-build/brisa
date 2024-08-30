@@ -49,8 +49,7 @@ describe('utils', () => {
         'web-component': path.join(
           fixturesDir,
           'web-components',
-          'web',
-          'component.tsx',
+          'web-component.tsx',
         ),
         'with-context': path.join(
           fixturesDir,
@@ -90,8 +89,7 @@ describe('utils', () => {
         'web-component': path.join(
           fixturesDir,
           'web-components',
-          'web',
-          'component.tsx',
+          'web-component.tsx',
         ),
         'with-context': path.join(
           fixturesDir,
@@ -130,8 +128,7 @@ describe('utils', () => {
         'web-component': path.join(
           fixturesDir,
           'web-components',
-          'web',
-          'component.tsx',
+          'web-component.tsx',
         ),
         'with-context': path.join(
           fixturesDir,
@@ -174,8 +171,7 @@ describe('utils', () => {
         'web-component': path.join(
           fixturesDir,
           'web-components',
-          'web',
-          'component.tsx',
+          'web-component.tsx',
         ),
         'with-context': path.join(
           fixturesDir,
@@ -221,8 +217,7 @@ describe('utils', () => {
         'web-component': path.join(
           fixturesDir,
           'web-components',
-          'web',
-          'component.tsx',
+          'web-component.tsx',
         ),
         'with-context': path.join(
           fixturesDir,
