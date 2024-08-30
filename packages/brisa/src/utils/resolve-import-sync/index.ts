@@ -26,6 +26,8 @@ export default function resolveImportSync(id: string, parent?: string) {
     if (!isBun) throw e;
     // This resolves "exports" inside the package.json of dependencies in Bun runtime
     // Issue: https://github.com/brisa-build/brisa/issues/434
+    // This error only happens in Build-time, so Bun.js:
+    // Related Bun issue: https://github.com/oven-sh/bun/issues/4668
     return Bun.resolveSync(
       id,
       parent ? path.dirname(parent) : import.meta.dirname,
