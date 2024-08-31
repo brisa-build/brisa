@@ -1,5 +1,6 @@
 import http from 'node:http';
 import { getServeOptions } from '@/cli/serve/serve-options';
+import splitCookiesString from '@/utils/split-cookies-string';
 
 const serveOptions = await getServeOptions();
 
@@ -104,11 +105,21 @@ export async function setResponse(
   res: http.ServerResponse,
   response: Response,
 ) {
-  const headers = Object.fromEntries(response.headers);
+  for (const [key, value] of response.headers) {
+    try {
+      res.setHeader(
+        key,
+        key === 'set-cookie' ? splitCookiesString(value) : value,
+      );
+    } catch (error) {
+      console.log({ error });
+      res.getHeaderNames().forEach((name) => res.removeHeader(name));
+      res.writeHead(500).end(String(error));
+      return;
+    }
+  }
 
-  // TODO: fix cookies
-
-  res.writeHead(response.status, headers);
+  res.writeHead(response.status);
 
   if (!response.body) {
     res.end();
