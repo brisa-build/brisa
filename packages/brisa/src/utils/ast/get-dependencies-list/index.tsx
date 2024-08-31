@@ -32,15 +32,9 @@ export default function getDependenciesList(
 function resolve(path: string, base: string) {
   if (AVOIDED_DEPENDENCIES.has(path)) return;
 
-  const { CONFIG } = getConstants();
-  const isNode = CONFIG.output === 'node';
-
   try {
-    const importableFilePath = resolveImportSync(path, base);
-    return isNode ? pathToFileURL(importableFilePath).href : importableFilePath;
+    return resolveImportSync(path, base);
   } catch {
-    return CONFIG.output === 'node'
-      ? import.meta.resolve(path, base)
-      : fileURLToPath(import.meta.resolve(path, base));
+    return fileURLToPath(import.meta.resolve(path, base));
   }
 }
