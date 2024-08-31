@@ -4,7 +4,7 @@ import compileAll from '@/utils/compile-all';
 import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
-import compileServeIntoBuild from '@/utils/compile-serve-into-build';
+import compileBrisaInternalsToDoBuildPortable from '@/utils/compile-serve-internals-into-build';
 
 const outputText = {
   bun: 'Bun.js Web Service App',
@@ -133,7 +133,7 @@ export default async function build() {
     await CONFIG.outputAdapter.adapt(constants, generated);
   }
 
-  await compileServeIntoBuild();
+  await compileBrisaInternalsToDoBuildPortable();
 
   const end = Bun.nanoseconds();
   const ms = ((end - start) / 1e6).toFixed(2);

@@ -1,7 +1,7 @@
 import { expect, it, describe, beforeEach, afterEach, spyOn } from 'bun:test';
 import path from 'node:path';
 import fs from 'node:fs';
-import compileServeIntoBuild from '.';
+import compileBrisaInternalsToDoBuildPortable from '.';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
 const SERVE_FILE = path.join(
@@ -25,7 +25,7 @@ const mockConstants = {
 let mockLog: ReturnType<typeof spyOn>;
 
 // Note: these tests require Brisa build process first
-describe('utils/compileServeIntoBuild', () => {
+describe('utils/compileServeInternalsIntoBuild', () => {
   beforeEach(() => {
     mockLog = spyOn(console, 'log');
     globalThis.mockConstants = mockConstants;
@@ -39,7 +39,7 @@ describe('utils/compileServeIntoBuild', () => {
   });
 
   it('should compile the server with hardcoded ROOT_DIR, WORKSPACE and BUILD_DIR', async () => {
-    await compileServeIntoBuild(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
     expect(server).toContain(mockConstants.ROOT_DIR);
     expect(server).toContain(mockConstants.BUILD_DIR);
@@ -51,7 +51,7 @@ describe('utils/compileServeIntoBuild', () => {
 
   it('should work with Bun.js runtime', async () => {
     mockConstants.CONFIG.output = 'bun';
-    await compileServeIntoBuild(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
     expect(server).toContain(mockConstants.ROOT_DIR);
     expect(server).toContain(mockConstants.BUILD_DIR);
