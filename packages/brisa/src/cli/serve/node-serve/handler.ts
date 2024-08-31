@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { getServeOptions } from 'brisa/server';
+import { getServeOptions } from '@/cli/serve/serve-options';
 
 const serveOptions = await getServeOptions();
 
@@ -13,7 +13,11 @@ export default async function handler(
   } as any;
   const base = `${req.headers['x-forwarded-proto'] ?? 'http'}://${req.headers.host}`;
   const request = await getRequest({ request: req, base });
-  const response = await serveOptions.fetch.call(bunServer, request, bunServer);
+  const response = await serveOptions!.fetch.call(
+    bunServer,
+    request,
+    bunServer,
+  );
 
   await setResponse(res, response);
 }
