@@ -20,6 +20,7 @@ const mockConstants = {
   LOG_PREFIX: { INFO: 'INFO' } as any,
   CONFIG: { output: 'node' },
   ROOT_DIR: import.meta.dirname,
+  IS_PRODUCTION: true,
 } as any;
 let mockLog: ReturnType<typeof spyOn>;
 

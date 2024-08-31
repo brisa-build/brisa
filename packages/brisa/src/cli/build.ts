@@ -15,8 +15,6 @@ const outputText = {
   desktop: 'Desktop App',
 };
 
-const SERVER_OUTPUTS = new Set(['bun', 'node']);
-
 export default async function build() {
   const constants = getConstants();
   const {
@@ -135,9 +133,7 @@ export default async function build() {
     await CONFIG.outputAdapter.adapt(constants, generated);
   }
 
-  if (IS_PRODUCTION && SERVER_OUTPUTS.has(CONFIG.output ?? 'bun')) {
-    await compileServeIntoBuild();
-  }
+  await compileServeIntoBuild();
 
   const end = Bun.nanoseconds();
   const ms = ((end - start) / 1e6).toFixed(2);

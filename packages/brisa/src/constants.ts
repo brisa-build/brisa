@@ -12,6 +12,10 @@ import {
   yellowLog,
 } from './utils/log/log-color';
 
+const { NODE_ENV } = process.env;
+const IS_PRODUCTION =
+  process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
+
 const IS_SERVE_PROCESS = Boolean(
   process.argv[1]?.endsWith?.(
     path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
@@ -22,7 +26,9 @@ const IS_BUILD_PROCESS = Boolean(
   process.argv[1]?.endsWith?.(path.join('brisa', 'out', 'cli', 'build.js')),
 );
 
-const rootDir = process.env.ROOT_DIR || process.cwd();
+const IS_PROD_SERVER = IS_PRODUCTION && !IS_BUILD_PROCESS;
+
+let rootDir = process.env.ROOT_DIR || process.cwd();
 const staticExportOutputOption = new Set([
   'static',
   'desktop',
@@ -34,6 +40,11 @@ const buildDir =
   process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
 const WORKSPACE =
   process.env.WORKSPACE || (IS_BUILD_PROCESS ? srcDir : buildDir);
+
+if (IS_PROD_SERVER) {
+  rootDir = buildDir;
+}
+
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
 const integrations = await importFileIfExists(
@@ -92,12 +103,9 @@ const BOOLEANS_IN_HTML = new Set([
   'data-action',
 ]);
 
-const { NODE_ENV } = process.env;
 const OS_CAN_LOAD_BALANCE =
   process.platform !== 'darwin' && process.platform !== 'win32';
 
-const IS_PRODUCTION =
-  process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
 const CACHE_CONTROL = IS_PRODUCTION
   ? 'public, max-age=31536000, immutable'
   : 'no-store, must-revalidate';
