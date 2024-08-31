@@ -3,16 +3,22 @@ import dangerHTML from '@/utils/danger-html';
 import { LiveReloadScript } from '@/cli/dev-live-reload';
 import LoadLayout from '@/utils/load-layout';
 import type { MatchedBrisaRoute, PageModule } from '@/types';
-import getImportableFilepath from '@/utils/get-importable-filepath';
+import getImportableFilepath, {
+  pathToFileURLWhenNeeded,
+} from '@/utils/get-importable-filepath';
 
 export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
   const { BUILD_DIR } = getConstants();
-  const module = (await import(route.filePath)) as PageModule;
+  const module = (await import(
+    pathToFileURLWhenNeeded(route.filePath)
+  )) as PageModule;
   const layoutPath = getImportableFilepath('layout', BUILD_DIR);
-  const layoutModule = layoutPath ? await import(layoutPath) : undefined;
+  const layoutModule = layoutPath
+    ? await import(pathToFileURLWhenNeeded(layoutPath))
+    : undefined;
   const PageComponent = module.default;
 
   const Page = () => (
