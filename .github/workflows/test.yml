@@ -7,10 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  setup:
+  bun-tests:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
@@ -28,27 +27,12 @@ jobs:
 
       - name: Install dependencies
         run: bun install
-
-  bun-tests:
-    needs: setup
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Restore build artifacts
-        uses: actions/restore-state@v2
-        with:
-          key: build_artifacts
       - name: Build project
         run: bun run build
       - name: Run Bun tests
         run: bun test
 
   node-tests:
-    needs: setup
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -56,11 +40,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Restore build artifacts
-        uses: actions/restore-state@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          key: build_artifacts
+          node-version: '22'
+
+      - name: Install dependencies
+        run: bun install
       - name: Build project
         run: bun run build
-      - name: Run Node.js tests
-        run: npm run test:node
+      - name: Run Bun tests
+        run: bun test
