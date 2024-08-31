@@ -235,7 +235,7 @@ describe('Node.js handler', () => {
     });
   });
 
-  it.skip('should api route work', async () => {
+  it('should api route work', async () => {
     globalThis.mockConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
@@ -251,12 +251,12 @@ describe('Node.js handler', () => {
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/api/test';
+    req.method = 'GET';
     const res = createMockResponse(req);
     const handler = await import(absolutePath).then((m) => m.handler);
     await handler(req, res);
     assert.strictEqual(res.statusCode, 200);
     assert.deepStrictEqual(res.headers, {
-      'cache-control': 'no-cache, no-store, must-revalidate',
       'content-type': 'application/json',
     });
     assert.strictEqual(res.getBody(), '{"test":"test"}');
@@ -271,7 +271,8 @@ function createMockResponse(req) {
 
   return {
     write: (chunk) => {
-      body += chunk;
+      body +=
+        chunk instanceof Uint8Array ? Buffer.from(chunk).toString() : chunk;
       return originalWrite(chunk);
     },
     getBody: () => body,
