@@ -84,3 +84,37 @@ export default {
   },
 } satisfies Configuration;
 ```
+
+## TLS in Node.js
+
+If you're using [Node.js runtime](/building-your-application/building/node-server), you can also configure TLS using the `tls` field in your configuration.
+
+```ts
+import { readFileSync } from "node:fs";
+import type { Configuration } from "brisa";
+
+export default {
+  tls: {
+    key: readFileSync("./key.pem"),
+    cert: readFileSync("./cert.pem"),
+  },
+} satisfies Configuration;
+```
+
+Theses fields are passed directly to the `https.createServer` method, so you can use any of the options available in the [Node.js documentation](https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener).
+
+Example:
+
+```ts 
+import { readFileSync } from "node:fs";
+
+export default {
+  tls: {
+    key: readFileSync("./key.pem"),
+    cert: readFileSync("./cert.pem"),
+    // Other options
+    ciphers: "ECDHE-RSA-AES128-GCM-SHA256",
+    honorCipherOrder: true,
+  },
+} satisfies Configuration;
+```

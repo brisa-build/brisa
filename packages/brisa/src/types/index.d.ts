@@ -7,8 +7,9 @@ import type {
   IntrinsicCustomElements,
   PageRoute,
 } from '@/../build/_brisa/types';
-import type { BunPlugin, ServerWebSocket, TLSOptions } from 'bun';
+import type { BunPlugin, Server, ServerWebSocket, TLSOptions } from 'bun';
 import type * as CSS from 'csstype';
+import * as tls from 'node:tls';
 
 declare module 'bun' {
   interface Env {
@@ -925,6 +926,8 @@ interface Throwable {
  */
 export const throwable: Throwable;
 
+export type NodeTLSOptions = Parameters<typeof tls.createSecureContext>[0];
+
 export type Configuration = {
   /**
    * Description:
@@ -1019,7 +1022,7 @@ export type Configuration = {
    *
    * The `tls` config property is used to enable HTTPS.
    *
-   * Example:
+   * Example in Bun.js:
    *
    * ```ts
    * tls: {
@@ -1028,11 +1031,20 @@ export type Configuration = {
    * }
    * ```
    *
+   * Also available in Node.js runtime:
+   *
+   * ```ts
+   * tls: {
+   *  cert: readFileSync("cert.pem"),
+   *  key: readFileSync("key.pem"),
+   * }
+   * ```
+   *
    * Docs:
    *
    * - [How to use `tls`](https://brisa.build/building-your-application/configuring/tls)
    */
-  tls?: TLSOptions;
+  tls?: Configuration['output'] extends 'node' ? NodeTLSOptions : TLSOptions;
 
   /**
    * Description:

@@ -41,5 +41,5 @@ export function handler(
 export function serve({ port }: { port: number }): {
   port: number;
   hostname: string;
-  server: ReturnType<typeof http.createServer>;
+  server: ReturnType<typeof https.createServer>;
 };
