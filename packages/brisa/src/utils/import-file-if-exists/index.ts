@@ -5,9 +5,9 @@ export default async function importFileIfExists(
   filename: 'middleware' | 'i18n' | 'brisa.config' | '_integrations',
   dir = path.join(process.cwd(), 'build'),
 ) {
-  const path = getImportableFilepath(filename, dir);
+  const importablePath = getImportableFilepath(filename, dir);
 
-  if (!path) return null;
+  if (!importablePath) return null;
 
-  return await import(path);
+  return await import(importablePath);
 }
