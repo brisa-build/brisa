@@ -123,6 +123,7 @@ const constants = {
   IS_DEVELOPMENT:
     process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development',
   IS_SERVE_PROCESS,
+  IS_BUILD_PROCESS,
   PORT: Number.parseInt(process.argv[2]) || 3000,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
