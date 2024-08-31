@@ -46,6 +46,13 @@ describe('Node.js handler', () => {
     assert.strictEqual(res.statusCode, 200);
     await new Promise((resolve) => setTimeout(resolve, 0));
     assert.strictEqual(res.getBody().includes('<title>Brisa</title><'), true);
+    assert.deepStrictEqual(res.headers, {
+      'cache-control': 'no-cache, no-store, must-revalidate',
+      'content-type': 'text/html; charset=utf-8',
+      'transfer-encoding': 'chunked',
+      'x-test': 'success',
+      vary: 'Accept-Encoding',
+    });
   });
 
   it('should redirect to the locale', async () => {
@@ -386,18 +393,17 @@ function createMockResponse(req) {
       return originalWrite(chunk);
     },
     getBody: () => body,
-    writeHead: (statusCode, statusMessage, headersObj) => {
-      if (typeof statusMessage === 'object') {
-        headersObj = statusMessage;
-        statusMessage = undefined;
-      }
-      headers = { ...headers, ...headersObj };
-      res.writeHead(statusCode, statusMessage, headersObj);
-    },
+    writeHead: res.writeHead.bind(res),
     on: res.on.bind(res),
     end: res.end.bind(res),
     off: res.off.bind(res),
     destroy: res.destroy.bind(res),
+    getHeaderNames: res.getHeaderNames.bind(res),
+    removeHeader: res.removeHeader.bind(res),
+    setHeader: (name, value) => {
+      headers[name.toLowerCase()] = value;
+      return res.setHeader(name, value);
+    },
     get headers() {
       return headers;
     },
