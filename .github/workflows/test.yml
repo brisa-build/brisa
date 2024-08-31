@@ -12,14 +12,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22'
-
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
@@ -32,12 +30,10 @@ jobs:
         run: bun test
 
   node-tests:
-    needs: setup
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -48,5 +44,5 @@ jobs:
         run: npm install
       - name: Build project
         run: npm run build
-      - name: Run Bun tests
+      - name: Run Node.js tests
         run: npm run test:node
