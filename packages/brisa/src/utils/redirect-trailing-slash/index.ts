@@ -12,10 +12,17 @@ export default function redirectTrailingSlash(
   const isHome = pathname === '/';
 
   if (trailingSlash && !pathname.endsWith('/') && !isHome) {
-    return redirect(new URL(pathname + '/', url).toString());
+    return redirect(newURL(pathname + '/', url).toString());
   }
 
   if (!trailingSlash && pathname.endsWith('/') && !isHome) {
-    return redirect(new URL(pathname.slice(0, -1), url).toString());
+    return redirect(newURL(pathname.slice(0, -1), url).toString());
   }
+}
+
+function newURL(pathname: string, url: URL) {
+  const newUrl = new URL(pathname, url);
+  newUrl.search = url.search;
+  newUrl.hash = url.hash;
+  return newUrl;
 }

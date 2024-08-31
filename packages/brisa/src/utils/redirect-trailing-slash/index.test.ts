@@ -28,6 +28,23 @@ describe('utils', () => {
       );
     });
 
+    it('should redirect without trailing slash + parameters', () => {
+      globalThis.mockConstants = {
+        CONFIG: {
+          trailingSlash: false,
+          basePath,
+        },
+      };
+      const request = extendRequestContext({
+        originalRequest: new Request(`https://example.com/foo/?test=1`),
+      });
+      const response = redirectTrailingSlash(request);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get('location')).toBe(
+        `https://example.com${basePath}/foo?test=1`,
+      );
+    });
+
     it('should NOT redirect the home trailingSlash=false + trailing slash', () => {
       globalThis.mockConstants = {
         CONFIG: {
@@ -98,6 +115,23 @@ describe('utils', () => {
       expect(response?.status).toBe(301);
       expect(response?.headers.get('location')).toBe(
         `https://example.com${basePath}/foo/`,
+      );
+    });
+
+    it('should redirect with trailing slash and parameters', () => {
+      globalThis.mockConstants = {
+        CONFIG: {
+          trailingSlash: true,
+          basePath,
+        },
+      };
+      const request = extendRequestContext({
+        originalRequest: new Request(`https://example.com/foo?test=1`),
+      });
+      const response = redirectTrailingSlash(request);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get('location')).toBe(
+        `https://example.com${basePath}/foo/?test=1`,
       );
     });
 

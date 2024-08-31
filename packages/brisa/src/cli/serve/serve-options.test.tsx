@@ -485,6 +485,32 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(response.headers.get('Location')).toBe(`${basePath}/es`);
   });
 
+  it('should redirect the home to the correct locale with parameters', async () => {
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}?param=1`),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get('Location')).toBe(`${basePath}/es?param=1`);
+  });
+
+  it('should redirect the /api/example to the trailingSlash with parameters', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        trailingSlash: true,
+      },
+      I18N_CONFIG: undefined,
+    };
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/api/example?param=1`),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get('Location')).toBe(
+      `http://localhost:1234${basePath}/api/example/?param=1`,
+    );
+  });
+
   it('should redirect the home to the correct locale and trailingSlash', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
@@ -498,6 +524,21 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
     expect(response.status).toBe(301);
     expect(response.headers.get('Location')).toBe(`${basePath}/es/`);
+  });
+
+  it('should redirect the home to the correct locale and trailingSlash with params', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      CONFIG: {
+        ...globalThis.mockConstants?.CONFIG,
+        trailingSlash: true,
+      },
+    };
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/?param=1`),
+    );
+    expect(response.status).toBe(301);
+    expect(response.headers.get('Location')).toBe(`${basePath}/es/?param=1`);
   });
 
   it('should redirect to the correct locale', async () => {

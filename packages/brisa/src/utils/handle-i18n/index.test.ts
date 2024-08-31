@@ -399,6 +399,15 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       expect(response?.headers.get('location')).toBe(`${basePath}/en/`);
     });
 
+    it('should redirect to default locale with parameters if there is no locale in the URL', () => {
+      const req = extendRequestContext({
+        originalRequest: new Request('https://example.com?test=1'),
+      });
+      const { response } = handleI18n(req);
+      expect(response?.status).toBe(301);
+      expect(response?.headers.get('location')).toBe(`${basePath}/en/?test=1`);
+    });
+
     it('should redirect to the browser language as default locale if there is no locale in the URL', () => {
       const req = extendRequestContext({
         originalRequest: new Request('https://example.com', {
