@@ -60,4 +60,13 @@ describe('utils/compileServeInternalsIntoBuild', () => {
       'Bun.js Server compiled into build folder',
     );
   });
+
+  it('should build brisa.config.js', async () => {
+    fs.writeFileSync(path.join(import.meta.dirname, 'brisa.config.js'), '');
+    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+
+    fs.rmSync(path.join(import.meta.dirname, 'brisa.config.js'));
+    expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeTrue();
+    expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeTrue();
+  });
 });
