@@ -1,8 +1,14 @@
 import getDependenciesMap from '@/utils/ast/get-dependencies-list';
-import { expect, it, describe } from 'bun:test';
+import { expect, it, describe, afterEach } from 'bun:test';
+import { join, sep } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import type { ESTree } from 'meriyah';
+import { getConstants } from '@/constants';
 
 describe('utils', () => {
+  afterEach(() => {
+    globalThis.mockConstants = undefined;
+  });
   describe('ast', () => {
     describe('get-dependencies-list', () => {
       it('should return a list with the dependencies of the given ast', () => {
@@ -22,10 +28,10 @@ describe('utils', () => {
           ],
         } as ESTree.Program;
 
-        const path = '/path/to/file.tsx';
+        const path = join('path', 'to', 'file.tsx');
         const deps = getDependenciesMap(ast, path);
 
-        expect(deps).toEqual(new Set(['/path/to/index.tsx']));
+        expect(deps).toEqual(new Set([sep + join('path', 'to', 'index.tsx')]));
       });
 
       it('should support initial value as 3th argument', () => {
@@ -45,12 +51,15 @@ describe('utils', () => {
           ],
         } as ESTree.Program;
 
-        const path = '/path/to/file.tsx';
-        const initialValue = new Set(['/path/to/initial.tsx']);
+        const path = join('path', 'to', 'file.tsx');
+        const initialValue = new Set([join(sep, 'path', 'to', 'initial.tsx')]);
         const deps = getDependenciesMap(ast, path, initialValue);
 
         expect(deps).toEqual(
-          new Set(['/path/to/index.tsx', '/path/to/initial.tsx']),
+          new Set([
+            sep + join('path', 'to', 'initial.tsx'),
+            sep + join('path', 'to', 'index.tsx'),
+          ]),
         );
       });
 
@@ -81,11 +90,14 @@ describe('utils', () => {
           ],
         } as ESTree.Program;
 
-        const path = '/path/to/file.tsx';
+        const path = join('path', 'to', 'file.tsx');
         const deps = getDependenciesMap(ast, path);
 
         expect(deps).toEqual(
-          new Set(['/path/to/index.tsx', '/path/to/bar.tsx']),
+          new Set([
+            sep + join('path', 'to', 'index.tsx'),
+            sep + join('path', 'to', 'bar.tsx'),
+          ]),
         );
       });
 
@@ -107,10 +119,40 @@ describe('utils', () => {
           ],
         } as ESTree.Program;
 
-        const path = '/path/to/file.tsx';
+        const path = join('path', 'to', 'file.tsx');
         const deps = getDependenciesMap(ast, path);
 
-        expect(deps).toEqual(new Set(['/path/to/index.tsx']));
+        expect(deps).toEqual(new Set([sep + join('path', 'to', 'index.tsx')]));
+      });
+
+      it('should return absoulte import specifiers when CONFIG.output is Node.js', () => {
+        const ast = {
+          type: 'Program',
+          body: [
+            {
+              type: 'ImportDeclaration',
+              specifiers: [
+                {
+                  type: 'ImportSpecifier',
+                  imported: { type: 'Identifier', name: 'foo' },
+                  local: { type: 'Identifier', name: 'foo' },
+                },
+              ],
+              source: { type: 'Literal', value: './index.tsx' },
+            },
+          ],
+        } as ESTree.Program;
+        globalThis.mockConstants = {
+          ...getConstants(),
+          CONFIG: { output: 'node' },
+        };
+        const path = join('path', 'to', 'file.tsx');
+        const deps = getDependenciesMap(ast, path);
+        const expected = pathToFileURL(
+          sep + join('path', 'to', 'index.tsx'),
+        ).href;
+
+        expect(deps).toEqual(new Set([expected]));
       });
     });
   });
