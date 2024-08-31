@@ -261,6 +261,116 @@ describe('Node.js handler', () => {
     });
     assert.strictEqual(res.getBody(), '{"test":"test"}');
   });
+
+  it('should redirect an api route to the locale', async () => {
+    globalThis.mockConstants = {
+      IS_SERVE_PROCESS: true,
+      ROOT_DIR: FIXTURES_DIR,
+      SRC_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
+      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      I18N_CONFIG: {
+        locales: ['en', 'es'],
+        defaultLocale: 'es',
+      },
+      LOCALES_SET: new Set(['en', 'es']),
+      CONFIG: {},
+      HEADERS: {
+        CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
+      },
+      LOG_PREFIX: {},
+    };
+    const req = new http.IncomingMessage(new net.Socket());
+    req.url = '/api/test';
+    req.method = 'GET';
+    const res = createMockResponse(req);
+    const handler = await import(absolutePath).then((m) => m.handler);
+    await handler(req, res);
+    assert.strictEqual(res.statusCode, 301);
+    assert.deepStrictEqual(res.headers, {
+      'cache-control': 'no-cache, no-store, must-revalidate',
+      expires: '-1',
+      location: '/es/api/test',
+      pragma: 'no-cache',
+      vary: 'Accept-Language',
+    });
+  });
+
+  it('should redirect an api route to the locale and trailing slash', async () => {
+    globalThis.mockConstants = {
+      IS_SERVE_PROCESS: true,
+      ROOT_DIR: FIXTURES_DIR,
+      SRC_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
+      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      I18N_CONFIG: {
+        locales: ['en', 'es'],
+        defaultLocale: 'es',
+      },
+      LOCALES_SET: new Set(['en', 'es']),
+      CONFIG: {
+        trailingSlash: true,
+      },
+      HEADERS: {
+        CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
+      },
+      LOG_PREFIX: {},
+    };
+    const req = new http.IncomingMessage(new net.Socket());
+    req.url = '/api/test';
+    req.method = 'GET';
+    req.headers = {
+      host: 'localhost',
+    };
+    const res = createMockResponse(req);
+    const handler = await import(absolutePath).then((m) => m.handler);
+    await handler(req, res);
+    assert.strictEqual(res.statusCode, 301);
+    assert.deepStrictEqual(res.headers, {
+      'cache-control': 'no-cache, no-store, must-revalidate',
+      expires: '-1',
+      location: '/es/api/test/',
+      pragma: 'no-cache',
+      vary: 'Accept-Language',
+    });
+  });
+
+  it('should redirect work with params', async () => {
+    globalThis.mockConstants = {
+      IS_SERVE_PROCESS: true,
+      ROOT_DIR: FIXTURES_DIR,
+      SRC_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
+      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      CONFIG: {
+        trailingSlash: true,
+      },
+      HEADERS: {
+        CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
+      },
+      LOG_PREFIX: {},
+    };
+    const req = new http.IncomingMessage(new net.Socket());
+    req.url = '/api/test?test=1';
+    req.method = 'GET';
+    req.headers = {
+      host: 'localhost',
+    };
+    const res = createMockResponse(req);
+    const handler = await import(absolutePath).then((m) => m.handler);
+    await handler(req, res);
+    assert.strictEqual(res.statusCode, 301);
+    assert.deepStrictEqual(res.headers, {
+      'cache-control': 'no-cache, no-store, must-revalidate',
+      expires: '-1',
+      location: 'http://localhost/api/test/?test=1',
+      pragma: 'no-cache',
+      vary: 'Accept-Language',
+    });
+  });
 });
 
 function createMockResponse(req) {
