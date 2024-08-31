@@ -5,6 +5,7 @@ import { deserialize } from '@/utils/serialization';
 import transferStoreService from '@/utils/transfer-store-service';
 import { resolveStore } from '@/utils/resolve-action';
 import { logError } from '@/utils/log/log-build';
+import { pathToFileURLWhenNeeded } from '../get-importable-filepath';
 
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
@@ -17,7 +18,9 @@ export default async function responseAction(req: RequestContext) {
     req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
   const actionsHeaderValue = req.headers.get('x-actions') ?? '[]';
   const actionFile = getActionFile(action);
-  const actionModule = await import(join(BUILD_DIR, 'actions', actionFile!));
+  const actionModule = await import(
+    pathToFileURLWhenNeeded(join(BUILD_DIR, 'actions', actionFile!))
+  );
   let resetForm = false;
 
   const target = {
@@ -94,7 +97,11 @@ export default async function responseAction(req: RequestContext) {
         const actionDependency =
           file === actionFile
             ? actionModule[actionId]
-            : (await import(join(BUILD_DIR, 'actions', file!)))[actionId];
+            : (
+                await import(
+                  pathToFileURLWhenNeeded(join(BUILD_DIR, 'actions', file!))
+                )
+              )[actionId];
 
         req.store.set(`__params:${actionId}`, params);
 
@@ -186,7 +193,9 @@ export default async function responseAction(req: RequestContext) {
     });
   }
 
-  const module = req.route ? await import(req.route.filePath) : {};
+  const module = req.route
+    ? await import(pathToFileURLWhenNeeded(req.route.filePath))
+    : {};
   const pageResponseHeaders =
     (await module.responseHeaders?.(req, response.status)) ?? {};
 

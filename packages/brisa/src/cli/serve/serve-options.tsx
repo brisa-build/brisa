@@ -7,7 +7,9 @@ import process from 'node:process';
 import { getConstants } from '@/constants';
 import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
-import getImportableFilepath from '@/utils/get-importable-filepath';
+import getImportableFilepath, {
+  pathToFileURLWhenNeeded,
+} from '@/utils/get-importable-filepath';
 import getRouteMatcher from '@/utils/get-route-matcher';
 import handleI18n from '@/utils/handle-i18n';
 import importFileIfExists from '@/utils/import-file-if-exists';
@@ -291,7 +293,7 @@ export async function getServeOptions() {
 
     // API
     if (isApi && api?.route && !api?.isReservedPathname) {
-      const module = await import(api.route.filePath);
+      const module = await import(pathToFileURLWhenNeeded(api.route.filePath));
       const method = req.method.toUpperCase();
       const response = module[method]?.(req);
 

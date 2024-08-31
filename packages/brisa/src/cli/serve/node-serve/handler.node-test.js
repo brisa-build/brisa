@@ -3,6 +3,7 @@ import assert from 'node:assert';
 import net from 'node:net';
 import http from 'node:http';
 import path from 'node:path';
+import url from 'node:url';
 
 const FIXTURES_DIR = path.resolve(
   import.meta.dirname,
@@ -36,9 +37,10 @@ describe('Node.js handler', () => {
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/';
     const res = createMockResponse(req);
-    const handler = await import('../../../../server/node.js').then(
-      (m) => m.handler,
-    );
+    const absolutePath = url.pathToFileURL(
+      path.resolve(import.meta.dirname, '../../../../server/node.js'),
+    ).href;
+    const handler = await import(absolutePath).then((m) => m.handler);
     await handler(req, res);
     assert.strictEqual(res.statusCode, 200);
     await new Promise((resolve) => setTimeout(resolve, 0));
