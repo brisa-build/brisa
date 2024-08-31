@@ -16,8 +16,9 @@ const SERVER_OUTPUTS = new Set(['bun', 'node']);
  * the server from anywhere, now the constants are calculated at runtime from
  * the root of the project, so if the ROOT_DIR is hardcoded, the server
  * would not work if called from another place that is not the root of the project.
+ *
  */
-export default async function compileServeIntoBuild(
+export default async function compileServeInternalsIntoBuild(
   servePathname = path.join(import.meta.dirname, 'serve', 'index.js'),
 ) {
   const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION } =
