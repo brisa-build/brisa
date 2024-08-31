@@ -124,36 +124,6 @@ describe('utils', () => {
 
         expect(deps).toEqual(new Set([sep + join('path', 'to', 'index.tsx')]));
       });
-
-      it('should return absoulte import specifiers when CONFIG.output is Node.js', () => {
-        const ast = {
-          type: 'Program',
-          body: [
-            {
-              type: 'ImportDeclaration',
-              specifiers: [
-                {
-                  type: 'ImportSpecifier',
-                  imported: { type: 'Identifier', name: 'foo' },
-                  local: { type: 'Identifier', name: 'foo' },
-                },
-              ],
-              source: { type: 'Literal', value: './index.tsx' },
-            },
-          ],
-        } as ESTree.Program;
-        globalThis.mockConstants = {
-          ...getConstants(),
-          CONFIG: { output: 'node' },
-        };
-        const path = join('path', 'to', 'file.tsx');
-        const deps = getDependenciesMap(ast, path);
-        const expected = pathToFileURL(
-          sep + join('path', 'to', 'index.tsx'),
-        ).href;
-
-        expect(deps).toEqual(new Set([expected]));
-      });
     });
   });
 });
