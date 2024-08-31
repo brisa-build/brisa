@@ -12,6 +12,10 @@ Brisa supports server-side WebSockets, with on-the-fly compression, TLS support,
 >
 > Bun's WebSockets are fast, ~700,000 messages sent per second.
 
+> [!CAUTION]
+>
+> This WebSockets documentation **only works** with the **Bun.js runtime**. If you want to use Node.js as output you will have to implement it with some library in this same file, [look here how to do it](#websockets-in-nodejs).
+
 ## Start a WebSocket server API
 
 For this purpose it is necessary to create the file `src/websocket.(ts|js)` _(or `src/websocket/index.(ts|js)`)_ and you can export these functions:
@@ -245,3 +249,38 @@ ws.close();
 // or
 ws.close(1000, "Closing connection gracefully");
 ```
+
+## WebSockets in Node.js
+
+If you want to use WebSockets in a Node.js environment, you can use the [ws](https://github.com/websockets/ws) library. Here is an example of how to create a WebSocket server using the `ws` library in the `src/websocket.ts` file:
+
+**`src/websocket.ts`**
+
+```ts
+const WebSocket = require('ws');
+
+// Create a WebSocket server
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on('connection', function connection(ws) {
+  // Log a message when a new client connects
+  console.log('A new client connected!');
+  
+  // Receive messages from the client
+  ws.on('message', function incoming(message) {
+    console.log('Received:', message);
+    
+    // Send a response back to the client
+    ws.send(`You said: ${message}`);
+  });
+
+  // Log a message when the client disconnects
+  ws.on('close', () => {
+    console.log('Client has disconnected');
+  });
+});
+```
+
+> [!NOTE]
+>
+> This `src/websocket.ts` file is loaded once when the server is created, if the module exports the `attach`, `message`, `open`, `close`, and `drain` functions, they will only be used in Bun.js, but when the file is executed in Node.js, the `ws` functions can be used to create a WebSocket server in Node.js.
