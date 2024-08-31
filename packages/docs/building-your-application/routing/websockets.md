@@ -14,7 +14,7 @@ Brisa supports server-side WebSockets, with on-the-fly compression, TLS support,
 
 > [!CAUTION]
 >
-> This WebSockets documentation **only works** with the **Bun.js runtime**. If you want to use Node.js as output you will have to implement it with some library in this same file, [look here how to do it](#websockets-in-nodejs).
+> This WebSockets documentation **only works** with the **Bun.js runtime**. If you want to use Node.js as output you will have to implement it with some library in this same file, [look here how to do it](#websockets-in-node-js).
 
 ## Start a WebSocket server API
 
