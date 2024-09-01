@@ -4,6 +4,14 @@ import fs from 'node:fs/promises';
 
 const REGEX_INDEX_HTML = /(\/?index)?\.html?$/;
 
+type Route = {
+  src?: string;
+  dest?: string;
+  headers?: Record<string, string>;
+  status?: number;
+  handle?: string;
+};
+
 export default function vercelAdapter(): Adapter {
   return {
     name: 'vercel',
@@ -42,13 +50,20 @@ export default function vercelAdapter(): Adapter {
 
       async function adaptNodeOutput() {
         await adaptStaticOutput({ useFileSystem: true });
+        const fnFolder = path.join(vercelFolder, 'functions', 'fn.func');
+
+        if (!(await fs.exists(fnFolder))) {
+          await fs.mkdir(fnFolder, { recursive: true });
+        }
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {
-        const pages = Array.from(generatedMap?.values() ?? []).flat();
+        const pages = Array.from(
+          generatedMap?.values() ?? [],
+        ).flat() as string[];
         const sepSrc = CONFIG.trailingSlash ? '/' : '';
         const sepDest = CONFIG.trailingSlash ? '' : '/';
-        const routes = pages.flatMap((originalPage) => {
+        const routes = pages.flatMap<Route>((originalPage) => {
           const page = originalPage.replace(/^\//, '');
 
           if (page === 'index.html') {
