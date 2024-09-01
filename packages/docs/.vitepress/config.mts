@@ -6,7 +6,7 @@ const pkg = require('../package.json');
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'en-US',
-  title: 'Brisa',
+  title: 'Brisa Framework',
   ignoreDeadLinks: true,
   lastUpdated: true,
   cleanUrls: true,
@@ -29,7 +29,7 @@ export default defineConfig({
       dark: 'github-dark',
     },
   },
-  description: 'A documentation site for Brisa, the Web Platform Framework',
+  description: 'A documentation site for Brisa framework',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     search: {
