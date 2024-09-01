@@ -16,9 +16,7 @@ export default async function processPageRoute(
     pathToFileURLWhenNeeded(route.filePath)
   )) as PageModule;
   const layoutPath = getImportableFilepath('layout', BUILD_DIR);
-  const layoutModule = layoutPath
-    ? await import(pathToFileURLWhenNeeded(layoutPath))
-    : undefined;
+  const layoutModule = layoutPath ? await import(layoutPath) : undefined;
   const PageComponent = module.default;
 
   const Page = () => (
