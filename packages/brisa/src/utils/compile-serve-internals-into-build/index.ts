@@ -10,7 +10,7 @@ const SERVER_OUTPUTS = new Set(['bun', 'node']);
  * This function move the brisa/cli/out/serve/index.js file into the build folder
  * and defining the ROOT_DIR, BUILD_DIR, WORKSPACE constants.
  *
- * Also moves the brisa.config.js file into the build folder.
+ * Also moves the brisa.config.js file into the build folder and creates a package.json.
  *
  * The idea of doing this process is that they can use the build folder and run
  * the server from anywhere, now the constants are calculated at runtime from
@@ -47,9 +47,9 @@ export default async function compileServeInternalsIntoBuild(
     entrypoints,
     target: isNode ? 'node' : 'bun',
     define: {
-      'process.env.ROOT_DIR': `"${ROOT_DIR}"`,
-      'process.env.WORKSPACE': `"${BUILD_DIR}"`,
-      'process.env.BRISA_BUILD_FOLDER': `"${BUILD_DIR}"`,
+      'process.env.IS_SERVE_PROCESS': 'true',
+      'process.env.IS_PROD': 'true',
+      'process.env.IS_STANDALONE_SERVER': 'true',
     },
   });
 
@@ -65,7 +65,28 @@ export default async function compileServeInternalsIntoBuild(
     fs.writeFileSync(out, await file.text());
   }
 
+  const packageJSON = {
+    name: 'brisa-app',
+    version: '0.0.1',
+    type: 'module',
+    main: 'server.js',
+    private: true,
+    scripts: {
+      start: `${runtimeExec} server.js`,
+    },
+  };
+
+  fs.writeFileSync(
+    path.join(BUILD_DIR, 'package.json'),
+    JSON.stringify(packageJSON, null, 2),
+  );
+
   if (isServer) {
+    const relativeServerFilePath = path.join(
+      path.relative(ROOT_DIR, BUILD_DIR),
+      'server.js',
+    );
+
     console.log(LOG_PREFIX.INFO);
     console.log(
       LOG_PREFIX.INFO,
@@ -78,7 +99,7 @@ export default async function compileServeInternalsIntoBuild(
     );
     console.log(
       LOG_PREFIX.INFO,
-      `\t- Or directly from the build folder: NODE_ENV=production ${runtimeExec} ${serverOutPath}`,
+      `\t- Or directly from the build folder: ${runtimeExec} ${relativeServerFilePath}`,
     );
     console.log(LOG_PREFIX.INFO);
   }
