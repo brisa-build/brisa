@@ -20,19 +20,18 @@ const IS_PRODUCTION =
   NODE_ENV === 'production' ||
   process.argv.some((t) => t === 'PROD');
 
+const CLI_DIR = path.join('brisa', 'out', 'cli');
 const IS_SERVE_PROCESS =
   Boolean(process.env.IS_SERVE_PROCESS) ||
-  Boolean(
-    process.argv[1]?.endsWith?.(
-      path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
-    ),
-  );
+  Boolean(process.argv[1]?.endsWith?.(path.join(CLI_DIR, 'serve', 'index.js')));
 
 const IS_STANDALONE_SERVER = Boolean(process.env.IS_STANDALONE_SERVER);
 
 const IS_BUILD_PROCESS = Boolean(
-  process.argv[1]?.endsWith?.(path.join('brisa', 'out', 'cli', 'build.js')),
+  process.argv[1]?.endsWith?.(path.join(CLI_DIR, 'build.js')),
 );
+
+const BRISA_DIR = process.argv[1]?.replace(new RegExp(`${CLI_DIR}.*`), 'brisa');
 
 let rootDir = IS_STANDALONE_SERVER ? import.meta.dirname : process.cwd();
 const staticExportOutputOption = new Set([
@@ -142,6 +141,7 @@ const constants = {
   PORT: Number.parseInt(process.argv[2]) || 3000,
   BUILD_DIR: buildDir,
   ROOT_DIR: rootDir,
+  BRISA_DIR,
   SRC_DIR: srcDir,
   ASSETS_DIR: path.resolve(buildDir, 'public'),
   PAGES_DIR: path.resolve(buildDir, 'pages'),

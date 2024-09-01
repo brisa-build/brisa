@@ -11,8 +11,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import build from './build';
 import { getConstants } from '@/constants';
-import type { BrisaConstants, Configuration } from '@/types';
+import type { Configuration } from '@/types';
 import { enableANSIColors } from '@/utils/supports-basic-color';
+
+const BRISA_DIR = path.join(import.meta.dirname, '..', '..');
+const BUILD_DIR = path.join(import.meta.dirname, 'out');
 
 const defaultResult = {
   success: true,
@@ -41,6 +44,7 @@ const green = (text: string) =>
 describe('cli', () => {
   describe('build', () => {
     beforeEach(() => {
+      if (!fs.existsSync(BUILD_DIR)) fs.mkdirSync(BUILD_DIR);
       spyOn(process, 'exit').mockImplementation(() => null as never);
       spyOn(console, 'log').mockImplementation((...logs) => mockLog(...logs));
       mock.module('@/utils/compile-all', () => ({
@@ -54,6 +58,7 @@ describe('cli', () => {
     });
 
     afterEach(() => {
+      fs.rmSync(BUILD_DIR, { recursive: true, force: true });
       mockCompileAll.mockRestore();
       mockGenerateStaticExport.mockRestore();
       mockTable.mockRestore();
@@ -288,6 +293,31 @@ describe('cli', () => {
       const logs = mockLog.mock.calls.flat().toString();
       expect(logs).not.toContain('Adapting output to my-adapter...');
       expect(mockAdapter).not.toHaveBeenCalled();
+    });
+
+    it('should move internals before the adapter (server.js, etc)', async () => {
+      let existInternals = false;
+
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'node',
+          outputAdapter: {
+            name: 'my-adapter',
+            adapt: () => {
+              existInternals = fs.existsSync(
+                path.join(getConstants()?.BUILD_DIR, 'server.js'),
+              );
+            },
+          },
+        },
+      };
+
+      await build();
+      expect(existInternals).toBeTrue();
     });
   });
 });

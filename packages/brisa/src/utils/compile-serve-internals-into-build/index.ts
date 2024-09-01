@@ -25,12 +25,16 @@ const NO_SERVER_EXPORTS = new Set([
  * would not work if called from another place that is not the root of the project.
  *
  */
-export default async function compileServeInternalsIntoBuild(
-  brisaRoot = BRISA_ROOT_DIR,
-) {
-  const servePathname = path.join(brisaRoot, 'out', 'cli', 'serve', 'index.js');
-  const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION } =
+export default async function compileServeInternalsIntoBuild() {
+  const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION, BRISA_DIR } =
     getConstants();
+  const servePathname = path.join(
+    BRISA_DIR!,
+    'out',
+    'cli',
+    'serve',
+    'index.js',
+  );
   const isNode = CONFIG.output === 'node';
   const runtimeName = isNode ? 'Node.js' : 'Bun.js';
   const runtimeExec = isNode ? 'node' : 'bun run';
@@ -76,7 +80,7 @@ export default async function compileServeInternalsIntoBuild(
   }
 
   createBrisaModule(runtimeExec);
-  addBrisaModule(brisaRoot);
+  addBrisaModule();
 
   if (isServer) {
     const relativeServerFilePath = path.join(
@@ -131,12 +135,12 @@ type Module = {
   bun: string;
 };
 
-function addBrisaModule(brisaRoot = BRISA_ROOT_DIR) {
-  const packageJSONPath = path.join(brisaRoot, 'package.json');
+function addBrisaModule() {
+  const { BUILD_DIR, BRISA_DIR, VERSION } = getConstants();
+  const packageJSONPath = path.join(BRISA_DIR!, 'package.json');
   const BRISA_PACKAGE_JSON = fs.existsSync(packageJSONPath)
     ? JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'))
     : {};
-  const { VERSION, BUILD_DIR } = getConstants();
   const brisaModulePath = path.join(BUILD_DIR, 'node_modules', 'brisa');
   const brisaPackageJSON = {
     name: 'brisa',
@@ -168,7 +172,7 @@ function addBrisaModule(brisaRoot = BRISA_ROOT_DIR) {
     };
 
     fs.copyFileSync(
-      path.join(brisaRoot, value.import),
+      path.join(BRISA_DIR!, value.import),
       path.join(brisaModulePath, normalizedName),
     );
   }
