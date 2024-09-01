@@ -66,13 +66,20 @@ export default function vercelAdapter(): Adapter {
               runtime: 'nodejs20.x',
               handler: 'build/server.js',
               launcherType: 'Nodejs',
-              experimentalResponseStreaming: true,
+              supportsResponseStreaming: true,
+              environment: {
+                USE_HANDLER: 'true',
+              },
             },
             null,
             2,
           ),
           'utf-8',
         );
+
+        // Move all the build folder inside fnFolder:
+        const buildFolder = path.join(fnFolder, 'build');
+        await fs.cp(outDir, buildFolder, { recursive: true });
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {

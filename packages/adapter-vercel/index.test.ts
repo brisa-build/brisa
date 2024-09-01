@@ -126,6 +126,7 @@ describe('adapter-vercel', () => {
       const fnFunctionFolder = path.join(vercelDir, 'functions', 'fn.func');
       const packageJSON = path.join(fnFunctionFolder, 'package.json');
       const vcConfig = path.join(fnFunctionFolder, '.vc-config.json');
+      const buildMovedInside = path.join(fnFunctionFolder, 'build');
 
       expect(await fs.exists(fnFunctionFolder)).toBe(true);
       expect(await fs.exists(packageJSON)).toBe(true);
@@ -137,8 +138,13 @@ describe('adapter-vercel', () => {
         runtime: 'nodejs20.x',
         handler: 'build/server.js',
         launcherType: 'Nodejs',
-        experimentalResponseStreaming: true,
+        supportsResponseStreaming: true,
+        environment: {
+          USE_HANDLER: 'true',
+        },
       });
+      expect(await fs.exists(buildMovedInside)).toBe(true);
+      expect((await fs.readdir(buildMovedInside)).length).toBe(2);
     });
   });
 
