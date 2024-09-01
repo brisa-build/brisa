@@ -6,6 +6,7 @@ import type { ServeOptions, Server } from 'bun';
 import { blueLog, boldLog } from '@/utils/log/log-color';
 import { logError } from '@/utils/log/log-build';
 import nodeServe from './node-serve';
+import handler from './node-serve/handler';
 import bunServe from './bun-serve';
 
 const { LOG_PREFIX, JS_RUNTIME } = constants;
@@ -97,7 +98,15 @@ const serveOptions = await getServeOptions();
 
 if (!serveOptions) process.exit(1);
 
-init(serveOptions);
+// This process.env.USE_HANDLER is defined during the build
+// depending on output adapters.
+if (!process.env.USE_HANDLER) {
+  init(serveOptions);
+}
+
+// This is necesary for some adapters after build this
+// file inside the build folder
+export default handler;
 
 declare global {
   var brisaServer: Server;
