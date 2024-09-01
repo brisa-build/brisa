@@ -49,7 +49,7 @@ export default function vercelAdapter(): Adapter {
       }
 
       async function adaptNodeOutput() {
-        const fnFolder = path.join(vercelFolder, 'functions', 'fn.func');
+        const fnFolder = path.join(outputFolder, 'functions', 'fn.func');
         const packageJSON = path.join(fnFolder, 'package.json');
         const vcConfig = path.join(fnFolder, '.vc-config.json');
 

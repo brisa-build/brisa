@@ -129,7 +129,12 @@ describe('adapter-vercel', () => {
         },
       });
 
-      const fnFunctionFolder = path.join(vercelDir, 'functions', 'fn.func');
+      const fnFunctionFolder = path.join(
+        vercelDir,
+        'output',
+        'functions',
+        'fn.func',
+      );
       const packageJSON = path.join(fnFunctionFolder, 'package.json');
       const vcConfig = path.join(fnFunctionFolder, '.vc-config.json');
       const publicFolder = path.join(fnFunctionFolder, 'build', 'public');
