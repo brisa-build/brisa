@@ -122,6 +122,9 @@ describe('adapter-vercel', () => {
           },
         },
       });
+
+      const fnFunctionFolder = path.join(vercelDir, 'functions', 'fn.func');
+      expect(await fs.exists(fnFunctionFolder)).toBe(true);
     });
   });
 
