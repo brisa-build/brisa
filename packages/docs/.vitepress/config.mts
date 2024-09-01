@@ -6,7 +6,7 @@ const pkg = require('../package.json');
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'en-US',
-  title: 'Brisa Framework',
+  title: 'Brisa',
   ignoreDeadLinks: true,
   lastUpdated: true,
   cleanUrls: true,

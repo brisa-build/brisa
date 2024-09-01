@@ -1,14 +1,12 @@
-//banner to apper on top of the page fixed informing that the docs are in beta
+//banner to apper on top of the page fixed informing that Brisa is experimental
 <template>
   <div class="header-banner">
     <div class="header-banner-content">
       <p>
         <span>🚧</span>
-        <span id="site">Docs are in beta. Please report any issues on </span>
-        <span id="mobile">Docs in beta. Issues on </span>
+        <span id="site">Brisa is <b>experimental</b>. Please report any issues on </span>
+        <span id="mobile">Brisa is <b>experimental</b>. Issues on </span>
         <a href="https://github.com/brisa-build/brisa/issues" target="_blank">GitHub</a>
-        <span>🚧</span>
-
       </p>
     </div>
   </div>
