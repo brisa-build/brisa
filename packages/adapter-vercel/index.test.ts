@@ -124,7 +124,13 @@ describe('adapter-vercel', () => {
       });
 
       const fnFunctionFolder = path.join(vercelDir, 'functions', 'fn.func');
+      const packageJSON = path.join(fnFunctionFolder, 'package.json');
+
       expect(await fs.exists(fnFunctionFolder)).toBe(true);
+      expect(await fs.exists(packageJSON)).toBe(true);
+      expect(fs.readFile(packageJSON, 'utf-8')).resolves.toBe(
+        '{"type":"module"}',
+      );
     });
   });
 
