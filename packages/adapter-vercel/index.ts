@@ -14,15 +14,24 @@ export default function vercelAdapter(): Adapter {
       const outDir = path.join(ROOT_DIR, 'out');
       const staticDir = path.join(outputFolder, 'static');
 
-      // TODO: Support output=server
-      if (CONFIG.output !== 'static') {
-        console.error(
-          'Vercel adapter only supports static output. Please set the output to "static" in the brisa.config.ts file',
-        );
-        // Skip the adaptation
-        return;
-      } else {
-        await adaptStaticOutput();
+      switch (CONFIG.output) {
+        case 'static': {
+          await initVercelOutput();
+          await adaptStaticOutput();
+          break;
+        }
+        case 'node': {
+          await initVercelOutput();
+          await adaptNodeOutput();
+          break;
+        }
+        default: {
+          console.error(
+            'Vercel adapter only supports "node" and "static" output. Please set the "output" field in the brisa.config.ts file',
+          );
+          // Skip adaptation
+          return;
+        }
       }
 
       async function initVercelOutput() {
@@ -31,8 +40,11 @@ export default function vercelAdapter(): Adapter {
         await fs.mkdir(outputFolder);
       }
 
-      async function adaptStaticOutput() {
-        await initVercelOutput();
+      async function adaptNodeOutput() {
+        await adaptStaticOutput({ useFileSystem: true });
+      }
+
+      async function adaptStaticOutput({ useFileSystem = false } = {}) {
         const pages = Array.from(generatedMap?.values() ?? []).flat();
         const sepSrc = CONFIG.trailingSlash ? '/' : '';
         const sepDest = CONFIG.trailingSlash ? '' : '/';
@@ -74,6 +86,20 @@ export default function vercelAdapter(): Adapter {
           overrides[page] = {
             path: page.replace(REGEX_INDEX_HTML, ''),
           };
+        }
+
+        if (useFileSystem) {
+          routes.push(
+            ...[
+              {
+                handle: 'filesystem',
+              },
+              {
+                src: '/.*',
+                dest: '/fn',
+              },
+            ],
+          );
         }
 
         const configJSON = { version: 3, routes, overrides };

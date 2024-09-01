@@ -16,7 +16,7 @@ const vercelDir = path.join(brisaConstants.ROOT_DIR, '.vercel');
 const outputConfigPath = path.join(vercelDir, 'output', 'config.json');
 const logError = spyOn(console, 'error');
 const logErrorMessage =
-  'Vercel adapter only supports static output. Please set the output to "static" in the brisa.config.ts file';
+  'Vercel adapter only supports "node" and "static" output. Please set the "output" field in the brisa.config.ts file';
 
 describe('adapter-vercel', () => {
   afterEach(async () => {
@@ -60,7 +60,6 @@ describe('adapter-vercel', () => {
   });
 
   describe('output=bun', () => {
-    // This is temporal, in the near future we are going to support this
     it('should not create .vercel/output/config.json if output is "bun"', async () => {
       const generatedMap = await createOutFixture(['index.html']);
       const { adapt } = vercelAdapter();
@@ -73,6 +72,56 @@ describe('adapter-vercel', () => {
       );
       expect(await fs.exists(outputConfigPath)).toBe(false);
       expect(logError).toHaveBeenCalledWith(logErrorMessage);
+    });
+  });
+
+  describe('output=node', () => {
+    it('should create .vercel/output/config.json with version 3": prerendered pages + routing server system', async () => {
+      const generatedMap = await createOutFixture(['index.html', 'about.html']);
+      const { adapt } = vercelAdapter();
+      await adapt(
+        {
+          ...brisaConstants,
+          CONFIG: { ...brisaConstants.CONFIG, output: 'node' },
+        },
+        generatedMap,
+      );
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            dest: '/index.html',
+          },
+          {
+            src: '/about',
+            dest: '/about/',
+          },
+          {
+            src: '/about/',
+            status: 308,
+            headers: {
+              Location: '/about',
+            },
+          },
+          {
+            handle: 'filesystem',
+          },
+          {
+            src: '/.*',
+            dest: '/fn',
+          },
+        ],
+        overrides: {
+          'index.html': {
+            path: '',
+          },
+          'about.html': {
+            path: 'about',
+          },
+        },
+      });
     });
   });
 
