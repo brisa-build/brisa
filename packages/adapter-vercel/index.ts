@@ -37,7 +37,6 @@ export default function vercelAdapter(): Adapter {
           console.error(
             'Vercel adapter only supports "node" and "static" output. Please set the "output" field in the brisa.config.ts file',
           );
-          // Skip adaptation
           return;
         }
       }
@@ -51,10 +50,13 @@ export default function vercelAdapter(): Adapter {
       async function adaptNodeOutput() {
         await adaptStaticOutput({ useFileSystem: true });
         const fnFolder = path.join(vercelFolder, 'functions', 'fn.func');
+        const packageJSON = path.join(fnFolder, 'package.json');
 
         if (!(await fs.exists(fnFolder))) {
           await fs.mkdir(fnFolder, { recursive: true });
         }
+
+        await fs.writeFile(packageJSON, '{"type":"module"}', 'utf-8');
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {
