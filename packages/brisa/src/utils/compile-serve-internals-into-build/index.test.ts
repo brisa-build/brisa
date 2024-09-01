@@ -4,18 +4,10 @@ import fs from 'node:fs';
 import compileBrisaInternalsToDoBuildPortable from '.';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
-const SERVE_FILE = path.join(
-  import.meta.dir,
-  '..',
-  '..',
-  '..',
-  'out',
-  'cli',
-  'serve',
-  'index.js',
-);
+const BRISA_ROOT = path.join(import.meta.dir, '..', '..', '..');
 const mockConstants = {
   BUILD_DIR,
+  VERSION: 'x.y.z',
   WORKSPACE: BUILD_DIR,
   LOG_PREFIX: { INFO: 'INFO' } as any,
   CONFIG: { output: 'node' },
@@ -39,7 +31,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
   });
 
   it('should compile the server with defined IS_PRODUCTION, IS_SERVE_PROCESS and IS_STANDALONE_SERVER', async () => {
-    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(BRISA_ROOT);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
 
     // doesn't exist in the code anymore, now is defined in the build process
@@ -53,7 +45,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
 
   it('should work with Bun.js runtime', async () => {
     mockConstants.CONFIG.output = 'bun';
-    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(BRISA_ROOT);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
 
     // doesn't exist in the code anymore, now is defined in the build process
@@ -67,7 +59,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
 
   it('should build brisa.config.js', async () => {
     fs.writeFileSync(path.join(import.meta.dirname, 'brisa.config.js'), '');
-    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(BRISA_ROOT);
 
     fs.rmSync(path.join(import.meta.dirname, 'brisa.config.js'));
     expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeTrue();
@@ -75,7 +67,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
   });
 
   it('should create a package.json in Bun.js', async () => {
-    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(BRISA_ROOT);
     expect(
       JSON.parse(
         fs.readFileSync(path.join(BUILD_DIR, 'package.json'), 'utf-8'),
@@ -89,12 +81,15 @@ describe('utils/compileServeInternalsIntoBuild', () => {
       scripts: {
         start: `bun run server.js`,
       },
+      dependencies: {
+        brisa: 'x.y.z',
+      },
     });
   });
 
   it('should create a package.json in Node.js', async () => {
     mockConstants.CONFIG.output = 'node';
-    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    await compileBrisaInternalsToDoBuildPortable(BRISA_ROOT);
     expect(
       JSON.parse(
         fs.readFileSync(path.join(BUILD_DIR, 'package.json'), 'utf-8'),
@@ -107,6 +102,71 @@ describe('utils/compileServeInternalsIntoBuild', () => {
       private: true,
       scripts: {
         start: `node server.js`,
+      },
+      dependencies: {
+        brisa: 'x.y.z',
+      },
+    });
+  });
+
+  it('should create the brisa module with all the files', async () => {
+    await compileBrisaInternalsToDoBuildPortable(BRISA_ROOT);
+
+    const brisaModulePath = path.join(BUILD_DIR, 'node_modules', 'brisa');
+    expect(fs.existsSync(brisaModulePath)).toBeTrue();
+
+    const files = fs.readdirSync(brisaModulePath).toSorted();
+
+    expect(files).toEqual([
+      'index.js',
+      'jsx-dev-runtime.js',
+      'jsx-runtime.js',
+      'package.json',
+      'server-node.js',
+      'server.js',
+    ]);
+
+    expect(
+      JSON.parse(
+        fs.readFileSync(path.join(brisaModulePath, 'package.json'), 'utf-8'),
+      ),
+    ).toEqual({
+      name: 'brisa',
+      version: 'x.y.z',
+      type: 'module',
+      main: 'index.js',
+      private: true,
+      exports: {
+        '.': {
+          bun: './index.js',
+          import: './index.js',
+          node: './index.js',
+          require: './index.js',
+        },
+        './jsx-dev-runtime': {
+          bun: './jsx-dev-runtime.js',
+          import: './jsx-dev-runtime.js',
+          node: './jsx-dev-runtime.js',
+          require: './jsx-dev-runtime.js',
+        },
+        './jsx-runtime': {
+          bun: './jsx-runtime.js',
+          import: './jsx-runtime.js',
+          node: './jsx-runtime.js',
+          require: './jsx-runtime.js',
+        },
+        './server': {
+          bun: './server.js',
+          import: './server.js',
+          node: './server.js',
+          require: './server.js',
+        },
+        './server/node': {
+          bun: './server-node.js',
+          import: './server-node.js',
+          node: './server-node.js',
+          require: './server-node.js',
+        },
       },
     });
   });

@@ -5,6 +5,13 @@ import { logBuildError } from '../log/log-build';
 import getImportableFilepath from '../get-importable-filepath';
 
 const SERVER_OUTPUTS = new Set(['bun', 'node']);
+const BRISA_ROOT_DIR = path.join(import.meta.dirname, '..', '..');
+const NO_SERVER_EXPORTS = new Set([
+  './client',
+  './client-simplified',
+  './test',
+  './cli.js',
+]);
 
 /**
  * This function move the brisa/cli/out/serve/index.js file into the build folder
@@ -19,8 +26,9 @@ const SERVER_OUTPUTS = new Set(['bun', 'node']);
  *
  */
 export default async function compileServeInternalsIntoBuild(
-  servePathname = path.join(import.meta.dirname, 'serve', 'index.js'),
+  brisaRoot = BRISA_ROOT_DIR,
 ) {
+  const servePathname = path.join(brisaRoot, 'out', 'cli', 'serve', 'index.js');
   const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION } =
     getConstants();
   const isNode = CONFIG.output === 'node';
@@ -65,21 +73,8 @@ export default async function compileServeInternalsIntoBuild(
     fs.writeFileSync(out, await file.text());
   }
 
-  const packageJSON = {
-    name: 'brisa-app',
-    version: '0.0.1',
-    type: 'module',
-    main: 'server.js',
-    private: true,
-    scripts: {
-      start: `${runtimeExec} server.js`,
-    },
-  };
-
-  fs.writeFileSync(
-    path.join(BUILD_DIR, 'package.json'),
-    JSON.stringify(packageJSON, null, 2),
-  );
+  createBrisaModule(runtimeExec);
+  addBrisaModule(brisaRoot);
 
   if (isServer) {
     const relativeServerFilePath = path.join(
@@ -103,4 +98,80 @@ export default async function compileServeInternalsIntoBuild(
     );
     console.log(LOG_PREFIX.INFO);
   }
+}
+
+function createBrisaModule(runtimeExec: string) {
+  const { BUILD_DIR, VERSION } = getConstants();
+  const packageJSON = {
+    name: 'brisa-app',
+    version: '0.0.1',
+    type: 'module',
+    main: 'server.js',
+    private: true,
+    scripts: {
+      start: `${runtimeExec} server.js`,
+    },
+    dependencies: {
+      brisa: VERSION,
+    },
+  };
+
+  fs.writeFileSync(
+    path.join(BUILD_DIR, 'package.json'),
+    JSON.stringify(packageJSON, null, 2),
+  );
+}
+
+type Module = {
+  import: string;
+  require: string;
+  node: string;
+  bun: string;
+};
+
+function addBrisaModule(brisaRoot = BRISA_ROOT_DIR) {
+  const BRISA_PACKAGE_JSON = JSON.parse(
+    fs.readFileSync(path.join(brisaRoot, 'package.json'), 'utf-8'),
+  );
+  const { VERSION, BUILD_DIR } = getConstants();
+  const brisaModulePath = path.join(BUILD_DIR, 'node_modules', 'brisa');
+  const brisaPackageJSON = {
+    name: 'brisa',
+    version: VERSION,
+    type: 'module',
+    main: 'index.js',
+    private: true,
+    exports: {},
+  };
+
+  const exports = Object.entries<Module>(BRISA_PACKAGE_JSON.exports ?? {});
+
+  if (!fs.existsSync(brisaModulePath)) {
+    fs.mkdirSync(brisaModulePath, { recursive: true });
+  }
+
+  for (const [key, value] of exports) {
+    if (NO_SERVER_EXPORTS.has(key)) continue;
+    const isIndex = key === '.';
+    const normalizedName = isIndex
+      ? 'index.js'
+      : key.replace('./', '').replaceAll('/', '-') + '.js';
+
+    (brisaPackageJSON.exports as Record<string, Module>)[key] = {
+      import: `./${normalizedName}`,
+      require: `./${normalizedName}`,
+      node: `./${normalizedName}`,
+      bun: `./${normalizedName}`,
+    };
+
+    fs.copyFileSync(
+      path.join(brisaRoot, value.import),
+      path.join(brisaModulePath, normalizedName),
+    );
+  }
+
+  fs.writeFileSync(
+    path.join(brisaModulePath, 'package.json'),
+    JSON.stringify(brisaPackageJSON, null, 2),
+  );
 }
