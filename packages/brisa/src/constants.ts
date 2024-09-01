@@ -13,37 +13,44 @@ import {
 } from './utils/log/log-color';
 
 const { NODE_ENV } = process.env;
-const IS_PRODUCTION =
-  process.argv.some((t) => t === 'PROD') || NODE_ENV === 'production';
 
-const IS_SERVE_PROCESS = Boolean(
-  process.argv[1]?.endsWith?.(
-    path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
-  ),
-);
+// Note: process.env.IS_PROD is to be defined in the build process
+const IS_PRODUCTION =
+  Boolean(process.env.IS_PROD) ||
+  NODE_ENV === 'production' ||
+  process.argv.some((t) => t === 'PROD');
+
+const IS_SERVE_PROCESS =
+  Boolean(process.env.IS_SERVE_PROCESS) ||
+  Boolean(
+    process.argv[1]?.endsWith?.(
+      path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+    ),
+  );
+
+const IS_STANDALONE_SERVER = Boolean(process.env.IS_STANDALONE_SERVER);
 
 const IS_BUILD_PROCESS = Boolean(
   process.argv[1]?.endsWith?.(path.join('brisa', 'out', 'cli', 'build.js')),
 );
 
-const IS_PROD_SERVER = IS_PRODUCTION && !IS_BUILD_PROCESS;
-
-let rootDir = process.env.ROOT_DIR || process.cwd();
+let rootDir = IS_STANDALONE_SERVER ? import.meta.dirname : process.cwd();
 const staticExportOutputOption = new Set([
   'static',
   'desktop',
   'android',
   'ios',
 ]);
-const srcDir = path.resolve(rootDir, 'src');
-const buildDir =
-  process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
-const WORKSPACE =
-  process.env.WORKSPACE || (IS_BUILD_PROCESS ? srcDir : buildDir);
 
-if (IS_PROD_SERVER) {
-  rootDir = buildDir;
-}
+const srcDir = IS_STANDALONE_SERVER
+  ? import.meta.dirname
+  : path.resolve(rootDir, 'src');
+
+const buildDir = IS_STANDALONE_SERVER
+  ? import.meta.dirname
+  : process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
+
+const WORKSPACE = IS_BUILD_PROCESS ? srcDir : buildDir;
 
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';

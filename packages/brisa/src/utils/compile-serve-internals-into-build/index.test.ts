@@ -38,12 +38,14 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     fs.rmSync(BUILD_DIR, { recursive: true, force: true });
   });
 
-  it('should compile the server with hardcoded ROOT_DIR, WORKSPACE and BUILD_DIR', async () => {
+  it('should compile the server with defined IS_PRODUCTION, IS_SERVE_PROCESS and IS_STANDALONE_SERVER', async () => {
     await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
-    expect(server).toContain(mockConstants.ROOT_DIR);
-    expect(server).toContain(mockConstants.BUILD_DIR);
-    expect(server).toContain(mockConstants.WORKSPACE);
+
+    // doesn't exist in the code anymore, now is defined in the build process
+    expect(server).not.toContain('process.env.IS_STANDALONE_SERVER');
+    expect(server).not.toContain('process.env.IS_SERVE_PROCESS');
+    expect(server).not.toContain('process.env.IS_PROD');
     expect(mockLog.mock.calls.flat().join()).toContain(
       'Node.js Server compiled into build folder',
     );
@@ -53,9 +55,11 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     mockConstants.CONFIG.output = 'bun';
     await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
-    expect(server).toContain(mockConstants.ROOT_DIR);
-    expect(server).toContain(mockConstants.BUILD_DIR);
-    expect(server).toContain(mockConstants.WORKSPACE);
+
+    // doesn't exist in the code anymore, now is defined in the build process
+    expect(server).not.toContain('process.env.IS_STANDALONE_SERVER');
+    expect(server).not.toContain('process.env.IS_SERVE_PROCESS');
+    expect(server).not.toContain('process.env.IS_PROD');
     expect(mockLog.mock.calls.flat().join()).toContain(
       'Bun.js Server compiled into build folder',
     );
@@ -68,5 +72,42 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     fs.rmSync(path.join(import.meta.dirname, 'brisa.config.js'));
     expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeTrue();
     expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeTrue();
+  });
+
+  it('should create a package.json in Bun.js', async () => {
+    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    expect(
+      JSON.parse(
+        fs.readFileSync(path.join(BUILD_DIR, 'package.json'), 'utf-8'),
+      ),
+    ).toEqual({
+      name: 'brisa-app',
+      version: '0.0.1',
+      type: 'module',
+      main: 'server.js',
+      private: true,
+      scripts: {
+        start: `bun run server.js`,
+      },
+    });
+  });
+
+  it('should create a package.json in Node.js', async () => {
+    mockConstants.CONFIG.output = 'node';
+    await compileBrisaInternalsToDoBuildPortable(SERVE_FILE);
+    expect(
+      JSON.parse(
+        fs.readFileSync(path.join(BUILD_DIR, 'package.json'), 'utf-8'),
+      ),
+    ).toEqual({
+      name: 'brisa-app',
+      version: '0.0.1',
+      type: 'module',
+      main: 'server.js',
+      private: true,
+      scripts: {
+        start: `node server.js`,
+      },
+    });
   });
 });
