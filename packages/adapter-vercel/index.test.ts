@@ -6,12 +6,14 @@ import vercelAdapter from './index';
 
 const brisaConstants = {
   ROOT_DIR: import.meta.dirname,
+  BUILD_DIR: path.join(import.meta.dirname, 'build'),
   CONFIG: {
     output: 'static',
   },
 } as BrisaConstants;
 
 const outDir = path.join(brisaConstants.ROOT_DIR, 'out');
+const buildDir = path.join(brisaConstants.ROOT_DIR, 'build');
 const vercelDir = path.join(brisaConstants.ROOT_DIR, '.vercel');
 const outputConfigPath = path.join(vercelDir, 'output', 'config.json');
 const logError = spyOn(console, 'error');
@@ -22,6 +24,7 @@ describe('adapter-vercel', () => {
   afterEach(async () => {
     await fs.rm(vercelDir, { recursive: true, force: true });
     await fs.rm(outDir, { recursive: true, force: true });
+    await fs.rm(buildDir, { recursive: true, force: true });
     logError.mockClear();
   });
   it('should name be "vercel"', () => {
@@ -30,7 +33,7 @@ describe('adapter-vercel', () => {
   });
   describe('output=android', () => {
     it('should not create .vercel/output/config.json if output is android', async () => {
-      const generatedMap = await createOutFixture(['index.html']);
+      const generatedMap = await createBuildFixture(['index.html']);
       const { adapt } = vercelAdapter();
       await adapt(
         {
@@ -45,7 +48,7 @@ describe('adapter-vercel', () => {
   });
   describe('output=ios', () => {
     it('should not create .vercel/output/config.json if output is ios', async () => {
-      const generatedMap = await createOutFixture(['index.html']);
+      const generatedMap = await createBuildFixture(['index.html']);
       const { adapt } = vercelAdapter();
       await adapt(
         {
@@ -61,7 +64,7 @@ describe('adapter-vercel', () => {
 
   describe('output=bun', () => {
     it('should not create .vercel/output/config.json if output is "bun"', async () => {
-      const generatedMap = await createOutFixture(['index.html']);
+      const generatedMap = await createBuildFixture(['index.html']);
       const { adapt } = vercelAdapter();
       await adapt(
         {
@@ -77,7 +80,10 @@ describe('adapter-vercel', () => {
 
   describe('output=node', () => {
     it('should create .vercel/output/config.json with version 3": prerendered pages + routing server system', async () => {
-      const generatedMap = await createOutFixture(['index.html', 'about.html']);
+      const generatedMap = await createBuildFixture(
+        ['index.html', 'about.html'],
+        ['server.js'],
+      );
       const { adapt } = vercelAdapter();
       await adapt(
         {
@@ -126,7 +132,7 @@ describe('adapter-vercel', () => {
       const fnFunctionFolder = path.join(vercelDir, 'functions', 'fn.func');
       const packageJSON = path.join(fnFunctionFolder, 'package.json');
       const vcConfig = path.join(fnFunctionFolder, '.vc-config.json');
-      const buildMovedInside = path.join(fnFunctionFolder, 'build');
+      const publicFolder = path.join(fnFunctionFolder, 'build', 'public');
 
       expect(await fs.exists(fnFunctionFolder)).toBe(true);
       expect(await fs.exists(packageJSON)).toBe(true);
@@ -143,14 +149,17 @@ describe('adapter-vercel', () => {
           USE_HANDLER: 'true',
         },
       });
-      expect(await fs.exists(buildMovedInside)).toBe(true);
-      expect((await fs.readdir(buildMovedInside)).length).toBe(2);
+      expect(await fs.exists(publicFolder)).toBe(true);
+      expect((await fs.readdir(publicFolder)).length).toBe(2);
     });
   });
 
   describe('output=static', () => {
     it('should create .vercel/output/config.json with version 3, routes and overrides depending on "out" path', async () => {
-      const generatedMap = await createOutFixture(['index.html', 'about.html']);
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        'about.html',
+      ]);
       const { adapt } = vercelAdapter();
       await adapt(brisaConstants, generatedMap);
       expect(logError).not.toHaveBeenCalled();
@@ -185,7 +194,7 @@ describe('adapter-vercel', () => {
     });
 
     it('should create .vercel/output/config.json starting the page with "/"', async () => {
-      let generatedMap = await createOutFixture(['index.html', 'about.html']);
+      let generatedMap = await createBuildFixture(['index.html', 'about.html']);
       const entries = Array.from(generatedMap.entries());
 
       // There are cases, ex; i18n, where the page path starts with "/"
@@ -229,7 +238,7 @@ describe('adapter-vercel', () => {
     });
 
     it('should create .vercel/output/index.html taking account CONFIG.trailingSlash', async () => {
-      const generatedMap = await createOutFixture([
+      const generatedMap = await createBuildFixture([
         'index.html',
         path.join('about', 'index.html'),
       ]);
@@ -274,7 +283,10 @@ describe('adapter-vercel', () => {
     });
 
     it('should move the content of the "out" folder to ".vercel/output/static" folder', async () => {
-      const generatedMap = await createOutFixture(['index.html', 'about.html']);
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        'about.html',
+      ]);
       const { adapt } = vercelAdapter();
       await adapt(brisaConstants, generatedMap);
       expect(await fs.exists(path.join(vercelDir, 'output', 'static'))).toBe(
@@ -287,18 +299,29 @@ describe('adapter-vercel', () => {
   });
 });
 
-async function createOutFixture(pages: string[]) {
+async function createBuildFixture(
+  staticFiles: string[],
+  buildFiles?: string[],
+) {
   const map = new Map<string, string[]>();
+  const staticFolder = buildFiles?.length
+    ? path.join(buildDir, 'public')
+    : outDir;
 
-  await fs.rm(outDir, { recursive: true, force: true });
-  await fs.mkdir(outDir);
-  for (const pagePath of pages) {
-    const folders = pagePath.split(path.sep).slice(0, -1);
+  await fs.rm(staticFolder, { recursive: true, force: true });
+  await fs.mkdir(staticFolder, { recursive: true });
+
+  for (const file of staticFiles) {
+    const folders = file.split(path.sep).slice(0, -1);
     for (let i = 1; i <= folders.length; i++) {
-      await fs.mkdir(path.join(outDir, ...folders.slice(0, i)));
+      await fs.mkdir(path.join(staticFolder, ...folders.slice(0, i)));
     }
-    await fs.writeFile(path.join(outDir, pagePath), '');
-    map.set(pagePath, [pagePath]);
+    await fs.writeFile(path.join(staticFolder, file), '');
+    map.set(file, [file]);
+  }
+
+  for (const buildFile of buildFiles ?? []) {
+    fs.writeFile(path.join(buildDir, buildFile), '');
   }
 
   return map;
