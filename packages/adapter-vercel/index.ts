@@ -15,11 +15,12 @@ type Route = {
 export default function vercelAdapter(): Adapter {
   return {
     name: 'vercel',
-    async adapt({ CONFIG, ROOT_DIR }, generatedMap) {
+    async adapt({ CONFIG, ROOT_DIR, BUILD_DIR }, generatedMap) {
       const vercelFolder = path.join(ROOT_DIR, '.vercel');
       const outputFolder = path.join(vercelFolder, 'output');
       const configPath = path.join(outputFolder, 'config.json');
       const outDir = path.join(ROOT_DIR, 'out');
+      const publicDir = path.join(BUILD_DIR, 'public');
       const staticDir = path.join(outputFolder, 'static');
 
       switch (CONFIG.output) {
@@ -79,7 +80,7 @@ export default function vercelAdapter(): Adapter {
 
         // Move all the build folder inside fnFolder:
         const buildFolder = path.join(fnFolder, 'build');
-        await fs.cp(outDir, buildFolder, { recursive: true });
+        await fs.cp(BUILD_DIR, buildFolder, { recursive: true });
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {
@@ -146,7 +147,12 @@ export default function vercelAdapter(): Adapter {
 
         await fs.writeFile(configPath, JSON.stringify(configJSON, null, 2));
         await fs.mkdir(staticDir);
-        await fs.cp(outDir, staticDir, { recursive: true });
+
+        const assetsFolder = useFileSystem ? publicDir : outDir;
+
+        if (await fs.exists(assetsFolder)) {
+          await fs.cp(assetsFolder, staticDir, { recursive: true });
+        }
       }
     },
   };
