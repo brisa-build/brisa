@@ -125,12 +125,20 @@ describe('adapter-vercel', () => {
 
       const fnFunctionFolder = path.join(vercelDir, 'functions', 'fn.func');
       const packageJSON = path.join(fnFunctionFolder, 'package.json');
+      const vcConfig = path.join(fnFunctionFolder, '.vc-config.json');
 
       expect(await fs.exists(fnFunctionFolder)).toBe(true);
       expect(await fs.exists(packageJSON)).toBe(true);
       expect(fs.readFile(packageJSON, 'utf-8')).resolves.toBe(
         '{"type":"module"}',
       );
+      expect(await fs.exists(vcConfig)).toBe(true);
+      expect(JSON.parse(await fs.readFile(vcConfig, 'utf-8'))).toEqual({
+        runtime: 'nodejs20.x',
+        handler: 'build/server.js',
+        launcherType: 'Nodejs',
+        experimentalResponseStreaming: true,
+      });
     });
   });
 

@@ -48,15 +48,31 @@ export default function vercelAdapter(): Adapter {
       }
 
       async function adaptNodeOutput() {
-        await adaptStaticOutput({ useFileSystem: true });
         const fnFolder = path.join(vercelFolder, 'functions', 'fn.func');
         const packageJSON = path.join(fnFolder, 'package.json');
+        const vcConfig = path.join(fnFolder, '.vc-config.json');
+
+        await adaptStaticOutput({ useFileSystem: true });
 
         if (!(await fs.exists(fnFolder))) {
           await fs.mkdir(fnFolder, { recursive: true });
         }
 
         await fs.writeFile(packageJSON, '{"type":"module"}', 'utf-8');
+        await fs.writeFile(
+          vcConfig,
+          JSON.stringify(
+            {
+              runtime: 'nodejs20.x',
+              handler: 'build/server.js',
+              launcherType: 'Nodejs',
+              experimentalResponseStreaming: true,
+            },
+            null,
+            2,
+          ),
+          'utf-8',
+        );
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {

@@ -98,8 +98,6 @@ const serveOptions = await getServeOptions();
 
 if (!serveOptions) process.exit(1);
 
-// This process.env.USE_HANDLER is defined during the build
-// depending on output adapters.
 if (!process.env.USE_HANDLER) {
   init(serveOptions);
 }
