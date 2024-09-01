@@ -45,6 +45,7 @@ export type BrisaConstants = {
   IS_BUILD_PROCESS: boolean;
   PORT: number;
   BUILD_DIR: string;
+  BRISA_DIR?: string;
   ROOT_DIR: string;
   SRC_DIR: string;
   ASSETS_DIR: string;

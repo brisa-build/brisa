@@ -125,6 +125,8 @@ export default async function build() {
     console.log(LOG_PREFIX.INFO);
   }
 
+  await compileBrisaInternalsToDoBuildPortable();
+
   if (IS_PRODUCTION && CONFIG.outputAdapter) {
     console.log(
       LOG_PREFIX.WAIT,
@@ -132,8 +134,6 @@ export default async function build() {
     );
     await CONFIG.outputAdapter.adapt(constants, generated);
   }
-
-  await compileBrisaInternalsToDoBuildPortable();
 
   const end = Bun.nanoseconds();
   const ms = ((end - start) / 1e6).toFixed(2);
