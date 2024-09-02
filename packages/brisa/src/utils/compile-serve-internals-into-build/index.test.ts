@@ -171,7 +171,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     });
   });
 
-  it('should define process.env.CSS_TRANSFORMER_WASM to "false"', async () => {
+  it('#449 should define process.env.CSS_TRANSFORMER_WASM to "false"', async () => {
     const servePath = path.join(import.meta.dirname, 'out', 'cli', 'serve');
     fs.mkdirSync(servePath, { recursive: true });
     fs.writeFileSync(
