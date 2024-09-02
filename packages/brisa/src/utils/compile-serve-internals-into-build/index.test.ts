@@ -37,7 +37,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     fs.writeFileSync(CONFIG_DIR, '');
     globalThis.mockConstants = {
       ...mockConstants,
-      IS_PRODUCTION: false
+      IS_PRODUCTION: false,
     };
     await compileBrisaInternalsToDoBuildPortable();
     expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeFalse();
