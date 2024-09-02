@@ -38,6 +38,7 @@ export default async function compileServeInternalsIntoBuild(
   const configImportPath = getImportableFilepath('brisa.config', ROOT_DIR);
   const isServer = IS_PRODUCTION && SERVER_OUTPUTS.has(CONFIG.output ?? 'bun');
   const serverOutPath = path.join(BUILD_DIR, 'server.js');
+  const indexPath = path.join(BUILD_DIR, 'index.js');
 
   if (configImportPath) {
     entrypoints.push(configImportPath);
@@ -53,11 +54,18 @@ export default async function compileServeInternalsIntoBuild(
 
   const output = await Bun.build({
     entrypoints,
+    outdir: BUILD_DIR,
+    naming: {
+      entry: '[name].[ext]',
+    },
     target: isNode ? 'node' : 'bun',
     define: {
       'process.env.IS_SERVE_PROCESS': 'true',
       'process.env.IS_PROD': 'true',
       'process.env.IS_STANDALONE_SERVER': 'true',
+      // Fix lightningcss issue
+      // https://github.com/parcel-bundler/lightningcss/issues/701
+      'process.env.CSS_TRANSFORMER_WASM': 'false',
     },
   });
 
@@ -65,12 +73,8 @@ export default async function compileServeInternalsIntoBuild(
     logBuildError(`Error compiling the ${runtimeName} server`, output.logs);
   }
 
-  for (const file of output.outputs) {
-    const out = file.path.includes('brisa.config')
-      ? path.join(BUILD_DIR, 'brisa.config.js')
-      : serverOutPath;
-
-    fs.writeFileSync(out, await file.text());
+  if (fs.existsSync(indexPath)) {
+    fs.renameSync(indexPath, serverOutPath);
   }
 
   createBrisaModule(runtimeExec);
@@ -130,9 +134,10 @@ type Module = {
 };
 
 function addBrisaModule(brisaRoot = BRISA_ROOT_DIR) {
-  const BRISA_PACKAGE_JSON = JSON.parse(
-    fs.readFileSync(path.join(brisaRoot, 'package.json'), 'utf-8'),
-  );
+  const packageJSONPath = path.join(brisaRoot, 'package.json');
+  const BRISA_PACKAGE_JSON = fs.existsSync(packageJSONPath)
+    ? JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'))
+    : {};
   const { VERSION, BUILD_DIR } = getConstants();
   const brisaModulePath = path.join(BUILD_DIR, 'node_modules', 'brisa');
   const brisaPackageJSON = {
