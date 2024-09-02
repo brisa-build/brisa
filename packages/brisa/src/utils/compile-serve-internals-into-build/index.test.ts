@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import compileBrisaInternalsToDoBuildPortable from '.';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
-const BRISA_DIR = path.join(import.meta.dir, '..', '..', '..');
+const BRISA_DIR = path.join(import.meta.dirname, '..', '..', '..');
+const CONFIG_DIR = path.join(import.meta.dirname, 'brisa.config.js');
 const mockConstants = {
   BUILD_DIR,
   BRISA_DIR,
@@ -29,6 +30,25 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     mockLog.mockRestore();
     delete globalThis.mockConstants;
     fs.rmSync(BUILD_DIR, { recursive: true, force: true });
+    fs.rmSync(CONFIG_DIR, { force: true });
+  });
+
+  it('should do nothing if is not production', async () => {
+    fs.writeFileSync(CONFIG_DIR, '');
+    globalThis.mockConstants = {
+      ...mockConstants,
+      IS_PRODUCTION: false
+    };
+    await compileBrisaInternalsToDoBuildPortable();
+    expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeFalse();
+    expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeFalse();
+    expect(mockLog).not.toHaveBeenCalled();
+  });
+
+  it('should add brisa.config if there is no brisa.config.js', async () => {
+    await compileBrisaInternalsToDoBuildPortable();
+    expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeTrue();
+    expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeFalse();
   });
 
   it('should compile the server with defined IS_PRODUCTION, IS_SERVE_PROCESS and IS_STANDALONE_SERVER', async () => {
@@ -59,10 +79,10 @@ describe('utils/compileServeInternalsIntoBuild', () => {
   });
 
   it('should build brisa.config.js', async () => {
-    fs.writeFileSync(path.join(import.meta.dirname, 'brisa.config.js'), '');
+    fs.writeFileSync(CONFIG_DIR, '');
     await compileBrisaInternalsToDoBuildPortable();
 
-    fs.rmSync(path.join(import.meta.dirname, 'brisa.config.js'));
+    fs.rmSync(CONFIG_DIR);
     expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeTrue();
     expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeTrue();
   });
