@@ -65,6 +65,8 @@ export default async function compileServeInternalsIntoBuild(
       'process.env.IS_STANDALONE_SERVER': 'true',
       // Fix lightningcss issue
       // https://github.com/parcel-bundler/lightningcss/issues/701
+      // Reported Brisa issue (external build plugins on brisa.config.ts):
+      // https://github.com/brisa-build/brisa/issues/449
       'process.env.CSS_TRANSFORMER_WASM': 'false',
     },
   });
