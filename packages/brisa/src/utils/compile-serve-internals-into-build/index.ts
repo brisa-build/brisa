@@ -28,6 +28,9 @@ const NO_SERVER_EXPORTS = new Set([
 export default async function compileServeInternalsIntoBuild() {
   const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION, BRISA_DIR } =
     getConstants();
+
+  if (!IS_PRODUCTION) return;
+
   const servePathname = path.join(
     BRISA_DIR!,
     'out',
