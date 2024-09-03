@@ -81,6 +81,8 @@ export default function vercelAdapter({
         };
 
         if (memory) vsConfig.memory = memory;
+        if (regions) vsConfig.regions = regions;
+        if (maxDuration) vsConfig.maxDuration = maxDuration;
 
         await fs.writeFile(packageJSON, '{"type":"module"}', 'utf-8');
         await fs.writeFile(
