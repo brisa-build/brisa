@@ -12,6 +12,12 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 
 const filter = /\.(tsx|jsx|mdx)$/;
 
+// To load the SSR of this standalone component on another framework
+// or plain Node.js/Bun.js, you need to use "brisa" and "brisa/server"
+// so, we need to externalize these dependencies
+const brisaServerDeps = ['brisa', 'brisa/server'];
+const brisaClientDeps = ['brisa', 'brisa/client'];
+
 /**
  * This build function is used to compile standalone components.
  *
@@ -68,6 +74,9 @@ async function compileStandaloneServerComponents(
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const entrypoints = [...standaloneSC, ...standaloneWC];
   const webComponentsSelector = invertRecord(allWebComponents);
+  const external = CONFIG.external
+    ? [...CONFIG.external, ...brisaServerDeps]
+    : brisaServerDeps;
 
   return Bun.build({
     entrypoints,
@@ -79,10 +88,7 @@ async function compileStandaloneServerComponents(
     minify: IS_PRODUCTION,
     splitting: false,
     naming: '[dir]/[name].server.[ext]',
-    // To load the SSR of this standalone component on another framework
-    // or plain Node.js/Bun.js, you need to use "brisa" and "brisa/server"
-    // so, we need to externalize these dependencies
-    external: ['brisa', 'brisa/server'],
+    external,
     define: getDefine(),
     plugins: extendPlugins(
       [
@@ -135,6 +141,9 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
   const webComponentsSelector = invertRecord(
     getWebComponentListFromFilePaths(standaloneWC),
   );
+  const external = CONFIG.external
+    ? [...CONFIG.external, ...brisaClientDeps]
+    : brisaClientDeps;
 
   return Bun.build({
     entrypoints: standaloneWC,
@@ -143,7 +152,7 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
     target: 'browser',
     minify: IS_PRODUCTION,
     define: getDefine(),
-    external: ['brisa', 'brisa/client'],
+    external,
     naming: '[dir]/[name].client.[ext]',
     plugins: extendPlugins(
       [

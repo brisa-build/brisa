@@ -58,16 +58,12 @@ export default async function compileServeInternalsIntoBuild(
     naming: {
       entry: '[name].[ext]',
     },
+    external: CONFIG.external,
     target: isNode ? 'node' : 'bun',
     define: {
       'process.env.IS_SERVE_PROCESS': 'true',
       'process.env.IS_PROD': 'true',
       'process.env.IS_STANDALONE_SERVER': 'true',
-      // Fix lightningcss issue
-      // https://github.com/parcel-bundler/lightningcss/issues/701
-      // Reported Brisa issue (external build plugins on brisa.config.ts):
-      // https://github.com/brisa-build/brisa/issues/449
-      'process.env.CSS_TRANSFORMER_WASM': 'false',
     },
   });
 

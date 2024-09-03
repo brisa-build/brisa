@@ -229,6 +229,7 @@ export async function transformToWebComponents({
     // https://bun.sh/docs/bundler#format
     target: 'browser',
     minify: IS_PRODUCTION,
+    external: CONFIG.external,
     define: {
       __DEV__: (!IS_PRODUCTION).toString(),
       __WEB_CONTEXT_PLUGINS__: useWebContextPlugins.toString(),

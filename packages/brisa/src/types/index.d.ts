@@ -1099,6 +1099,24 @@ export type Configuration = {
   /**
    * Description:
    *
+   * An `external` import is one that will not be included in the final bundle.
+   * Instead, the import statement will be left as-is, to be resolved at runtime.
+   *
+   * Example:
+   *
+   * ```ts
+   * external: ['lightningcss']
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `external`](https://brisa.build/building-your-application/configuring/external)
+   */
+  external?: string[];
+
+  /**
+   * Description:
+   *
    * The `assetCompression` config property is used to enable asset compression (GZIP + Brotli).
    *
    * The default value is `false`.
