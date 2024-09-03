@@ -159,6 +159,159 @@ describe('adapter-vercel', () => {
       expect(await fs.exists(publicFolder)).toBe(true);
       expect((await fs.readdir(publicFolder)).length).toBe(2);
     });
+    it('shoudld enable skew protection', async () => {
+      process.env.VERCEL_SKEW_PROTECTION_ENABLED = 'true';
+      process.env.VERCEL_DEPLOYMENT_ID = '123';
+
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        'about.html',
+      ]);
+
+      const { adapt } = vercelAdapter();
+
+      await adapt(brisaConstants, generatedMap);
+
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            dest: '/index.html',
+          },
+          {
+            src: '/about',
+            dest: '/about/',
+          },
+          {
+            src: '/about/',
+            status: 308,
+            headers: {
+              Location: '/about',
+            },
+          },
+          {
+            continue: true,
+            has: [
+              {
+                key: 'Sec-Fetch-Dest',
+                type: 'header',
+                value: 'document',
+              },
+            ],
+            headers: {
+              'Set-Cookie':
+                '__vdpl=123; Path=/; SameSite=Strict; Secure; HttpOnly',
+            },
+            src: '/.*',
+          },
+        ],
+        overrides: {
+          'about.html': {
+            path: 'about',
+          },
+          'index.html': {
+            path: '',
+          },
+        },
+      });
+    });
+
+    it('should enable skew protection with a base path', async () => {
+      process.env.VERCEL_SKEW_PROTECTION_ENABLED = 'true';
+      process.env.VERCEL_DEPLOYMENT_ID = '123';
+
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        'about.html',
+      ]);
+
+      const { adapt } = vercelAdapter();
+
+      await adapt(
+        {
+          ...brisaConstants,
+          CONFIG: { ...brisaConstants.CONFIG, basePath: '/base' },
+        },
+        generatedMap,
+      );
+
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            dest: '/index.html',
+          },
+          {
+            src: '/about',
+            dest: '/about/',
+          },
+          {
+            src: '/about/',
+            status: 308,
+            headers: {
+              Location: '/about',
+            },
+          },
+          {
+            continue: true,
+            has: [
+              {
+                key: 'Sec-Fetch-Dest',
+                type: 'header',
+                value: 'document',
+              },
+            ],
+            headers: {
+              'Set-Cookie':
+                '__vdpl=123; Path=/base/; SameSite=Strict; Secure; HttpOnly',
+            },
+            src: '/.*',
+          },
+        ],
+        overrides: {
+          'about.html': {
+            path: 'about',
+          },
+          'index.html': {
+            path: '',
+          },
+        },
+      });
+    });
+
+    it('should add the "memory" config option to .vc-config.json', async () => {
+      const vcConfig = path.join(
+        vercelDir,
+        'output',
+        'functions',
+        'fn.func',
+        '.vc-config.json',
+      );
+      const generatedMap = await createBuildFixture([], ['server.js']);
+      const { adapt } = vercelAdapter({ memory: 1024 });
+
+      await adapt(
+        {
+          ...brisaConstants,
+          CONFIG: { ...brisaConstants.CONFIG, output: 'node' },
+        },
+        generatedMap,
+      );
+      expect(JSON.parse(await fs.readFile(vcConfig, 'utf-8'))).toEqual({
+        environment: {
+          USE_HANDLER: 'true',
+        },
+        handler: 'build/server.js',
+        launcherType: 'Nodejs',
+        runtime: 'nodejs20.x',
+        supportsResponseStreaming: true,
+        memory: 1024,
+      });
+    });
   });
 
   describe('output=static', () => {
@@ -302,130 +455,6 @@ describe('adapter-vercel', () => {
       expect(
         await fs.readdir(path.join(vercelDir, 'output', 'static')),
       ).toEqual(['index.html', 'about.html']);
-    });
-
-    it('shoudld enable skew protection', async () => {
-      process.env.VERCEL_SKEW_PROTECTION_ENABLED = 'true';
-      process.env.VERCEL_DEPLOYMENT_ID = '123';
-
-      const generatedMap = await createBuildFixture([
-        'index.html',
-        'about.html',
-      ]);
-
-      const { adapt } = vercelAdapter();
-
-      await adapt(brisaConstants, generatedMap);
-
-      expect(logError).not.toHaveBeenCalled();
-      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
-        version: 3,
-        routes: [
-          {
-            src: '/',
-            dest: '/index.html',
-          },
-          {
-            src: '/about',
-            dest: '/about/',
-          },
-          {
-            src: '/about/',
-            status: 308,
-            headers: {
-              Location: '/about',
-            },
-          },
-          {
-            continue: true,
-            has: [
-              {
-                key: 'Sec-Fetch-Dest',
-                type: 'header',
-                value: 'document',
-              },
-            ],
-            headers: {
-              'Set-Cookie':
-                '__vdpl=123; Path=/; SameSite=Strict; Secure; HttpOnly',
-            },
-            src: '/.*',
-          },
-        ],
-        overrides: {
-          'about.html': {
-            path: 'about',
-          },
-          'index.html': {
-            path: '',
-          },
-        },
-      });
-    });
-
-    it('should enable skew protection with a base path', async () => {
-      process.env.VERCEL_SKEW_PROTECTION_ENABLED = 'true';
-      process.env.VERCEL_DEPLOYMENT_ID = '123';
-
-      const generatedMap = await createBuildFixture([
-        'index.html',
-        'about.html',
-      ]);
-
-      const { adapt } = vercelAdapter();
-
-      await adapt(
-        {
-          ...brisaConstants,
-          CONFIG: { ...brisaConstants.CONFIG, basePath: '/base' },
-        },
-        generatedMap,
-      );
-
-      expect(logError).not.toHaveBeenCalled();
-      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
-        version: 3,
-        routes: [
-          {
-            src: '/',
-            dest: '/index.html',
-          },
-          {
-            src: '/about',
-            dest: '/about/',
-          },
-          {
-            src: '/about/',
-            status: 308,
-            headers: {
-              Location: '/about',
-            },
-          },
-          {
-            continue: true,
-            has: [
-              {
-                key: 'Sec-Fetch-Dest',
-                type: 'header',
-                value: 'document',
-              },
-            ],
-            headers: {
-              'Set-Cookie':
-                '__vdpl=123; Path=/base/; SameSite=Strict; Secure; HttpOnly',
-            },
-            src: '/.*',
-          },
-        ],
-        overrides: {
-          'about.html': {
-            path: 'about',
-          },
-          'index.html': {
-            path: '',
-          },
-        },
-      });
     });
   });
 });
