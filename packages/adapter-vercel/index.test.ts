@@ -312,6 +312,66 @@ describe('adapter-vercel', () => {
         memory: 1024,
       });
     });
+
+    it('should add the "regions" config option to .vc-config.json', async () => {
+      const vcConfig = path.join(
+        vercelDir,
+        'output',
+        'functions',
+        'fn.func',
+        '.vc-config.json',
+      );
+      const generatedMap = await createBuildFixture([], ['server.js']);
+      const { adapt } = vercelAdapter({ regions: ['iad1', 'lax1'] });
+
+      await adapt(
+        {
+          ...brisaConstants,
+          CONFIG: { ...brisaConstants.CONFIG, output: 'node' },
+        },
+        generatedMap,
+      );
+      expect(JSON.parse(await fs.readFile(vcConfig, 'utf-8'))).toEqual({
+        environment: {
+          USE_HANDLER: 'true',
+        },
+        handler: 'build/server.js',
+        launcherType: 'Nodejs',
+        runtime: 'nodejs20.x',
+        supportsResponseStreaming: true,
+        regions: ['iad1', 'lax1'],
+      });
+    });
+
+    it('should add the "maxDuration" config option to .vc-config.json', async () => {
+      const vcConfig = path.join(
+        vercelDir,
+        'output',
+        'functions',
+        'fn.func',
+        '.vc-config.json',
+      );
+      const generatedMap = await createBuildFixture([], ['server.js']);
+      const { adapt } = vercelAdapter({ maxDuration: 15 });
+
+      await adapt(
+        {
+          ...brisaConstants,
+          CONFIG: { ...brisaConstants.CONFIG, output: 'node' },
+        },
+        generatedMap,
+      );
+      expect(JSON.parse(await fs.readFile(vcConfig, 'utf-8'))).toEqual({
+        environment: {
+          USE_HANDLER: 'true',
+        },
+        handler: 'build/server.js',
+        launcherType: 'Nodejs',
+        runtime: 'nodejs20.x',
+        supportsResponseStreaming: true,
+        maxDuration: 15,
+      });
+    });
   });
 
   describe('output=static', () => {
