@@ -17,7 +17,6 @@ import type { Configuration } from "brisa";
 export default {
   external: ["lightningcss"],
 } satisfies Configuration;
-```
 
 ## Types
 
