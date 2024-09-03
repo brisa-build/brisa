@@ -20,6 +20,7 @@ import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-p
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
 
 const TS_REGEX = /\.tsx?$/;
+const BRISA_DEPS = ['brisa', 'brisa/server'];
 
 export default async function compileFiles() {
   const {
@@ -65,6 +66,9 @@ export default async function compileFiles() {
     ).toString(),
   };
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
+  const external = CONFIG.external
+    ? [...CONFIG.external, ...BRISA_DEPS]
+    : BRISA_DEPS;
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -83,7 +87,7 @@ export default async function compileFiles() {
     // for the client build. FIXME: improve this to analyze each
     // server page including the chunks that the page needs.
     splitting: false,
-    external: ['brisa', 'brisa/server'],
+    external,
     define,
     plugins: extendPlugins(
       [

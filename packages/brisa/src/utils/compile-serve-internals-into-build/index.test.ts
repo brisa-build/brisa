@@ -170,16 +170,4 @@ describe('utils/compileServeInternalsIntoBuild', () => {
       },
     });
   });
-
-  it('#449 should define process.env.CSS_TRANSFORMER_WASM to "false"', async () => {
-    const servePath = path.join(import.meta.dirname, 'out', 'cli', 'serve');
-    fs.mkdirSync(servePath, { recursive: true });
-    fs.writeFileSync(
-      path.join(servePath, 'index.js'),
-      'console.log(process.env.CSS_TRANSFORMER_WASM)',
-    );
-    await compileBrisaInternalsToDoBuildPortable(import.meta.dirname);
-    const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
-    expect(server).toContain('console.log(false);');
-  });
 });

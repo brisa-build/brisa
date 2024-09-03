@@ -258,6 +258,10 @@ export default defineConfig({
                 link: '/building-your-application/configuring/output-adapter',
               },
               {
+                text: 'External dependencies',
+                link: '/building-your-application/configuring/external',
+              },
+              {
                 text: 'Static pages',
                 link: '/building-your-application/configuring/static-pages',
               },

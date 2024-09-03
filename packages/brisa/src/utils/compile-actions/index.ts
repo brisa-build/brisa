@@ -31,10 +31,11 @@ export default async function compileActions({
   const { BUILD_DIR, IS_PRODUCTION, CONFIG } = getConstants();
   const isNode = CONFIG.output === 'node' && IS_PRODUCTION;
   const rawActionsDir = join(BUILD_DIR, 'actions_raw');
+  const external = CONFIG.external ? [...CONFIG.external, 'brisa'] : ['brisa'];
   const res = await Bun.build({
     entrypoints: actionsEntrypoints,
     outdir: join(BUILD_DIR, 'actions'),
-    external: ['brisa'],
+    external,
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: rawActionsDir,
     target: isNode ? 'node' : 'bun',
