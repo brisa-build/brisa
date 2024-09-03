@@ -2,6 +2,9 @@ import http from 'node:http';
 import { getServeOptions } from '@/cli/serve/serve-options';
 import splitCookiesString from '@/utils/split-cookies-string';
 
+// Init polyfills for Node prior to 22.x
+import './polyfills';
+
 const serveOptions = await getServeOptions();
 
 export default async function handler(
