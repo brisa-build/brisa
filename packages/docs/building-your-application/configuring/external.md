@@ -17,6 +17,11 @@ import type { Configuration } from "brisa";
 export default {
   external: ["lightningcss"],
 } satisfies Configuration;
+```
+
+> [!NOTE]
+>
+> This config property is used in the build processes we use with Bun bundler. For more information on this field, take a look at the [Bun bundler documentation](https://bun.sh/docs/bundler#external).
 
 ## Types
 
