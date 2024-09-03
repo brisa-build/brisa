@@ -362,6 +362,71 @@ describe('adapter-vercel', () => {
         },
       });
     });
+
+    it('should enable skew protection with a base path', async () => {
+      process.env.VERCEL_SKEW_PROTECTION_ENABLED = 'true';
+      process.env.VERCEL_DEPLOYMENT_ID = '123';
+
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        'about.html',
+      ]);
+
+      const { adapt } = vercelAdapter();
+
+      await adapt(
+        {
+          ...brisaConstants,
+          CONFIG: { ...brisaConstants.CONFIG, basePath: '/base' },
+        },
+        generatedMap,
+      );
+
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            dest: '/index.html',
+          },
+          {
+            src: '/about',
+            dest: '/about/',
+          },
+          {
+            src: '/about/',
+            status: 308,
+            headers: {
+              Location: '/about',
+            },
+          },
+          {
+            continue: true,
+            has: [
+              {
+                key: 'Sec-Fetch-Dest',
+                type: 'header',
+                value: 'document',
+              },
+            ],
+            headers: {
+              'Set-Cookie':
+                '__vdpl=123; Path=/base/; SameSite=Strict; Secure; HttpOnly',
+            },
+            src: '/.*',
+          },
+        ],
+        overrides: {
+          'about.html': {
+            path: 'about',
+          },
+          'index.html': {
+            path: '',
+          },
+        },
+      });
+    });
   });
 });
 
