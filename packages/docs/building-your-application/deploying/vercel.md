@@ -6,13 +6,9 @@ description: Learn how to build and deploy
 
 To deploy to Vercel, use [adapter-vercel](https://github.com/brisa-build/brisa/blob/main/packages/adapter-vercel).
 
-> [!WARNING]
->
-> TODO: for now only `output=static` is supported. The `output=server` is not supported yet, but it's in the roadmap, this documentation is not really accurate yet.
-
 > [!IMPORTANT]
 >
-> In Vercel instead of using [Bun](https://bun.sh/) runtime is going to use the [Node.js](https://nodejs.org) and/or [Edge](https://vercel.com/docs/concepts/functions/edge-functions) runtime.
+> To deploy to Vercel, the following [`output`](/building-your-application/configuring/output)s are supported for now: `node` and `static`.
 
 ## Usage
 
@@ -29,108 +25,28 @@ Then, add the adapter to your `brisa.config.ts`:
 import vercel from 'brisa-adapter-vercel';
 
 export default {
+  output: 'node', // or 'static'
   outputAdapter: vercel({
     // see below for options that can be set here
   })
 };
 ```
 
+> [!NOTE]
+>
+> If you select `node` as the `output`, the runtime on Vercel will always be the latest LTS of Node.js. Brisa is only compatible with Node.js version 20.x and later.
+
 ## Deployment configuration
 
-To control how your routes are deployed to Vercel as functions, you can specify deployment configuration, either through the option shown above or with [`export const config`](page-options#config) inside `src/pages` or `src/layout` files.
+The `vercel` adapter accepts an object with the following properties:
 
-> [!WARNING]
+- `regions`: an array of [edge network regions](https://vercel.com/docs/concepts/edge-network/regions) defaulting to `["iad1"]`. Note that multiple regions for serverless functions are only supported on Enterprise plans.
+- `memory`: the amount of memory available to the function. Defaults to `1024` Mb, and can be decreased to `128` Mb or [increased](https://vercel.com/docs/concepts/limits/overview#serverless-function-memory) in 64Mb increments up to `3008` Mb on Pro or Enterprise accounts.
+- `maxDuration`: [maximum execution duration](https://vercel.com/docs/functions/runtimes#max-duration) of the function. Defaults to `10` seconds for Hobby accounts, `15` for Pro and `900` for Enterprise.
+
+> [!NOTE]
 >
-> By specifying `config` inside a layout, it applies to all child pages.
-
-For example you could deploy some parts of your app as [Edge Functions](https://vercel.com/docs/concepts/functions/edge-functions)...
-
-```ts
-/// file: src/pages/about.tsx
-/** @type {import('brisa-adapter-vercel').Config} */
-export const config = {
-	runtime: 'edge'
-};
-```
-
-...and others as [Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions):
-
-```ts
-/// file: admin/+layout.js
-/** @type {import('brisa-adapter-vercel').Config} */
-export const config = {
-	runtime: 'nodejs18.x'
-};
-```
-
-The following options apply to all functions:
-
-- `runtime`: `'edge'`, `'nodejs18.x'` or `'nodejs20.x'`. By default, the adapter will select the `'nodejs<version>.x'` corresponding to the Node version your project is configured to use on the Vercel dashboard
-- `regions`: an array of [edge network regions](https://vercel.com/docs/concepts/edge-network/regions) (defaulting to `["iad1"]` for serverless functions) or `'all'` if `runtime` is `edge` (its default). Note that multiple regions for serverless functions are only supported on Enterprise plans
-- `split`: if `true`, causes a route to be deployed as an individual function. If `split` is set to `true` at the adapter level, all routes will be deployed as individual functions
-
-Additionally, the following option applies **only** to **edge** functions:
-- `external`: an array of dependencies that esbuild should treat as external when bundling functions. This should only be used to exclude optional dependencies that will not run outside Node
-
-And the following option apply **only** to **serverless functions**:
-- `memory`: the amount of memory available to the function. Defaults to `1024` Mb, and can be decreased to `128` Mb or [increased](https://vercel.com/docs/concepts/limits/overview#serverless-function-memory) in 64Mb increments up to `3008` Mb on Pro or Enterprise accounts
-- `maxDuration`: [maximum execution duration](https://vercel.com/docs/functions/runtimes#max-duration) of the function. Defaults to `10` seconds for Hobby accounts, `15` for Pro and `900` for Enterprise
-- `isr`: configuration Incremental Static Regeneration, described below
-
-If your functions need to access data in a specific region, it's recommended that they be deployed in the same region (or close to it) for optimal performance.
-
-## Image Optimization
-
-You may set the `images` config to control how Vercel builds your images. See the [image configuration reference](https://vercel.com/docs/build-output-api/v3/configuration#images) for full details. As an example, you may set:
-
-```ts
-/// file: brisa.config.ts
-import vercel from 'brisa/adapter-vercel';
-
-export default {
-	outputAdapter: vercel({
-    images: {
-      sizes: [640, 828, 1200, 1920, 3840],
-      formats: ['image/avif', 'image/webp'],
-      minimumCacheTTL: 300,
-      domains: ['example-app.vercel.app'],
-    }
-  })
-};
-```
-
-## Incremental Static Regeneration
-
-Vercel supports [Incremental Static Regeneration](https://vercel.com/docs/incremental-static-regeneration) (ISR), which provides the performance and cost advantages of prerendered content with the flexibility of dynamically rendered content.
-
-To add ISR to a route, include the `isr` property in your `config` object:
-
-```tsx
-export const config = {
-	isr: {
-		// Expiration time (in seconds) before the cached asset will be
-		// re-generated by invoking the Serverless Function.
-		// Setting the value to `false` means it will never expire.
-		expiration: 60,
-
-		// Random token that can be provided in the URL to bypass the cached
-		// version of the asset, by requesting the asset
-		// with a __prerender_bypass=<token> cookie.
-		//
-		// Making a `GET` or `HEAD` request with `x-prerender-revalidate: 
-		// <token>` will force the asset to be re-validated.
-		bypassToken: process.env.BYPASS_TOKEN,
-
-		// List of valid query parameters. Other parameters (such as utm
-		// tracking codes) will be ignored,
-		// ensuring that they do not result in content being regenerated
-		// unnecessarily
-		allowQuery: ['search']
-	}
-};
-```
-
-The `expiration` property is required; all others are optional.
+> If your pages need to access data in a specific region, it's recommended that they be deployed in the same region (or close to it) for optimal performance.
 
 ## Environment variables
 
