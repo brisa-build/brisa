@@ -10,6 +10,12 @@ type Route = {
   headers?: Record<string, string>;
   status?: number;
   handle?: string;
+  has?: {
+    type: string;
+    key: string;
+    value: string;
+  }[];
+  continue?: boolean;
 };
 
 export default function vercelAdapter(): Adapter {
@@ -127,6 +133,24 @@ export default function vercelAdapter(): Adapter {
           overrides[page] = {
             path: page.replace(REGEX_INDEX_HTML, ''),
           };
+        }
+
+        // https://vercel.com/docs/deployments/skew-protection
+        if (process.env.VERCEL_SKEW_PROTECTION_ENABLED) {
+          routes.push({
+            src: '/.*',
+            has: [
+              {
+                type: 'header',
+                key: 'Sec-Fetch-Dest',
+                value: 'document',
+              },
+            ],
+            headers: {
+              'Set-Cookie': `__vdpl=${process.env.VERCEL_DEPLOYMENT_ID}; Path=${CONFIG.basePath ?? ''}/; SameSite=Strict; Secure; HttpOnly`,
+            },
+            continue: true,
+          });
         }
 
         if (useFileSystem) {
