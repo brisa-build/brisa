@@ -1,6 +1,7 @@
 import type { Adapter } from 'brisa';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { Config } from '.';
 
 const REGEX_INDEX_HTML = /(\/?index)?\.html?$/;
 
@@ -18,7 +19,11 @@ type Route = {
   continue?: boolean;
 };
 
-export default function vercelAdapter(): Adapter {
+export default function vercelAdapter({
+  memory,
+  regions,
+  maxDuration,
+}: Config = {}): Adapter {
   return {
     name: 'vercel',
     async adapt({ CONFIG, ROOT_DIR, BUILD_DIR }, generatedMap) {
@@ -65,22 +70,22 @@ export default function vercelAdapter(): Adapter {
           await fs.mkdir(fnFolder, { recursive: true });
         }
 
+        const vsConfig: Record<string, any> = {
+          runtime: 'nodejs20.x',
+          handler: 'build/server.js',
+          launcherType: 'Nodejs',
+          supportsResponseStreaming: true,
+          environment: {
+            USE_HANDLER: 'true',
+          },
+        };
+
+        if (memory) vsConfig.memory = memory;
+
         await fs.writeFile(packageJSON, '{"type":"module"}', 'utf-8');
         await fs.writeFile(
           vcConfig,
-          JSON.stringify(
-            {
-              runtime: 'nodejs20.x',
-              handler: 'build/server.js',
-              launcherType: 'Nodejs',
-              supportsResponseStreaming: true,
-              environment: {
-                USE_HANDLER: 'true',
-              },
-            },
-            null,
-            2,
-          ),
+          JSON.stringify(vsConfig, null, 2),
           'utf-8',
         );
 
