@@ -11,6 +11,7 @@ const TRAILING_SLASH_REGEX = /\/$/;
 const EXTRACT_PARAM_KEY_REGEX = /\[|\]|\./g;
 const WINDOWS_PATH_REGEX = /\\/g;
 const REGEX_SYMBOLS = /[^a-zA-Z0-9]/g;
+const DIGIT_REGEX = /\d+/;
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
@@ -157,6 +158,13 @@ function sortPathsBySegments([a]: [string, string], [b]: [string, string]) {
     const partB = partsB[i];
     const isPartASymbol = REGEX_SYMBOLS.test(partA[0]);
     const isPartBSymbol = REGEX_SYMBOLS.test(partB[0]);
+    const numA = parseInt('' + partA.match(DIGIT_REGEX), 10);
+    const numB = parseInt('' + partB.match(DIGIT_REGEX), 10);
+
+    if (!isNaN(numA) && !isNaN(numB)) {
+      const numComparison = numA - numB;
+      if (numComparison !== 0) return numComparison;
+    }
 
     if (isPartASymbol && !isPartBSymbol) {
       return 1;
@@ -166,7 +174,9 @@ function sortPathsBySegments([a]: [string, string], [b]: [string, string]) {
       return -1;
     }
 
-    const comparison = partA.localeCompare(partB);
+    const comparison = partA.localeCompare(partB, 'en', {
+      sensitivity: 'base',
+    });
     if (comparison !== 0) return comparison;
   }
 

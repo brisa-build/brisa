@@ -20,12 +20,12 @@ describe('utils', () => {
           path.join(dir, 'admin', '[businessId]', 'index.tsx'),
         ],
         [
-          '/admin/[businessId]/providers/create',
-          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
-        ],
-        [
           '/admin/[businessId]/providers',
           path.join(dir, 'admin', '[businessId]', 'providers', 'index.tsx'),
+        ],
+        [
+          '/admin/[businessId]/providers/create',
+          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/admin/[businessId]/providers/[providerId]/delete',
@@ -112,12 +112,12 @@ describe('utils', () => {
           path.join(dir, 'admin', '[businessId]', 'index.tsx'),
         ],
         [
-          '/admin/[businessId]/providers/create',
-          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
-        ],
-        [
           '/admin/[businessId]/providers',
           path.join(dir, 'admin', '[businessId]', 'providers', 'index.tsx'),
+        ],
+        [
+          '/admin/[businessId]/providers/create',
+          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/admin/[businessId]/providers/[providerId]/delete',
@@ -204,12 +204,12 @@ describe('utils', () => {
           path.join(dir, 'admin', '[businessId]', 'index.tsx'),
         ],
         [
-          '/admin/[businessId]/providers/create',
-          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
-        ],
-        [
           '/admin/[businessId]/providers',
           path.join(dir, 'admin', '[businessId]', 'providers', 'index.tsx'),
+        ],
+        [
+          '/admin/[businessId]/providers/create',
+          path.join(dir, 'admin', '[businessId]', 'providers', 'create.tsx'),
         ],
         [
           '/admin/[businessId]/providers/[providerId]/delete',

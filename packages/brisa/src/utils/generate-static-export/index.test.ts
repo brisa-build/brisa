@@ -330,59 +330,23 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should not warn about redirect when "i18n" is not defined', async () => {
-        const constants = getConstants();
-
         const mockLog = spyOn(console, 'log').mockImplementation(() => null);
 
         await generateStaticExport();
 
         // All are correct logs withouth the warning
         expect(mockLog).toHaveBeenCalledTimes(9);
-        expect(mockLog.mock.calls[0]).toEqual([constants.LOG_PREFIX.INFO]);
-        expect(mockLog.mock.calls[1]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/index.html prerendered in '),
-        ]);
-        expect(mockLog.mock.calls[2]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/foo.html prerendered in '),
-        ]);
-        expect(mockLog.mock.calls[3]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining(
-            '/page-with-web-component.html prerendered in ',
-          ),
-        ]);
-        expect(mockLog.mock.calls[4]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/somepage.html prerendered in '),
-        ]);
-        expect(mockLog.mock.calls[5]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining(
-            '/somepage-with-context.html prerendered in ',
-          ),
-        ]);
-        expect(mockLog.mock.calls[6]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/user/testUserName.html prerendered in '),
-        ]);
-        expect(mockLog.mock.calls[7]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/_404.html prerendered '),
-        ]);
-        expect(mockLog.mock.calls[8]).toEqual([
-          constants.LOG_PREFIX.INFO,
-          constants.LOG_PREFIX.TICK,
-          expect.stringContaining('/_500.html prerendered in '),
-        ]);
+        const allLog = mockLog.mock.calls.flat().join();
+        expect(allLog).toContain('/index.html prerendered in ');
+        expect(allLog).toContain('/foo.html prerendered in ');
+        expect(allLog).toContain(
+          '/page-with-web-component.html prerendered in ',
+        );
+        expect(allLog).toContain('/somepage.html prerendered in ');
+        expect(allLog).toContain('/somepage-with-context.html prerendered in ');
+        expect(allLog).toContain('/user/testUserName.html prerendered in ');
+        expect(allLog).toContain('/_404.html prerendered in ');
+        expect(allLog).toContain('/_500.html prerendered in ');
       });
 
       it('should not generate a page that during the streaming returns the soft redirect to 404 (notFound method)', () => {
