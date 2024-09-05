@@ -156,6 +156,7 @@ export default function serverComponentPlugin(
         key,
         value,
         usedWebComponents,
+        path,
       );
     }
 
@@ -464,6 +465,7 @@ export default function serverComponentPlugin(
       key,
       value,
       usedWebComponents,
+      path,
     );
   }
 
