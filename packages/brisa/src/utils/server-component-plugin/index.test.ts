@@ -2010,12 +2010,13 @@ describe('utils', () => {
       expect(normalizeHTML(out.code)).toBe(
         normalizeHTML(
           `
-        import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+        import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/__fixtures__/lib/foo';
 
 				export default function App() {
 					return __prerender__macro({
-						componentPath: __resolveImportSync("@/__fixtures__/lib/foo"),
+						componentPath: "@/__fixtures__/lib/foo",
+            dir: "${serverComponentPath}",
 						componentModuleName: "default",
 						componentProps: {foo: "bar"}
 					});
@@ -2044,13 +2045,14 @@ describe('utils', () => {
           `
         import {SSRWebComponent as _Brisa_SSRWebComponent} from 'brisa/server';
         import _Brisa_WC1 from '${webComponentPath}';
-        import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+        import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 
         export default function App() {
           return __prerender__macro({
-            componentPath: __resolveImportSync("brisa/server"),
+            componentPath: "brisa/server",
+            dir: "${serverComponentPath}",
             componentModuleName: "SSRWebComponent",
-            componentProps: {Component: __resolveImportSync('${webComponentPath}'),selector: "web-component",foo: "bar"}
+            componentProps: {Component: '${webComponentPath}',selector: "web-component",foo: "bar"}
           });
         }` + workaroundText,
         ),

@@ -19,6 +19,7 @@ export default function getPrerenderUtil() {
     key: string,
     value: any,
     webComponents?: Map<string, string>,
+    dir?: string,
   ) {
     if (value?.type === 'ImportDeclaration') {
       for (const specifier of value.specifiers) {
@@ -92,17 +93,23 @@ export default function getPrerenderUtil() {
                 name: 'componentPath',
               },
               value: {
-                type: 'CallExpression',
-                callee: {
-                  type: 'Identifier',
-                  name: '__resolveImportSync',
-                },
-                arguments: [
-                  {
-                    type: 'Literal',
-                    value: componentPath,
-                  },
-                ],
+                type: 'Literal',
+                value: componentPath,
+              },
+              kind: 'init',
+              computed: false,
+              method: false,
+              shorthand: false,
+            },
+            {
+              type: 'Property',
+              key: {
+                type: 'Identifier',
+                name: 'dir',
+              },
+              value: {
+                type: 'Literal',
+                value: dir,
               },
               kind: 'init',
               computed: false,
@@ -167,17 +174,6 @@ export default function getPrerenderUtil() {
             local: {
               type: 'Identifier',
               name: '__prerender__macro',
-            },
-          },
-          {
-            type: 'ImportSpecifier',
-            imported: {
-              type: 'Identifier',
-              name: '__resolveImportSync',
-            },
-            local: {
-              type: 'Identifier',
-              name: '__resolveImportSync',
             },
           },
         ],
@@ -260,20 +256,11 @@ function processPrerenderProperties(
     if (isSSRWebComponent && prop?.key?.name === 'Component') {
       const component = imports.get(prop.value.name);
       if (component) {
-        prop.value = {
-          type: 'CallExpression',
-          callee: {
-            type: 'Identifier',
-            name: '__resolveImportSync',
-          },
-          arguments: [
-            {
-              type: 'Literal',
-              value: component.componentPath,
-            },
-          ],
-        };
-        properties.push(prop);
+        (prop.value = {
+          type: 'Literal',
+          value: component.componentPath,
+        }),
+          properties.push(prop);
         continue;
       }
     }

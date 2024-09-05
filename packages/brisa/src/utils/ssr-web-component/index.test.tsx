@@ -859,9 +859,9 @@ describe('utils', () => {
       )) as any;
 
       expect(output.type).toBe(selector);
-      expect(output.props.children[0].props.children[0].props.children).toBe(
-        'Hello World',
-      );
+      expect(
+        output.props.children[0].props.children[0].props.children[0].type,
+      ).toBe('native-some-example');
     });
   });
 });

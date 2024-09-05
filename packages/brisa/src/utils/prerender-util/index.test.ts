@@ -54,12 +54,13 @@ describe('utils', () => {
 				}
 			`;
       const expectedCode = normalizeHTML(`
-				import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+				import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/foo';
 
 				export default function App() {
 					return __prerender__macro({
-						componentPath: __resolveImportSync("@/foo"),
+						componentPath: "@/foo",
+						dir: "./foo",
 						componentModuleName: "default",
 						componentProps: {foo: "bar"}
 					});
@@ -83,12 +84,13 @@ describe('utils', () => {
 				}
 			`;
       const expectedCode = toExpected(`
-				import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+				import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/foo';
 
 				export default function App() {
 					return jsxDEV(Fragment, {children: __prerender__macro({
-							componentPath: __resolveImportSync("@/foo"),
+							componentPath: "@/foo",
+							dir: "./foo",
 							componentModuleName: "default",
 							componentProps: {foo: "bar"}
 						})}, undefined, false, undefined, this
@@ -111,12 +113,13 @@ describe('utils', () => {
 			}
 		`;
       const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			import {Foo} from '@/foo';
 
 			export default function App() {
 				return __prerender__macro({
-					componentPath: __resolveImportSync("@/foo"),
+					componentPath: "@/foo",
+					dir: "./foo",
 					componentModuleName: "Foo",
 					componentProps: {foo: "bar"}
 				});
@@ -139,12 +142,13 @@ describe('utils', () => {
 		}
 	`;
     const expectedCode = toExpected(`
-		import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+		import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 		import {Foo as Foo2} from '@/foo';
 
 		export default function App() {
 			return __prerender__macro({
-				componentPath: __resolveImportSync("@/foo"),
+				componentPath: "@/foo",
+				dir: "./foo",
 				componentModuleName: "Foo",
 				componentProps: {foo: "bar"}
 			});
@@ -166,12 +170,13 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const {Foo} = require('@/foo');
 
 			export default function App() {
 				return __prerender__macro({
-						componentPath: __resolveImportSync("@/foo"),
+						componentPath: "@/foo",
+						dir: "./foo",
 						componentModuleName: "Foo",
 						componentProps: {foo: "bar"}
 				});
@@ -193,12 +198,13 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const {Foo: Foo2} = require('@/foo');
 
 			export default function App() {
 				return __prerender__macro({
-					componentPath: __resolveImportSync("@/foo"),
+					componentPath: "@/foo",
+					dir: "./foo",
 					componentModuleName: "Foo",
 					componentProps: {foo: "bar"}
 				});
@@ -220,12 +226,13 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const Foo = require('@/foo').Foo;
 
 			export default function App() {
 				return __prerender__macro({
-						componentPath: __resolveImportSync("@/foo"),
+						componentPath: "@/foo",
+						dir: "./foo",
 						componentModuleName: "Foo",
 						componentProps: {foo: "bar"}
 				});
@@ -249,12 +256,13 @@ describe('utils', () => {
 			}
 		`;
     const expectedCode = toExpected(`
-			import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const Foo = require('@/foo').default;
 
 			export default function App() {
 				return jsxDEV("div", {children: __prerender__macro({
-							componentPath: __resolveImportSync("@/foo"),
+							componentPath: "@/foo",
+							dir: "./foo",
 							componentModuleName: "default",
 							componentProps: {foo: "bar"}
 					})}, undefined, false, undefined, this
@@ -279,14 +287,15 @@ describe('utils', () => {
 		}
 	`;
     const expectedCode = toExpected(`
-		import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+		import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 		import Foo from '@/foo';
 
 		export default function App() {
 			return jsxDEV("div", {children: __prerender__macro({
-					componentPath: __resolveImportSync("brisa/server"),
+					componentPath: "brisa/server",
+					dir: "./foo",
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: __resolveImportSync('@/foo'),selector: "web-component",foo: "bar"}
+					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}
@@ -307,13 +316,14 @@ describe('utils', () => {
 		}
 	`;
     const expectedCode = toExpected(`
-		import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
+		import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 
 		export default function App() {
 			return jsxDEV("div", {children: __prerender__macro({
-					componentPath: __resolveImportSync("brisa/server"),
+					componentPath: "brisa/server",
+					dir: "./foo",
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: __resolveImportSync('@/foo'),selector: "web-component",foo: "bar"}
+					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}
@@ -331,7 +341,7 @@ function getOutput(code: string, webComponents?: Map<string, string>) {
   const p = getPrerenderUtil();
   const newAst = JSON.parse(
     JSON.stringify(ast, (k, v) =>
-      p.step1_modifyJSXToPrerenderComponents(k, v, webComponents),
+      p.step1_modifyJSXToPrerenderComponents(k, v, webComponents, './foo'),
     ),
   );
 

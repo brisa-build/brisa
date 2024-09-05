@@ -5,10 +5,10 @@ import { logBuildError } from '../log/log-build';
 import getImportableFilepath from '../get-importable-filepath';
 
 const SERVER_OUTPUTS = new Set(['bun', 'node']);
-const BRISA_ROOT_DIR = path.join(import.meta.dirname, '..', '..');
 const NO_SERVER_EXPORTS = new Set([
   './client',
   './client-simplified',
+  './macros',
   './test',
   './cli.js',
 ]);
