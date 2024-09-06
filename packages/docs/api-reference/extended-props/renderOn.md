@@ -8,6 +8,10 @@ Useful for prerendering components in build time. You can mix static and dynamic
 
 To make this possible, optimizations are made in build-time and the [Bun Macros](https://bun.sh/docs/bundler/macros) are used connected to our internal rendering to make it easier for you to do it.
 
+> [!WARNING]
+>
+> You have to take into account that it will improve the time to render the page in runtime, but at the same time it will worsen the build time.
+
 ## Reference
 
 ### `renderOn={'build' | 'runtime'}`
