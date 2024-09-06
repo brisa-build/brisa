@@ -43,7 +43,7 @@ export default async function resolveAction({
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Navigate': formatRedirects(error.message, req),
+        'X-Navigate': formatNavigateDestination(error.message, req),
         'X-Mode': getNavigateMode(error),
       },
     });
@@ -161,7 +161,10 @@ function extractComponentId(dependencies: Dependencies, actionId: string) {
   return null;
 }
 
-function formatRedirects(message: string, req: RequestContext): string {
+function formatNavigateDestination(
+  message: string,
+  req: RequestContext,
+): string {
   // Handle i18n (localization) redirection if needed
   req.finalURL = new URL(message, req.finalURL).toString();
   const { response } = handleI18n(req);
