@@ -24,7 +24,8 @@ describe('utils', () => {
 			`);
 
       const output = getOutput(code);
-      expect(output).toEqual(expectedCode);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeFalse();
     });
 
     it('should only remove the attribute if there is renderOn="runtime"', () => {
@@ -43,7 +44,8 @@ describe('utils', () => {
 				}`);
 
       const output = getOutput(code);
-      expect(output).toEqual(expectedCode);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeFalse();
     });
     it('should transform the ast to apply the prerender macro', () => {
       const code = `
@@ -68,7 +70,8 @@ describe('utils', () => {
 			`);
 
       const output = getOutput(code);
-      expect(output).toEqual(expectedCode);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
     });
 
     it('should transform inside a fragment', () => {
@@ -99,7 +102,8 @@ describe('utils', () => {
 			`);
 
       const output = getOutput(code);
-      expect(output).toEqual(expectedCode);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
     });
 
     it('should transform a named export component', () => {
@@ -127,12 +131,12 @@ describe('utils', () => {
 		`);
 
       const output = getOutput(code);
-      expect(output).toEqual(expectedCode);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
     });
-  });
 
-  it('should transform a named export component with rename', () => {
-    const code = `
+    it('should transform a named export component with rename', () => {
+      const code = `
 		import {Foo as Foo2} from '@/foo';
 
 		export default function App() {
@@ -141,7 +145,7 @@ describe('utils', () => {
 			);
 		}
 	`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 		import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 		import {Foo as Foo2} from '@/foo';
 
@@ -155,12 +159,13 @@ describe('utils', () => {
 		}
 	`);
 
-    const output = getOutput(code);
-    expect(output).toEqual(expectedCode);
-  });
+      const output = getOutput(code);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
 
-  it('should transform a named import with "require" component', () => {
-    const code = `
+    it('should transform a named import with "require" component', () => {
+      const code = `
 			const {Foo} = require('@/foo');
 
 			export default function App() {
@@ -169,7 +174,7 @@ describe('utils', () => {
 				);
 			}
 		`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const {Foo} = require('@/foo');
 
@@ -183,12 +188,13 @@ describe('utils', () => {
 			}
 		`);
 
-    const output = getOutput(code);
-    expect(output).toEqual(expectedCode);
-  });
+      const output = getOutput(code);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
 
-  it('should transform a named import with "require" component and renamed', () => {
-    const code = `
+    it('should transform a named import with "require" component and renamed', () => {
+      const code = `
 			const {Foo: Foo2} = require('@/foo');
 
 			export default function App() {
@@ -197,7 +203,7 @@ describe('utils', () => {
 				);
 			}
 		`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const {Foo: Foo2} = require('@/foo');
 
@@ -211,12 +217,13 @@ describe('utils', () => {
 			}
 		`);
 
-    const output = getOutput(code);
-    expect(output).toEqual(expectedCode);
-  });
+      const output = getOutput(code);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
 
-  it('should transform a named import with "require" component without destructuring', () => {
-    const code = `
+    it('should transform a named import with "require" component without destructuring', () => {
+      const code = `
 			const Foo = require('@/foo').Foo;
 
 			export default function App() {
@@ -225,7 +232,7 @@ describe('utils', () => {
 				);
 			}
 		`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const Foo = require('@/foo').Foo;
 
@@ -239,12 +246,13 @@ describe('utils', () => {
 			}
 		`);
 
-    const output = getOutput(code);
-    expect(output).toEqual(expectedCode);
-  });
+      const output = getOutput(code);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
 
-  it('should transform a default import with "require" component', () => {
-    const code = `
+    it('should transform a default import with "require" component', () => {
+      const code = `
 			const Foo = require('@/foo').default;
 
 			export default function App() {
@@ -255,7 +263,7 @@ describe('utils', () => {
 				);
 			}
 		`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 			import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 			const Foo = require('@/foo').default;
 
@@ -270,12 +278,13 @@ describe('utils', () => {
 			}
 		`);
 
-    const output = getOutput(code);
-    expect(output).toEqual(expectedCode);
-  });
+      const output = getOutput(code);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
 
-  it('should detect _Brisa_SSRWebComponent and add the componentPath correctly without having an import', () => {
-    const code = `
+    it('should detect _Brisa_SSRWebComponent and add the componentPath correctly without having an import', () => {
+      const code = `
 		import Foo from '@/foo';
 
 		export default function App() {
@@ -286,7 +295,7 @@ describe('utils', () => {
 			);
 		}
 	`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 		import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 		import Foo from '@/foo';
 
@@ -301,12 +310,13 @@ describe('utils', () => {
 		}
 	`);
 
-    const output = getOutput(code);
-    expect(output).toEqual(expectedCode);
-  });
+      const output = getOutput(code);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
 
-  it('should detect _Brisa_SSRWebComponent and add the componentPath correctly without having any import', () => {
-    const code = `
+    it('should detect _Brisa_SSRWebComponent and add the componentPath correctly without having any import', () => {
+      const code = `
 		export default function App() {
 			return (
 				<div>
@@ -315,7 +325,7 @@ describe('utils', () => {
 			);
 		}
 	`;
-    const expectedCode = toExpected(`
+      const expectedCode = toExpected(`
 		import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 
 		export default function App() {
@@ -329,10 +339,12 @@ describe('utils', () => {
 		}
 	`);
 
-    const webComponents = new Map<string, string>([['@/foo', 'Foo']]);
+      const webComponents = new Map<string, string>([['@/foo', 'Foo']]);
 
-    const output = getOutput(code, webComponents);
-    expect(output).toEqual(expectedCode);
+      const output = getOutput(code, webComponents);
+      expect(output.code).toEqual(expectedCode);
+      expect(output.prerendered).toBeTrue();
+    });
   });
 });
 
@@ -347,7 +359,10 @@ function getOutput(code: string, webComponents?: Map<string, string>) {
 
   p.step2_addPrerenderImport(newAst);
 
-  return normalizeHTML(generateCodeFromAST(newAst));
+  return {
+    code: normalizeHTML(generateCodeFromAST(newAst)),
+    prerendered: p.usePrerender,
+  };
 }
 
 function toExpected(code: string) {
