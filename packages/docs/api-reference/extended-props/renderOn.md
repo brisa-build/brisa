@@ -31,6 +31,10 @@ Or in a Web Component:
 return <web-component renderOn="build" />;
 ```
 
+> [!CAUTION]
+>
+> Only the initial HTML of the web component can be prerendered, once it is hydrated it will be rendered again from the client.
+
 > [!IMPORTANT]
 >
 > The rest of the properties that are passed to it must be serializable and static, as they are executed at build time. Otherwise, it will throw an error.
@@ -45,5 +49,4 @@ return <web-component renderOn="build" />;
 | Component         | Support |
 | ----------------- | ------- |
 | Server Component  | ✅      |
-| Web Component     | ✅      |
 | SSR Web Component | ✅      |
