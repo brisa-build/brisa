@@ -19,11 +19,16 @@ async function prerender({
   componentModuleName = 'default',
   componentProps = {},
 }: PrerenderParams) {
-  const componentRelative = componentPath.replace(SRC_DIR, '');
+  const relativeDir = dir?.replace(SRC_DIR, '') || '';
+  let componentRelative = componentPath.replace(SRC_DIR, '');
 
   // SSR of Web Components
   if (typeof componentProps.Component === 'string' && componentProps.selector) {
     componentProps.Component = resolveImportSync(componentProps.Component, dir);
+    componentRelative = (componentProps.Component as string).replace(
+      SRC_DIR,
+      '',
+    );
   }
 
   try {
@@ -31,7 +36,10 @@ async function prerender({
       componentModuleName
     ];
     const start = Date.now();
-    console.log(LOG_PREFIX.WAIT, ` - prerendering ${componentRelative}...`);
+    console.log(
+      LOG_PREFIX.WAIT,
+      ` - prerendering ${componentRelative} on ${relativeDir}...`,
+    );
     const html = await renderToString(<Component {...componentProps} />);
     const ms = Date.now() - start;
     console.log(
@@ -43,7 +51,7 @@ async function prerender({
   } catch (e) {
     console.log(
       LOG_PREFIX.ERROR,
-      `Failed to prerender ${componentRelative}: ${boldLog(String(e))}`,
+      `Failed to prerender ${componentRelative} on ${relativeDir}: ${boldLog(String(e))}`,
     );
   }
 }
