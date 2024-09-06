@@ -21,7 +21,7 @@ The `renderOn` attribute is present on the `<Component>` element to specify the 
 There are two possible values:
 
 - `build`: The component will be prerendered in build time.
-- `runtime`: The component will be rendered in runtime. I
+- `runtime`: The component will be rendered in runtime. _(default)_
 
 By default, the value is `runtime`.
 
