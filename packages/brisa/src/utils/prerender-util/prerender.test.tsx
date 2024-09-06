@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, spyOn } from 'bun:test';
 import path from 'node:path';
 import { __prerender__macro } from './prerender';
 
 const COMPONENTS = path.join(
-  import.meta.dir,
+  import.meta.dirname,
   '..',
   '..',
   '__fixtures__',
@@ -30,7 +30,8 @@ describe('utils/prerender-util/prerender', () => {
 
   it('should prerender a Web Component', async () => {
     const comp = await __prerender__macro({
-      componentPath: path.join(
+      componentPath: 'brisa/server',
+      brisaServerPath: path.join(
         import.meta.dirname,
         '..',
         '..',
@@ -45,6 +46,7 @@ describe('utils/prerender-util/prerender', () => {
         name: 'Bar',
       },
     });
+
     expect(comp?.props.html).toBe(
       '<web-component name="Bar"><template shadowrootmode="open"><div>Hello Bar</div></template></web-component>',
     );

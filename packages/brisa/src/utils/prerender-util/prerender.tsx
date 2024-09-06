@@ -1,5 +1,6 @@
 import dangerHTML from '../danger-html';
 import { boldLog } from '../log/log-color';
+import path from 'node:path';
 import renderToString from '../render-to-string';
 import constants from '@/constants';
 import resolveImportSync from '../resolve-import-sync';
@@ -11,6 +12,7 @@ type PrerenderParams = {
   componentModuleName?: string;
   dir?: string;
   componentProps?: Record<string, unknown>;
+  brisaServerPath?: string;
 };
 
 async function prerender({
@@ -18,13 +20,22 @@ async function prerender({
   dir,
   componentModuleName = 'default',
   componentProps = {},
+  brisaServerPath = path.join(import.meta.dirname, '..', 'server'),
 }: PrerenderParams) {
+  const isWebComponent =
+    componentPath === 'brisa/server' &&
+    typeof componentProps.Component === 'string' &&
+    componentProps.selector;
   const relativeDir = dir?.replace(SRC_DIR, '') || '';
   let componentRelative = componentPath.replace(SRC_DIR, '');
 
   // SSR of Web Components
-  if (typeof componentProps.Component === 'string' && componentProps.selector) {
-    componentProps.Component = resolveImportSync(componentProps.Component, dir);
+  if (isWebComponent) {
+    componentPath = brisaServerPath;
+    componentProps.Component = resolveImportSync(
+      componentProps.Component as string,
+      dir,
+    );
     componentRelative = (componentProps.Component as string).replace(
       SRC_DIR,
       '',
