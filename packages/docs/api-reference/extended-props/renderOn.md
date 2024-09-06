@@ -6,6 +6,8 @@ description: Use the `renderOn` attribute to prerender components in build time.
 
 Useful for prerendering components in build time. You can mix static and dynamic content in the same page thanks of this partial prerendering attribute.
 
+To make this possible, optimizations are made in build-time and the [Bun Macros](https://bun.sh/docs/bundler/macros) are used connected to our internal rendering to make it easier for you to do it.
+
 ## Reference
 
 ### `renderOn={'build' | 'runtime'}`
@@ -21,11 +23,31 @@ By default, the value is `runtime`.
 
 Example:
 
+Imagine we have this component that makes an external request for static resources:
+
+**src/components/some-component.tsx**:
+
 ```tsx
-return <Component renderOn="build" />;
+export default async function SomeComponent() {
+   const res = await fetch(/* some external service */);
+
+   return <div>Result: {await res.json()}</div>
+}
 ```
 
-Or in a Web Component:
+Then it is consumed from some page or another component with the `renderOn` prop as `build`:
+
+```tsx
+return <SomeComponent renderOn="build" />;
+```
+
+Then, it will be automatically transformed at build-time to a `return` similar to this:
+
+```tsx
+return dangerHTML('<div>Result: foo</div>')
+```
+
+You can also use it in Web Components, for example:
 
 ```tsx
 return <web-component renderOn="build" />;
