@@ -15,7 +15,7 @@ const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 let mockLog: ReturnType<typeof spyOn>;
 
-const getReq = (url = 'http://localhost') =>
+const getReq = (url = 'http://localhost', ...params) =>
   extendRequestContext({
     originalRequest: new Request(url, {
       headers: {
@@ -23,6 +23,7 @@ const getReq = (url = 'http://localhost') =>
       },
     }),
     store: undefined,
+    ...params,
   });
 
 describe('utils', () => {
@@ -66,6 +67,10 @@ describe('utils', () => {
     });
 
     it('should redirect to an specific url with reactivity mode', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: undefined,
+      };
       const navigationTrowable = new Error('/some-url');
       navigationTrowable.name = 'navigate:reactivity';
 
@@ -82,6 +87,10 @@ describe('utils', () => {
     });
 
     it('should redirect to an specific url with transition mode', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: undefined,
+      };
       const navigationTrowable = new Error('/some-url');
       navigationTrowable.name = 'navigate:transition';
 
@@ -98,6 +107,10 @@ describe('utils', () => {
     });
 
     it('should redirect to an specific url with native mode', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        I18N_CONFIG: undefined,
+      };
       const navigationTrowable = new Error('/some-url');
       navigationTrowable.name = 'navigate:native';
 
@@ -492,6 +505,85 @@ describe('utils', () => {
       expect(await response.text()).toBe(
         `<div data-action data-actions="[['onClick', 'a1_3', 'test-cid']]" data-action-onclick="a1_1">Test</div>`,
       );
+    });
+
+    it('should navigate with the i18n locale', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        PAGES_DIR,
+        BUILD_DIR,
+        SRC_DIR: BUILD_DIR,
+        ASSETS_DIR,
+        LOCALES_SET: new Set(['en', 'es']),
+        I18N_CONFIG: {
+          locales: ['ru', 'es'],
+          defaultLocale: 'ru',
+        },
+      };
+      const error = new Error('/some-url');
+      error.name = 'navigate:reactivity';
+
+      const req = getReq();
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: 'a1_1',
+        component: () => <div />,
+      });
+
+      expect(response.headers.get('X-Navigate')).toBe('/ru/some-url');
+      expect(response.headers.get('X-Mode')).toBe('reactivity');
+    });
+
+    it('should navigate with trailing slash', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          trailingSlash: true,
+        },
+        I18N_CONFIG: undefined,
+      };
+
+      const error = new Error('/some-url');
+      const req = getReq();
+
+      error.name = 'navigate:reactivity';
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: 'a1_1',
+        component: () => <div />,
+      });
+
+      expect(response.headers.get('X-Navigate')).toBe('/some-url/');
+    });
+
+    it('should navigate with i18n and trailing slash', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        CONFIG: {
+          trailingSlash: true,
+        },
+        I18N_CONFIG: {
+          locales: ['ru', 'es'],
+          defaultLocale: 'ru',
+        },
+      };
+
+      const error = new Error('/some-url');
+      const req = getReq();
+
+      error.name = 'navigate:reactivity';
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: 'a1_1',
+        component: () => <div />,
+      });
+
+      expect(response.headers.get('X-Navigate')).toBe('/ru/some-url/');
     });
   });
 });

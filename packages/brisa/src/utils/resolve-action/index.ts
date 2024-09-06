@@ -10,6 +10,8 @@ import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers
 import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
 import { isNotFoundError } from '@/utils/not-found';
 import { isRerenderThrowable } from '@/utils/rerender-in-action/is-rerender-throwable';
+import handleI18n from '../handle-i18n';
+import redirectTrailingSlash from '../redirect-trailing-slash';
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -41,7 +43,7 @@ export default async function resolveAction({
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'X-Navigate': error.message,
+        'X-Navigate': formatRedirects(error.message, req),
         'X-Mode': getNavigateMode(error),
       },
     });
@@ -157,4 +159,19 @@ function extractComponentId(dependencies: Dependencies, actionId: string) {
     }
   }
   return null;
+}
+
+function formatRedirects(message: string, req: RequestContext): string {
+  // Handle i18n (localization) redirection if needed
+  req.finalURL = new URL(message, req.finalURL).toString();
+  const { response } = handleI18n(req);
+  let url = response?.headers.get('Location') ?? message;
+
+  // Handle trailing slash redirection if needed
+  const urlObj = new URL(url, req.finalURL);
+  req.finalURL = urlObj.toString();
+  const trailingSlashResponse = redirectTrailingSlash(req);
+  url = trailingSlashResponse?.headers.get('Location') ?? url;
+
+  return url.replace(urlObj.origin, '');
 }
