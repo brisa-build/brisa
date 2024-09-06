@@ -1993,7 +1993,7 @@ describe('utils', () => {
       );
     });
 
-    it('should modify the JSX to prerender when renderOn="build"', () => {
+    it('should prerender when renderOn="build"', () => {
       const code = `
         import Foo from '@/__fixtures__/lib/foo';
 
@@ -2010,23 +2010,17 @@ describe('utils', () => {
       expect(normalizeHTML(out.code)).toBe(
         normalizeHTML(
           `
-        import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
 				import Foo from '@/__fixtures__/lib/foo';
 
 				export default function App() {
-					return __prerender__macro({
-						componentPath: "@/__fixtures__/lib/foo",
-            dir: "${serverComponentPath}",
-						componentModuleName: "default",
-						componentProps: {foo: "bar"}
-					});
+					return {type: "HTML",props: {html: "<div>Foo </div>"}};
 				}
       ` + workaroundText,
         ),
       );
     });
 
-    it('should modify the JSX to prerender a web component when renderOn="buiild"', () => {
+    it('should prerender the web component when renderOn="buiild"', () => {
       const code = `
         export default function App() {
           return <web-component renderOn="build" foo="bar" />;
@@ -2043,18 +2037,17 @@ describe('utils', () => {
       expect(normalizeHTML(out.code)).toBe(
         normalizeHTML(
           `
-        import {SSRWebComponent as _Brisa_SSRWebComponent} from 'brisa/server';
-        import _Brisa_WC1 from '${webComponentPath}';
-        import {__prerender__macro} from 'brisa/macros' with { type: "macro" };
+          import {SSRWebComponent as _Brisa_SSRWebComponent} from 'brisa/server';
+          import _Brisa_WC1 from '${webComponentPath}';
 
-        export default function App() {
-          return __prerender__macro({
-            componentPath: "brisa/server",
-            dir: "${serverComponentPath}",
-            componentModuleName: "SSRWebComponent",
-            componentProps: {Component: '${webComponentPath}',selector: "web-component",foo: "bar"}
-          });
-        }` + workaroundText,
+          export default function App() {
+            return {
+              type: "HTML",
+              props: {
+                html: "<web-component foo="bar"><template shadowrootmode="open"><native-some-example></native-some-example></template></web-component>"
+              }
+            };
+          }` + workaroundText,
         ),
       );
     });

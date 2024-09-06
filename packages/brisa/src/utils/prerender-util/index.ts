@@ -204,6 +204,9 @@ export default function getPrerenderUtil() {
   return {
     step1_modifyJSXToPrerenderComponents,
     step2_addPrerenderImport,
+    get usePrerender() {
+      return needsPrerenderImport;
+    },
   };
 }
 

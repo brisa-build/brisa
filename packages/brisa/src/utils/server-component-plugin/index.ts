@@ -29,11 +29,11 @@ const FN_DECLARATIONS = new Set([
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
 export const workaroundText = `
-const Fragment = props => props.children;
+const Fragment = (props) => props.children;
 
 function jsx(type, props, key) {
   Object.assign(props, { key });
-  return { type, props }
+  return { type, props };
 }
 const jsxDEV = jsx;
 const jsxs = jsx;
@@ -534,7 +534,10 @@ export default function serverComponentPlugin(
   }
 
   return {
-    code: generateCodeFromAST(modifiedAst) + workaroundText,
+    code: execMacros(
+      generateCodeFromAST(modifiedAst) + workaroundText,
+      prerenderUtil,
+    ),
     detectedWebComponents,
     hasActions,
     dependencies: getDependenciesList(
@@ -692,4 +695,13 @@ export function getWCReference(rawPath: string) {
     /* ignore */
   }
   return { client: rawPath };
+}
+
+function execMacros(
+  code: string,
+  prerenderUtil: ReturnType<typeof getPrerenderUtil>,
+) {
+  if (!prerenderUtil.usePrerender) return code;
+  const transpiler = new Bun.Transpiler({ loader: 'js' });
+  return transpiler.transformSync(code);
 }
