@@ -53,6 +53,12 @@ You can also use it in Web Components, for example:
 return <web-component renderOn="build" />;
 ```
 
+And it will be transformed to:
+
+```tsx
+return dangerHTML('<web-component><template shadowroot="open">Result: foo</template></web-component>')
+```
+
 > [!CAUTION]
 >
 > Only the initial HTML of the web component can be prerendered, once it is hydrated it will be rendered again from the client.
