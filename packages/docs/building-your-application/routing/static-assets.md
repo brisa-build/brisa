@@ -4,9 +4,9 @@ description: Create your first page and shared layout with the Pages Router.
 
 # Static Assets in `public`
 
-Brisa can serve static files, like images, under a folder called `public` in the root directory. Files inside `public` can then be referenced by your code starting from the base URL (`/`).
+Brisa can serve static files, like images, under a folder called `public` in the `src` directory. Files inside `src/public` can then be referenced by your code starting from the base URL (`/`).
 
-For example, the file `public/images/cat.png` can be viewed by visiting the `/images/cat.png` path. The code to display that image might look like:
+For example, the file `src/public/images/cat.png` can be viewed by visiting the `/images/cat.png` path. The code to display that image might look like:
 
 ```tsx 4
 export function Cat({ id, alt }) {
@@ -27,7 +27,7 @@ The folder is also useful for `robots.txt`, `favicon.ico`, Google Site Verificat
 
 > [!TIP]
 >
-> We recommend to create subfolders to avoid conflicts with page names: `/public/assets` or `/public/images`, `/public/fonts`, etc.
+> We recommend to create subfolders to avoid conflicts with page names: `src/public/assets` or `/src/public/images`, `src/public/fonts`, etc.
 
 ## Compression applied to static assets
 

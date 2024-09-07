@@ -6,7 +6,7 @@ description: inject HTML string into the DOM
 
 ## Reference
 
-### `navigate(route: string): Never`
+### `navigate(route: string, options?: { renderMode?: 'transition' | 'reactivity' | 'native' }): never`
 
 The `navigate` function is used for imperative navigation.
 
