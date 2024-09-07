@@ -2,10 +2,8 @@ import dangerHTML from '../danger-html';
 import { boldLog } from '../log/log-color';
 import path from 'node:path';
 import renderToString from '../render-to-string';
-import constants from '@/constants';
+import { getConstants } from '@/constants';
 import resolveImportSync from '../resolve-import-sync';
-
-const { LOG_PREFIX, SRC_DIR } = constants;
 
 type PrerenderParams = {
   componentPath: string;
@@ -22,6 +20,7 @@ async function prerender({
   componentProps = {},
   brisaServerPath = path.join(import.meta.dirname, '..', 'server'),
 }: PrerenderParams) {
+  const { LOG_PREFIX, SRC_DIR } = getConstants();
   const isWebComponent =
     componentPath === 'brisa/server' &&
     typeof componentProps.Component === 'string' &&

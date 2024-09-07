@@ -1,6 +1,7 @@
-import { describe, it, expect, spyOn } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 import { __prerender__macro } from './prerender';
+import { getConstants } from '@/constants';
 
 const COMPONENTS = path.join(
   import.meta.dirname,

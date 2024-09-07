@@ -10,8 +10,21 @@ const MULTI_SLASH_REGEX = /(?<!:)\/{2,}/g;
 const TRAILING_SLASH_REGEX = /\/$/;
 const EXTRACT_PARAM_KEY_REGEX = /\[|\]|\./g;
 const WINDOWS_PATH_REGEX = /\\/g;
-const REGEX_SYMBOLS = /[^a-zA-Z0-9]/g;
 const DIGIT_REGEX = /\d+/;
+const SYMBOLS = new Set([
+  '[',
+  '_',
+  '@',
+  '$',
+  '~',
+  '%',
+  '^',
+  '&',
+  '*',
+  '(',
+  '+',
+  '=',
+]);
 
 // Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
@@ -150,14 +163,13 @@ function resolveRoutes({
 function sortPathsBySegments([a]: [string, string], [b]: [string, string]) {
   const partsA = a.split('/');
   const partsB = b.split('/');
-
   const len = Math.min(partsA.length, partsB.length);
 
   for (let i = 0; i < len; i++) {
     const partA = partsA[i];
     const partB = partsB[i];
-    const isPartASymbol = REGEX_SYMBOLS.test(partA[0]);
-    const isPartBSymbol = REGEX_SYMBOLS.test(partB[0]);
+    const isPartASymbol = SYMBOLS.has(partA[0]);
+    const isPartBSymbol = SYMBOLS.has(partB[0]);
     const numA = parseInt('' + partA.match(DIGIT_REGEX), 10);
     const numB = parseInt('' + partB.match(DIGIT_REGEX), 10);
 
