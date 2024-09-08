@@ -20,6 +20,10 @@ export default function About() {
 
 See the difference between Brisa Components and React Components [here](/building-your-application/components-details/server-components).
 
+> [!NOTE]
+>
+> Once you have defined the layout, you don't have to import it into your pages, it will automatically be applied to all pages. To apply different layouts to different pages, take a look at [multi-layouts](#example-of-multi-layouts).
+
 ## Index routes
 
 The router will automatically route files named `index` to the root of the directory.
