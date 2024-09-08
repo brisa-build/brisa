@@ -20,10 +20,6 @@ export default function About() {
 
 See the difference between Brisa Components and React Components [here](/building-your-application/components-details/server-components).
 
-> [!NOTE]
->
-> Once you have defined the layout, you don't have to import it into your pages, it will automatically be applied to all pages. To apply different layouts to different pages, take a look at [multi-layouts](#example-of-multi-layouts).
-
 ## Index routes
 
 The router will automatically route files named `index` to the root of the directory.
@@ -72,6 +68,11 @@ export default function Layout(
 It must have the same structure: `html`, `head` and `body`. If for example you forget to put the `head`, you may have issues and you will be alerted with an error during development.
 
 All the components of Brisa (pages and layouts included), apart from the props, receive a second argument which is the **context of the request**, apart from having access to the request, you have access to a series of extra information such as the **route** of the page. In the layouts, having access to the page route is very useful to **create different layouts**.
+
+> [!NOTE]
+>
+> Once you have defined the layout, you don't have to import it into your pages, it will automatically be applied to all pages. To apply different layouts to different pages, take a look at [multi-layouts](#example-of-multi-layouts).
+
 
 ### Example of multi-layouts
 
