@@ -92,7 +92,9 @@
     "test",
     "cli.js"
   ],
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test",
     "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
@@ -120,7 +122,7 @@
     "meriyah": "5.0.0"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "15.0.0",
+    "@happy-dom/global-registrator": "15.7.3",
     "@types/bun": "1.1.8",
     "brisa": "latest",
     "@types/mime-types": "2.1.4",
@@ -129,9 +131,9 @@
   "peerDependencies": {
     "typescript": "5.5.4"
   },
-  "packageManager": "bun@1.1.26",
+  "packageManager": "bun@1.1.27",
   "engines": {
-    "bun": ">= 1.1.26",
+    "bun": ">= 1.1.27",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
