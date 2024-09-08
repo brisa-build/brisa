@@ -45,6 +45,16 @@ const SUSPENSE_PROPS = 'l';
 const NULL = null;
 const CONTEXT = 'context';
 
+const isObject = (o: unknown) => typeof o === 'object';
+const isReactiveArray = (a: any) => a?.some?.(isObject);
+const arr = Array.from;
+const isCustomEvent = (e: unknown): e is CustomEvent =>
+  e instanceof CustomEvent;
+const isFunction = (fn: unknown) => typeof fn === 'function';
+const isAttributeAnEvent = (key: string) => key.startsWith('on');
+const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
+  parent.appendChild(child);
+
 export default function brisaElement(
   render: Render,
   observedAttributes: string[] = [],
@@ -96,16 +106,6 @@ export default function brisaElement(
       return res;
     };
   }
-
-  const isObject = (o: unknown) => typeof o === 'object';
-  const isReactiveArray = (a: any) => a?.some?.(isObject);
-  const arr = Array.from;
-  const isCustomEvent = (e: unknown): e is CustomEvent =>
-    e instanceof CustomEvent;
-  const isFunction = (fn: unknown) => typeof fn === 'function';
-  const isAttributeAnEvent = (key: string) => key.startsWith('on');
-  const appendChild = (parent: HTMLElement | DocumentFragment, child: Node) =>
-    parent.appendChild(child);
 
   const createElement = (
     tagName: string,
