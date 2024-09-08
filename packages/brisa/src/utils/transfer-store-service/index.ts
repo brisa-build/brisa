@@ -9,11 +9,12 @@ import { logError } from '@/utils/log/log-build';
 
 export default async function transferStoreService(req: RequestContext) {
   const contentType = req.headers.get('content-type');
+  const reqClone = req.clone();
   const bodyAvailable = req.method === 'POST' && !req.bodyUsed;
   const isFormData = contentType?.includes('multipart/form-data');
   const formData = isFormData && bodyAvailable ? await req.formData() : null;
   const encryptedKeys = new Set<string>();
-  const body = !isFormData && bodyAvailable ? await req.json() : null;
+  const body = !isFormData && bodyAvailable ? await reqClone.json() : null;
   const originalStoreEntries = formData
     ? JSON.parse(formData.get('x-s')?.toString() ?? '[]')
     : body?.['x-s'];

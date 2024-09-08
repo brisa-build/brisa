@@ -169,6 +169,28 @@ describe('utils', () => {
 
       expect(req.store as any).toEqual(new Map([['foo', 'FOO']]));
     });
+
+    it('should be possible to get the body of the request again after transfer', async () => {
+      const req = extendRequestContext({
+        originalRequest: new Request('http://localhost:3000', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            key: 'value',
+          }),
+        }),
+      });
+
+      const transferStore = await transferStoreService(req);
+      transferStore.transferClientStoreToServer();
+      const body = await transferStore.body;
+      const reqBody = await req.json();
+
+      expect(body).toEqual({ key: 'value' });
+      expect(reqBody).toEqual({ key: 'value' });
+    });
   });
 
   describe('getTransferedServerStoreToClient', () => {
