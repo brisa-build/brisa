@@ -50,7 +50,7 @@ async function resolveRPC(
   else if (verifyBodyContentTypeOfResponse(res, 'html')) {
     registerCurrentScripts();
 
-    const newDocument = isRerenderOfComponent
+    const docStream = isRerenderOfComponent
       ? new ReadableStream({
           async start(controller) {
             const html = document.documentElement.outerHTML;
@@ -71,7 +71,7 @@ async function resolveRPC(
         })
       : res.body;
 
-    await diff(document, newDocument!.getReader(), {
+    await diff(document, docStream!, {
       onNextNode: loadScripts,
       transition,
       shouldIgnoreNode: (node) => {

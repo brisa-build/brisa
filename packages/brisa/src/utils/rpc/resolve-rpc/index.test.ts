@@ -246,7 +246,8 @@ describe('utils', () => {
       await initBrowser();
       await resolveRPC(res, dataSet);
 
-      expect(mockDiff).toBeCalledWith(document, expect.any, {
+      expect(mockDiff).toBeCalledTimes(1);
+      expect(mockDiff.mock.calls[0][2]).toEqual({
         onNextNode: expect.any(Function),
         transition: false,
         shouldIgnoreNode: expect.any(Function),
@@ -293,7 +294,8 @@ describe('utils', () => {
 
       await resolveRPC(res, dataSet);
 
-      expect(mockDiff).toBeCalledWith(document, expect.any, {
+      expect(mockDiff).toBeCalledTimes(1);
+      expect(mockDiff.mock.calls[0][2]).toEqual({
         onNextNode: expect.any(Function),
         transition: true,
         shouldIgnoreNode: expect.any(Function),
@@ -331,7 +333,8 @@ describe('utils', () => {
       await initBrowser();
       await resolveRPC(res, dataSet, 'reactivity');
 
-      expect(mockDiff).toBeCalledWith(document, expect.any, {
+      expect(mockDiff).toBeCalledTimes(1);
+      expect(mockDiff.mock.calls[0][2]).toEqual({
         onNextNode: expect.any(Function),
         transition: false,
         shouldIgnoreNode: expect.any(Function),
@@ -368,7 +371,8 @@ describe('utils', () => {
       await initBrowser();
       await resolveRPC(res, dataSet);
 
-      expect(mockDiff).toBeCalledWith(document, expect.any, {
+      expect(mockDiff).toBeCalledTimes(1);
+      expect(mockDiff.mock.calls[0][2]).toEqual({
         onNextNode: expect.any(Function),
         transition: false,
         shouldIgnoreNode: expect.any(Function),
@@ -414,7 +418,8 @@ describe('utils', () => {
 
       await resolveRPC(res, dataSet, 'transition');
 
-      expect(mockDiff).toBeCalledWith(document, expect.any, {
+      expect(mockDiff).toBeCalledTimes(1);
+      expect(mockDiff.mock.calls[0][2]).toEqual({
         onNextNode: expect.any(Function),
         transition: true,
         shouldIgnoreNode: expect.any(Function),
@@ -456,11 +461,12 @@ describe('utils', () => {
 
       await resolveRPC(res, dataSet);
 
-      const [, bufferReader] = mockDiff.mock.calls[0];
+      const [, s] = mockDiff.mock.calls[0];
+      const reader = s.getReader();
       let text = '';
 
       while (true) {
-        const buffer = await bufferReader.read();
+        const buffer = await reader.read();
         if (buffer.done) break;
         text += decoder.decode(buffer.value);
       }
@@ -523,11 +529,12 @@ describe('utils', () => {
 
       await resolveRPC(res, dataSet);
 
-      const [, bufferReader] = mockDiff.mock.calls[0];
+      const [, s] = mockDiff.mock.calls[0];
+      const reader = s.getReader();
       let text = '';
 
       while (true) {
-        const buffer = await bufferReader.read();
+        const buffer = await reader.read();
         if (buffer.done) break;
         text += decoder.decode(buffer.value);
       }
@@ -583,11 +590,12 @@ describe('utils', () => {
 
       await resolveRPC(res, dataSet);
 
-      const [, bufferReader] = mockDiff.mock.calls[0];
+      const [, s] = mockDiff.mock.calls[0];
+      const reader = s.getReader();
       let text = '';
 
       while (true) {
-        const buffer = await bufferReader.read();
+        const buffer = await reader.read();
         if (buffer.done) break;
         text += decoder.decode(buffer.value);
       }
@@ -650,11 +658,12 @@ describe('utils', () => {
 
       await resolveRPC(res, dataSet);
 
-      const [, bufferReader] = mockDiff.mock.calls[0];
+      const [, s] = mockDiff.mock.calls[0];
+      const reader = s.getReader();
       let text = '';
 
       while (true) {
-        const buffer = await bufferReader.read();
+        const buffer = await reader.read();
         if (buffer.done) break;
         text += decoder.decode(buffer.value);
       }
