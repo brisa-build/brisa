@@ -28,22 +28,7 @@ const FN_DECLARATIONS = new Set([
 
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
-<<<<<<< HEAD
-export const workaroundText = `
-const Fragment = (props) => props.children;
-
-function jsx(type, props, key) {
-  Object.assign(props, { key });
-  return { type, props };
-}
-const jsxDEV = jsx;
-const jsxs = jsx;
-
-Fragment.__isFragment = true;
-`;
-=======
 export const workaroundText = `import {jsx,jsxs, jsxDEV, Fragment} from 'brisa/jsx-runtime';\n`;
->>>>>>> 124fb21b (feat(wip): update jsx-runtime)
 
 // TODO: We need to refactor this function, is hard to understand and mantain
 export default function serverComponentPlugin(
