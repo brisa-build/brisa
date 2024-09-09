@@ -28,6 +28,7 @@ import notFound from '@/utils/not-found';
 import SSRWebComponent from '@/utils/ssr-web-component';
 import handleI18n from '@/utils/handle-i18n';
 import { RenderInitiator } from '@/public-constants';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
 const emptyI18n = {
   locale: '',
@@ -2893,16 +2894,17 @@ describe('utils', () => {
       );
 
       // Test script 404 behavior
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         href: 'http://localhost/',
         replace: mock((v) => v),
-      } as any;
+      });
 
       eval(script404);
       expect(globalThis.location.replace).toHaveBeenCalledWith(
         'http://localhost/?_not-found=1',
       );
-      globalThis.location = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the meta with noindex and soft redirect to 404 when the "notFound" method is called + transfer store to client', async () => {
@@ -2931,16 +2933,17 @@ describe('utils', () => {
       );
 
       // Test script 404 behavior
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         href: 'http://localhost/',
         replace: mock((v) => v),
-      } as any;
+      });
 
       eval(script404);
       expect(globalThis.location.replace).toHaveBeenCalledWith(
         'http://localhost/?_not-found=1',
       );
-      globalThis.location = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the meta with noindex and soft navigation (no redirect) to 404 when the "notFound" method is called from server action rerendering', async () => {
@@ -2965,16 +2968,17 @@ describe('utils', () => {
       );
 
       // Test script 404 behavior
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         href: 'http://localhost/',
         assign: mock((v) => v),
-      } as any;
+      });
 
       eval(script404);
       expect(globalThis.location.assign).toHaveBeenCalledWith(
         'http://localhost/?_not-found=1',
       );
-      globalThis.location = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the meta with noindex and soft navigate (no redirect) to 404 when the "notFound" method is called + transfer store to client', async () => {
@@ -3004,16 +3008,17 @@ describe('utils', () => {
       );
 
       // Test script 404 behavior
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         href: 'http://localhost/',
         assign: mock((v) => v),
-      } as any;
+      });
 
       eval(script404);
       expect(globalThis.location.assign).toHaveBeenCalledWith(
         'http://localhost/?_not-found=1',
       );
-      globalThis.location = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the location.replace script when the "navigate" method is called during rendering', async () => {
@@ -3029,17 +3034,16 @@ describe('utils', () => {
       expect(result).toBe(toInline(`<script>${scriptNavigate}</script>`));
 
       // Test script navigate behavior
-      globalThis.window = {} as any;
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         replace: mock((v) => v),
-      } as any;
+      });
 
       eval(scriptNavigate);
       expect(globalThis.location.replace).toHaveBeenCalledWith(
         'http://localhost/foo',
       );
-      globalThis.location = undefined as any;
-      globalThis.window = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the location.replace script transferring the client store when the "navigate" method is called during rendering', async () => {
@@ -3066,17 +3070,16 @@ describe('utils', () => {
       );
 
       // Test script navigate behavior
-      globalThis.window = {} as any;
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         replace: mock((v) => v),
-      } as any;
+      });
 
       eval(scriptNavigate);
       expect(globalThis.location.replace).toHaveBeenCalledWith(
         'http://localhost/foo',
       );
-      globalThis.location = undefined as any;
-      globalThis.window = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the location.assign script when the "navigate" method is called during server action rerendering', async () => {
@@ -3096,17 +3099,16 @@ describe('utils', () => {
       expect(result).toBe(toInline(`<script>${scriptNavigate}</script>`));
 
       // Test script navigate behavior
-      globalThis.window = {} as any;
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         assign: mock((v) => v),
-      } as any;
+      });
 
       eval(scriptNavigate);
       expect(globalThis.location.assign).toHaveBeenCalledWith(
         'http://localhost/foo',
       );
-      globalThis.location = undefined as any;
-      globalThis.window = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should add the location.assign script transferring the client store when the "navigate" method is called during server action rerendering', async () => {
@@ -3134,17 +3136,16 @@ describe('utils', () => {
       );
 
       // Test script navigate behavior
-      globalThis.window = {} as any;
-      globalThis.location = {
+      GlobalRegistrator.register();
+      Object.assign(location, {
         assign: mock((v) => v),
-      } as any;
+      });
 
       eval(scriptNavigate);
       expect(globalThis.location.assign).toHaveBeenCalledWith(
         'http://localhost/foo',
       );
-      globalThis.location = undefined as any;
-      globalThis.window = undefined as any;
+      GlobalRegistrator.unregister();
     });
 
     it('should log an error and not throw error to avoid breaking the rendering when component render fails', async () => {

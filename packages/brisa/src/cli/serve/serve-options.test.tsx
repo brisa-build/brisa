@@ -9,7 +9,7 @@ import {
   mock,
   jest,
 } from 'bun:test';
-import { brotliDecompressSync } from 'node:zlib';
+import { brotliDecompressSync, gunzipSync } from 'node:zlib';
 import path from 'node:path';
 import { getConstants } from '@/constants';
 import type { ServerWebSocket } from 'bun';
@@ -41,6 +41,8 @@ async function testRequest(
 
 describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
+    // @ts-ignore - We need to test real server scenarios
+    if (typeof window !== 'undefined') window = undefined;
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
@@ -964,9 +966,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     );
     const response = await testRequest(req);
-    const textBuffer = Bun.gunzipSync(
-      new Uint8Array(await response.arrayBuffer()),
-    );
+    const textBuffer = gunzipSync(new Uint8Array(await response.arrayBuffer()));
     const text = textDecoder.decode(textBuffer);
 
     expect(response.status).toBe(200);

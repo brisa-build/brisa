@@ -1,5 +1,4 @@
-import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
+import { describe, expect, it } from 'bun:test';
 import createPortal from '.';
 
 describe('create-portal', () => {

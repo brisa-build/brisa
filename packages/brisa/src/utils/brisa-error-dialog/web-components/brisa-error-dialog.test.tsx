@@ -12,6 +12,7 @@ import { getConstants } from '@/constants';
 import { render, userEvent } from '@/core/test';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import runWebComponents from '@/core/test/run-web-components';
+import { isDOMRegistered } from '@/test-setup';
 
 const ERROR_STORE_KEY = '__BRISA_ERRORS__';
 const BUILD_DIR = path.join(import.meta.dir, '..');
@@ -27,9 +28,7 @@ class ErrorEvent extends Event {
 describe('utils', () => {
   beforeEach(async () => {
     globalThis.REGISTERED_ACTIONS = [];
-    if (typeof window === 'undefined') {
-      GlobalRegistrator.register();
-    }
+    if (!isDOMRegistered()) GlobalRegistrator.register();
     globalThis.mockConstants = {
       ...getConstants(),
       BUILD_DIR,
@@ -37,7 +36,7 @@ describe('utils', () => {
     };
     await runWebComponents();
   });
-  afterEach(() => {
+  afterEach(async () => {
     window._s?.Map?.clear?.();
     GlobalRegistrator.unregister();
     globalThis.mockConstants = undefined;
