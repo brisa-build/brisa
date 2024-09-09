@@ -66,7 +66,7 @@ const pipelinePath = join(
 const yml = fs
   .readFileSync(pipelinePath)
   .toString()
-  .replace(`bun-version: ${oldVersion}`, `bun-version: ${version}`);
+  .replaceAll(`bun-version: ${oldVersion}`, `bun-version: ${version}`);
 fs.writeFileSync(pipelinePath, yml);
 
 // Update docs
