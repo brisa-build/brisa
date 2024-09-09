@@ -24,3 +24,6 @@ mock.module('diff-dom-streaming', () => ({
 }));
 
 expect.extend<BrisaTestMatchers>(matchers);
+
+export const isDOMRegistered = () =>
+  typeof window !== 'undefined' && window.happyDOM;
