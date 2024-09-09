@@ -121,98 +121,13 @@ bun start
   fs.writeFileSync('README.md', readmeContent);
 
   fs.mkdirSync('src');
-  fs.mkdirSync('src/pages');
-  fs.mkdirSync('src/web-components');
-  fs.mkdirSync('src/components');
-  fs.writeFileSync(
-    'src/pages/index.tsx',
-    `import CounterServer from "@/components/counter-server";
-
-export default function Homepage() {
-  return (
-    <div>
-      <h1>Hello World</h1>
-      <counter-client initialValue={42} />
-      <CounterServer initialValue={37} />
-    </div>
-  );
-}`,
-  );
-
-  fs.writeFileSync(
-    'src/components/counter-server.tsx',
-    `import type { RequestContext } from "brisa";
-import { rerenderInAction, RenderInitiator } from "brisa/server";
-
-export default function CounterServer(
-  { initialValue = 0 }: { initialValue: number },
-  { store, method, renderInitiator }: RequestContext,
-) {
-  if (renderInitiator === RenderInitiator.INITIAL_REQUEST) {
-    store.set("count", initialValue);
-  }
-
-  store.transferToClient(["count"]);
-
-  function increment() {
-    store.set("count", store.get("count") + 1);
-    rerenderInAction({ type: "page" });
-  }
-
-  function decrement() {
-    store.set("count", store.get("count") - 1);
-    rerenderInAction({ type: "page" });
-  }
-
-  return (
-    <div>
-      <h2>Server counter</h2>
-      <button onClick={increment}>+</button>
-      {store.get("count")}
-      <button onClick={decrement}>-</button>
-    </div>
-  );
-}`,
-  );
-
-  fs.writeFileSync(
-    'src/pages/index.test.tsx',
-    `import { render } from "brisa/test"
-import { describe, expect, it } from "bun:test"
-import Home from '.'
-
-describe("Index", () => {
-  it("should render Hello World",  async () => {
-    const { container } = await render(<Home />)
-    expect(container).toHaveTextContent("Hello World")
-  })
-});`,
-  );
-
-  fs.writeFileSync(
-    'src/web-components/counter-client.tsx',
-    `import type { WebContext } from "brisa";
-
-export default function Counter(
-  { initialValue = 0 }: { initialValue: number },
-  { state }: WebContext,
-) {
-  const count = state(initialValue);
-
-  return (
-    <div>
-      <h2>Client counter</h2>
-      <button onClick={() => count.value++}>+</button>
-      {count.value}
-      <button onClick={() => count.value--}>-</button>
-    </div>
-  );
-}`,
-  );
+  fs.cpSync(path.join(import.meta.dirname, 'basic-template'), 'src', {
+    recursive: true,
+  });
 
   fs.writeFileSync('bunfig.toml', '[test]\npreload = "brisa/test"');
 
-  fs.writeFileSync('.gitignore', 'build\nnode_modules\nout\n');
+  fs.writeFileSync('.gitignore', 'build\nnode_modules\nout\n.vercel\n');
 
   execSync('bun install');
 
