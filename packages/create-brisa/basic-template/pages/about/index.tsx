@@ -1,3 +1,7 @@
+export function Head() {
+  return <title id="title">About Brisa</title>;
+}
+
 export default function Aboutpage() {
   return (
     <>

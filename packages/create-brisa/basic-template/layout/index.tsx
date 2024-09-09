@@ -5,6 +5,7 @@ export default function Layout({ children }: { children: JSX.Element }) {
   return (
     <html lang="en">
       <head>
+        <title id="title">Brisa</title>
         <meta name="theme-color" content="#ad1457" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

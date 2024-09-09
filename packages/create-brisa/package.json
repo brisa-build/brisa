@@ -26,5 +26,8 @@
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
+  },
+  "devDependencies": {
+    "brisa": "latest"
   }
 }
