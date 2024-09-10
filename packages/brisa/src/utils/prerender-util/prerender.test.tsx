@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 import { __prerender__macro } from './prerender';
-import { getConstants } from '@/constants';
+import dangerHTML from '../danger-html';
 
 const COMPONENTS = path.join(
   import.meta.dirname,
@@ -13,24 +13,24 @@ const COMPONENTS = path.join(
 
 describe('utils/prerender-util/prerender', () => {
   it('should prerender a component', async () => {
-    const comp = await __prerender__macro({
+    const comp = (await __prerender__macro({
       componentPath: path.join(COMPONENTS, 'component.tsx'),
       dir: COMPONENTS,
-    });
-    expect(comp?.props.html).toBe('<div>Component</div>');
+    })) as any;
+    expect(comp).toEqual(dangerHTML('<div>Component</div>'));
   });
 
   it('should prerender a component with props', async () => {
-    const comp = await __prerender__macro({
+    const comp = (await __prerender__macro({
       componentPath: path.join(COMPONENTS, 'component-with-props.tsx'),
       dir: COMPONENTS,
       componentProps: { name: 'Brisa' },
-    });
-    expect(comp?.props.html).toBe('<div>Hello Brisa</div>');
+    })) as any;
+    expect(comp).toEqual(dangerHTML('<div>Hello Brisa</div>'));
   });
 
   it('should prerender a Web Component', async () => {
-    const comp = await __prerender__macro({
+    const comp = (await __prerender__macro({
       componentPath: 'brisa/server',
       brisaServerPath: path.join(
         import.meta.dirname,
@@ -46,10 +46,12 @@ describe('utils/prerender-util/prerender', () => {
         selector: 'web-component',
         name: 'Bar',
       },
-    });
+    })) as any;
 
-    expect(comp?.props.html).toBe(
-      '<web-component name="Bar"><template shadowrootmode="open"><div>Hello Bar</div></template></web-component>',
+    expect(comp).toEqual(
+      dangerHTML(
+        '<web-component name="Bar"><template shadowrootmode="open"><div>Hello Bar</div></template></web-component>',
+      ),
     );
   });
 });
