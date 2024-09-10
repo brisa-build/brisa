@@ -1752,7 +1752,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         },
       }),
     );
- 
+
     expect(
       mockResponseAction.mock.calls[0][0].store.get(
         AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
