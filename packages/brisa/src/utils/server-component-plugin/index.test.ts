@@ -2013,7 +2013,7 @@ describe('utils', () => {
 				import Foo from '@/__fixtures__/lib/foo';
 
 				export default function App() {
-					return {type: "HTML",props: {html: "<div>Foo </div>"}};
+					return ["HTML",{html: "<div>Foo </div>"},null];
 				}
       ` + workaroundText,
         ),
@@ -2041,12 +2041,10 @@ describe('utils', () => {
           import _Brisa_WC1 from '${webComponentPath}';
 
           export default function App() {
-            return {
-              type: "HTML",
-              props: {
-                html: "<web-component foo="bar"><template shadowrootmode="open"><native-some-example></native-some-example></template></web-component>"
-              }
-            };
+            return ["HTML",{html: "<web-component foo="bar"><template shadowrootmode="open"><native-some-example></native-some-example></template></web-component>"
+              },
+              null
+            ];
           }` + workaroundText,
         ),
       );
