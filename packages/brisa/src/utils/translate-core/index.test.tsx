@@ -59,7 +59,7 @@ function getI18nConfig<T>(dir: T extends Record<string, any> ? T : never) {
     messages: {
       en: dir,
     },
-  };
+  } as I18nConfig;
 }
 
 describe('utils', () => {
@@ -108,7 +108,7 @@ describe('utils', () => {
         messages: {
           en: nsNestedKeys,
         },
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
@@ -147,7 +147,7 @@ describe('utils', () => {
           en: nsWithEmpty,
         },
         allowEmptyStrings: true,
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
@@ -161,7 +161,7 @@ describe('utils', () => {
         messages: {
           en: nsWithEmpty,
         },
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
@@ -176,7 +176,7 @@ describe('utils', () => {
           en: nsWithEmpty,
         },
         allowEmptyStrings: false,
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
 
       expect(typeof t).toBe('function');
@@ -233,14 +233,14 @@ describe('utils', () => {
             key_1: 'hello <0>{{name}}</0>',
           },
         },
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
       const output = t('key_1', { name: 'test' }, { elements: [<strong />] });
       const element = output[1] as any;
 
       expect(output[0]).toBe('hello ');
-      expect(element.type).toBe('strong');
-      expect(element.props.children).toBe('test');
+      expect(element[0]).toBe('strong');
+      expect(element[2]).toBe('test');
     });
 
     it('should _messages override _defaultMessages', () => {
@@ -260,7 +260,7 @@ describe('utils', () => {
         _messages: {
           key_1: 'new hello {{name}}',
         },
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
       expect(t<string>('key_1', { name: 'test' })).toBe('new hello test');
       expect(t<string>('key_2', { name: 'test' })).toBe('hello 2 test');
