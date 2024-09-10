@@ -6,6 +6,10 @@ describe('danger-html', () => {
     const html = '<div>test</div>';
     const element = dangerHTML(html);
 
-    expect(element).toEqual(['HTML', { html }, null]);
+    expect(element).toEqual(
+      Object.assign(['HTML', { html }, null], {
+        [Symbol.for('isJSX')]: true,
+      }) as any,
+    );
   });
 });
