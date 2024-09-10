@@ -25,12 +25,11 @@ export default function getReactiveReturnStatement(
   );
   const returnStatement = componentBody[returnStatementIndex] as any;
   let [tagName, props, children] = returnStatement?.argument?.elements ?? [];
-  let componentChildren = children;
 
   if (returnStatement?.argument?.type === 'CallExpression') {
     tagName = FRAGMENT;
     props = EMPTY_ATTRIBUTES;
-    componentChildren = wrapWithArrowFn(returnStatement.argument);
+    children = wrapWithArrowFn(returnStatement.argument);
   }
 
   // Transforming:
@@ -40,7 +39,7 @@ export default function getReactiveReturnStatement(
   if (REACTIVE_VALUES.has(returnStatement?.argument?.type)) {
     tagName = FRAGMENT;
     props = EMPTY_ATTRIBUTES;
-    componentChildren = wrapWithArrowFn(returnStatement?.argument);
+    children = wrapWithArrowFn(returnStatement?.argument);
   }
 
   // Transforming:
@@ -68,7 +67,7 @@ export default function getReactiveReturnStatement(
         value: property.value,
       })),
     };
-    componentChildren = {
+    children = {
       type: 'Literal',
       value: elements[2]?.value ?? '',
     };
@@ -78,22 +77,25 @@ export default function getReactiveReturnStatement(
   else if (
     !tagName &&
     !props &&
-    !componentChildren &&
+    !children &&
     (returnStatement?.argument == null ||
       returnStatement?.argument?.type === 'Literal' ||
       returnStatement?.argument?.type === 'BinaryExpression')
   ) {
-    const children = returnStatement?.argument;
+    const innerChildren = returnStatement?.argument;
 
     tagName = FRAGMENT;
     props = EMPTY_ATTRIBUTES;
-    componentChildren = { type: 'Literal', value: children?.value ?? '' };
+    children = { type: 'Literal', value: innerChildren?.value ?? '' };
 
     // Transforming:
     //  "SomeString" + props.foo + " " + props.bar
     // to:
     //   () => "SomeString" + props.foo.value + " " + props.bar.value
-    if (children?.type === 'BinaryExpression' && children?.operator === '+') {
+    if (
+      innerChildren?.type === 'BinaryExpression' &&
+      innerChildren?.operator === '+'
+    ) {
       const reactiveBinaryExpression = (item: any): any => {
         if (item?.type === 'BinaryExpression') {
           return {
@@ -106,11 +108,11 @@ export default function getReactiveReturnStatement(
         return item;
       };
 
-      componentChildren = wrapWithArrowFn(reactiveBinaryExpression(children));
+      children = wrapWithArrowFn(reactiveBinaryExpression(innerChildren));
     }
   }
 
-  if (!componentChildren) {
+  if (!children) {
     console.log(LOG_PREFIX.ERROR, 'Error Code: 5001');
     console.log(LOG_PREFIX.ERROR);
     console.log(
@@ -131,12 +133,12 @@ export default function getReactiveReturnStatement(
 
   const newReturnStatement =
     tagName === FRAGMENT
-      ? { type: 'ReturnStatement', argument: componentChildren }
+      ? { type: 'ReturnStatement', argument: children }
       : {
           type: 'ReturnStatement',
           argument: {
             type: 'ArrayExpression',
-            elements: [tagName, props, componentChildren],
+            elements: [tagName, props, children],
           },
         };
 
