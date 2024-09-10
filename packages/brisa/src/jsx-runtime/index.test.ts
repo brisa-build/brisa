@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { jsx } from '.';
+import { Fragment, jsx } from '.';
 
 describe('utils', () => {
   describe('jsx (createNode) SERVER', () => {
@@ -32,6 +32,27 @@ describe('utils', () => {
       expect(node).toEqual(
         isTransformedJSX(['div', { id: 'test', key: 'key' }, 'Hello World']),
       );
+    });
+
+    it('should transform a fragment with elements in the same way that the web components', () => {
+      const output = Fragment({
+        children: [
+          ' ',
+          jsx('div', { children: 'some div' }),
+          jsx('span', { children: 'some span' }),
+        ],
+      });
+      const expected = [
+        null,
+        {},
+        [
+          isTransformedJSX([null, { key: undefined }, ' ']),
+          isTransformedJSX(['div', { key: undefined }, 'some div']),
+          isTransformedJSX(['span', { key: undefined }, 'some span']),
+        ],
+      ];
+
+      expect(output).toEqual(isTransformedJSX(expected));
     });
   });
 });

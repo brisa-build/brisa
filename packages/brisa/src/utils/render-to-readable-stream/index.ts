@@ -169,7 +169,7 @@ async function enqueueDuringRendering(
     const [type, propsWithoutChildren, children] = elementContent as any;
     const props = { ...propsWithoutChildren, children };
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
-    const isFragment = type?.__isFragment;
+    const isFragment = type?.__isFragment || type === null;
     const isTagToIgnore = isFragment || isServerProvider;
     const isWebComponent = type?.__isWebComponent || props?.__isWebComponent;
     const isElement = typeof type === 'string';
@@ -559,6 +559,7 @@ async function enqueueChildren(
   isSlottedPosition = false,
   componentProps?: Props,
 ): Promise<void> {
+  if (children === false || children == null) return;
   if (Array.isArray(children) && !isArrawOfJSXContent(children)) {
     await enqueueArrayChildren(
       children,

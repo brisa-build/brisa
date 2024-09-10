@@ -11,7 +11,7 @@ import extendRequestContext from '@/utils/extend-request-context';
 import createContext from '@/utils/create-context';
 import translateCore from '@/utils/translate-core';
 import { getConstants } from '@/constants';
-import { Fragment } from '@/jsx-runtime';
+import { Fragment, jsx } from '@/jsx-runtime';
 
 const FIXTURES = join(import.meta.dir, '..', '..', '__fixtures__');
 const JSX = Symbol.for('isJSX');
@@ -64,7 +64,9 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2].join('')).toBe('hello world');
+      expect(output[2][0][2][0][2]).toEqual(
+        Fragment({ children: ['hello ', 'world'] })[2],
+      );
     });
 
     it('should render a web component with css template literal', async () => {
@@ -134,7 +136,9 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2].join('')).toBe('hello world');
+      expect(output[2][0][2][0][2]).toEqual(
+        Fragment({ children: ['hello ', 'world'] })[2],
+      );
     });
 
     it('should render a web component with a derived state', async () => {
@@ -154,7 +158,9 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2].join('')).toBe('hello world');
+      expect(output[2][0][2][0][2]).toEqual(
+        Fragment({ children: ['hello ', 'world'] })[2],
+      );
     });
 
     it('should render a web component with a effect', async () => {
@@ -255,7 +261,9 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2].join('')).toBe('hello world');
+      expect(output[2][0][2][0][2]).toEqual(
+        Fragment({ children: ['hello ', 'world'] })[2],
+      );
     });
 
     it('should render a web component with a children slot', async () => {
@@ -278,7 +286,7 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2][0]).toBe('hello ');
+      expect(output[2][0][2][0][2][0][2]).toBe('hello ');
       expect(output[2][0][2][0][2][1][0]).toBe('slot');
       expect(output[2][1][2]).toBe('world');
     });
@@ -303,7 +311,7 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2][0]).toBe('hello ');
+      expect(output[2][0][2][0][2][0][2]).toBe('hello ');
       expect(output[2][0][2][0][2][1][0]).toBe('slot');
       expect(output[2][1][2]).toBe('world');
     });
@@ -357,8 +365,8 @@ describe('utils', () => {
       expect(output[2][0][0]).toBe('template');
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
-      expect(output[2][0][2][0][2].join('')).toBe(
-        'Ops! some error, hello world',
+      expect(output[2][0][2][0][2]).toEqual(
+        Fragment({ children: ['Ops! ', 'some error', ', hello ', 'world'] })[2],
       );
     });
 
@@ -434,7 +442,11 @@ describe('utils', () => {
       )) as any;
 
       expect(output[0]).toBe(selector);
-      expect(output[2][0][2][0]).toBe('hello world');
+      expect(output[2][0][2][0]).toEqual(
+        Object.assign([null, { key: undefined }, 'hello world'], {
+          [JSX]: true,
+        }),
+      );
     });
 
     it('should i18n work correctly', async () => {
@@ -475,7 +487,11 @@ describe('utils', () => {
       )) as any;
 
       expect(output[0]).toBe(selector);
-      expect(output[2][0][2][0]).toBe('hello world');
+      expect(output[2][0][2][0]).toEqual(
+        Object.assign([null, { key: undefined }, 'hello world'], {
+          [JSX]: true,
+        }),
+      );
     });
 
     it('should an async event work correctly', async () => {
@@ -568,7 +584,7 @@ describe('utils', () => {
       expect(output[2]).toEqual(
         Object.assign(
           [
-            false,
+            Object.assign([null, {}, false], { [JSX]: true }),
             Object.assign(
               [
                 Fragment,
