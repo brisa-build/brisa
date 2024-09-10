@@ -266,6 +266,8 @@ export default ParentComponent;
 
 In this example, the `my-component` component can render its content and any child components passed to it using the children prop.
 
+### Slots
+
 However, Web-components, by their nature, have the possibility to use the [`slot` tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) also to define children. You can use it in case you need **more than one child**. The prop `children` is an equivalent to an unnamed slot.
 
 This is **also valid**:
@@ -308,6 +310,29 @@ export default ParentComponentUsingSlots;
 > [!TIP]
 >
 > **Good to know**: Slots only work in Web Components. In Server Components only works `children` prop.
+
+### Props as JSX
+
+You can pass JSX elements as props to a component:
+  
+```tsx
+export default function Home() {
+  return <web-component someProp={<h1>Server Title</h1>} /> // ✅
+}
+```
+
+Using Server components as props is also valid:
+
+```tsx
+export default function Home() {
+  return <web-component someProp={<ServerComp />} /> // ✅
+}
+```
+
+> [!NOTE]
+>
+> It's just an alternative to `slots` and `children`, but `slots` and `children` have better performance because it is not necessary to deserialize and render inside the Web Component.
+
 
 ## Events
 
