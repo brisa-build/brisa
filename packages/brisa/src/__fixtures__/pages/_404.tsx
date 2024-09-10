@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const Head = () => {
   return <title id="title">Page not found</title>;
 };

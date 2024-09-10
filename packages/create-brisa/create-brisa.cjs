@@ -7,15 +7,24 @@ const { execSync } = require('node:child_process');
 const readline = require('node:readline');
 const BRISA_VERSION = version;
 const isPowerShell = process.env.PSModulePath !== undefined;
+let PROJECT_NAME = process.argv[2];
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+if (!PROJECT_NAME) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
 
-rl.question('Enter project name: ', (PROJECT_NAME) => {
-  rl.close();
+  rl.question('Enter project name: ', (name) => {
+    rl.close();
+    PROJECT_NAME = name;
+    createProject(PROJECT_NAME);
+  });
+} else {
+  createProject(PROJECT_NAME);
+}
 
+function createProject(PROJECT_NAME) {
   console.log(`Creating project ${PROJECT_NAME}`);
 
   // Allow PROJECT_NAME to be a path like @foo/bar/baz
@@ -137,4 +146,4 @@ bun start
   console.log(
     `📀 Run: cd ${PROJECT_NAME}${isPowerShell ? ';' : ' &&'} bun dev`,
   );
-});
+}

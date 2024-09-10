@@ -1,3 +1,4 @@
+// @ts-nocheck
 export const Head = () => {
   return <title id="title">Some internal error</title>;
 };

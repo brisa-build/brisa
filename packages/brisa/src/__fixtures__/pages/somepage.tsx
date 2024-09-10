@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createContext } from '@/core';
 import type { RequestContext } from '@/types';
 

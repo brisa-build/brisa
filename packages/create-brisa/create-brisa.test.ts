@@ -26,6 +26,13 @@ describe('create-brisa', () => {
     expect(files).toEqual(EXPECTED_INNER_FILES);
   });
 
+  it('should create brisa correctly with the name of the project as argv', async () => {
+    const projectName = 'out';
+    await $`bun run ${CREATE_BRISA_PATH} ${projectName}`;
+    const files = await getFiles(projectName);
+    expect(files).toEqual(EXPECTED_INNER_FILES);
+  });
+
   it('should exit and display an error if the folder exists', async () => {
     fs.mkdirSync('out');
     const projectName = 'out/foo';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { RequestContext } from '@/types';
 
 export default function Layout(
@@ -11,7 +12,6 @@ export default function Layout(
       </head>
       <body>
         {i18n.t('server-key')}
-        {/* @ts-ignore */}
         <layout-web-component />
         {children}
       </body>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { RequestContext } from '@/types';
 
 export default async function Home({}, { i18n }: RequestContext) {

@@ -1,6 +1,6 @@
 {
   "name": "create-brisa",
-  "version": "0.0.206-canary.1",
+  "version": "0.0.206",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -28,6 +28,6 @@
     "pnpm": "please-use-bun"
   },
   "devDependencies": {
-    "brisa": "0.0.206-alpha.1"
+    "brisa": "0.0.206-alpha.2"
   }
 }
