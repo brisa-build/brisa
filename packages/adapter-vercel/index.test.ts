@@ -151,7 +151,7 @@ describe('adapter-vercel', () => {
         runtime: 'nodejs20.x',
         handler: 'build/server.js',
         launcherType: 'Nodejs',
-        supportsResponseStreaming: true,
+        experimentalResponseStreaming: true,
         environment: {
           USE_HANDLER: 'true',
         },
@@ -308,7 +308,7 @@ describe('adapter-vercel', () => {
         handler: 'build/server.js',
         launcherType: 'Nodejs',
         runtime: 'nodejs20.x',
-        supportsResponseStreaming: true,
+        experimentalResponseStreaming: true,
         memory: 1024,
       });
     });
@@ -338,7 +338,7 @@ describe('adapter-vercel', () => {
         handler: 'build/server.js',
         launcherType: 'Nodejs',
         runtime: 'nodejs20.x',
-        supportsResponseStreaming: true,
+        experimentalResponseStreaming: true,
         regions: ['iad1', 'lax1'],
       });
     });
@@ -368,7 +368,7 @@ describe('adapter-vercel', () => {
         handler: 'build/server.js',
         launcherType: 'Nodejs',
         runtime: 'nodejs20.x',
-        supportsResponseStreaming: true,
+        experimentalResponseStreaming: true,
         maxDuration: 15,
       });
     });

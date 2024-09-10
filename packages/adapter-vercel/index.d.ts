@@ -27,4 +27,4 @@ export type Config = {
   maxDuration?: number;
 };
 
-export default function vercelAdapter(config: Config): Adapter;
+export default function vercelAdapter(config?: Config): Adapter;

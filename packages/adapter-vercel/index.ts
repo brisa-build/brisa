@@ -74,7 +74,7 @@ export default function vercelAdapter({
           runtime: 'nodejs20.x',
           handler: 'build/server.js',
           launcherType: 'Nodejs',
-          supportsResponseStreaming: true,
+          experimentalResponseStreaming: true,
           environment: {
             USE_HANDLER: 'true',
           },
