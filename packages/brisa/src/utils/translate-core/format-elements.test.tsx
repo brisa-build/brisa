@@ -59,8 +59,8 @@ describe('utils', () => {
       const element = output[1] as any;
 
       expect(output[0]).toBe('this is a ');
-      expect(element.type?.toString()).toBe('(s)=>s.children');
-      expect(element.props?.children).toBe('test');
+      expect(element[0].toString()).toBe('(s)=>s.children');
+      expect(element[2]).toBe('test');
     });
 
     it('should return a string wrapped with a string tag', () => {
@@ -68,8 +68,8 @@ describe('utils', () => {
       const element = output[1] as any;
 
       expect(output[0]).toBe('this is a ');
-      expect(element.type?.toString()).toBe('strong');
-      expect(element.props?.children).toBe('test');
+      expect(element[0]).toBe('strong');
+      expect(element[2]).toBe('test');
     });
 
     it('should return a string wrapped multiple tags and defined as object', () => {
@@ -84,16 +84,16 @@ describe('utils', () => {
         elements,
       );
       const elementA = output[0] as any;
-      const elementB = elementA.props?.children as any;
+      const elementB = elementA[2] as any;
       const elementC = output[1] as any;
 
-      expect(elementA.type?.toString()).toBe('strong');
+      expect(elementA[0]).toBe('strong');
       expect(Array.isArray(elementB)).toBe(true);
       expect(elementB[0]).toBe('this is a ');
-      expect(elementB[1].type?.toString()).toBe('em');
-      expect(elementB[1].props?.children).toBe('test');
-      expect(elementC.type?.toString()).toBe('span');
-      expect(elementC.props?.children).toBe('!');
+      expect(elementB[1][0]?.toString()).toBe('em');
+      expect(elementB[1][2]).toBe('test');
+      expect(elementC[0]?.toString()).toBe('span');
+      expect(elementC[2]).toBe('!');
     });
   });
 });

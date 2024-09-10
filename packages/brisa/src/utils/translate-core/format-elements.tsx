@@ -31,17 +31,10 @@ export default function formatElements(
 
   for (const [key, children, after] of allElements) {
     const element = (elements as any)[key!] || <></>;
-    const elementWithChildren = {
-      ...element,
-      props: {
-        ...(element.props ?? {}),
-        children: children
-          ? formatElements(children, elements)
-          : element.props.children,
-      },
-    };
 
-    tree.push(elementWithChildren);
+    element[2] = children ? formatElements(children, elements) : children;
+
+    tree.push(element);
 
     if (after) tree.push(after);
   }
