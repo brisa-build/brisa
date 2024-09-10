@@ -9,7 +9,6 @@ import {
   type Mock,
 } from 'bun:test';
 import fs from 'node:fs';
-import * as wt from 'node:worker_threads';
 import path from 'node:path';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import compileFiles from '.';
@@ -17,6 +16,7 @@ import { getConstants } from '@/constants';
 import { toInline } from '@/helpers';
 import { greenLog } from '@/utils/log/log-color';
 import renderToString from '../render-to-string';
+import SSRWebComponent from '@/utils/ssr-web-component';
 import { jsx } from '@/jsx-runtime';
 
 const DIR = import.meta.dir;
@@ -879,132 +879,163 @@ describe('utils', () => {
       expect(logOutput).toContain('/pokemon/charizard.html prerendered');
       expect(logOutput).toContain('/pokemon/pikachu.html prerendered');
     });
-  });
 
-  it('should compile an app with a web component inside a server component in a nested way but detected correctly', async () => {
-    const SRC_DIR = path.join(
-      FIXTURES,
-      'with-web-components-inside-server-components',
-    );
-    const BUILD_DIR = path.join(SRC_DIR, 'out');
-    const PAGES_DIR = path.join(BUILD_DIR, 'pages');
-    const ASSETS_DIR = path.join(BUILD_DIR, 'public');
-    const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
-    const constants = getConstants();
-    globalThis.mockConstants = {
-      ...constants,
-      PAGES_DIR,
-      BUILD_DIR,
-      IS_PRODUCTION: true,
-      IS_DEVELOPMENT: false,
-      SRC_DIR,
-      ASSETS_DIR,
-    };
+    it('should compile an app with a web component inside a server component in a nested way but detected correctly', async () => {
+      const SRC_DIR = path.join(
+        FIXTURES,
+        'with-web-components-inside-server-components',
+      );
+      const BUILD_DIR = path.join(SRC_DIR, 'out');
+      const PAGES_DIR = path.join(BUILD_DIR, 'pages');
+      const ASSETS_DIR = path.join(BUILD_DIR, 'public');
+      const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
+      const constants = getConstants();
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR,
+      };
 
-    mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => {});
 
-    const { success, logs } = await compileFiles();
+      const { success, logs } = await compileFiles();
 
-    expect(logs).toBeEmpty();
-    expect(success).toBe(true);
+      expect(logs).toBeEmpty();
+      expect(success).toBe(true);
 
-    const files = fs
-      .readdirSync(BUILD_DIR)
-      .toSorted((a, b) => a.localeCompare(b));
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
 
-    expect(fs.existsSync(TYPES)).toBe(true);
-    expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
-      minifyText(
-        `export interface IntrinsicCustomElements { 'some-counter': JSX.WebComponentAttributes<typeof import("${path.join(
-          SRC_DIR,
-          'web-components',
-          'some-counter.tsx',
-        )}").default>; }
-        
-        export type PageRoute = "/" | "/page-without-web-component";
-        `,
-      ),
-    );
-    expect(mockConsoleLog).toHaveBeenCalled();
-    expect(files).toEqual(['_brisa', 'pages', 'pages-client']);
+      expect(fs.existsSync(TYPES)).toBe(true);
+      expect(minifyText(fs.readFileSync(TYPES).toString())).toBe(
+        minifyText(
+          `export interface IntrinsicCustomElements { 'some-counter': JSX.WebComponentAttributes<typeof import("${path.join(
+            SRC_DIR,
+            'web-components',
+            'some-counter.tsx',
+          )}").default>; }
+          
+          export type PageRoute = "/" | "/page-without-web-component";
+          `,
+        ),
+      );
+      expect(mockConsoleLog).toHaveBeenCalled();
+      expect(files).toEqual(['_brisa', 'pages', 'pages-client']);
 
-    const info = constants.LOG_PREFIX.INFO;
+      const info = constants.LOG_PREFIX.INFO;
 
-    const logOutput = minifyText(mockConsoleLog.mock.calls.flat().join('\n'));
+      const logOutput = minifyText(mockConsoleLog.mock.calls.flat().join('\n'));
 
-    const expected = minifyText(`
-  ${info}
-  ${info}Route                                | JS server | JS client (gz)  
-  ${info}-------------------------------------------------------------------
-  ${info}λ /pages/index                       | 888 B      | ${greenLog('3 kB')}  
-  ${info}λ /pages/page-without-web-component  | 234 B      | ${greenLog('0 B')}  
-  ${info}
-  ${info}λ Server entry-points
-  ${info}Φ JS shared by all
-  ${info}
-`);
-    expect(logOutput).toContain(expected);
-  });
+      const expected = minifyText(`
+    ${info}
+    ${info}Route                                | JS server | JS client (gz)  
+    ${info}-------------------------------------------------------------------
+    ${info}λ /pages/index                       | 888 B      | ${greenLog('3 kB')}  
+    ${info}λ /pages/page-without-web-component  | 234 B      | ${greenLog('0 B')}  
+    ${info}
+    ${info}λ Server entry-points
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+      expect(logOutput).toContain(expected);
+    });
 
-  it('should compile server JSX to be compatible with client JSX', async () => {
-    const SRC_DIR = path.join(FIXTURES, 'with-jsx-as-wc-attribute');
+    it('should compile server JSX to be compatible with client JSX', async () => {
+      const SRC_DIR = path.join(FIXTURES, 'with-jsx-as-wc-attribute');
 
-    const constants = getConstants();
+      const constants = getConstants();
 
-    globalThis.mockConstants = {
-      ...constants,
-      PAGES_DIR: path.join(SRC_DIR, 'pages'),
-      BUILD_DIR: path.join(SRC_DIR, 'out'),
-      IS_PRODUCTION: true,
-      IS_DEVELOPMENT: false,
-      SRC_DIR,
-      ASSETS_DIR: path.join(SRC_DIR, 'out', 'public'),
-    };
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR: path.join(SRC_DIR, 'pages'),
+        BUILD_DIR: path.join(SRC_DIR, 'out'),
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR: path.join(SRC_DIR, 'out', 'public'),
+      };
 
-    mockConsoleLog.mockImplementation(() => {});
+      mockConsoleLog.mockImplementation(() => {});
+      mock.module('brisa/server', () => ({
+        SSRWebComponent,
+      }));
 
-    const { success, logs } = await compileFiles();
+      const { success, logs } = await compileFiles();
 
-    expect(logs).toBeEmpty();
-    expect(success).toBe(true);
+      expect(logs).toBeEmpty();
+      expect(success).toBe(true);
 
-    const logOutput = minifyText(
-      mockConsoleLog.mock.calls
-        .flat()
-        .join('\n')
-        .replace(/chunk-\S*/g, 'chunk-hash'),
-    );
+      const logOutput = minifyText(
+        mockConsoleLog.mock.calls
+          .flat()
+          .join('\n')
+          .replace(/chunk-\S*/g, 'chunk-hash'),
+      );
 
-    const info = constants.LOG_PREFIX.INFO;
-    const expected = minifyText(`
-      ${info}
-      ${info}Route           | JS server | JS client (gz)  
-      ${info}----------------------------------------------
-      ${info}λ /pages/index  | 451 B      | ${greenLog('3 kB')}  
-      ${info}
-      ${info}λ Server entry-points
-      ${info}Φ JS shared by all
-      ${info}
-    `);
+      const info = constants.LOG_PREFIX.INFO;
+      const expected = minifyText(`
+        ${info}
+        ${info}Route           | JS server | JS client (gz)  
+        ${info}----------------------------------------------
+        ${info}λ /pages/index  | 506 B      | ${greenLog('3 kB')}  
+        ${info}
+        ${info}λ Server entry-points
+        ${info}Φ JS shared by all
+        ${info}
+      `);
 
-    expect(logOutput).toBe(expected);
+      expect(logOutput).toBe(expected);
 
-    // Check its compatibility (WC with JSX attribute from server)
-    const serverFilePath = path.join(SRC_DIR, 'out', 'pages', 'index.js');
-    const HomePage = await import(serverFilePath).then((m) => m.default);
-    const clientHome = await Bun.file(
-      path.join(SRC_DIR, 'out', 'pages-client', `index-${HASH}.js`),
-    ).text();
+      // Check its compatibility (WC with JSX attribute from server)
+      const serverFilePath = path.join(SRC_DIR, 'out', 'pages', 'index.js');
+      const HomePage = await import(serverFilePath).then((m) => m.default);
+      const clientHome = await Bun.file(
+        path.join(SRC_DIR, 'out', 'pages-client', `index-${HASH}.js`),
+      ).text();
 
-    const serverHTML = await renderToString(jsx(HomePage, {}));
+      const serverHTML = await renderToString(jsx(HomePage, {}));
 
-    expect(serverHTML).toBe('-');
+      expect(serverHTML).toBe(
+        toInline(`
+        <web-component foo='["span",{"id":"server-part","key":"_|U|_"},"bar"]'>
+          <template shadowrootmode="open">
+            <div id="web-component">
+              <span id="server-part">bar</span>
+            </div>
+          </template>
+        </web-component>
+      `),
+      );
 
-    GlobalRegistrator.register();
+      GlobalRegistrator.register();
 
-    document.body.innerHTML = serverHTML + `<script>${clientHome}</script>`;
+      // @ts-ignore
+      window.log = mock(() => {});
+      eval(clientHome);
+      expect(Boolean(customElements.get('web-component'))).toBeTrue();
 
-    expect(document.body.innerHTML).toBe('-');
-    GlobalRegistrator.unregister();
+      document.body.innerHTML = serverHTML;
+      await Bun.sleep(0);
+
+      // @ts-ignore
+      expect(window.log).toBeCalledWith("I'm a web component");
+
+      const wc = document.querySelector('web-component')!;
+
+      expect(wc.shadowRoot!.innerHTML).toBe(
+        toInline(`
+        <div id="web-component">
+          <span id="server-part">bar</span>
+        </div>
+      `),
+      );
+
+      GlobalRegistrator.unregister();
+    });
   });
 });
