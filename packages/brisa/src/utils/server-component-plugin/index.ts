@@ -28,7 +28,7 @@ const FN_DECLARATIONS = new Set([
 
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
-export const workaroundText = `import {jsx,jsxs, jsxDEV, Fragment} from 'brisa/jsx-runtime';\n`;
+export const workaroundText = `import {jsx, jsxs, jsxDEV, Fragment} from 'brisa/jsx-runtime';\n`;
 
 // TODO: We need to refactor this function, is hard to understand and mantain
 export default function serverComponentPlugin(
