@@ -25,6 +25,7 @@ import { getNavigateMode, isNavigateThrowable } from '@/utils/navigate/utils';
 import { RenderInitiator } from '@/public-constants';
 import get404ClientScript from '@/utils/not-found/client-script';
 import escapeHTML from '@/utils/escape-html';
+import { isArrawOfJSXContent } from '@/jsx-runtime';
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -678,7 +679,4 @@ function injectCSS(
     );
     (request as any)._style = '';
   }
-}
-function isArrawOfJSXContent(content: unknown): content is JSX.Element {
-  return Array.isArray(content) && Symbol.for('isJSX') in content;
 }

@@ -1664,6 +1664,15 @@ describe('utils', () => {
       );
     });
 
+    it('should be possible to inject HTML as string in the JSX using the danger HTML element', async () => {
+      const element = (
+        <div>{['HTML', { html: "<script>alert('test')</script>" }, null]}</div>
+      );
+      const stream = renderToReadableStream(element, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+      expect(result).toBe(`<div><script>alert('test')</script></div>`);
+    });
+
     it('should be possible to inject HTML as children string in the JSX using the "dangerHTML" helper', async () => {
       const Component = () => (
         <>{dangerHTML(`<script>alert('test')</script>`)}</>

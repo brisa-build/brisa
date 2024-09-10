@@ -9,7 +9,6 @@ import dangerHTML from '@/utils/danger-html';
 import { serialize } from '@/utils/serialization';
 import createContext from '@/utils/create-context';
 import type { WebContextPlugin } from '@/types';
-import { jsx, Fragment } from '@/jsx-runtime';
 
 declare global {
   interface Window {
