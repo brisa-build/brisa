@@ -1468,13 +1468,13 @@ export function createPortal(
   target: HTMLElement,
 ): CreatePortalOutput;
 
-type CreatePortalOutput = {
-  type: 'portal';
-  props: {
+type CreatePortalOutput = [
+  'portal',
+  {
     element: JSX.Element;
     target: HTMLElement;
-  };
-};
+  },
+];
 
 export interface BrisaDOMAttributes {
   /**

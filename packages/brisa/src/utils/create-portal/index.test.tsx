@@ -7,12 +7,12 @@ describe('create-portal', () => {
     const target = 'div' as unknown as HTMLElement;
     const portalElement = createPortal(element, target);
 
-    expect(portalElement).toEqual({
-      type: 'portal',
-      props: {
+    expect(portalElement).toEqual([
+      'portal',
+      {
         element,
         target,
       },
-    });
+    ]);
   });
 });

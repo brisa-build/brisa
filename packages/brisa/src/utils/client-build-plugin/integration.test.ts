@@ -5930,6 +5930,42 @@ describe('integration', () => {
       expect(fooComponent?.shadowRoot?.innerHTML).toBe('<div>foobaz</div>');
     });
 
+    it('should be possible to pass an array of jsx as attribute', () => {
+      const code = `
+        export default function WebComponent({ foo }) {
+          return foo;
+        }
+      `;
+
+      document.body.innerHTML = `<web-component foo='["b", {}, "bar"]' />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/web-component.tsx');
+
+      const webComponent = document.querySelector(
+        'web-component',
+      ) as HTMLElement;
+      const b = webComponent.shadowRoot?.querySelector('b') as HTMLElement;
+      expect(b.textContent).toBe('bar');
+    });
+
+    it('should be possible to pass an array of jsx with dangerHTML as attribute', () => {
+      const code = `
+        export default function WebComponent({ foo }) {
+          return foo;
+        }
+      `;
+
+      document.body.innerHTML = `<web-component foo='["HTML", {"html":"<b>bar</b>"}, null]' />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/web-component.tsx');
+
+      const webComponent = document.querySelector(
+        'web-component',
+      ) as HTMLElement;
+      const b = webComponent.shadowRoot?.querySelector('b') as HTMLElement;
+      expect(b.textContent).toBe('bar');
+    });
+
     // TODO: This test should work after this happydom feat about ElementInternals
     // https://github.com/capricorn86/happy-dom/issues/1419
     it.todo('it should work associating a form to the custom element', () => {

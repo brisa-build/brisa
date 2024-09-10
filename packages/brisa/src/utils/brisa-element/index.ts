@@ -221,8 +221,8 @@ export default function brisaElement(
         children: Children,
         parent: HTMLElement | DocumentFragment,
       ) {
-        if ((children as any)?.type !== PORTAL) return [children, parent];
-        const { element, target } = (children as any).props;
+        if ((children as any)?.[0] !== PORTAL) return [children, parent];
+        const { element, target } = (children as any)[1];
         return [element, target];
       }
 

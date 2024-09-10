@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Baz from './baz';
 
 export default function Bar() {
