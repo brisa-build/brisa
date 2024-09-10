@@ -28,6 +28,6 @@
     "pnpm": "please-use-bun"
   },
   "devDependencies": {
-    "brisa": "latest"
+    "brisa": "0.0.206-alpha.1"
   }
 }

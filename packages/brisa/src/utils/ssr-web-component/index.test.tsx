@@ -811,5 +811,22 @@ describe('utils', () => {
       expect(output[0]).toBe(selector);
       expect(output[2][0][2][0][2][0][0]).toBe('native-some-example');
     });
+
+    it('should be possible to use JSX as a web component attribute', async () => {
+      const Component = ({ foo }: any) => <div>{foo}</div>;
+      const selector = 'web-component';
+      const output = (await SSRWebComponent(
+        {
+          Component,
+          selector,
+          foo: <span id="server-part">bar</span>,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(output[2][0][2][0][2][0]).toBe('span');
+      expect(output[2][0][2][0][2][2]).toBe('bar');
+    });
   });
 });

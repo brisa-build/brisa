@@ -9,11 +9,15 @@ import {
   type Mock,
 } from 'bun:test';
 import fs from 'node:fs';
+import * as wt from 'node:worker_threads';
 import path from 'node:path';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import compileFiles from '.';
 import { getConstants } from '@/constants';
 import { toInline } from '@/helpers';
 import { greenLog } from '@/utils/log/log-color';
+import renderToString from '../render-to-string';
+import { jsx } from '@/jsx-runtime';
 
 const DIR = import.meta.dir;
 const HASH = 123456;
@@ -940,5 +944,67 @@ describe('utils', () => {
   ${info}
 `);
     expect(logOutput).toContain(expected);
+  });
+
+  it('should compile server JSX to be compatible with client JSX', async () => {
+    const SRC_DIR = path.join(FIXTURES, 'with-jsx-as-wc-attribute');
+
+    const constants = getConstants();
+
+    globalThis.mockConstants = {
+      ...constants,
+      PAGES_DIR: path.join(SRC_DIR, 'pages'),
+      BUILD_DIR: path.join(SRC_DIR, 'out'),
+      IS_PRODUCTION: true,
+      IS_DEVELOPMENT: false,
+      SRC_DIR,
+      ASSETS_DIR: path.join(SRC_DIR, 'out', 'public'),
+    };
+
+    mockConsoleLog.mockImplementation(() => {});
+
+    const { success, logs } = await compileFiles();
+
+    expect(logs).toBeEmpty();
+    expect(success).toBe(true);
+
+    const logOutput = minifyText(
+      mockConsoleLog.mock.calls
+        .flat()
+        .join('\n')
+        .replace(/chunk-\S*/g, 'chunk-hash'),
+    );
+
+    const info = constants.LOG_PREFIX.INFO;
+    const expected = minifyText(`
+      ${info}
+      ${info}Route           | JS server | JS client (gz)  
+      ${info}----------------------------------------------
+      ${info}λ /pages/index  | 451 B      | ${greenLog('3 kB')}  
+      ${info}
+      ${info}λ Server entry-points
+      ${info}Φ JS shared by all
+      ${info}
+    `);
+
+    expect(logOutput).toBe(expected);
+
+    // Check its compatibility (WC with JSX attribute from server)
+    const serverFilePath = path.join(SRC_DIR, 'out', 'pages', 'index.js');
+    const HomePage = await import(serverFilePath).then((m) => m.default);
+    const clientHome = await Bun.file(
+      path.join(SRC_DIR, 'out', 'pages-client', `index-${HASH}.js`),
+    ).text();
+
+    const serverHTML = await renderToString(jsx(HomePage, {}));
+
+    expect(serverHTML).toBe('-');
+
+    GlobalRegistrator.register();
+
+    document.body.innerHTML = serverHTML + `<script>${clientHome}</script>`;
+
+    expect(document.body.innerHTML).toBe('-');
+    GlobalRegistrator.unregister();
   });
 });
