@@ -769,7 +769,7 @@ export type ResponseHeaders = (
 
 export type Primitives = string | number | boolean | undefined | null;
 
-export type Type = string | number | ComponentType;
+export type Type = string | number | ComponentType | null;
 
 export interface ComponentType<
   T extends Record<string, unknown> = Record<string, unknown>,

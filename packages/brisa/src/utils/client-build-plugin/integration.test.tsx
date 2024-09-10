@@ -9,6 +9,7 @@ import dangerHTML from '@/utils/danger-html';
 import { serialize } from '@/utils/serialization';
 import createContext from '@/utils/create-context';
 import type { WebContextPlugin } from '@/types';
+import { jsx, Fragment } from '@/jsx-runtime';
 
 declare global {
   interface Window {
@@ -5930,6 +5931,25 @@ describe('integration', () => {
       expect(fooComponent?.shadowRoot?.innerHTML).toBe('<div>foobaz</div>');
     });
 
+    it('should work with a fragment with an space between elements', () => {
+      const code = `
+        export default function FooComponent() {
+          return <> <div>some div</div><span>some span</span></>;
+        }
+      `;
+      document.body.innerHTML = `<foo-component />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/foo-component.tsx');
+
+      const fooComponent = document.querySelector(
+        'foo-component',
+      ) as HTMLElement;
+
+      expect(fooComponent?.shadowRoot?.innerHTML).toBe(
+        ' <div>some div</div><span>some span</span>',
+      );
+    });
+
     it('should be possible to pass an array of jsx as attribute', () => {
       const code = `
         export default function WebComponent({ foo }) {
@@ -5964,6 +5984,62 @@ describe('integration', () => {
       ) as HTMLElement;
       const b = webComponent.shadowRoot?.querySelector('b') as HTMLElement;
       expect(b.textContent).toBe('bar');
+    });
+
+    it('should be possible to use jsx with Server Components as attribute', async () => {
+      // @ts-ignore
+      const el = JSON.stringify(<div>Server Component</div>);
+      const code = `
+        export default function WebComponent({ foo }) {
+          return foo;
+        }
+      `;
+
+      document.body.innerHTML = `<web-component foo='${el}' />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/web-component.tsx');
+
+      const webComponent = document.querySelector(
+        'web-component',
+      ) as HTMLElement;
+
+      expect(normalizeHTML(webComponent.shadowRoot?.innerHTML!)).toBe(
+        normalizeHTML('<div>Server Component</div>'),
+      );
+
+      expect(webComponent.shadowRoot?.textContent).toBe('Server Component');
+    });
+
+    it('should be possible to use jsx with Server Components as attribute with a fragment with an space', async () => {
+      const el = JSON.stringify(
+        // @ts-ignore
+        <>
+          {' '}
+          {/* @ts-ignore */}
+          <div>some div</div>
+          {/* @ts-ignore */}
+          <span>some span</span>
+        </>,
+      );
+      const code = `
+        export default function WebComponent({ foo }) {
+          return foo;
+        }
+      `;
+
+      document.body.innerHTML = `<web-component foo='${el}' />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/web-component.tsx');
+
+      const webComponent = document.querySelector(
+        'web-component',
+      ) as HTMLElement;
+
+      expect(normalizeHTML(webComponent.shadowRoot?.innerHTML!)).toBe(
+        normalizeHTML(' <div>some div</div><span>some span</span>'),
+      );
+
+      expect(webComponent.shadowRoot?.textContent).toBe(' some divsome span');
     });
 
     // TODO: This test should work after this happydom feat about ElementInternals
