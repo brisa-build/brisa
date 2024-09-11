@@ -7,6 +7,12 @@ import type { RequestContext } from '@/types';
 import { logError } from '@/utils/log/log-build';
 import { redirect } from '@/utils/redirect';
 
+type Result = {
+  pagesRouter: ReturnType<typeof getRouteMatcher>;
+  rootRouter: ReturnType<typeof getRouteMatcher>;
+  response?: Response;
+};
+
 const TRAILING_SLASH_REGEX = /\/$/;
 
 export default function handleI18n(req: RequestContext): {
@@ -32,14 +38,14 @@ export default function handleI18n(req: RequestContext): {
   const [, localeFromUrl] = url.pathname.split('/');
   const pathname = url.pathname.replace(TRAILING_SLASH_REGEX, '');
 
-  const routers = {
+  const result: Result = {
     pagesRouter: getRouteMatcher(PAGES_DIR, RESERVED_PAGES, locale),
     rootRouter: getRouteMatcher(BUILD_DIR, undefined, locale),
   };
 
   // Redirect to default locale if there is no locale in the URL
   if (localeFromUrl !== locale) {
-    const { route } = routers.pagesRouter.match(req);
+    const { route } = result.pagesRouter.match(req);
     const translatedRoute =
       (pages as any)?.[route?.name!]?.[locale] ?? pathname;
     const [domain, domainConf] =
@@ -53,7 +59,7 @@ export default function handleI18n(req: RequestContext): {
       ? `${domainConf?.protocol || 'https'}://${domain}${finalPathname}`
       : finalPathname;
 
-    return { response: redirect(location) };
+    result.response = redirect(location);
   }
 
   // Inject messages from overrideMessages callback
@@ -98,11 +104,11 @@ export default function handleI18n(req: RequestContext): {
   };
 
   if (pages) {
-    routers.pagesRouter = adaptRouterToPageTranslations(
+    result.pagesRouter = adaptRouterToPageTranslations(
       pages,
-      routers.pagesRouter,
+      result.pagesRouter,
     );
   }
 
-  return routers;
+  return result;
 }
