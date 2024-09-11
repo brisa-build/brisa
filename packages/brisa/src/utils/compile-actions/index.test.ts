@@ -2771,7 +2771,7 @@ describe('utils', () => {
     });
 
     it.todo(
-      'should work mixing elements with element generatos and components',
+      'should work mixing elements with element generators and components',
       () => {
         const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
