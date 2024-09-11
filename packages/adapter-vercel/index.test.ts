@@ -559,6 +559,103 @@ describe('adapter-vercel', () => {
         },
       });
     });
+
+    it('should create a filesystem handle when _404 page in i18n pages is present', async () => {
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        'en/index.html',
+        'en/_404.html',
+        'es/index.html',
+        'es/_404.html',
+      ]);
+
+      const { adapt } = vercelAdapter();
+      await adapt(
+        {
+          ...brisaConstants,
+          I18N_CONFIG: {
+            locales: ['en', 'es'],
+            defaultLocale: 'en',
+          },
+        },
+        generatedMap,
+      );
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            status: 308,
+            headers: {
+              Location: '/en',
+            },
+          },
+          {
+            src: '/en',
+            dest: '/en/',
+          },
+          {
+            src: '/en/',
+            status: 308,
+            headers: {
+              Location: '/en',
+            },
+          },
+          {
+            src: '/en/_404',
+            dest: '/en/_404/',
+          },
+          {
+            src: '/en/_404/',
+            status: 308,
+            headers: {
+              Location: '/en/_404',
+            },
+          },
+          {
+            src: '/es',
+            dest: '/es/',
+          },
+          {
+            src: '/es/',
+            status: 308,
+            headers: {
+              Location: '/es',
+            },
+          },
+          {
+            src: '/es/_404',
+            dest: '/es/_404/',
+          },
+          {
+            src: '/es/_404/',
+            status: 308,
+            headers: {
+              Location: '/es/_404',
+            },
+          },
+          {
+            handle: 'filesystem',
+          },
+          { src: '/(.*)', status: 404, dest: '/en/_404' },
+        ],
+        overrides: {
+          'en/index.html': {
+            path: 'en',
+          },
+          'en/_404.html': {
+            path: 'en/_404',
+          },
+          'es/index.html': {
+            path: 'es',
+          },
+          'es/_404.html': {
+            path: 'es/_404',
+          },
+        },
+      });
+    });
   });
 });
 
@@ -577,7 +674,11 @@ async function createBuildFixture(
   for (const file of staticFiles) {
     const folders = file.split(path.sep).slice(0, -1);
     for (let i = 1; i <= folders.length; i++) {
-      await fs.mkdir(path.join(staticFolder, ...folders.slice(0, i)));
+      const folder = path.join(staticFolder, ...folders.slice(0, i));
+
+      if (!(await fs.exists(folder))) {
+        await fs.mkdir(folder);
+      }
     }
     await fs.writeFile(path.join(staticFolder, file), '');
     map.set(file, [file]);

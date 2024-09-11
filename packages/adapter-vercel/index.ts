@@ -26,7 +26,8 @@ export default function vercelAdapter({
 }: Config = {}): Adapter {
   return {
     name: 'vercel',
-    async adapt({ CONFIG, ROOT_DIR, BUILD_DIR }, generatedMap) {
+    async adapt({ CONFIG, ROOT_DIR, BUILD_DIR, I18N_CONFIG }, generatedMap) {
+      const defaultLocale = I18N_CONFIG?.defaultLocale;
       const vercelFolder = path.join(ROOT_DIR, '.vercel');
       const outputFolder = path.join(vercelFolder, 'output');
       const configPath = path.join(outputFolder, 'config.json');
@@ -97,7 +98,7 @@ export default function vercelAdapter({
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {
-        let has404 = false;
+        let page404 = '';
         const pages = Array.from(
           generatedMap?.values() ?? [],
         ).flat() as string[];
@@ -107,19 +108,31 @@ export default function vercelAdapter({
           const page = originalPage.replace(/^\//, '');
 
           if (page === 'index.html') {
-            return [
-              {
-                src: '/',
-                dest: '/index.html',
-              },
-            ];
+            return defaultLocale
+              ? [
+                  {
+                    src: '/',
+                    status: 308,
+                    headers: {
+                      Location: `/${defaultLocale}`,
+                    },
+                  },
+                ]
+              : [
+                  {
+                    src: '/',
+                    dest: '/index.html',
+                  },
+                ];
           }
 
           const pageFile = page.replace(REGEX_INDEX_HTML, '');
           const src = `/${pageFile}${sepSrc}`;
           const dest = `/${pageFile}${sepDest}`;
 
-          has404 = has404 || pageFile === '_404';
+          if (pageFile.endsWith('_404')) {
+            page404 = defaultLocale ? `/${defaultLocale}/_404` : '/_404';
+          }
 
           return [
             {
@@ -140,6 +153,9 @@ export default function vercelAdapter({
 
         for (const originalPage of pages) {
           const page = originalPage.replace(/^\//, '');
+
+          if (page === 'index.html' && defaultLocale) continue;
+
           overrides[page] = {
             path: page.replace(REGEX_INDEX_HTML, ''),
           };
@@ -177,12 +193,12 @@ export default function vercelAdapter({
           );
         }
 
-        if (!useFileSystem && has404) {
+        if (!useFileSystem && page404) {
           routes.push(
             {
               handle: 'filesystem',
             },
-            { src: '/(.*)', status: 404, dest: '/_404' },
+            { src: '/(.*)', status: 404, dest: page404 },
           );
         }
 
