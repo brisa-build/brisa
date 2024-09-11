@@ -282,14 +282,14 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
     );
   });
 
-  it("should return 404 page without redirect to the locale if the page doesn't exist", async () => {
+  it("should return 404 page without redirect to the locale if the page doesn't exist with the defaultLocale", async () => {
     const response = await testRequest(
       new Request(`http://localhost:1234${basePath}/not-found-page`),
     );
@@ -300,7 +300,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
@@ -339,7 +339,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
@@ -364,7 +364,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
@@ -382,7 +382,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
@@ -921,7 +921,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
@@ -940,7 +940,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
