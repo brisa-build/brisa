@@ -61,13 +61,19 @@ const config: Configuration = {
    * Default: 'bun'
    */
   output: "static", // Output type of the application
+
+  /**
+   * `external` configuration
+   * Default: undefined (no external dependencies)
+   */
+  external: ["lightningcss"],
 };
 
 // Export the configuration as the default export
 export default config satisfies Configuration;
 ```
 
-## `trailingSlash`
+## [`trailingSlash`](/building-your-application/configuring/trailing-slash)
 
 The `trailingSlash` option allows you to add a trailing slash to all URLs. This is useful when you want to enforce a trailing slash on all URLs.
 
@@ -75,7 +81,7 @@ The `trailingSlash` option allows you to add a trailing slash to all URLs. This 
 >
 > More information about the trailing slash can be found in the [Configuration](/building-your-application/configuring/trailing-slash) documentation.
 
-## `assetPrefix`
+## [`assetPrefix`](/building-your-application/configuring/asset-prefix)
 
 The `assetPrefix` option allows you to add a prefix to all assets. This is useful when you want to serve assets from a CDN or a different domain.
 
@@ -83,7 +89,7 @@ The `assetPrefix` option allows you to add a prefix to all assets. This is usefu
 >
 > More information about the asset prefix can be found in the [Configuration](/building-your-application/configuring/asset-prefix) documentation.
 
-## `extendPlugins`
+## [`extendPlugins`](/building-your-application/configuring/plugins)
 
 The `extendPlugins` option allows you to add additional plugins to the Brisa build pipeline. This is useful when you want to extend the default behavior of the build process.
 
@@ -91,7 +97,7 @@ The `extendPlugins` option allows you to add additional plugins to the Brisa bui
 >
 > More information about the asset prefix can be found in the [Configuration](/building-your-application/configuring/plugins) documentation.
 
-## `basePath`
+## [`basePath`](/building-your-application/configuring/base-path)
 
 The `basePath` option allows you to set a base path for the application. This is useful when you want to deploy the application under a sub-path of a domain.
 
@@ -99,7 +105,7 @@ The `basePath` option allows you to set a base path for the application. This is
 >
 > More information about the base path can be found in the [Configuration](/building-your-application/configuring/base-path) documentation.
 
-## `tls`
+## [`tls`](/building-your-application/configuring/tls)
 
 The `tls` option allows you to enable HTTPS for the application. This is useful when you want to serve the application over a secure connection.
 
@@ -107,9 +113,13 @@ The `tls` option allows you to enable HTTPS for the application. This is useful 
 >
 > More information about the TLS configuration can be found in the [Configuration](/building-your-application/configuring/tls) documentation.
 
-## `output`
+## [`output`](/building-your-application/configuring/output)
 
 The `output` option allows you to set the output type of the application. This is useful when you want to change the output directory of the application.
+
+## [`external`](/building-your-application/configuring/external)
+
+The `external` option allows you to define external dependencies that should not be included in the final bundle. This is useful for libraries that are already included in the runtime environment, or for libraries that should be resolved at runtime.
 
 > [!NOTE]
 >
