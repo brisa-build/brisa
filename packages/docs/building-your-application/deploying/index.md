@@ -27,7 +27,8 @@ In this section, you will learn how to deploy your Brisa application to producti
 **_Non-Bun runtime compatible_**
 
 - [Deploy Brisa app to **Vercel**](/building-your-application/deploying/vercel)
-- [Deploy Brisa app to **Netlify**](/building-your-application/deploying/netlify)
+- *Netlify* - Coming soon
+- *Cloudflare Pages* - Coming soon
 
 ## Custom Adapters
 

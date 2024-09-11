@@ -390,10 +390,14 @@ export default defineConfig({
                 text: 'Vercel',
                 link: '/building-your-application/deploying/vercel',
               },
-              {
-                text: 'Netlify',
-                link: '/building-your-application/deploying/netlify',
-              },
+              // {
+              //   text: 'Netlify',
+              //   link: '/building-your-application/deploying/netlify',
+              // },
+              // {
+              //   text: 'Cloudflare',
+              //   link: '/building-your-application/deploying/clourflare',
+              // },
               {
                 text: 'Writing a custom adapter',
                 link: '/building-your-application/deploying/writing-a-custom-adapter',
