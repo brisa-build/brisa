@@ -516,6 +516,49 @@ describe('adapter-vercel', () => {
         await fs.readdir(path.join(vercelDir, 'output', 'static')),
       ).toEqual(['index.html', 'about.html']);
     });
+
+    it('should create a filesystem handle when _404 page is present', async () => {
+      const generatedMap = await createBuildFixture([
+        'index.html',
+        '_404.html',
+      ]);
+
+      const { adapt } = vercelAdapter();
+      await adapt(brisaConstants, generatedMap);
+      expect(logError).not.toHaveBeenCalled();
+      expect(JSON.parse(await fs.readFile(outputConfigPath, 'utf-8'))).toEqual({
+        version: 3,
+        routes: [
+          {
+            src: '/',
+            dest: '/index.html',
+          },
+          {
+            src: '/_404',
+            dest: '/_404/',
+          },
+          {
+            src: '/_404/',
+            status: 308,
+            headers: {
+              Location: '/_404',
+            },
+          },
+          {
+            handle: 'filesystem',
+          },
+          { src: '/(.*)', status: 404, dest: '/_404' },
+        ],
+        overrides: {
+          'index.html': {
+            path: '',
+          },
+          '_404.html': {
+            path: '_404',
+          },
+        },
+      });
+    });
   });
 });
 

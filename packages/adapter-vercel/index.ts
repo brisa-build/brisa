@@ -97,6 +97,7 @@ export default function vercelAdapter({
       }
 
       async function adaptStaticOutput({ useFileSystem = false } = {}) {
+        let has404 = false;
         const pages = Array.from(
           generatedMap?.values() ?? [],
         ).flat() as string[];
@@ -117,6 +118,8 @@ export default function vercelAdapter({
           const pageFile = page.replace(REGEX_INDEX_HTML, '');
           const src = `/${pageFile}${sepSrc}`;
           const dest = `/${pageFile}${sepDest}`;
+
+          has404 = has404 || pageFile === '_404';
 
           return [
             {
@@ -171,6 +174,15 @@ export default function vercelAdapter({
                 dest: '/fn',
               },
             ],
+          );
+        }
+
+        if (!useFileSystem && has404) {
+          routes.push(
+            {
+              handle: 'filesystem',
+            },
+            { src: '/(.*)', status: 404, dest: '/_404' },
           );
         }
 
