@@ -33,8 +33,6 @@ export function isDangerHTML(content: unknown[]): boolean {
   );
 }
 
-Fragment.__isFragment = true;
-
 export {
   createNode as jsx,
   createNode as jsxs,
