@@ -170,7 +170,7 @@ async function enqueueDuringRendering(
     const [type, propsWithoutChildren, children] = elementContent as any;
     const props = { ...propsWithoutChildren, children };
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
-    const isFragment = type?.__isFragment || type === null;
+    const isFragment = type === null;
     const isTagToIgnore = isFragment || isServerProvider;
     const isWebComponent = type?.__isWebComponent || props?.__isWebComponent;
     const isElement = typeof type === 'string';

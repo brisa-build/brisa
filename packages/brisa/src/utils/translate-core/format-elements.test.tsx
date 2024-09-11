@@ -59,7 +59,7 @@ describe('utils', () => {
       const element = output[1] as any;
 
       expect(output[0]).toBe('this is a ');
-      expect(element[0].toString()).toBe('(a)=>p(null,a)');
+      expect(element[0].toString()).toBe('(n)=>i(null,n)');
       expect(element[2]).toBe('test');
     });
 
