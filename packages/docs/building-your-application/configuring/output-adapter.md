@@ -27,6 +27,5 @@ export default {
 #### Documentation
 
 - [Vercel Adapter](/building-your-application/deploying/vercel)
-
-----
-TODO: Add Netlify and others.
+- *Netlify Adapter (coming soon)*
+- *Cloudflare Adapter (coming soon)*
