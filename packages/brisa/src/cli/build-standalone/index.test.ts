@@ -166,6 +166,39 @@ describe('cli/buildStandalone', () => {
     expectFileIsWebComponentClient(wcClientPath);
     expectFileIsWebComponentServer(wcServerPath);
   });
+
+  it('should log an error building a SC with a server action', async () => {
+    const standaloneWC: string[] = [];
+    const standaloneSCPath = path.resolve(
+      FIXTURES,
+      'lib',
+      'foo-with-action.tsx',
+    );
+    const standaloneSC = [standaloneSCPath];
+
+    await buildStandalone(standaloneWC, standaloneSC);
+
+    expect(mockLog.mock.calls[0][0]).toBe(constants.LOG_PREFIX.WAIT);
+    expect(mockLog.mock.calls[0][1]).toBe(
+      `🚀 building your standalone components...`,
+    );
+
+    expect(mockLog.mock.calls[3][0]).toBe(constants.LOG_PREFIX.ERROR);
+    expect(mockLog.mock.calls[3][1]).toContain(
+      `The next Server Component has Server Actions: ${standaloneSCPath}`,
+    );
+    expect(mockLog.mock.calls[4][0]).toBe(constants.LOG_PREFIX.ERROR);
+    expect(mockLog.mock.calls[4][1]).toBe(
+      'Server Actions in standalone components are not supported for security reasons',
+    );
+    expect(mockLog.mock.calls[5][0]).toBe(constants.LOG_PREFIX.ERROR);
+    expect(mockLog.mock.calls[6][1]).toBe(
+      'Server Component build documentation: https://brisa.build/api-reference/brisa-cli/brisa-build#component-build',
+    );
+
+    const scPath = path.resolve(BUILD_DIR, 'lib', 'foo-with-action.server.js');
+    expectFileIsServerComponent(scPath);
+  });
 });
 
 function expectFileIsWebComponentClient(filePath: string) {

@@ -235,6 +235,10 @@ import { jsx } from 'brisa/jsx-runtime';
 const html = await renderToString(jsx(Component, { foo: 'bar' }));
 ```
 
+> [!WARNING]
+>
+> Server Actions are not supported in standalone components for security reasons.
+
 ## Skip open Tauri app
 
 When the `output` is set to `desktop`, `ios`, or `android` in `brisa.config.ts`, the build is done twice:
