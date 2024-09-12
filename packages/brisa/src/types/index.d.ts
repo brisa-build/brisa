@@ -96,7 +96,7 @@ export interface RequestContext extends Request {
    *
    * - [How to use `store`](https://brisa.build/building-your-application/components-details/server-components#store-store-method)
    */
-  store: Map<string | symbol, unknown> & {
+  store: Map<string | symbol, any> & {
     /**
      * Description:
      *
@@ -730,7 +730,7 @@ type WebContextPluginExtras = {
    *
    * This is the store after applied the `transferToClient` method.
    */
-  transferredStore: Map<string | symbol, unknown>;
+  transferredStore: Map<string | symbol, any>;
 
   /**
    *
@@ -1352,7 +1352,7 @@ export type I18n = {
 export type ContextProvider<T> = {
   context: BrisaContext<T>;
   value: T;
-  store: Map<string | symbol, unknown>;
+  store: Map<string | symbol, any>;
   webComponentSymbol?: symbol;
 };
 
