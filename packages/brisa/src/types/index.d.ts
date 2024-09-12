@@ -818,7 +818,7 @@ export type Primitives = symbol | string | number | boolean | undefined | null;
 
 export type JSXType = string | number | ComponentType | null;
 
-export type BrisaElement = [JSXType, Props, BrisaElement[] | undefined];
+export type BrisaElement = [JSXType, Props, BrisaElement[] | Primitives];
 
 export interface ComponentType<
   T extends Record<string, unknown> = Record<string, unknown>,
@@ -1212,7 +1212,7 @@ export interface I18nDictionary {
 }
 
 export interface TranslationQuery {
-  [name: string]: TranslationQuery | string;
+  [name: string]: TranslationQuery | string | number;
 }
 
 export type I18nDomainConfig = {
@@ -1433,7 +1433,7 @@ export function createContext<T>(defaultValue?: T): BrisaContext<T>;
  *
  * - [How to use `dangerHTML`](https://brisa.build/api-reference/functions/dangerHTML)
  */
-export function dangerHTML(html: string): DangerHTMLOutput;
+export function dangerHTML(html: string): JSX.Element;
 
 /**
  * Description:
@@ -1492,8 +1492,6 @@ export function navigate(
   page: RouteToNavigate,
   options?: NavigateOptions,
 ): never;
-
-type DangerHTMLOutput = ['HTML', { html: string }, null];
 
 /**
  * Description:

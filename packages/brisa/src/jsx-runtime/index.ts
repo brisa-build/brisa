@@ -1,9 +1,9 @@
-import type { BrisaElement, JSXType, Props } from '@/types';
+import type { BrisaElement, JSXType, Primitives, Props } from '@/types';
 
 const JSX_SYMBOL = Symbol.for('isJSX');
 
 function Fragment(props: Props<{
-  children?: BrisaElement;
+  children?: BrisaElement | Primitives;
 }>) {
   return createNode(null, props);
 }
@@ -11,7 +11,7 @@ function Fragment(props: Props<{
 function createNode(
   type: JSXType,
   { children, ...props }: Props & {
-    children?: (BrisaElement & { [JSX_SYMBOL]?: boolean })[] | BrisaElement & { [JSX_SYMBOL]?: boolean };
+    children?: (BrisaElement & { [JSX_SYMBOL]?: boolean })[] | BrisaElement & { [JSX_SYMBOL]?: boolean } | Primitives;
   },
   key?: string,
 ): { [JSX_SYMBOL]: boolean } & BrisaElement {
