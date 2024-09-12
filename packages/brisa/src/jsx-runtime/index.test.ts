@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'bun:test';
 import { Fragment as BrisaFragment, jsx } from '.';
+import type { BrisaElement } from '@/types';
 
 describe('utils', () => {
   describe('jsx (createNode) SERVER', () => {
@@ -57,7 +58,8 @@ describe('utils', () => {
   });
 });
 
-const isTransformedJSX = ([type, props, children]: any) =>
+const JSX_SYMBOL = Symbol.for('isJSX');
+const isTransformedJSX = ([type, props, children]: BrisaElement) =>
   Object.assign([type, { key: undefined, ...props }, children], {
-    [Symbol.for('isJSX')]: true,
-  });
+    [JSX_SYMBOL]: true,
+  }) as { [JSX_SYMBOL]: boolean } & BrisaElement;
