@@ -1,24 +1,21 @@
 import type { RequestContext } from 'brisa';
-import { rerenderInAction, RenderInitiator } from 'brisa/server';
+import { rerenderInAction } from 'brisa/server';
 
 export default function CounterServer(
   { initialValue = 0 }: { initialValue: number },
-  { store, renderInitiator }: RequestContext,
+  { store }: RequestContext,
 ) {
-  if (renderInitiator !== RenderInitiator.SERVER_ACTION) {
-    store.set('count', initialValue);
-  }
-
+  if (!store.has('count')) store.set('count', initialValue);
   store.transferToClient(['count']);
 
   function increment() {
     store.set('count', store.get('count') + 1);
-    rerenderInAction({ type: 'page' });
+    rerenderInAction({ type: 'targetComponent' });
   }
 
   function decrement() {
     store.set('count', store.get('count') - 1);
-    rerenderInAction({ type: 'page' });
+    rerenderInAction({ type: 'targetComponent' });
   }
 
   return (
