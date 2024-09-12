@@ -219,7 +219,7 @@ function objectInterpolation({
   query?: TranslationQuery | null;
   config: I18nConfig;
   locale: string;
-}): any {
+}): Record<string, unknown> {
   if (!query || Object.keys(query).length === 0) return obj;
   Object.keys(obj).forEach((key) => {
     if (obj[key] instanceof Object)

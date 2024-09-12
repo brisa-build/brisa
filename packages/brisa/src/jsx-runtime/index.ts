@@ -1,16 +1,20 @@
-import type { Type, Props } from '@/types';
+import type { BrisaElement, JSXType, Props } from '@/types';
 
 const JSX_SYMBOL = Symbol.for('isJSX');
 
-function Fragment(props: Props): any {
+function Fragment(props: Props<{
+  children?: BrisaElement;
+}>) {
   return createNode(null, props);
 }
 
 function createNode(
-  type: Type,
-  { children, ...props }: Props,
+  type: JSXType,
+  { children, ...props }: Props & {
+    children?: (BrisaElement & { [JSX_SYMBOL]?: boolean })[] | BrisaElement & { [JSX_SYMBOL]?: boolean };
+  },
   key?: string,
-): any[] & { [x: symbol]: boolean } {
+): { [JSX_SYMBOL]: boolean } & BrisaElement {
   let child = children;
 
   if (Array.isArray(children) && !isArrawOfJSXContent(children)) {
@@ -21,10 +25,10 @@ function createNode(
 
   return Object.assign([type, { ...props, key }, child], {
     [JSX_SYMBOL]: true,
-  }) as unknown as any[] & { [x: symbol]: boolean };
+  }) as { [JSX_SYMBOL]: boolean } & BrisaElement;
 }
 
-export function isArrawOfJSXContent(content: unknown): content is JSX.Element {
+export function isArrawOfJSXContent(content: unknown): content is BrisaElement & { [JSX_SYMBOL]?: boolean } {
   return (
     Array.isArray(content) && (JSX_SYMBOL in content || isDangerHTML(content))
   );
@@ -32,7 +36,7 @@ export function isArrawOfJSXContent(content: unknown): content is JSX.Element {
 
 export function isDangerHTML(content: unknown[]): boolean {
   return (
-    content?.[0] === 'HTML' && typeof (content[1] as any)?.html === 'string'
+    content?.[0] === 'HTML' && typeof (content[1] as { html?: string })?.html === 'string'
   );
 }
 

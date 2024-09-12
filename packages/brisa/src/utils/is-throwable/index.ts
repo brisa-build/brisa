@@ -1,3 +1,4 @@
+import type { Throwable } from '@/types';
 import { isNavigateThrowable } from '@/utils/navigate/utils';
 import { isNotFoundError } from '@/utils/not-found';
 import { isRerenderThrowable } from '@/utils/rerender-in-action/is-rerender-throwable';
@@ -15,6 +16,6 @@ const throwable = {
   isRerender: isRerenderThrowable,
   isNavigate: isNavigateThrowable,
   isNotFound: isNotFoundError,
-};
+} satisfies Throwable;
 
 export default throwable;
