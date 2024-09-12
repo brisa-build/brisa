@@ -9,7 +9,7 @@ import type {
 } from '@/../build/_brisa/types';
 import type { BunPlugin, Server, ServerWebSocket, TLSOptions } from 'bun';
 import type * as CSS from 'csstype';
-import * as tls from 'node:tls';
+import type * as tls from 'node:tls';
 
 declare module 'bun' {
   interface Env {
@@ -96,7 +96,7 @@ export interface RequestContext extends Request {
    *
    * - [How to use `store`](https://brisa.build/building-your-application/components-details/server-components#store-store-method)
    */
-  store: Map<string | symbol, any> & {
+  store: Map<string | symbol, unknown> & {
     /**
      * Description:
      *
@@ -730,7 +730,7 @@ type WebContextPluginExtras = {
    *
    * This is the store after applied the `transferToClient` method.
    */
-  transferredStore: Map<string | symbol, any>;
+  transferredStore: Map<string | symbol, unknown>;
 
   /**
    *
@@ -814,9 +814,11 @@ export type ResponseHeaders = (
   status: number,
 ) => HeadersInit;
 
-export type Primitives = string | number | boolean | undefined | null;
+export type Primitives = symbol | string | number | boolean | undefined | null;
 
-export type Type = string | number | ComponentType | null;
+export type JSXType = string | number | ComponentType | null;
+
+export type BrisaElement = [JSXType, Props, BrisaElement[] | undefined];
 
 export interface ComponentType<
   T extends Record<string, unknown> = Record<string, unknown>,
@@ -970,7 +972,7 @@ interface Throwable {
  *
  * - [How to use `throwable`](https://brisa.build/api-reference/functions/throwable)
  */
-export const throwable: Throwable;
+export const throwable = Throwable;
 
 export type NodeTLSOptions = Parameters<typeof tls.createSecureContext>[0];
 
@@ -1210,7 +1212,7 @@ export interface I18nDictionary {
 }
 
 export interface TranslationQuery {
-  [name: string]: any;
+  [name: string]: TranslationQuery | string;
 }
 
 export type I18nDomainConfig = {
@@ -1350,7 +1352,7 @@ export type I18n = {
 export type ContextProvider<T> = {
   context: BrisaContext<T>;
   value: T;
-  store: Map<string | symbol, any>;
+  store: Map<string | symbol, unknown>;
   webComponentSymbol?: symbol;
 };
 
@@ -1597,12 +1599,10 @@ declare global {
       | Primitives
       | JSX.Element[]
       | AsyncGenerator
-      | [Type, Props, JSX.Element]
       | Promise<
           | Primitives
           | JSX.Element[]
           | AsyncGenerator
-          | [Type, Props, JSX.Element]
         >;
 
     interface ElementChildrenAttribute {
@@ -1640,7 +1640,7 @@ declare global {
       children?: JSX.Element;
     }
 
-    export type WebComponentAttributes<T extends (...args: any[]) => any> = {
+    export type WebComponentAttributes<T extends (...args: unknown[]) => unknown> = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
       // The "indicate" attribute is used to control the processing state of the web-component action.
@@ -8073,7 +8073,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#download)
        */
-      download?: any | undefined;
+      download?: unknown | undefined;
       /**
        * The `decoding` attribute is a string attribute that is present on the `<img>` element to specify the decoding process to use.
        *
