@@ -107,18 +107,6 @@ async function compileStandaloneServerComponents(
                     webComponentsSelector[path],
                 });
 
-                if (result.hasActions && !webComponentsSelector[path]) {
-                  logError({
-                    messages: [
-                      `The next Server Component has Server Actions: ${path}`,
-                      'Server Actions in standalone components are not supported for security reasons',
-                    ],
-                    docTitle: 'Server Component build documentation',
-                    docLink:
-                      'https://brisa.build/api-reference/brisa-cli/brisa-build#component-build',
-                  });
-                }
-
                 code = result.code;
               } catch (error) {
                 console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
