@@ -123,6 +123,10 @@ After running the command, you will have a `web-component1.client.js`, `web-comp
 - ***.client.js**: The client-side code of the web component.
 - ***.server.ts**: The server-side code of the web component, used for SSR.
 
+> [!IMPORTANT]
+>
+> Even though it is called "server", it does not mean that it is a "server component", it is still a "web component", which is transformed to be able to do SSR of it, taking into account the [Declarative Shadow DOM](https://web.dev/articles/declarative-shadow-dom) and the access to the [WebContext](/api-reference/components/web-context).
+
 ### Client-side code usage
 
 Example using these web components in Vanilla JavaScript:
