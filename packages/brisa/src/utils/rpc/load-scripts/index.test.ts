@@ -117,5 +117,16 @@ describe('utils', () => {
       expect(mockLog).toHaveBeenCalledWith('second');
       expect(mockLog).toHaveBeenCalledWith('third');
     });
+
+    it('should copy the script with the "type" attribute', async () => {
+      const content =
+        "console.log(!!document.querySelector('script[type=text/javascript]'))";
+      const node = createScript('', content, 'some-id');
+      node.setAttribute('type', 'text/javascript');
+      await loadScripts(node);
+      registerCurrentScripts();
+      expect(mockLog).toBeCalledTimes(1);
+      expect(mockLog.mock.calls[0][0]).toBeTrue();
+    });
   });
 });
