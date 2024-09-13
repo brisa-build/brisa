@@ -304,8 +304,8 @@ export default function HomePage() {
   return <I18nExample />;
 }
 
-function I18nExample({}, { i18n: { t, lang } }) {
-  console.log(lang); // en-US
+function I18nExample({}, { i18n: { t, locale } }) {
+  console.log(locale); // en-US
   return (
     <p>
       {/* Hello, Brisa! */}
