@@ -11,7 +11,6 @@ import { hash } from '@/utils/wyhash';
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = '__brisa_live_reload__';
 const LIVE_RELOAD_COMMAND = 'reload';
-const hashSet = new Set();
 const MAX_HASHES = 100;
 
 // Similar than Bun.nanoseconds, but also working with Node.js
@@ -19,32 +18,22 @@ function nanoseconds() {
   return Number(process.hrtime.bigint());
 }
 
-export async function activateHotReload() {
+async function activateHotReload() {
+  const hashSet = new Set();
   let semaphore = false;
   let waitFilename = '';
 
   async function watchSourceListener(event: any, filename: any) {
     try {
-      const filePath = path.join(SRC_DIR, filename);
-      let hashNum = null;
-
-      if (event !== 'change' && statSync(filePath).size !== 0) return;
-
-      if (existsSync(filePath)) {
-        const buffer = readFileSync(filePath);
-        const arrayBuffer = buffer.buffer.slice(
-          buffer.byteOffset,
-          buffer.byteOffset + buffer.byteLength,
-        );
-        hashNum = hash(arrayBuffer);
-      }
-
-      // Related with:
+      // Compile assets only once (there are some issues with variable fonts)
       // - https://github.com/brisa-build/brisa/issues/227
       // - https://github.com/brisa-build/brisa/issues/228
-      if (!hashNum || hashSet.has(hashNum)) return;
-      if (hashSet.size > MAX_HASHES) hashSet.clear();
-      hashSet.add(hashNum);
+      if (filename.split(path.sep)[0] === 'public') return;
+
+      const filePath = path.join(SRC_DIR, filename);
+
+      if (!existsSync(filePath)) return;
+      if (event !== 'change' && statSync(filePath).size !== 0) return;
 
       console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
       if (semaphore) waitFilename = filename as string;
@@ -77,7 +66,7 @@ export async function activateHotReload() {
       process.execPath,
       [path.join(process.argv[1], '..', '..', 'build.js')],
       {
-        env: process.env,
+        env: Object.assign(process.env, { QUIET_MODE: 'true' }),
         stdio: ['inherit', 'inherit', 'pipe'],
       },
     );
