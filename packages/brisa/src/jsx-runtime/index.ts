@@ -1,7 +1,10 @@
 import type { Type, Props } from '@/types';
 
 const JSX_SYMBOL = Symbol.for('isJSX');
-const Fragment: any = (props: Props) => createNode(null, props);
+
+function Fragment(props: Props): any {
+  return createNode(null, props);
+}
 
 function createNode(
   type: Type,
