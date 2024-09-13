@@ -16,6 +16,7 @@ const outputText = {
 };
 
 export default async function build() {
+  const log = process.env.QUIET_MODE === 'true' ? () => {} : console.log;
   const constants = getConstants();
   const {
     IS_PRODUCTION,
@@ -30,14 +31,14 @@ export default async function build() {
   } = constants;
   const prebuildPath = path.join(ROOT_DIR, 'prebuild');
 
-  console.log(
+  log(
     LOG_PREFIX.INFO,
     `🚀 Brisa ${VERSION}:` +
       (JS_RUNTIME === 'node'
         ? ` Running on Node.js ${process.version}`
         : ` Running on Bun.js ${Bun.version}`),
   );
-  console.log(
+  log(
     LOG_PREFIX.WAIT,
     IS_PRODUCTION
       ? `building your ${outputText[CONFIG.output ?? 'bun']}...`
@@ -60,7 +61,7 @@ export default async function build() {
   if (fs.existsSync(prebuildPath)) {
     const finalPrebuildPath = path.join(BUILD_DIR, 'prebuild');
     fs.cpSync(prebuildPath, finalPrebuildPath, { recursive: true });
-    console.log(
+    log(
       LOG_PREFIX.INFO,
       LOG_PREFIX.TICK,
       `Copied prebuild folder inside build`,
@@ -74,11 +75,11 @@ export default async function build() {
   if (!success) return process.exit(1);
 
   if (IS_PRODUCTION && IS_STATIC_EXPORT) console.log(LOG_PREFIX.INFO);
-  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Compiled successfully!`);
+  log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, `Compiled successfully!`);
 
   if (IS_PRODUCTION && IS_STATIC_EXPORT && pagesSize) {
-    console.log(LOG_PREFIX.INFO);
-    console.log(LOG_PREFIX.WAIT, '📄 Generating static pages...');
+    log(LOG_PREFIX.INFO);
+    log(LOG_PREFIX.WAIT, '📄 Generating static pages...');
     [generated] = (await generateStaticExport()) ?? [];
 
     if (!generated) return process.exit(1);
@@ -107,39 +108,36 @@ export default async function build() {
       }
     }
 
-    console.log(LOG_PREFIX.INFO);
+    log(LOG_PREFIX.INFO);
     logTable(logs);
 
-    console.log(LOG_PREFIX.INFO);
-    console.log(LOG_PREFIX.INFO, '○  (Static)  prerendered as static content');
+    log(LOG_PREFIX.INFO);
+    log(LOG_PREFIX.INFO, '○  (Static)  prerendered as static content');
     if (I18N_CONFIG?.locales?.length) {
-      console.log(LOG_PREFIX.INFO, 'Ω  (i18n) prerendered for each locale');
+      log(LOG_PREFIX.INFO, 'Ω  (i18n) prerendered for each locale');
     }
-    console.log(LOG_PREFIX.INFO);
+    log(LOG_PREFIX.INFO);
 
-    console.log(
+    log(
       LOG_PREFIX.INFO,
       LOG_PREFIX.TICK,
       `Generated static pages successfully!`,
     );
-    console.log(LOG_PREFIX.INFO);
+    log(LOG_PREFIX.INFO);
   }
 
   await compileBrisaInternalsToDoBuildPortable();
 
   if (IS_PRODUCTION && CONFIG.outputAdapter) {
-    console.log(
-      LOG_PREFIX.WAIT,
-      `Adapting output to ${CONFIG.outputAdapter.name}...`,
-    );
+    log(LOG_PREFIX.WAIT, `Adapting output to ${CONFIG.outputAdapter.name}...`);
     await CONFIG.outputAdapter.adapt(constants, generated);
   }
 
   const end = Bun.nanoseconds();
   const ms = ((end - start) / 1e6).toFixed(2);
 
-  if (IS_PRODUCTION) console.log(LOG_PREFIX.INFO, `✨  Done in ${ms}ms.`);
-  else console.log(LOG_PREFIX.INFO, `compiled successfully in ${ms}ms.`);
+  if (IS_PRODUCTION) log(LOG_PREFIX.INFO, `✨  Done in ${ms}ms.`);
+  else log(LOG_PREFIX.INFO, `compiled successfully in ${ms}ms.`);
 }
 
 if (import.meta.main) {

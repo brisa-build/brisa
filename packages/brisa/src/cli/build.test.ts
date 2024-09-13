@@ -319,5 +319,11 @@ describe('cli', () => {
       await build();
       expect(existInternals).toBeTrue();
     });
+
+    it('should not log when process.env.QUIET_MODE is true', async () => {
+      process.env.QUIET_MODE = 'true';
+      await build();
+      expect(mockLog).not.toHaveBeenCalled();
+    });
   });
 });
