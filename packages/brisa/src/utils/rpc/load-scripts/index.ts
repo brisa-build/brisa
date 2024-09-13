@@ -26,7 +26,13 @@ export async function loadScripts(node: Node) {
 
   await $window.lastDiffTransition?.finished;
 
-  const script = node.cloneNode(true) as HTMLScriptElement;
+  const script = $document.createElement('script');
+  const type = (node as HTMLScriptElement).getAttribute('type');
+
+  if (src) script.src = src;
+  if(type)script.setAttribute('type',  type);
+
+  script.innerHTML = (node as HTMLScriptElement).innerHTML;
 
   await scriptLoaded;
 
