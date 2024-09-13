@@ -30,7 +30,7 @@ export async function loadScripts(node: Node) {
   const type = (node as HTMLScriptElement).getAttribute('type');
 
   if (src) script.src = src;
-  if(type)script.setAttribute('type',  type);
+  if (type) script.setAttribute('type', type);
 
   script.innerHTML = (node as HTMLScriptElement).innerHTML;
 
