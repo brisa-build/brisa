@@ -1,4 +1,4 @@
-import { watch, existsSync, statSync, readFileSync } from 'node:fs';
+import { watch, existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { spawnSync } from 'node:child_process';
@@ -6,12 +6,10 @@ import constants from '@/constants';
 import dangerHTML from '@/utils/danger-html';
 import { toInline } from '@/helpers';
 import { logError } from '@/utils/log/log-build';
-import { hash } from '@/utils/wyhash';
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = '__brisa_live_reload__';
 const LIVE_RELOAD_COMMAND = 'reload';
-const MAX_HASHES = 100;
 
 // Similar than Bun.nanoseconds, but also working with Node.js
 function nanoseconds() {
@@ -19,7 +17,6 @@ function nanoseconds() {
 }
 
 async function activateHotReload() {
-  const hashSet = new Set();
   let semaphore = false;
   let waitFilename = '';
 
