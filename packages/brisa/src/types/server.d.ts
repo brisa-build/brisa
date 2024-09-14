@@ -165,3 +165,30 @@ export function serve(options: ServeOptions): {
   hostname: string;
   server: Server;
 };
+
+/**
+ * SSRWebComponent is to render a web component on the server side without the help of the compiler.
+ *
+ * The Brisa compiler already does this work for you, so you can write `<web-component foo="bar" />`
+ * directly without worrying. However, there are cases where you want to have a little more control.
+ * This component is for this, the previous equivalent would be:
+ *
+ * ```tsx
+ * import { SSRWebComponent } from 'brisa/server';
+ * import Component from '@/web-components/web-component';
+ *
+ * // ...
+ * <SSRWebComponent selector="web-component" Component={Component} foo="bar" />
+ * ```
+ *
+ * Docs:
+ *
+ * - [SSRWebComponent](https://brisa.build/api-reference/server-apis/ssr-web-component)
+ */
+export function SSRWebComponent<T>(
+  props: T & {
+    selector: string;
+    Component: ComponentType<T>;
+    children?: JSX.Element;
+  },
+): JSX.Element;
