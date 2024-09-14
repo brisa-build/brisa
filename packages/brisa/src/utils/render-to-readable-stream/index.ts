@@ -391,7 +391,7 @@ async function enqueueDuringRendering(
       }
       if (controller.hasActionRPC) {
         controller.enqueue(
-          `<script src="${compiledPagesPath}/_rpc-${VERSION_HASH}.js"></script>`,
+          `<script src="${compiledPagesPath}/_rpc-${VERSION_HASH}.js" async></script>`,
           suspenseId,
         );
       }

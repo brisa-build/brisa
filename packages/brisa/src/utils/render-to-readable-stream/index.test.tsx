@@ -719,7 +719,7 @@ describe('utils', () => {
         `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js" async></script>`,
       );
     });
 
@@ -752,7 +752,7 @@ describe('utils', () => {
         `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION_HASH}.js" async></script>`,
       );
     });
 
