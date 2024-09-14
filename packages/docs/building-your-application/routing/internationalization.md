@@ -198,7 +198,16 @@ export default function Home({ name }, requestContext) {
 
 :::
 
-```js filename="src/i18n/index.js" switcher
+In `src/i18n`:
+
+
+:::tabs key:file
+
+==TypeScript
+
+
+```ts
+import { I18nConfig } from "brisa";
 import en from "./messages/en";
 import es from "./messages/es";
 
@@ -206,8 +215,11 @@ export default {
   defaultLocale: "en",
   locales: ["en", "es"],
   messages: { en, es },
-};
+} satisfies I18nConfig<typeof en>;
 ```
+
+==src/i18n/messages/en.json
+
 
 ```json filename="src/i18n/messages/en.json" switcher
 {
@@ -216,12 +228,16 @@ export default {
 }
 ```
 
+==src/i18n/messages/es.json
+
 ```json filename="src/i18n/messages/es.json" switcher
 {
   "hello": "¡Hola {{name}}!",
   "strong-hello": "¡Hola <strong>{{name}}</strong>!"
 }
 ```
+
+:::
 
 ## Consume translations
 
