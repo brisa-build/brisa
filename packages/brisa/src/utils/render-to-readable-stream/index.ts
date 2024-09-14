@@ -634,7 +634,7 @@ function getValueOfComponent(
         const isWebComponent = (componentFn as any).__isWebComponent;
         const componentName =
           (isWebComponent ? props.selector : componentFn.name) || 'Component';
-        const title = `Error in SSR of ${componentName} component with props ${JSON.stringify(
+        const title = `Error in SSR of ${componentName} ${isWebComponent ? 'web' : 'server'} component with props ${JSON.stringify(
           props,
         )}`;
         logError({
