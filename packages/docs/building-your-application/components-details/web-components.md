@@ -977,6 +977,14 @@ export function ServerComponent({ name }, requestContext) {
 
 :::
 
+> [!IMPORTANT]
+>
+> There are cases where the compiler may not detect the web component well, either because it is injected with [`dangerHTML`](/api-reference/functions/dangerHTML) or for any other reason. In these cases, you can export a variable with web-components on your page to help the compiler:
+> 
+> ```tsx
+> export const webComponents = [<some-example />]
+> ```
+
 ## Using Server Components in Web Components
 
 It is not possible to use Server Components inside Web Components **directly** (with an import). However, it **is possible** to add Server Components within Web Components. But it can only be done through the prop [**children**](#children) or using [**slots**](#children).
