@@ -62,6 +62,7 @@ export default async function SSRWebComponent(
   } as unknown as RequestContext;
 
   for (const plugin of WEB_CONTEXT_PLUGINS) {
+    // @ts-ignore
     Object.assign(webContext, plugin(webContext));
   }
 
@@ -86,10 +87,12 @@ export default async function SSRWebComponent(
   }
 
   return (
+    // @ts-ignore
     <Selector key={__key} {...props} __isWebComponent>
       {showContent && (
         <template
           shadowrootmode="open"
+          // @ts-ignore
           __skipGlobalCSS={self.shadowRoot.adoptedStyleSheets?.length === 0}
         >
           {content}
