@@ -1027,16 +1027,18 @@ The fact of not adding the locale Brisa takes care of transforming the link:
 
 ==TypeScript
 
-```ts
-function MyComponent({}, { i18n: { t } }) {
+```tsx
+import type { RequestContext } from 'brisa';
+
+function MyComponent({}, { i18n: { t } }: RequestContext) {
   return <a href="/about-us">{t("about-us")}</a>;
 }
 ```
 
 ==JavaScript
 
-```js
-function MyComponent({}, { i18n }) {
+```jsx
+function MyComponent({}, { i18n: { t } }) {
   return <a href="/about-us">{t("about-us")}</a>;
 }
 ```
