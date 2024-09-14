@@ -530,6 +530,10 @@ export default defineConfig({
                 link: '/api-reference/server-apis/serve',
               },
               {
+                text: 'SSRWebComponent',
+                link: '/api-reference/server-apis/ssr-web-component',
+              },
+              {
                 text: 'Node.js APIs',
                 items: [
                   {
