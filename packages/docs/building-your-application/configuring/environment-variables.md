@@ -13,7 +13,7 @@ Brisa comes with built-in support for environment variables thanks to Bun, which
 
 Brisa has built-in support for loading environment variables from `.env.local` into `process.env`.
 
-```txt filename=".env.local"
+```sh filename=".env.local"
 DB_HOST=localhost
 DB_USER=myuser
 DB_PASS=mypassword
@@ -156,7 +156,7 @@ For example, if `NODE_ENV` is `development` and you define a variable in both `.
 
 Brisa supports double quotes, single quotes, and template literal backticks:
 
-```txt#.env
+```js
 FOO='hello'
 FOO="hello"
 FOO=`hello`
@@ -166,7 +166,7 @@ FOO=`hello`
 
 Environment variables are automatically _expanded_. This means you can reference previously-defined variables in your environment variables.
 
-```txt#.env
+```sh
 FOO=world
 BAR=hello$FOO
 ```
@@ -177,7 +177,7 @@ process.env.BAR; // => "helloworld"
 
 This is useful for constructing connection strings or other compound values.
 
-```txt#.env
+```js
 DB_USER=postgres
 DB_PASSWORD=secret
 DB_HOST=localhost
@@ -187,7 +187,7 @@ DB_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME
 
 This can be disabled by escaping the `$` with a backslash.
 
-```txt#.env
+```js
 FOO=world
 BAR=hello\$FOO
 ```
