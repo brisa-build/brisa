@@ -12,7 +12,7 @@ Description: Learn how to containerize a Brisa application with Docker
 
 To _containerize_ our application, we define a `Dockerfile`. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application.
 
-```Dockerfile
+```dockerfile
 # Adjust BUN_VERSION as desired
 ARG BUN_VERSION=1.1.27
 FROM oven/bun:${BUN_VERSION}-slim AS base
@@ -110,7 +110,7 @@ To stop the container, we'll use `docker stop <container-id>`. If you can't find
 
 Next, it will be an extension of the above. Let's start with an example of a monorepo `Dockerfile`:
 
-```Dockerfile
+```dockerfile
 ARG BUN_VERSION=1.1.20
 FROM oven/bun:${BUN_VERSION}-slim AS base
 WORKDIR /app
