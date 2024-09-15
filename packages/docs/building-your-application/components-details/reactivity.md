@@ -8,7 +8,7 @@ The reactivity in Brisa is based on signals. The signals are the [state](/api-re
 
 In order to don't break the reactivity, you have to use the `.value` clause when you want to consume the signal. For example:
 
-```tsx
+```tsx {6-8}
 export default function Counter({}, { state }: WebContext) {
   const count = state<number>(0);
 
@@ -24,7 +24,7 @@ export default function Counter({}, { state }: WebContext) {
 
 It is important to know that using `.value` outside the return of the component will break the reactivity. For example:
 
-```tsx
+```tsx {4-5}
 export default function Counter({}, { state }: WebContext) {
   const count = state<number>(0);
 
@@ -43,7 +43,7 @@ export default function Counter({}, { state }: WebContext) {
 
 However, thanks to compilation-time optimizations, we allow the use of early returns in Brisa without breaking reactivity:
 
-```tsx
+```tsx {4-7}
 export default function Counter({}, { state }: WebContext) {
   const count = state<number>(0);
 
@@ -85,7 +85,7 @@ Props are an special kind of signals optimized in compilation-time. You don't ne
 
 This also allows to define a default value for a prop in a easy way:
 
-```tsx
+```tsx {1-2}
 export default function Counter({ initialValue = 0 }, { state }: WebContext) {
   const count = state<number>(initialValue);
 
@@ -101,7 +101,7 @@ export default function Counter({ initialValue = 0 }, { state }: WebContext) {
 
 In Brisa we are doing optimizations in build-time to allow you to declare props inside the component arguments without losing reactivity. For example `username` and `displayName` are reactive in the following component:
 
-```tsx
+```tsx {2,6,7}
 export default function UserCard({
   user: { username, displayName } = { username: "Unknown" },
 }) {
@@ -116,7 +116,7 @@ export default function UserCard({
 
 An alternative way to do it outside the component arguments is consuming directly the signal inside the JSX:
 
-```tsx
+```tsx {1,4,5}
 export default function UserCard({ user }) {
   return (
     <>
@@ -129,9 +129,9 @@ export default function UserCard({ user }) {
 
 However, this way is not recommended because it breaks the reactivity:
 
-```tsx
+```tsx {2}
 export default function Counter({ user }) {
-  const { username, displayName } = user;
+  const { username, displayName } = user; // ❌ variable is no longer reactive
 
   return (
     <>
@@ -144,7 +144,7 @@ export default function Counter({ user }) {
 
 For derived props, you can use the [`derived`](/api-reference/components/web-context#derived) method:
 
-```tsx
+```tsx {2,3}
 export default function Counter({ user }, { derived }: WebContext) {
   const username = derived(() => user.username.toUpperCase());
   const displayName = derived(() => user.displayName.toUpperCase());
@@ -164,7 +164,7 @@ In the last example, `username` and `displayName` are derived signals from the `
 
 Yes, you can create a signal from a signal using the [`derived`](/building-your-application/components-details/web-components#derived-state-and-props-derived-method) method. This method is useful to create a signal that depends on other signals.
 
-```tsx
+```tsx {3}
 export default function DoubleCounter({}, { state, derived }: WebContext) {
   const count = state(0);
   const double = derived(() => count.value * 2);
@@ -187,7 +187,7 @@ If you want to create a custom signal inside the `WebContext` to re-use it in mu
 
 No directly. The signals are reactive and they are used in the client-side. However, action-signals concept exists and you can use the server [`store`](/building-your-application/components-details/server-components#store-store-method) method and transfer some store fields to the client-side and reactively update them on a server action.
 
-```tsx
+```tsx {7,12,16,23}
 import type { RequestContext } from "brisa";
 import { rerenderInAction } from "brisa/server";
 
