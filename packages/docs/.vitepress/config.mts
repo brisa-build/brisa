@@ -262,6 +262,10 @@ export default defineConfig({
                 link: '/building-your-application/configuring/external',
               },
               {
+                text: 'Compile Target',
+                link: '/building-your-application/configuring/compile-target',
+              },
+              {
                 text: 'Static pages',
                 link: '/building-your-application/configuring/static-pages',
               },

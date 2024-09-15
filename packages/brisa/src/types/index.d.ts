@@ -1098,6 +1098,38 @@ export type Configuration = {
   /**
    * Description:
    *
+   * The `compileTarget` config property is used to generate a standalone binary of your application.
+   *
+   * **IMPORTANT**: This feature only works with the `output: 'bun'` option.
+   *
+   * The default value is `auto`.
+   *
+   * Options:
+   *
+   * - `auto`: Brisa will choose the best target for your application.
+   * - `bun-linux-x64`: The output is a Linux x64 binary.
+   * - `bun-linux-arm64`: The output is a Linux ARM64 binary.
+   * - `bun-windows-x64`: The output is a Windows x64 binary.
+   * - `bun-darwin-x64`: The output is a macOS x64 binary.
+   * - `bun-darwin-arm64`: The output is a macOS ARM64 binary.
+   * - `none`: Disable the compilation, so instead of a binary, is just transpiled and bundled.
+   *
+   * Docs:
+   *
+   * - [How to use `compileTarget`](https://brisa.build/building-your-application/configuring/compile-target)
+   */
+  compileTarget?:
+    | 'auto'
+    | 'bun-linux-x64'
+    | 'bun-linux-arm64'
+    | 'bun-windows-x64'
+    | 'bun-darwin-x64'
+    | 'bun-darwin-arm64'
+    | 'none';
+
+  /**
+   * Description:
+   *
    * An `external` import is one that will not be included in the final bundle.
    * Instead, the import statement will be left as-is, to be resolved at runtime.
    *

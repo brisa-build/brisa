@@ -67,6 +67,12 @@ const config: Configuration = {
    * Default: undefined (no external dependencies)
    */
   external: ["lightningcss"],
+
+  /**
+   * `compileTarget` configuration
+   * Default: 'auto'
+   */
+  compileTarget: "bun-linux-x64", // or any other option, the default is `auto`
 };
 
 // Export the configuration as the default export
@@ -124,3 +130,7 @@ The `external` option allows you to define external dependencies that should not
 > [!NOTE]
 >
 > More information about the output configuration can be found in the [Configuration](/building-your-application/configuring/output) documentation.
+
+## [`compileTarget`](/building-your-application/configuring/compile-target)
+
+The `compileTarget` option allows you to specify the target platform for the compiled binary. This is useful when you want to generate a standalone binary of the application.
