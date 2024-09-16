@@ -9,12 +9,12 @@ related:
 
 # Quick start
 
-### System Requirements
+## System Requirements
 
-- Bun [<Badge type="tip" text="1.1.27" />](https://bun.sh/) or later
+- Bun [<w-badge type="tip" text="1.1.27" />](https://bun.sh/) or later
 - macOS, Windows (including WSL), and Linux are supported.
 
-### Automatic Installation
+## Automatic Installation
 
 We recommend starting a new Brisa app using `bun create brisa`, which sets up everything automatically for you.
 
@@ -24,7 +24,7 @@ bun create brisa@latest
 
 After the prompts, it will create a folder with your project name and install the required dependencies.
 
-### Manual Installation
+## Manual Installation
 
 To manually create a new Brisa app, install the required packages:
 
@@ -76,7 +76,7 @@ export default function Page() {
 
 Then, add an `src/layout.tsx` file or `src/layout/index.tsx` to define the global layout. To add more layouts depending on the pages, take a look at the [layouts documentation](/building-your-application/routing/pages-and-layouts).
 
-### The `public` folder (optional)
+## The `public` folder (optional)
 
 Create a `public` folder to store static assets such as images, fonts, etc. Files inside public directory can then be referenced by your code starting from the base URL (`/`).
 
