@@ -8864,7 +8864,7 @@ declare global {
        *
        * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
        */
-      popover?: boolean | undefined;
+      popover?: 'auto' | 'manual' | undefined;
 
       // RDFa Attributes
 
