@@ -8831,6 +8831,41 @@ declare global {
        */
       translate?: 'yes' | 'no' | undefined;
 
+      /**
+       * The `popovertarget` attribute is a string attribute that is present on the `<element>` element to specify the target of the popover.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
+       */
+      popovertarget?: string | undefined;
+
+      /**
+       * The `popoverTarget` attribute is a string attribute that is present on the `<element>` element to specify the target of the popover.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
+       */
+      popoverTarget?: string | undefined;
+
+      /**
+       * The `popovertargetaction` attribute is a string attribute that is present on the `<element>` element to specify the action of the popover target.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
+       */
+      popovertargetaction?: 'show' | 'hide' | undefined;
+
+      /**
+       * The `popoverTargetAction` attribute is a string attribute that is present on the `<element>` element to specify the action of the popover target.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
+       */
+      popoverTargetAction?: 'show' | 'hide' | undefined;
+
+      /**
+       * The `popover` attribute is a boolean attribute that is present on the `<element>` element to specify if the element should be a popover.
+       *
+       * - [MDN reference](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
+       */
+      popover?: boolean | undefined;
+
       // RDFa Attributes
 
       /**
