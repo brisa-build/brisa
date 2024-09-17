@@ -75,8 +75,6 @@ export default async function SomeComponent({}, { store, i18n }) {
   return <Card title={message}><UserContent /></Card>
 }
 
-:::
-
 // Adding suspense:
 // Rendering this meanwhile SomeComponent is pending
 SomeComponent.suspense = ({}, { i18n }) => {
@@ -88,6 +86,8 @@ SomeComponent.error = ({ error }) => {
   return <div>Oops! {error.message}</div>
 }
 ```
+
+:::
 
 ### SEO
 
