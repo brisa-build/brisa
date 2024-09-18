@@ -1597,11 +1597,7 @@ declare global {
       | Primitives
       | JSX.Element[]
       | AsyncGenerator
-      | Promise<
-          | Primitives
-          | JSX.Element[]
-          | AsyncGenerator
-        >;
+      | Promise<Primitives | JSX.Element[] | AsyncGenerator>;
 
     interface ElementChildrenAttribute {
       children: JSX.Element;
@@ -1638,7 +1634,9 @@ declare global {
       children?: JSX.Element;
     }
 
-    export type WebComponentAttributes<T extends (...args: unknown[]) => unknown> = {
+    export type WebComponentAttributes<
+      T extends (...args: unknown[]) => unknown,
+    > = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
       // The "indicate" attribute is used to control the processing state of the web-component action.
