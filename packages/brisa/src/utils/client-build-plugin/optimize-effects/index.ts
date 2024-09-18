@@ -1,4 +1,8 @@
+import AST from '@/utils/ast';
+import { logWarning } from '@/utils/log/log-build';
 import type { ESTree } from 'meriyah';
+
+const { generateCodeFromAST } = AST('tsx');
 
 type EffectNode = ESTree.CallExpression & { effectDeps: string[] };
 type WebContextDetails = {
@@ -102,6 +106,31 @@ export default function optimizeEffects(
     }
 
     if (node?.callee?.name === webContextDetails.effectName) {
+      const current = generateCodeFromAST(this);
+      const recommended = generateCodeFromAST({
+        ...this,
+        expression: {
+          ...this.expression,
+          argument: node,
+          type: 'AwaitExpression',
+        },
+      });
+
+      if (this?.type === 'ExpressionStatement' && node.arguments[0]?.async) {
+        logWarning(
+          [
+            'The next effect function is async without an await:',
+            '',
+            ...current.split('\n'),
+            '',
+            "It's recommended to await the async effects to avoid registration conflicts:",
+            '',
+            ...recommended.split('\n'),
+          ],
+          'Docs: https://brisa.build/building-your-application/components-details/web-components#effects-effect-method',
+        );
+      }
+
       needsToAwait ||= Boolean(node.arguments[0]?.async);
       assignRNameToNode(node, { parent: this });
     }

@@ -287,27 +287,6 @@ describe('signals', () => {
     reset();
   });
 
-  it('should work without race conditions between async effects and signals', async () => {
-    const { state, effect, reset } = signals();
-    const count = state<number>(0);
-    const delay = Promise.resolve();
-    let lastSeen = -1;
-
-    effect(async () => {
-      await delay;
-      lastSeen = count.value!;
-    });
-
-    effect(() => {});
-
-    await delay;
-    expect(lastSeen).toBe(0);
-    count.value = 1;
-    await delay;
-    expect(lastSeen).toBe(1);
-    reset();
-  });
-
   it('should work with "derived" method', () => {
     const { state, derived, reset } = signals();
     const count = state<number>(0);

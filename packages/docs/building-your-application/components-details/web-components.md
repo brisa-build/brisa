@@ -551,10 +551,10 @@ This would be an example using a prop called `foo`. The props are signals readon
 You can also use async-await in effects:
 
 ```tsx
-export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+export default async ({ foo }: { foo: string }, { state, effect }: WebContext) => {
   const bar = state<any>();
 
-  effect(async () => {
+  await effect(async () => {
     if (foo === "bar") {
       bar.value = await fetch(/* some endpoint */).then((r) => r.json());
     }
@@ -563,6 +563,10 @@ export default ({ foo }: { foo: string }, { state, effect }: WebContext) => {
   return bar.value && <div>{bar.value.someField}</div>;
 };
 ```
+
+> [!CAUTION]
+>
+> When using `async` in an `effect`, to avoid conflicts and register the effect properly before rendering or other effects, **you have to put the `await`**. After putting the `await` you ensure that the effect has been registered correctly with the corresponding internal dependencies.
 
 ## Effect on mount (`onMount` method)
 
