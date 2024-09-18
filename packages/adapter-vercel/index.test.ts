@@ -513,8 +513,8 @@ describe('adapter-vercel', () => {
         true,
       );
       expect(
-        await fs.readdir(path.join(vercelDir, 'output', 'static')),
-      ).toEqual(['index.html', 'about.html']);
+        (await fs.readdir(path.join(vercelDir, 'output', 'static'))).toSorted(),
+      ).toEqual(['index.html', 'about.html'].toSorted());
     });
 
     it('should create a filesystem handle when _404 page is present', async () => {
