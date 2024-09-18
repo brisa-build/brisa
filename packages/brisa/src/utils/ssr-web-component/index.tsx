@@ -99,6 +99,7 @@ export default async function SSRWebComponent(
           {style.length > 0 && <style>{toInline(style)}</style>}
         </template>
       )}
+      {/* @ts-ignore */}
       <BrisaFragment slot="">{props.children}</BrisaFragment>
     </Selector>
   );
