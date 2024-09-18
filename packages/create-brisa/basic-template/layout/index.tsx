@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: JSX.Element }) {
       <head>
         <title id="title">Brisa</title>
         <meta name="theme-color" content="#ad1457" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/brisa.svg" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -30,8 +30,8 @@ export default function Layout({ children }: { children: JSX.Element }) {
           <Nav />
         </header>
         <main>{children}</main>
+        <Footer />
       </body>
-      <Footer />
     </html>
   );
 }
