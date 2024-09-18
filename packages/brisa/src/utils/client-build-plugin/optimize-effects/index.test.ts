@@ -1,9 +1,11 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, spyOn } from 'bun:test';
 import type { ESTree } from 'meriyah';
 import optimizeEffects from '.';
-import { normalizeHTML } from '@/helpers';
+import { normalizeHTML, toInline } from '@/helpers';
 import AST from '@/utils/ast';
 import getWebComponentAst from '../get-web-component-ast';
+import { getConstants } from '@/constants';
+import { boldLog } from '@/utils/log/log-color';
 
 const { parseCodeToAST, generateCodeFromAST } = AST();
 const toOutput = (code: string) => {
@@ -749,6 +751,52 @@ describe('utils', () => {
         `);
 
         expect(output).toEqual(expected);
+      });
+
+      it('should warning a log when an async effect is not awaited', () => {
+        const { LOG_PREFIX } = getConstants();
+        const input = `
+          export default function Component({ propName }, { effect }) {
+            effect(async () => {
+              if (propName.value) {
+                console.log("Hello world");
+              }
+            });
+          
+            return ['span', {}, 'Hello world']
+          }
+        `;
+
+        const log = spyOn(console, 'log');
+        toOutput(input);
+        const logs = toInline(log.mock.calls.flat().join(''));
+        expect(logs).toContain(LOG_PREFIX.WARN);
+        expect(
+          toInline(logs.replaceAll(LOG_PREFIX.WARN, '')).replaceAll(' ', ''),
+        ).toBe(
+          toInline(`
+        Ops! Warning:
+        --------------------------
+        ${boldLog(`The next effect function is async without an await:`)}
+
+        effect(async () => { 
+          if (propName.value) { 
+            console.log("Hello world");
+          }
+        });
+
+        It's recommended to await the async effects to avoid registration conflicts:
+
+        await effect(async () => { 
+          if (propName.value) { 
+            console.log("Hello world");
+          }
+        });
+        --------------------------
+        Docs: https://brisa.build/building-your-application/components-details/web-components#effects-effect-method  
+        `).replaceAll(' ', ''),
+        );
+        log.mockRestore();
       });
     });
   });

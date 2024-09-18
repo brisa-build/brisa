@@ -3290,7 +3290,7 @@ describe('integration', () => {
       expect(window.mockCallback).toHaveBeenCalledTimes(1);
     });
 
-    it('should execute again the effect if is updated during effect registration', () => {
+    it('should register the sub effect after change the value', async () => {
       window.mockEffect = mock((s: string) => {});
 
       const code = `
@@ -3303,8 +3303,9 @@ describe('integration', () => {
               effect(() => mockEffect("B", b.value));
             }
             mockEffect("A", a.value);
-            a.value = 1;
           });
+
+          window.increase = () => a.value++;
   
           return null;
         };
@@ -3316,6 +3317,9 @@ describe('integration', () => {
         code,
         'src/web-components/unregister-subeffect.tsx',
       );
+
+      window.increase();
+      await Bun.sleep(0);
 
       expect(window.mockEffect).toHaveBeenCalledTimes(3);
       expect(window.mockEffect.mock.calls[0]).toEqual(['A', 0]);
@@ -3364,6 +3368,82 @@ describe('integration', () => {
       expect(window.mockEffect.mock.calls[2]).toEqual(['B', 'z']);
       expect(window.mockEffect.mock.calls[3]).toEqual(['C', 'z']);
       expect(window.mockEffect.mock.calls[4]).toEqual(['B', 'y']);
+    });
+
+    it('should not call an effect infinitelly (setter + getter inside)', () => {
+      window.mockEffect = mock((s: string) => {});
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          const a = state<number>(0);
+
+          effect(() => {
+            a.value++;
+            mockEffect(a.value);
+          });
+
+          return null;
+        };
+      `;
+
+      document.body.innerHTML = '<effect-control></effect-control>';
+
+      defineBrisaWebComponent(code, 'src/web-components/effect-control.tsx');
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(1);
+      expect(window.mockEffect.mock.calls.toString()).toBe('1');
+    });
+
+    it('should not call an effect infinitelly (multi setters + getters inside)', () => {
+      window.mockEffect = mock((s: string) => {});
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          const a = state<number>(0);
+
+          effect(() => {
+            a.value++;
+            a.value++;
+            mockEffect(a.value);
+            mockEffect(a.value);
+          });
+
+          return null;
+        };
+      `;
+
+      document.body.innerHTML = '<effect-control></effect-control>';
+
+      defineBrisaWebComponent(code, 'src/web-components/effect-control.tsx');
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(2);
+      expect(window.mockEffect.mock.calls.toString()).toBe('2,2');
+    });
+
+    it('should skip for infinit effect call when the setters are different than the getter', () => {
+      window.mockEffect = mock((s: string) => {});
+
+      const code = `
+        export default function Component({}, { state, effect }) {
+          const a = state<number>(0);
+          const b = state<number>(0);
+
+          effect(() => {
+            b.value++;
+            b.value++;
+            mockEffect(a.value);
+          });
+
+          return null;
+        };
+      `;
+
+      document.body.innerHTML = '<effect-control></effect-control>';
+
+      defineBrisaWebComponent(code, 'src/web-components/effect-control.tsx');
+
+      expect(window.mockEffect).toHaveBeenCalledTimes(1);
+      expect(window.mockEffect.mock.calls.toString()).toBe('0');
     });
 
     it('should be possible to return an array and keep the reactivity', () => {
