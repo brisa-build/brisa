@@ -27,7 +27,7 @@ export type FileSystemRouterOptions = {
 };
 
 export type FileSystemRouter = {
-  routes: Record<string, string>;
+  routes: [string, string];
   match: (routeToMatch: string) => MatchedBrisaRoute | null;
 };
 
