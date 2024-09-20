@@ -481,7 +481,7 @@ export interface BaseWebContext {
    *
    * - [How to use `effect`](https://brisa.build/building-your-application/components-details/web-components#effect-effect-method)
    */
-  effect(fn: Effect): void;
+  effect(fn: Effect): void | Promise<void>;
 
   /**
    * Description:
