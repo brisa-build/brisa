@@ -3,7 +3,6 @@ import { join } from 'node:path';
 import packageJSON from '../package.json';
 import brisaPackageJSON from '../packages/brisa/package.json';
 import createBrisaPackageJSON from '../packages/create-brisa/package.json';
-import docsPackageJSON from '../packages/docs/package.json';
 import wwwPackageJSON from '../packages/www/package.json';
 import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
 
@@ -41,13 +40,6 @@ createBrisaPackageJSON.version = version;
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'create-brisa', 'package.json'),
   JSON.stringify(createBrisaPackageJSON, null, 2),
-);
-
-// Docs package.json
-docsPackageJSON.version = version;
-fs.writeFileSync(
-  join(import.meta.dir, '..', 'packages', 'docs', 'package.json'),
-  JSON.stringify(docsPackageJSON, null, 2),
 );
 
 // WWW package.json
