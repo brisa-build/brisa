@@ -17,7 +17,6 @@ Invoking the `notFound()` function throws a `NotFoundError` error and terminates
 
 ```jsx
 //src/pages/user/[id].jsx
-import type { RequestContext } from "brisa";
 import { notFound } from "brisa";
 
 async function fetchUser(id) {
@@ -46,7 +45,7 @@ import { notFound } from "brisa";
 
 type UserType = {
   //...
-}
+};
 
 async function fetchUser(id: number | string) {
   const res = await fetch("https://...");
