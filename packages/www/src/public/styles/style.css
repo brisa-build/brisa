@@ -54,7 +54,7 @@
     transparent
   );
   --clear-hover: #f9f9f9b3;
-  ---overlay-bg-color: rgba(0, 0, 0, 0.5);
+  --overlay-bg-color: rgba(0, 0, 0, 0.5);
 }
 
 body.dark {
@@ -113,7 +113,7 @@ body.dark {
     transparent
   );
   --clear-hover: #2d2d2db3;
-  ---overlay-bg-color: rgba(0, 0, 0, 0.5);
+  --overlay-bg-color: rgba(0, 0, 0, 0.5);
 }
 
 *,
@@ -266,15 +266,6 @@ p {
 .cta:disabled {
   pointer-events: none;
   opacity: 0.5;
-}
-
-.social-media::before,
-.change-theme::before {
-  content: "";
-  display: block;
-  height: 20px;
-  width: 1px;
-  background-color: var(--color-light-gray);
 }
 
 .copy-box {

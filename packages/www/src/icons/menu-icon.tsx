@@ -2,6 +2,7 @@ export default function MenuIcon() {
   return (
     <svg
       width="19"
+      slot="icon"
       height="19"
       viewBox="0 0 24 24"
       fill="none"

@@ -12,9 +12,9 @@ export default function BreadcrumbNav({}, { route }: RequestContext) {
   return (
     <div class="breadcrumb-wrapper">
       <nav aria-label="Breadcrumb" class="breadcrumb">
-        <sidebar-btn>
+        <menu-btn selector=".sidebar" useOverlay skipSSR>
           <MenuIcon />
-        </sidebar-btn>
+        </menu-btn>
         <ol>
           {items.map(({ text, link }, index) => (
             <li style={{ display: 'flex', alignItems: 'center' }} key={text}>

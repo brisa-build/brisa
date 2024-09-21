@@ -1,4 +1,4 @@
-.sidebar-btn {
+.menu-btn {
   display: none;
 }
 
@@ -593,7 +593,7 @@ body.dark .github-light {
     }
   }
 
-  .sidebar-btn {
+  .menu-btn {
     display: block;
     cursor: pointer;
     border: 1px solid var(--cta-bg-start);

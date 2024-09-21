@@ -4,6 +4,7 @@ import GitHubIcon from '@/icons/github-icon';
 import XIcon from '@/icons/x-icon';
 import type { RequestContext } from 'brisa';
 import { version } from '@/../package.json';
+import MenuIcon from '@/icons/menu-icon';
 
 export default function Nav({}, { route }: RequestContext) {
   const getActiveClass = (name: string) =>
@@ -31,7 +32,10 @@ export default function Nav({}, { route }: RequestContext) {
           </a>
           <search-engine-wc jsonUrl="/content.json" />
         </div>
-        <div style={{ display: 'flex' }}>
+        <menu-btn selector="#nav-list" skipSSR>
+          <MenuIcon />
+        </menu-btn>
+        <div id="nav-list">
           <ul>
             <li>
               <a
@@ -58,7 +62,12 @@ export default function Nav({}, { route }: RequestContext) {
             </li>
             <li>
               <a
-                style={{ display: 'flex', gap: '5px', alignItems: 'center' }}
+                style={{
+                  display: 'flex',
+                  gap: '5px',
+                  alignItems: 'center',
+                  marginTop: '2px',
+                }}
                 href="https://github.com/brisa-build/brisa/releases"
                 target="_blank"
               >
