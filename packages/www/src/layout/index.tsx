@@ -62,6 +62,17 @@ export default function Layout({ children }: { children: JSX.Element }) {
         <script type="speculationrules">
           {dangerHTML(JSON.stringify(speculationrules))}
         </script>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-V43VPV66EX"
+        ></script>
+        <script>
+          {dangerHTML(`window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-V43VPV66EX');
+          `)}
+        </script>
       </head>
       <body>
         <script>
