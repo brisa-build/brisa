@@ -429,6 +429,19 @@ p {
   }
 }
 
+@media (max-width: 860px) {
+  h2 {
+    text-align: center;
+  }
+  .info {
+    position: initial !important;
+    order: 0 !important
+  }
+  .code-example {
+    order: 2 !important;
+  }
+}
+
 @keyframes theme-swipe-in {
   0% {
     clip-path: circle(10% at 100% 0%);
