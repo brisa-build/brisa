@@ -430,7 +430,7 @@ p {
 }
 
 @media (max-width: 860px) {
-  h2 {
+  .home-section h2 {
     text-align: center;
   }
   .info {
