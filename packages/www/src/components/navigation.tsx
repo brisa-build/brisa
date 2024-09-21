@@ -94,7 +94,7 @@ export default function Nav({}, { route }: RequestContext) {
             </li>
             <li>
               <a
-                href="https://discord.com/invite/MsE9RN3FU4"
+                href="https://x.com/brisadotbuild"
                 target="_blank"
                 aria-label="Twitter / X"
               >
