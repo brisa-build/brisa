@@ -560,6 +560,37 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         ]);
       });
 
+      it('should generate dynamic rest routes thanks to prerender function with array of params', () => {
+        const dynamicPath = path.join(
+          import.meta.dir,
+          '__fixtures__',
+          'dynamic-rest-route-prerender-array',
+        );
+
+        mockConstants = {
+          ...getConstants(),
+          ROOT_DIR: dynamicPath,
+          BUILD_DIR: dynamicPath,
+          IS_STATIC_EXPORT: true,
+          CONFIG: {
+            basePath,
+          },
+        };
+
+        expect(generateStaticExport()).resolves.toEqual([
+          new Map([
+            [
+              formatPath('pages', '[...rest].tsx'),
+              [
+                formatPath('foo', 'bar', 'baz.html'),
+                formatPath('foo', 'bar', 'baz', 'qux.html'),
+              ],
+            ],
+          ]),
+          path.join(dynamicPath, 'out', basePath),
+        ]);
+      });
+
       it('should generate dynamic catchall routes thanks to prerender function an array of strings', () => {
         const dynamicPath = path.join(
           import.meta.dir,

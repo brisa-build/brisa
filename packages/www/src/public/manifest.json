@@ -1,0 +1,24 @@
+{
+  "name": "Brisa",
+  "description": "Brisa is the Web Platform Framework for the modern web",
+  "short_name": "Brisa",
+  "icons": [
+    {
+      "src": "/images/logo-96.png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/images/logo-192.png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/logo-512.png",
+      "sizes": "512x512"
+    }
+  ],
+  "theme_color": "#e6fbfc",
+  "background_color": "#e6fbfc",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "start_url": "/"
+}

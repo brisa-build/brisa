@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import packageJSON from '../package.json';
 import brisaPackageJSON from '../packages/brisa/package.json';
 import createBrisaPackageJSON from '../packages/create-brisa/package.json';
-import docsPackageJSON from '../packages/docs/package.json';
 import wwwwPackageJSON from '../packages/www/package.json';
 import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
 
@@ -17,12 +16,10 @@ const version = (await $`bun --version`.text()).trim();
 packageJSON.packageManager =
   brisaPackageJSON.packageManager =
   createBrisaPackageJSON.packageManager =
-  docsPackageJSON.packageManager =
     `bun@${version}`;
 packageJSON.engines =
   brisaPackageJSON.engines =
   createBrisaPackageJSON.engines =
-  docsPackageJSON.engines =
     {
       bun: `>= ${version}`,
       npm: 'please-use-bun',
@@ -41,10 +38,6 @@ fs.writeFileSync(
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'create-brisa', 'package.json'),
   JSON.stringify(createBrisaPackageJSON, null, 2),
-);
-fs.writeFileSync(
-  join(import.meta.dir, '..', 'packages', 'docs', 'package.json'),
-  JSON.stringify(docsPackageJSON, null, 2),
 );
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'www', 'package.json'),
