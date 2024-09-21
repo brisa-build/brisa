@@ -68,6 +68,7 @@ export default async function HeadingsMap(
           <li
             id={`anchor-to-${heading.id}`}
             key={heading.id}
+            class={heading.tagName.toLowerCase()}
             onClick={(e) => {
               top.value = `${e.currentTarget.offsetTop}px`;
               if (popoverTargetAction !== 'hide') return;
