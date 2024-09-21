@@ -4,8 +4,16 @@
   --color-primary: #115e59;
   --color-secondary: #0d9488;
   --color-white: #ffffff;
-  --section1-bg-color: #f8fff9;
-  --section2-bg-color: #ffe9e9;
+  --section1-bg-color: linear-gradient(
+    to bottom right,
+    #EFF7FF,
+    #F7F7F7
+  );
+  --section2-bg-color: linear-gradient(
+    to bottom right,
+    #FCF5F2,
+    #F7F7F7
+  );
   --color-black: #000000;
   --color-dark: #072b29;
   --color-light-blue: #e6f7ff;
@@ -59,12 +67,34 @@
   --overlay-bg-color: rgba(0, 0, 0, 0.5);
 }
 
+:root::view-transition-old(*),
+:root::view-transition-new(*) {
+  position: absolute;
+  inset: 0;
+  animation-duration: 0.8s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
+}
+
+:root::view-transition-new(*) {
+  animation-name: theme-swipe-in;
+}
+
+
 body.dark {
   color-scheme: dark;
   --search-engine-color: #b6d0ce;
   --color-primary: #b6d0ce;
-  --section1-bg-color: #1b2b23;
-  --section2-bg-color: #2c1d1d;
+  --section1-bg-color: linear-gradient(
+    to bottom right,
+    #01201F,
+    #191c24
+  );
+  --section2-bg-color: linear-gradient(
+    to bottom right,
+    #302820,
+    #1b1b26
+  );
   --color-secondary: #add1ce;
   --color-white: #212121;
   --color-black: #fff;
@@ -164,8 +194,12 @@ main {
   margin: auto;
 }
 
-.fast-apps {
-  background-color: var(--section1-bg-color);
+.cta {
+  margin: 10px;
+}
+
+.fast-apps, .actions {
+  background-image: var(--section1-bg-color);
 }
 
 .home-section:has(.code-example) {
@@ -190,11 +224,14 @@ main {
     min-width: 350px;
     max-width: 600px;
     flex: 1;
+    position: sticky;
+    top: 95px;
+    margin-bottom: 20px;
   }
 
   .code pre {
     font-size: 1rem;
-    transform: rotate(2deg);
+    transform: rotate(1deg);
     background-color: white !important;
     max-width: 90vw;
   }
@@ -202,14 +239,14 @@ main {
   .bytes {
     font-size: 0.8rem;
     padding: 0;
-    transform: rotate(2deg);
+    transform: rotate(1deg);
     font-style: italic;
     text-align: right;
     color: var(--color-primary)
   }
 
-  &.wc {
-    background-color: var(--section2-bg-color);
+  &.wc, &.i18n {
+    background-image: var(--section2-bg-color);
   
     .code-example {
       order: 1;
@@ -220,7 +257,7 @@ main {
     }
   
     .code pre, .bytes {
-      transform: rotate(-2deg);
+      transform: rotate(-1deg);
     }
   }
 
@@ -351,6 +388,10 @@ p {
   padding: 10px;
   border-radius: 20px;
 
+  code {
+    background-color: transparent !important;
+  }
+
   .shell {
     color: var(--color-secondary);
   }
@@ -386,19 +427,6 @@ p {
   a:hover {
     color: var(--color-black);
   }
-}
-
-:root::view-transition-old(*),
-:root::view-transition-new(*) {
-  position: absolute;
-  inset: 0;
-  animation-duration: 0.8s;
-  animation-fill-mode: both;
-  animation-timing-function: ease-in-out;
-}
-
-:root::view-transition-new(*) {
-  animation-name: theme-swipe-in;
 }
 
 @keyframes theme-swipe-in {

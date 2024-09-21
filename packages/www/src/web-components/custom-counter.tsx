@@ -7,11 +7,13 @@ function CustomCounter(props: { start: number }, { state, css }: WebContext) {
     div {
       text-align: center;
       border: 1px solid var(--md-code-border-color);
-      border-radius: 8px;
+      border-radius: 50%;
+      width: fit-content;
       margin-top: 20px;
-      transform: rotate(1deg);
+      transform: rotate(2deg);
       background-color: light-dark(white, black);
-      padding: 10px;
+      padding: 80px 20px;
+      margin: 10px auto 50px auto;
     }
     
     p {
@@ -26,6 +28,11 @@ function CustomCounter(props: { start: number }, { state, css }: WebContext) {
       background-color: var(--color-white);
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover { 
+      background-color: var(--color-light-green);
     }
   `;
 
