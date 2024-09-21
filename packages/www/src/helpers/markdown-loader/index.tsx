@@ -113,6 +113,13 @@ export function loadMarkdownFromPath(filePath: string) {
   return { data, element: dangerHTML(html), html, content };
 }
 
+export function RenderCode({
+  code,
+  format = 'tsx',
+}: { code: string; format?: string }) {
+  return dangerHTML(md.render(`\`\`\`${format} ${code}`));
+}
+
 // This is to help the compiler understand the web components to be used in the page
 // @ts-ignore
 export const webComponents = [<md-tabs />, <w-badge />];

@@ -256,18 +256,18 @@
     color: var(--color-primary);
   }
 
-  code:not(.shiki code) {
-    background-color: var(--md-code-bg-color);
-    padding: 3px;
-    border-radius: 4px;
-    font-size: inherit;
-  }
-
   h1 {
     font-size: 2.5rem;
     line-height: 1;
     font-weight: 700;
   }
+}
+
+code:not(.shiki code) {
+  background-color: var(--md-code-bg-color);
+  padding: 3px;
+  border-radius: 4px;
+  font-size: inherit;
 }
 
 .github-light {
