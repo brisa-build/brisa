@@ -4,6 +4,7 @@ import type { Item } from '@/types';
 import GreaterIcon from '@/icons/greater-icon';
 import HeadingsMapPopOver from '@/components/headings-map-popover';
 import MenuIcon from '@/icons/menu-icon';
+import CrossIcon from '@/icons/cross-icon';
 
 export default function BreadcrumbNav({}, { route }: RequestContext) {
   const { items, next } = getItems(route);
@@ -14,6 +15,7 @@ export default function BreadcrumbNav({}, { route }: RequestContext) {
       <nav aria-label="Breadcrumb" class="breadcrumb">
         <menu-btn selector=".sidebar" useOverlay skipSSR>
           <MenuIcon />
+          <CrossIcon />
         </menu-btn>
         <ol>
           {items.map(({ text, link }, index) => (

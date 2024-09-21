@@ -5,6 +5,7 @@ import XIcon from '@/icons/x-icon';
 import type { RequestContext } from 'brisa';
 import { version } from '@/../package.json';
 import MenuIcon from '@/icons/menu-icon';
+import CrossIcon from '@/icons/cross-icon';
 
 export default function Nav({}, { route }: RequestContext) {
   const getActiveClass = (name: string) =>
@@ -34,6 +35,7 @@ export default function Nav({}, { route }: RequestContext) {
         </div>
         <menu-btn selector="#nav-list" skipSSR>
           <MenuIcon />
+          <CrossIcon />
         </menu-btn>
         <div id="nav-list">
           <ul>

@@ -2,7 +2,7 @@ import type { WebContext } from 'brisa';
 
 export default function SideBarBtn(
   { selector, useOverlay }: { selector: string; useOverlay?: boolean },
-  { effect, cleanup }: WebContext,
+  { effect, cleanup, self }: WebContext,
 ) {
   function onClickDocument(e: MouseEvent) {
     const sidebarEl = document.querySelector(selector)!;
@@ -41,12 +41,14 @@ export default function SideBarBtn(
     document.body.style.overflow = '';
     removeOverlay();
     sidebarEl.classList.remove('open');
+    self.shadowRoot?.querySelector('slot')?.setAttribute('name', 'icon');
   }
 
   function open(sidebarEl: Element) {
     document.body.style.overflow = 'hidden';
     createOverlay();
     sidebarEl.classList.add('open');
+    self.shadowRoot?.querySelector('slot')?.setAttribute('name', 'cross-icon');
   }
 
   function createOverlay() {
