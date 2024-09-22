@@ -9,14 +9,14 @@ const BUILD_DIR = join(import.meta.dir, '..', '..', '..', '__fixtures__');
 describe('runWebComponents', () => {
   beforeEach(() => {
     GlobalRegistrator.register();
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...getConstants(),
       SRC_DIR: BUILD_DIR,
       BUILD_DIR: BUILD_DIR,
     };
   });
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     GlobalRegistrator.unregister();
   });
 
@@ -40,7 +40,7 @@ describe('runWebComponents', () => {
 
   it('should NOT log and early return if there is no web components', async () => {
     const logSpy = spyOn(console, 'log');
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...getConstants(),
       SRC_DIR: join(BUILD_DIR, 'no-web-components'),
       BUILD_DIR: join(BUILD_DIR, 'no-web-components'),

@@ -31,7 +31,7 @@ const requestContext = extendRequestContext({
 describe('utils', () => {
   describe('SSRWebComponent', () => {
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
     it('should render a web component', async () => {
       const Component = () => <div>hello world</div>;
@@ -528,7 +528,7 @@ describe('utils', () => {
     });
 
     it('should extend the "webContext" in SSR when plugins are defined', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         WEB_CONTEXT_PLUGINS: [
           (ctx) => ({ ...ctx, newOne: 'hello world' }),

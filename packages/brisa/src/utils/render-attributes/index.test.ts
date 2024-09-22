@@ -8,7 +8,7 @@ import type { MatchedBrisaRoute } from '@/types';
 describe('utils', () => {
   describe('renderAttributes', () => {
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
       // @ts-ignore
       globalThis.REGISTERED_ACTIONS = undefined;
     });
@@ -54,7 +54,7 @@ describe('utils', () => {
     });
 
     it('should render the "a" href attribute with the basePath', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           basePath: '/base',
@@ -75,7 +75,7 @@ describe('utils', () => {
     });
 
     it('should render the src attribute with the basePath', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           basePath: '/base',
@@ -96,7 +96,7 @@ describe('utils', () => {
     });
 
     it('should render the src attribute without the basePath, but with assetPrefix (priority)', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         CONFIG: {
@@ -119,7 +119,7 @@ describe('utils', () => {
     });
 
     it('should render the src attribute without the basePath, but with assetPrefix in DEVELOPMENT', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
         CONFIG: {
@@ -142,7 +142,7 @@ describe('utils', () => {
     });
 
     it('should render the "a" href attribute without the basePath when is a full URL', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           basePath: '/base',
@@ -163,7 +163,7 @@ describe('utils', () => {
     });
 
     it('should render the src attribute without the basePath when is a full URL', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           basePath: '/base',
@@ -184,7 +184,7 @@ describe('utils', () => {
     });
 
     it('should render the "a" href attribute with the locale as prefix and the basePath', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           basePath: '/base',
@@ -255,7 +255,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com/ru'),
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           locales: ['en', 'ru'],
@@ -327,7 +327,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com/ru'),
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           locales: ['en', 'ru'],
@@ -407,7 +407,7 @@ describe('utils', () => {
     });
 
     it('should translate the "a" href attribute', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -466,7 +466,7 @@ describe('utils', () => {
     });
 
     it('should translate the "a" href attribute with params and hash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -533,7 +533,7 @@ describe('utils', () => {
         originalRequest: new Request('https://example.com/ru'),
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           trailingSlash: true,
@@ -604,7 +604,7 @@ describe('utils', () => {
     });
 
     it('should translate the "link" href attribute that is not rel="icon"', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -668,7 +668,7 @@ describe('utils', () => {
     });
 
     it('should translate the "link" href attribute with params and hash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -734,7 +734,7 @@ describe('utils', () => {
     });
 
     it('should work href with trailing slash enable in the config', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           trailingSlash: true,
@@ -763,7 +763,7 @@ describe('utils', () => {
     });
 
     it('should work href with i18n and trailing slash enable in the config', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           trailingSlash: true,
@@ -833,7 +833,7 @@ describe('utils', () => {
     });
 
     it('should add the assetPrefix to the "src" attribute for internal src (PRODUCTION)', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         CONFIG: {
@@ -880,7 +880,7 @@ describe('utils', () => {
     });
 
     it('should also add the assetPrefix to the "src" attribute for internal src in DEVELOPMENT', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
         CONFIG: {
@@ -1471,7 +1471,7 @@ describe('utils', () => {
     });
 
     it('should add the basepath attribute to head tag when type is "head" and has basePath', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           basePath: '/base',
@@ -1552,7 +1552,7 @@ describe('utils', () => {
     });
 
     it('should warn when is used a function that not start with the "on" prefix (DEVELOPMENT)', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
       };
@@ -1589,7 +1589,7 @@ describe('utils', () => {
   });
 
   it('should NOT warn in PRODUCTION when is used a function that not start with the "on" prefix', () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...(getConstants() ?? {}),
       IS_PRODUCTION: true,
     };

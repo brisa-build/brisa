@@ -27,7 +27,7 @@ describe('compileAll', () => {
   });
 
   beforeEach(async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
       BUILD_DIR: OUT_DIR,
@@ -38,7 +38,7 @@ describe('compileAll', () => {
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   // TODO: there is a bug in Bun compiling multiple-times the same entrypoints.

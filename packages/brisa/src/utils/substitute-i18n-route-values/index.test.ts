@@ -4,7 +4,7 @@ import constants from '@/constants';
 
 describe('utils', () => {
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('substituteI18nRouteValues', () => {

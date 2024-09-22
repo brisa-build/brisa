@@ -9,13 +9,13 @@ const ASSETS_DIR = path.join(ROOT_DIR, 'public');
 describe('utils', () => {
   describe('is-asset-request', () => {
     beforeAll(() => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ASSETS_DIR,
       };
     });
 
     afterAll(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should return false if the request is the home', () => {

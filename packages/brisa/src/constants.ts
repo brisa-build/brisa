@@ -169,19 +169,28 @@ const constants = {
 } satisfies BrisaConstants;
 
 /**
- * TODO: Remove this function and use directly the constants when Bun supports mock modules.
+ * This function started to be useful in the tests to correctly mock the constants
+ * through globalThis.brisaConstants. Later we realized that there are cases where
+ * we also want to use it at runtime, to avoid server imports and make the function
+ * already define the constants. An example would be the transpileWebComponents,
+ * which uses the internal function of clientBuildPlugin, where the clientBuildPlugin
+ * does use the constants for the i18n, etc, but the transpileWebComponents is more
+ * dummy and being able to be executed from the browser it does not have access to
+ * the constants and using the globalThis.brisaConstants inside clientBuildPlugin
+ * would solve the problem without adding server imports.
  *
- * 🚨 This is a workaround meanwhile Bun doesn't support mock modules. After that, we can
- * refactor to use directly the constants without the need of this function and replace
- * it in all the codebase and implement the mock modules in the tests.
+ * TODO @todo: We should replace all the 'getConstants' and 'constants' references
+ * with the global `globalThis.brisaConstants` to unify the way we access the constants.
  */
+globalThis.brisaConstants = constants;
+
 export const getConstants = (): BrisaConstants =>
-  globalThis.mockConstants
-    ? (globalThis.mockConstants as typeof constants)
+  globalThis.brisaConstants
+    ? (globalThis.brisaConstants as typeof constants)
     : constants;
 
 declare global {
-  var mockConstants: Partial<BrisaConstants> | undefined;
+  var brisaConstants: Partial<BrisaConstants> | undefined;
   var REGISTERED_ACTIONS: Function[] | undefined;
   var FORCE_SUSPENSE_DEFAULT: boolean | undefined;
   var BrisaRegistry: Map<string, number>;

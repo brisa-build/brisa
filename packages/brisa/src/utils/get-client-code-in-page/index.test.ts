@@ -33,7 +33,7 @@ describe('utils', () => {
     fs.mkdirSync(build, { recursive: true });
     fs.mkdirSync(brisaInternals, { recursive: true });
     const constants = getConstants() ?? {};
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...constants,
       SRC_DIR: src,
       IS_PRODUCTION: true,
@@ -44,7 +44,7 @@ describe('utils', () => {
 
   afterEach(() => {
     fs.rmSync(build, { recursive: true });
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('getClientCodeInPage', () => {
@@ -85,7 +85,7 @@ describe('utils', () => {
     });
 
     it('should the RPC with IS_STATIC_EXPORT and IS_PRODUCTION be GET for SPA', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_STATIC_EXPORT: true,
         IS_PRODUCTION: true,
@@ -105,7 +105,7 @@ describe('utils', () => {
     });
 
     it('should the RPC with IS_STATIC_EXPORT and IS_DEVELOPMENT be POST for SPA', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_STATIC_EXPORT: true,
         IS_PRODUCTION: false,
@@ -125,7 +125,7 @@ describe('utils', () => {
     });
 
     it('should the RPC WITHOUT IS_STATIC_EXPORT and IS_PRODUCTION be POST for SPA', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_STATIC_EXPORT: false,
         IS_PRODUCTION: true,
@@ -197,8 +197,8 @@ describe('utils', () => {
     });
 
     it('should add brisa-error-dialog when the page is in DEV mode', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_DEVELOPMENT: true,
         IS_PRODUCTION: false,
       };
@@ -212,8 +212,8 @@ describe('utils', () => {
     });
 
     it('should NOT add brisa-error-dialog when the page is in PROD mode', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_DEVELOPMENT: false,
         IS_PRODUCTION: true,
       };
@@ -239,8 +239,8 @@ describe('utils', () => {
     });
 
     it('should define brisa-error-dialog (1st) and context-provider (2nd) before the rest of web components', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_DEVELOPMENT: true,
         IS_PRODUCTION: false,
       };

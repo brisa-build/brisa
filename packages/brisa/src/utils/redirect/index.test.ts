@@ -20,7 +20,7 @@ describe('utils', () => {
   describe.each(BASE_PATHS)('redirectFromUnnormalizedURL %s', (basePath) => {
     describe('WHEN trailingSlash is true and i18n is defined', () => {
       beforeEach(() => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ASSETS_DIR,
           PAGES_DIR,
           BUILD_DIR: PAGES_DIR,
@@ -37,7 +37,7 @@ describe('utils', () => {
         };
       });
       afterEach(() => {
-        globalThis.mockConstants = undefined;
+        globalThis.brisaConstants = undefined;
       });
 
       it('should return a 307 response if the origin of the given url is different from the origin of the current request', () => {
@@ -96,7 +96,7 @@ describe('utils', () => {
     });
     describe('WHEN trailingSlash is false and i18n is defined', () => {
       beforeEach(() => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ASSETS_DIR,
           PAGES_DIR,
           BUILD_DIR: PAGES_DIR,
@@ -113,7 +113,7 @@ describe('utils', () => {
         };
       });
       afterEach(() => {
-        globalThis.mockConstants = undefined;
+        globalThis.brisaConstants = undefined;
       });
 
       it('should return a 307 response if the origin of the given url is different from the origin of the current request', () => {
@@ -163,7 +163,7 @@ describe('utils', () => {
 
     describe('WHEN i18n is not defined', () => {
       beforeEach(() => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ASSETS_DIR,
           PAGES_DIR,
           BUILD_DIR: PAGES_DIR,
@@ -174,7 +174,7 @@ describe('utils', () => {
         };
       });
       afterEach(() => {
-        globalThis.mockConstants = undefined;
+        globalThis.brisaConstants = undefined;
       });
 
       it('should return a 307 response if the origin of the given url is different from the origin of the current request', () => {

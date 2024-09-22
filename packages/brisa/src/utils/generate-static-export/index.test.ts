@@ -44,7 +44,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         }),
       }));
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         ROOT_DIR,
         BUILD_DIR: ROOT_DIR,
@@ -59,13 +59,13 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       mockFetch.mockRestore();
       mockWrite.mockRestore();
       spyWrite!.mockRestore();
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
       mock.restore();
     });
 
     describe('when IS_STATIC_EXPORT=true', () => {
       it('should remove the "out" directory if it exists', async () => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -116,7 +116,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should generate static export with i18n with a soft redirect to the locale', () => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           CONFIG: {
@@ -229,7 +229,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should generate static export with trailingSlash', () => {
         const constants = getConstants();
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -302,7 +302,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should warn about redirect when "i18n" is defined', async () => {
         const mockLog = mock((...args: any[]) => null);
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -369,7 +369,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -402,7 +402,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -435,7 +435,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -465,7 +465,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -493,7 +493,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'nested-dynamic-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -536,7 +536,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-rest-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -567,7 +567,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-rest-route-prerender-array',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -599,7 +599,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-catchall-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -631,7 +631,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'prerender-one',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -654,7 +654,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
     describe('when IS_STATIC_EXPORT=false', () => {
       it('should NOT remove the "build" directory if it exists', async () => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -682,7 +682,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -709,7 +709,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -736,7 +736,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
         spyOn(console, 'log').mockImplementation((...args) => mockLog(...args));
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -754,7 +754,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should NOT generate a soft redirect to the locale (with i18n)', () => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           IS_STATIC_EXPORT: false,
@@ -790,7 +790,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should NOT move assets neither client code inside the "out" folder', () => {
         const constants = getConstants();
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -817,7 +817,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       it('should NOT warn about redirect when "i18n"', () => {
         const mockLog = mock((...args: any[]) => null);
         const constants = getConstants();
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -866,7 +866,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should NOT warn about redirect when "i18n" neither when i18n is not defined', () => {
         const constants = getConstants();
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -902,7 +902,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should NOT generate a page that during the streaming returns the soft redirect to 404 (notFound method)', () => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -920,7 +920,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
       });
 
       it('should prerender dynamic routes without i18n and without trailingSlash', () => {
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -947,7 +947,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
 
       it('should prerender dynamic route with trailingSlash', () => {
         const constants = getConstants();
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...constants,
           ROOT_DIR,
           BUILD_DIR: ROOT_DIR,
@@ -977,7 +977,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -1005,7 +1005,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'nested-dynamic-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -1048,7 +1048,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-rest-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -1080,7 +1080,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'dynamic-catchall-route-prerender',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,
@@ -1112,7 +1112,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
           'prerender-one',
         );
 
-        mockConstants = {
+        brisaConstants = {
           ...getConstants(),
           ROOT_DIR: dynamicPath,
           BUILD_DIR: dynamicPath,

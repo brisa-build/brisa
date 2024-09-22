@@ -10,7 +10,7 @@ describe('utils', () => {
   describe('client-build-plugin', () => {
     afterEach(() => {
       logsPerFile.clear();
-      delete globalThis.mockConstants;
+      delete globalThis.brisaConstants;
     });
     describe('without transformation', () => {
       it('should not transform if is inside _native folder', () => {
@@ -1625,7 +1625,7 @@ describe('utils', () => {
       });
 
       it('should NOT log warning spread props inside JSX when IS_SERVE_PROCESS is tru (hot-reloading)', () => {
-        globalThis.mockConstants = {
+        globalThis.brisaConstants = {
           ...getConstants(),
           IS_SERVE_PROCESS: true,
         };

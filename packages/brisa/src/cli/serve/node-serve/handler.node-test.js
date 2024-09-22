@@ -19,13 +19,13 @@ const absolutePath = url.pathToFileURL(
 
 describe('Node.js handler', () => {
   beforeEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   it('should resolve a page', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -56,7 +56,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect to the locale', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -90,7 +90,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect to trailingSlash', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -124,7 +124,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect locale and trailing slash', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -163,7 +163,7 @@ describe('Node.js handler', () => {
   });
 
   it('should serve an asset', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -189,7 +189,7 @@ describe('Node.js handler', () => {
   });
 
   it('should return 404 if the asset does not exist', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -211,7 +211,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect from trailingSlash to non-trailingSlash', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -243,7 +243,7 @@ describe('Node.js handler', () => {
   });
 
   it('should api route work', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -270,7 +270,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect an api route to the locale', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -305,7 +305,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect an api route to the locale and trailing slash', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
@@ -345,7 +345,7 @@ describe('Node.js handler', () => {
   });
 
   it('should redirect work with params', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),

@@ -34,7 +34,7 @@ describe('test api', () => {
   afterEach(() => {
     jest.restoreAllMocks();
     GlobalRegistrator.unregister();
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   describe('render', () => {
     it('should render the element', async () => {
@@ -144,7 +144,7 @@ describe('test api', () => {
     });
 
     it('should render a web component', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -172,7 +172,7 @@ describe('test api', () => {
     // I think part of the problem is that in the first case the connectedCallback is async,
     // so the attributeChangeCallback arrives in the middle.
     it.todo('should render a web component with props', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -192,7 +192,7 @@ describe('test api', () => {
     });
 
     it('should render a web component with slots', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -219,7 +219,7 @@ describe('test api', () => {
     });
 
     it('should be possible to interact with a web component', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -256,7 +256,7 @@ describe('test api', () => {
     });
 
     it('should be possible to render a server component with a web component inside', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -288,7 +288,7 @@ describe('test api', () => {
     });
 
     it('should render server component using i18n', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -325,7 +325,7 @@ describe('test api', () => {
           es: '/sobre-nosotros/',
         },
       };
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -357,7 +357,7 @@ describe('test api', () => {
     });
 
     it('should be possible to use overrideMessages inside a server component', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -392,7 +392,7 @@ describe('test api', () => {
     });
 
     it('should render the web component foo-component using i18n', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -421,7 +421,7 @@ describe('test api', () => {
     });
 
     it('should render the web component and react with store', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         SRC_DIR: BUILD_DIR,
         BUILD_DIR,
@@ -478,7 +478,7 @@ describe('test api', () => {
 
   describe('serveRoute', () => {
     beforeEach(() => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
         BUILD_DIR,
@@ -488,7 +488,7 @@ describe('test api', () => {
     });
 
     it('should throw an error if build is not executed', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR: 'invalid',
         BUILD_DIR: 'invalid',
@@ -518,7 +518,7 @@ describe('test api', () => {
     });
 
     it('should serve a page should be interactive (server actions)', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: {
           defaultLocale: 'en',

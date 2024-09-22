@@ -15,7 +15,7 @@ const assetsPath = path.join(
 describe('utils', () => {
   describe('precompressAssets', () => {
     beforeEach(() => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
         CONFIG: {
@@ -24,7 +24,7 @@ describe('utils', () => {
       };
     });
     afterEach(async () => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
       if (await exists(`${assetsPath}/favicon.ico.gz`)) {
         await Promise.all([
           unlink(`${assetsPath}/favicon.ico.gz`),
@@ -53,14 +53,14 @@ describe('utils', () => {
     });
 
     it('should not precomopress any file in development', async () => {
-      globalThis.mockConstants!.IS_PRODUCTION = false;
+      globalThis.brisaConstants!.IS_PRODUCTION = false;
       const res = await precompressAssets(assetsPath);
 
       expect(res).toBeNull();
     });
 
     it('should not precomopress any file if assetCompression is false', async () => {
-      globalThis.mockConstants!.CONFIG!.assetCompression = false;
+      globalThis.brisaConstants!.CONFIG!.assetCompression = false;
       const res = await precompressAssets(assetsPath);
 
       expect(res).toBeNull();

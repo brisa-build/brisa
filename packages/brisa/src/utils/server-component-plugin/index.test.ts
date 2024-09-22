@@ -22,7 +22,7 @@ const toExpected = (s: string) =>
 
 describe('utils', () => {
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     jest.restoreAllMocks();
   });
   describe('serverComponentPlugin', () => {
@@ -413,7 +413,7 @@ describe('utils', () => {
         }
       `;
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           output: 'static',
@@ -451,7 +451,7 @@ describe('utils', () => {
         }
       `;
       const mockConsoleLog = spyOn(console, 'log');
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           output: 'static',
@@ -485,7 +485,7 @@ describe('utils', () => {
         }
       `;
       const mockConsoleLog = spyOn(console, 'log');
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
         CONFIG: {
@@ -514,7 +514,7 @@ describe('utils', () => {
       }
     `;
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           output: 'desktop',
@@ -552,7 +552,7 @@ describe('utils', () => {
         }
       `;
       const mockConsoleLog = spyOn(console, 'log');
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           output: 'desktop',
@@ -586,7 +586,7 @@ describe('utils', () => {
         }
       `;
       const mockConsoleLog = spyOn(console, 'log');
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
         CONFIG: {
@@ -1459,7 +1459,7 @@ describe('utils', () => {
           return <Component {...bar} {...props.bar()()} />;
         }
       `;
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           output: 'static',

@@ -7,7 +7,7 @@ import {
 
 describe('utils', () => {
   beforeEach(() => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...(getConstants() ?? {}),
       CONFIG: {
         basePath: '/base-path',
@@ -16,7 +16,7 @@ describe('utils', () => {
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('base-path', () => {
@@ -38,8 +38,8 @@ describe('utils', () => {
       });
 
       it('should not add base path to the URL if it is not provided', () => {
-        globalThis.mockConstants = {
-          ...globalThis.mockConstants,
+        globalThis.brisaConstants = {
+          ...globalThis.brisaConstants,
           CONFIG: {},
         };
         const input = '/test';
@@ -84,8 +84,8 @@ describe('utils', () => {
       });
 
       it('should not remove base path from the URL if it is not provided', () => {
-        globalThis.mockConstants = {
-          ...globalThis.mockConstants,
+        globalThis.brisaConstants = {
+          ...globalThis.brisaConstants,
           CONFIG: {},
         };
         const input = '/base-path/test';

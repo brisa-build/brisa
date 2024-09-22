@@ -14,7 +14,7 @@ const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 describe('utils', () => {
   describe('response-rendered-page', () => {
     beforeEach(async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
         BUILD_DIR,
@@ -29,7 +29,7 @@ describe('utils', () => {
     });
 
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should return 200 page with client page code', async () => {
@@ -85,8 +85,8 @@ describe('utils', () => {
     });
 
     it('should return 200 page with client page code from prerendered page with trailingSlash', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         CONFIG: {
           trailingSlash: true,
         },
@@ -142,8 +142,8 @@ describe('utils', () => {
     });
 
     it('should return 200 page with client page code from prerendered page with i18n and trailingSlash', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         CONFIG: {
           trailingSlash: true,
         },

@@ -13,13 +13,13 @@ const PAGES_DIR = path.join(
 
 describe('utils', () => {
   beforeEach(() => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       PAGES_DIR,
     };
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('getRouteMatcher', () => {

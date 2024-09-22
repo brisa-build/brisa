@@ -8,11 +8,11 @@ const BASE_PATHS = ['', '/foo', '/foo/bar'];
 describe('utils', () => {
   describe.each(BASE_PATHS)('redirectTrailingSlash %s', (basePath) => {
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should redirect without trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: false,
           basePath,
@@ -29,7 +29,7 @@ describe('utils', () => {
     });
 
     it('should redirect without trailing slash + parameters', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: false,
           basePath,
@@ -46,7 +46,7 @@ describe('utils', () => {
     });
 
     it('should NOT redirect the home trailingSlash=false + trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: false,
           basePath,
@@ -60,7 +60,7 @@ describe('utils', () => {
     });
 
     it('should NOT redirect the home trailingSlash=false + without trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: false,
           basePath,
@@ -74,7 +74,7 @@ describe('utils', () => {
     });
 
     it('should NOT redirect the home trailingSlash=true + trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: true,
           basePath,
@@ -88,7 +88,7 @@ describe('utils', () => {
     });
 
     it('should NOT redirect the home trailingSlash=true + without trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: true,
           basePath,
@@ -102,7 +102,7 @@ describe('utils', () => {
     });
 
     it('should redirect with trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: true,
           basePath,
@@ -119,7 +119,7 @@ describe('utils', () => {
     });
 
     it('should redirect with trailing slash and parameters', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: true,
           basePath,
@@ -136,7 +136,7 @@ describe('utils', () => {
     });
 
     it('should not redirect when trailingSlash=true but already has the trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: true,
           basePath,
@@ -150,7 +150,7 @@ describe('utils', () => {
     });
 
     it('should not redirect when trailingSlash=false but already has no trailing slash', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         CONFIG: {
           trailingSlash: false,
           basePath,

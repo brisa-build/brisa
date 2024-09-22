@@ -11,7 +11,7 @@ const BASE_PATHS = ['', '/foo', '/foo/bar'];
 describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
   describe('without trailing slash', () => {
     beforeEach(() => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           trailingSlash: false,
@@ -29,12 +29,12 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should not do anything if there is no i18n config', () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         I18N_CONFIG: {},
       } as any;
       const req = new Request('https://example.com');
@@ -155,8 +155,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale changing the subdomain and the page route name', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: true,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -192,8 +192,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct default locale of the subdomain', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: true,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -234,8 +234,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale changing the subdomain', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: true,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -266,8 +266,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: false,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -296,8 +296,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale and changing the subdomain in development', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: false,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -331,7 +331,7 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
   });
   describe('with trailing slash', () => {
     beforeEach(() => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           trailingSlash: true,
@@ -349,12 +349,12 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should not do anything if there is no i18n config', () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         I18N_CONFIG: {},
       } as any;
       const req = new Request('https://example.com');
@@ -467,8 +467,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct default locale of the subdomain', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: true,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -509,8 +509,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale changing the subdomain and the page route name', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: true,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -546,8 +546,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale changing the subdomain', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: true,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -578,8 +578,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: false,
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -610,8 +610,8 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
     });
 
     it('should redirect to the correct browser locale and changing the subdomain in development', async () => {
-      globalThis.mockConstants = {
-        ...globalThis.mockConstants,
+      globalThis.brisaConstants = {
+        ...globalThis.brisaConstants,
         IS_PRODUCTION: false,
         I18N_CONFIG: {
           locales: ['en', 'es'],

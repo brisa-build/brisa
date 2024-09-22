@@ -37,11 +37,11 @@ describe('utils', () => {
   afterEach(() => {
     mockHash.mockRestore();
     mockConsoleLog.mockRestore();
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   describe('compileFiles DEVELOPMENT', () => {
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
     it('should compile fixtures routes correctly', async () => {
       const DEV_SRC_DIR = path.join(FIXTURES, 'with-dev-environment');
@@ -51,7 +51,7 @@ describe('utils', () => {
       const constants = getConstants();
       const mockExtendPlugins = mock();
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR: DEV_PAGES_DIR,
         BUILD_DIR: DEV_BUILD_DIR,
@@ -99,7 +99,7 @@ describe('utils', () => {
       const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
       const mockExtendPlugins = mock();
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         IS_SERVE_PROCESS: false,
@@ -315,7 +315,7 @@ describe('utils', () => {
       const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -391,7 +391,7 @@ describe('utils', () => {
       const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -482,7 +482,7 @@ describe('utils', () => {
       const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -555,7 +555,7 @@ describe('utils', () => {
       const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -667,7 +667,7 @@ describe('utils', () => {
       const ASSETS_DIR = path.join(BUILD_DIR, 'public');
       const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -739,7 +739,7 @@ describe('utils', () => {
       const PAGES_DIR = path.join(BUILD_DIR, 'pages');
       const ASSETS_DIR = path.join(BUILD_DIR, 'public');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -810,7 +810,7 @@ describe('utils', () => {
       const ASSETS_DIR = path.join(BUILD_DIR, 'public');
       const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -890,7 +890,7 @@ describe('utils', () => {
       const ASSETS_DIR = path.join(BUILD_DIR, 'public');
       const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
       const constants = getConstants();
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR,
         BUILD_DIR,
@@ -950,7 +950,7 @@ describe('utils', () => {
 
       const constants = getConstants();
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         PAGES_DIR: path.join(SRC_DIR, 'pages'),
         BUILD_DIR: path.join(SRC_DIR, 'out'),

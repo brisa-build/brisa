@@ -4,7 +4,7 @@ import routeMatchPathname from '.';
 describe('utils', () => {
   describe('routeMatchPathname', () => {
     beforeEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
     it('should match static routes', () => {
       expect(routeMatchPathname('/foo', '/foo')).toBe(true);

@@ -33,16 +33,16 @@ const routeHomepage = { filePath: HOMEPAGE } as unknown as MatchedBrisaRoute;
 
 describe('utils', () => {
   beforeEach(() => {
-    globalThis.mockConstants = getConstants() ?? {};
+    globalThis.brisaConstants = getConstants() ?? {};
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('processPageRoute', () => {
     it('should return a page with the layout in production', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         IS_DEVELOPMENT: false,

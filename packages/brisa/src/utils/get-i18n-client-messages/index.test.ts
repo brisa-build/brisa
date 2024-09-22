@@ -83,11 +83,11 @@ const I18N_CONFIG = {
 describe('utils', () => {
   describe('getI18nClientMessages', () => {
     beforeEach(() => {
-      globalThis.mockConstants = { I18N_CONFIG };
+      globalThis.brisaConstants = { I18N_CONFIG };
     });
 
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should take only the consumed messages', () => {
@@ -235,7 +235,7 @@ describe('utils', () => {
     });
 
     it('should work with another keySeparator', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         I18N_CONFIG: {
           ...I18N_CONFIG,
           messages: {

@@ -17,7 +17,7 @@ describe('cli/buildStandalone', () => {
     mockProcessExit = spyOn(process, 'exit').mockImplementation(
       () => null as never,
     );
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...constants,
       BUILD_DIR,
       SRC_DIR: FIXTURES,

@@ -17,7 +17,7 @@ req.id = '123456';
 describe('utils', () => {
   describe('getPageComponentWithHeaders', () => {
     beforeEach(async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
         BUILD_DIR,
@@ -32,7 +32,7 @@ describe('utils', () => {
     });
 
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should return PageComponent, pageModule and pageHeaders', async () => {

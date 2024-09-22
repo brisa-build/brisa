@@ -23,7 +23,7 @@ describe('compileAssets', () => {
   });
 
   beforeEach(async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
       BUILD_DIR,
@@ -37,7 +37,7 @@ describe('compileAssets', () => {
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   it('should compile fixtures assets correctly', async () => {
@@ -70,7 +70,7 @@ describe('compileAssets', () => {
 
   it('should not compress fixtures assets in development and neither create the sitemap.xml', async () => {
     const log = spyOn(console, 'log');
-    globalThis.mockConstants!.IS_PRODUCTION = false;
+    globalThis.brisaConstants!.IS_PRODUCTION = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
       ['favicon.ico', 'some-dir'].toSorted(),
@@ -80,7 +80,7 @@ describe('compileAssets', () => {
   });
 
   it('should not compress fixtures assets if assetCompression is false', async () => {
-    globalThis.mockConstants!.CONFIG!.assetCompression = false;
+    globalThis.brisaConstants!.CONFIG!.assetCompression = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
       ['favicon.ico', 'some-dir', 'sitemap.xml'].toSorted(),

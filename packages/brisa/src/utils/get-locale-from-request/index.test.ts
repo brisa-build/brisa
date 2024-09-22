@@ -4,7 +4,7 @@ import extendRequestContext from '@/utils/extend-request-context';
 
 describe('utils', () => {
   beforeEach(() => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       I18N_CONFIG: {
         locales: ['en', 'ru'],
         defaultLocale: 'en',
@@ -14,7 +14,7 @@ describe('utils', () => {
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('getLocaleFromRequest', () => {
@@ -46,7 +46,7 @@ describe('utils', () => {
     });
 
     it('should return domain default locale if not locale', () => {
-      (globalThis.mockConstants as any).I18N_CONFIG.domains = {
+      (globalThis.brisaConstants as any).I18N_CONFIG.domains = {
         'example.com': {
           defaultLocale: 'ru',
         },
@@ -60,7 +60,7 @@ describe('utils', () => {
     });
 
     it('should return domain default locale if locale is not supported', () => {
-      (globalThis.mockConstants as any).I18N_CONFIG.domains = {
+      (globalThis.brisaConstants as any).I18N_CONFIG.domains = {
         'example.com': {
           defaultLocale: 'ru',
         },

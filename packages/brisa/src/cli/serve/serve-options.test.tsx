@@ -43,7 +43,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
     // @ts-ignore - We need to test real server scenarios
     if (typeof window !== 'undefined') window = undefined;
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
       BUILD_DIR,
@@ -65,7 +65,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     process.env.__CRYPTO_KEY__ = undefined;
     process.env.__CRYPTO_IV__ = undefined;
     process.env.BRISA_BUILD_FOLDER = '';
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     jest.restoreAllMocks();
   });
 
@@ -91,7 +91,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should log an error and exit if there are no "build" directory in production', async () => {
     const constants = getConstants();
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...constants,
       IS_PRODUCTION: true,
       BUILD_DIR: '/some-path',
@@ -114,7 +114,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should log an error and exit if there are no "pages" directory in production', async () => {
     const constants = getConstants();
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...constants,
       IS_PRODUCTION: true,
       PAGES_DIR: '/some-path',
@@ -137,7 +137,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should log an error and exit if there are no "pages" directory in development', async () => {
     const constants = getConstants();
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...constants,
       IS_PRODUCTION: false,
       PAGES_DIR: '/some-path',
@@ -308,8 +308,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should return 404 error if the 404 page does not exist and the page does not exist', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       PAGE_404: '',
     };
     const response = await testRequest(
@@ -322,10 +322,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it("should return 404 page without redirect to the trailingSlash if the page doesn't exist", async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -347,10 +347,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it("should return 404 page without redirect to the locale and trailingSlash if the page doesn't exist", async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -442,10 +442,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should return 200 page with client page code using a hash and trailingSlash', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -465,8 +465,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should return 404 page with client page code without the basePath', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
         basePath: '/incorrect',
       },
@@ -496,10 +496,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect the /api/example to the trailingSlash with parameters', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
       I18N_CONFIG: undefined,
@@ -514,10 +514,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect the home to the correct locale and trailingSlash', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -529,10 +529,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect the home to the correct locale and trailingSlash with params', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -562,8 +562,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct default locale of the subdomain', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
         locales: ['en', 'es'],
@@ -600,8 +600,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale changing the subdomain', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
         locales: ['en', 'es'],
@@ -629,8 +629,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale changing the subdomain and the page route name', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
         locales: ['en', 'es'],
@@ -663,8 +663,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale changing the subdomain and the page route name with hash', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
         locales: ['en', 'es'],
@@ -697,11 +697,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale changing the subdomain, adding trailing slash and translating the route name', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
       I18N_CONFIG: {
@@ -735,8 +735,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       I18N_CONFIG: {
         locales: ['en', 'es'],
@@ -762,8 +762,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale and changing the subdomain in development', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       I18N_CONFIG: {
         locales: ['en', 'es'],
@@ -793,11 +793,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect to the correct browser locale changing the subdomain and trailingSlash', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
       I18N_CONFIG: {
@@ -827,10 +827,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect with trailingSlash', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -844,10 +844,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should redirect with locale and trailingSlash', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         trailingSlash: true,
       },
     };
@@ -881,8 +881,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not be possible to fetch an api route GET without the correct basePath', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
         basePath: '/incorrect',
       },
@@ -948,11 +948,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should return an asset in gzip if the browser accept it', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         assetCompression: true,
       },
     };
@@ -979,11 +979,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not return in DEVELOPMENT an asset in gzip', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         assetCompression: true,
       },
     };
@@ -1006,11 +1006,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not return in PRODUCTION an asset in zip when CONFIG.assetCompression is false', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         assetCompression: false,
       },
     };
@@ -1033,11 +1033,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should return an asset in brotli if the browser accept it and the "brotli" option is enabled', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         assetCompression: true,
       },
     };
@@ -1066,11 +1066,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not return in DEVELOPMENT an asset in brotli', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         assetCompression: true,
       },
     };
@@ -1093,11 +1093,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not return in PRODUCTION an asset in brotli when CONFIG.assetCompression is false', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
       CONFIG: {
-        ...globalThis.mockConstants?.CONFIG,
+        ...globalThis.brisaConstants?.CONFIG,
         assetCompression: false,
       },
     };
@@ -1120,8 +1120,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not return an asset with incorrect basePath', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       CONFIG: {
         basePath: '/incorrect',
       },
@@ -1139,7 +1139,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should cache client page code in production', async () => {
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...getConstants(),
       IS_PRODUCTION: true,
       HEADERS: {
@@ -1199,8 +1199,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should NOT subscribe to hotload when "open" the websocket connection in production', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
     };
 
@@ -1255,8 +1255,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should NOT unsubscribe to hotload when "close" the websocket connection in production', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: true,
     };
 
@@ -1330,8 +1330,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should have req.renderInitiator with "SERVER_ACTION" when is POST method and has x-action header', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
 
@@ -1375,8 +1375,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
 
@@ -1408,8 +1408,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
 
@@ -1439,8 +1439,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
     const body = new FormData();
@@ -1481,8 +1481,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
     const body = new FormData();
@@ -1531,8 +1531,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should NOT call responseAction method with GET and return 200 with the page', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
     mock.module('@/utils/response-action', () => ({
@@ -1556,8 +1556,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should call responseAction method when is an action', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
     mock.module('@/utils/response-action', () => ({
@@ -1598,8 +1598,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should open the editor calling /__brisa_dev_file__ with file, line and column', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
@@ -1624,8 +1624,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should not call Bun.openInEditor in Node.js and return 404', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
       JS_RUNTIME: 'node',
@@ -1648,8 +1648,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should open the editor calling /__brisa_dev_file__ with internal brisa file from build with line and column', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
@@ -1682,8 +1682,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should return 404 trying to open the editor calling /__brisa_dev_file__ with file, line and column with method GET', async () => {
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
@@ -1707,8 +1707,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should work declarative shadow DOM on server actions when is form call without RPC', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
 
@@ -1735,8 +1735,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   it('should avoid declarative shadow DOM on server actions', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    globalThis.mockConstants = {
-      ...globalThis.mockConstants,
+    globalThis.brisaConstants = {
+      ...globalThis.brisaConstants,
       I18N_CONFIG: undefined,
     };
 

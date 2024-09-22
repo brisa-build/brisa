@@ -64,7 +64,7 @@ function getI18nConfig<T>(dir: T extends Record<string, any> ? T : never) {
 
 describe('utils', () => {
   afterAll(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
 
   describe('translateCore', () => {

@@ -60,7 +60,7 @@ describe('utils', () => {
     testRequest.store.clear();
     // @ts-ignore
     testRequest.webStore.clear();
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     // @ts-ignore
     globalThis.REGISTERED_ACTIONS = undefined;
     globalThis.FORCE_SUSPENSE_DEFAULT = undefined;
@@ -133,7 +133,7 @@ describe('utils', () => {
     });
 
     it('should render the head with basepath attribute when has basePath', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           basePath: '/docs',
@@ -572,7 +572,7 @@ describe('utils', () => {
         defaultLocale: 'en',
       };
       req.i18n = { ...i18n, t: () => '', pages: {} } as any;
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           ...i18n,
@@ -606,7 +606,7 @@ describe('utils', () => {
         defaultLocale: 'en',
       };
       req.i18n = { ...i18n, t: () => '', pages: {} } as any;
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           ...i18n,
@@ -645,7 +645,7 @@ describe('utils', () => {
         } as MatchedBrisaRoute,
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
       };
@@ -675,7 +675,7 @@ describe('utils', () => {
         } as MatchedBrisaRoute,
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
         CONFIG: {
@@ -708,7 +708,7 @@ describe('utils', () => {
         } as MatchedBrisaRoute,
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
       };
@@ -738,7 +738,7 @@ describe('utils', () => {
         } as MatchedBrisaRoute,
       });
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
         CONFIG: {
@@ -757,7 +757,7 @@ describe('utils', () => {
     });
 
     it('should inject client i18n script if some web component consumes translations', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -816,7 +816,7 @@ describe('utils', () => {
     });
 
     it('should inject client i18n script if some web component consumes translations with basePath', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -878,7 +878,7 @@ describe('utils', () => {
     });
 
     it('should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -943,7 +943,7 @@ describe('utils', () => {
     });
 
     it('should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used with basePath', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         I18N_CONFIG: {
           locales: ['en', 'es'],
@@ -1547,7 +1547,7 @@ describe('utils', () => {
     });
 
     it('should render the "a" tag with the locale if i18n is enabled with trailingSlash', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           trailingSlash: true,
@@ -3382,7 +3382,7 @@ describe('utils', () => {
     });
 
     it('should add brisa-error-dialog when IS_DEVELOPMENT and IS_SERVE_PROCESS are true', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: false,
         IS_DEVELOPMENT: true,
@@ -3407,7 +3407,7 @@ describe('utils', () => {
     });
 
     it('should NOT add brisa-error-dialog when IS_SERVE_PROCESS is true but IS_DEVELOPMENT is false', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
         IS_DEVELOPMENT: false,
@@ -3430,7 +3430,7 @@ describe('utils', () => {
     });
 
     it('should NOT add brisa-error-dialog when IS_DEVELOPMENT is true but IS_SERVE_PROCESS is false', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: false,
         IS_DEVELOPMENT: true,

@@ -22,14 +22,14 @@ let logMock: ReturnType<typeof spyOn>;
 describe('utils', () => {
   beforeEach(() => {
     logMock = spyOn(console, 'log');
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...getConstants(),
       BUILD_DIR: FIXTURES,
     };
   });
   afterEach(() => {
     logMock.mockRestore();
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   describe('response-action', () => {
     it('should add the correct param', async () => {

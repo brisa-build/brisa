@@ -18,12 +18,12 @@ const emptyI18n = {
 
 describe('utils', () => {
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     console.warn = warn;
   });
   describe.each(BASE_PATHS)('generateHrefLang %s', (basePath) => {
     it('should generate the hreflang with the rest of locales', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -57,7 +57,7 @@ describe('utils', () => {
     });
 
     it('should warn and return empty string if hrefLangOrigin is not a valid URL', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -94,7 +94,7 @@ describe('utils', () => {
     });
 
     it('should work with hrefLangOrigin as string', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -125,7 +125,7 @@ describe('utils', () => {
     });
 
     it('should work with dynamic pages without translations', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -156,7 +156,7 @@ describe('utils', () => {
     });
 
     it('should work with dynamic pages with translations', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -188,7 +188,7 @@ describe('utils', () => {
     });
 
     it('should return empty string if locale is not defined', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -217,7 +217,7 @@ describe('utils', () => {
     });
 
     it('should work with catchAll routes with translations', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -249,7 +249,7 @@ describe('utils', () => {
     });
 
     it('should work with dynamic routes and rest dynamic with translations', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -285,7 +285,7 @@ describe('utils', () => {
     });
 
     it('should work with multi supported locales', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en', 'fr']),
@@ -320,7 +320,7 @@ describe('utils', () => {
     });
 
     it('should work with dynamic routes and multi supported locales', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en', 'fr', 'it', 'de']),
@@ -370,7 +370,7 @@ describe('utils', () => {
     });
 
     it('should skip the hrefLang of some locale without domain in hrefLangOrigin', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en', 'fr', 'de']),
@@ -405,7 +405,7 @@ describe('utils', () => {
       });
       input.i18n = {
         ...emptyI18n,
-        ...globalThis.mockConstants.I18N_CONFIG,
+        ...globalThis.brisaConstants.I18N_CONFIG,
         locale: 'en',
       };
       const output = generateHrefLang(input);
@@ -418,7 +418,7 @@ describe('utils', () => {
     });
 
     it('should work with more I18nConfig and with already the language in the pathname', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -473,7 +473,7 @@ describe('utils', () => {
     });
 
     it('should not generate hrefLang on 404 page (reserved pages)', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: { basePath },
         LOCALES_SET: new Set(['es', 'en']),
@@ -506,7 +506,7 @@ describe('utils', () => {
     });
 
     it('should work with trailingSlash=true in the configuration', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           trailingSlash: true,
@@ -537,7 +537,7 @@ describe('utils', () => {
 
       const i18n = {
         ...emptyI18n,
-        ...globalThis.mockConstants.I18N_CONFIG,
+        ...globalThis.brisaConstants.I18N_CONFIG,
         locale: 'en',
       };
       const home = extendRequestContext({
@@ -597,7 +597,7 @@ describe('utils', () => {
     });
 
     it('should work with trailingSlash=false in the configuration', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           trailingSlash: false,
@@ -628,7 +628,7 @@ describe('utils', () => {
 
       const i18n = {
         ...emptyI18n,
-        ...globalThis.mockConstants.I18N_CONFIG,
+        ...globalThis.brisaConstants.I18N_CONFIG,
         locale: 'en',
       };
       const home = extendRequestContext({

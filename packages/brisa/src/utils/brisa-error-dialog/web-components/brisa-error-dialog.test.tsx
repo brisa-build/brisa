@@ -29,7 +29,7 @@ describe('utils', () => {
   beforeEach(async () => {
     globalThis.REGISTERED_ACTIONS = [];
     if (!isDOMRegistered()) GlobalRegistrator.register();
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...getConstants(),
       BUILD_DIR,
       SRC_DIR: BUILD_DIR,
@@ -39,7 +39,7 @@ describe('utils', () => {
   afterEach(async () => {
     window._s?.Map?.clear?.();
     GlobalRegistrator.unregister();
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     jest.restoreAllMocks();
   });
   describe('brisa-error-dialog web component', () => {

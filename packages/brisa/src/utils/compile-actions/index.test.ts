@@ -23,7 +23,7 @@ const brisaServerFile = path
 
 describe('utils', () => {
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   describe('transformToActionCode', () => {
     it('should transform a simple component with 1 action', () => {
@@ -1196,7 +1196,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
     it('should generate the jsx code correctly in prod', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
       };

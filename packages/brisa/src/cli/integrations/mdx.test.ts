@@ -19,14 +19,14 @@ describe('integrateMDX', () => {
 
   beforeEach(() => {
     fs.mkdirSync(ROOT_DIR);
-    globalThis.mockConstants = {
+    globalThis.brisaConstants = {
       ...constants,
       ROOT_DIR,
     };
   });
 
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
     fs.rmdirSync(ROOT_DIR, { recursive: true });
     jest.restoreAllMocks();
   });

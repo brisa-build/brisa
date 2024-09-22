@@ -6,7 +6,7 @@ import compileBrisaInternalsToDoBuildPortable from '.';
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
 const BRISA_DIR = path.join(import.meta.dirname, '..', '..', '..');
 const CONFIG_DIR = path.join(import.meta.dirname, 'brisa.config.js');
-const mockConstants = {
+const brisaConstants = {
   BUILD_DIR,
   BRISA_DIR,
   VERSION: 'x.y.z',
@@ -22,21 +22,21 @@ let mockLog: ReturnType<typeof spyOn>;
 describe('utils/compileServeInternalsIntoBuild', () => {
   beforeEach(() => {
     mockLog = spyOn(console, 'log');
-    globalThis.mockConstants = mockConstants;
+    globalThis.brisaConstants = brisaConstants;
     fs.mkdirSync(BUILD_DIR);
   });
 
   afterEach(() => {
     mockLog.mockRestore();
-    delete globalThis.mockConstants;
+    delete globalThis.brisaConstants;
     fs.rmSync(BUILD_DIR, { recursive: true, force: true });
     fs.rmSync(CONFIG_DIR, { force: true });
   });
 
   it('should do nothing if is not production', async () => {
     fs.writeFileSync(CONFIG_DIR, '');
-    globalThis.mockConstants = {
-      ...mockConstants,
+    globalThis.brisaConstants = {
+      ...brisaConstants,
       IS_PRODUCTION: false,
     };
     await compileBrisaInternalsToDoBuildPortable();
@@ -65,7 +65,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
   });
 
   it('should work with Bun.js runtime', async () => {
-    mockConstants.CONFIG.output = 'bun';
+    brisaConstants.CONFIG.output = 'bun';
     await compileBrisaInternalsToDoBuildPortable();
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
 
@@ -109,7 +109,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
   });
 
   it('should create a package.json in Node.js', async () => {
-    mockConstants.CONFIG.output = 'node';
+    brisaConstants.CONFIG.output = 'node';
     await compileBrisaInternalsToDoBuildPortable();
     expect(
       JSON.parse(

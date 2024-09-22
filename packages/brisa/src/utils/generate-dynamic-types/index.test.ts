@@ -6,7 +6,7 @@ import { getConstants } from '@/constants';
 describe('utils', () => {
   describe('generateDynamicTypes', () => {
     afterEach(() => {
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
     it('should generate the correct types', () => {
       const allWebComponents = {
@@ -196,7 +196,7 @@ describe('utils', () => {
     });
 
     it('should generate routes with trailing slash when it is present in the config', () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...getConstants(),
         CONFIG: {
           trailingSlash: true,

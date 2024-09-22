@@ -64,7 +64,7 @@ describe('cli', () => {
       mockTable.mockRestore();
       mockLog.mockRestore();
       mock.restore();
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should remove the content of build directory if it exists (except _brisa)', async () => {
@@ -127,7 +127,7 @@ describe('cli', () => {
     });
 
     it('should not call generateStaticExport in development when is static export', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
         IS_STATIC_EXPORT: true,
@@ -141,7 +141,7 @@ describe('cli', () => {
     });
 
     it('should call generateStaticExport in production when is static export', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         IS_STATIC_EXPORT: true,
@@ -155,7 +155,7 @@ describe('cli', () => {
     });
 
     it('should log the table with the generated static export pages', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         IS_STATIC_EXPORT: true,
@@ -179,7 +179,7 @@ describe('cli', () => {
     it('should log "Ω (i18n) prerendered for each locale" if i18n is enabled', async () => {
       const constants = getConstants() ?? {};
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         IS_PRODUCTION: true,
         IS_STATIC_EXPORT: true,
@@ -219,7 +219,7 @@ describe('cli', () => {
 
       const constants = getConstants() ?? {};
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...constants,
         IS_PRODUCTION: true,
         IS_STATIC_EXPORT: true,
@@ -254,7 +254,7 @@ describe('cli', () => {
     it('should call outputAdapter if defined in the configuration (PROD)', async () => {
       const mockAdapter = mock((v: any) => v);
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         CONFIG: {
@@ -270,7 +270,7 @@ describe('cli', () => {
       const logs = mockLog.mock.calls.flat().toString();
       expect(logs).toContain('Adapting output to my-adapter...');
       expect(mockAdapter).toHaveBeenCalledTimes(1);
-      expect(mockAdapter.mock.calls[0][0]).toEqual(globalThis.mockConstants);
+      expect(mockAdapter.mock.calls[0][0]).toEqual(globalThis.brisaConstants);
     });
 
     it('should NOT call outputAdapter if defined in the configuration in development', async () => {
@@ -283,7 +283,7 @@ describe('cli', () => {
         },
       } as Configuration;
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: false,
         CONFIG: config,
@@ -298,7 +298,7 @@ describe('cli', () => {
     it('should move internals before the adapter (server.js, etc)', async () => {
       let existInternals = false;
 
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         IS_PRODUCTION: true,
         BUILD_DIR,

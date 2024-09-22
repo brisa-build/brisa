@@ -30,7 +30,7 @@ describe('utils', () => {
   describe('resolve-action', () => {
     beforeEach(async () => {
       mockLog = spyOn(console, 'log');
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
         BUILD_DIR,
@@ -46,7 +46,7 @@ describe('utils', () => {
 
     afterEach(() => {
       mockLog.mockRestore();
-      globalThis.mockConstants = undefined;
+      globalThis.brisaConstants = undefined;
     });
 
     it('should return a response with NotFoundError redirect', async () => {
@@ -67,7 +67,7 @@ describe('utils', () => {
     });
 
     it('should redirect to an specific url with reactivity mode', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: undefined,
       };
@@ -87,7 +87,7 @@ describe('utils', () => {
     });
 
     it('should redirect to an specific url with transition mode', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: undefined,
       };
@@ -107,7 +107,7 @@ describe('utils', () => {
     });
 
     it('should redirect to an specific url with native mode', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         I18N_CONFIG: undefined,
       };
@@ -508,7 +508,7 @@ describe('utils', () => {
     });
 
     it('should navigate with the i18n locale', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
         BUILD_DIR,
@@ -536,7 +536,7 @@ describe('utils', () => {
     });
 
     it('should navigate with trailing slash', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           trailingSlash: true,
@@ -560,7 +560,7 @@ describe('utils', () => {
     });
 
     it('should navigate with i18n and trailing slash', async () => {
-      globalThis.mockConstants = {
+      globalThis.brisaConstants = {
         ...(getConstants() ?? {}),
         CONFIG: {
           trailingSlash: true,

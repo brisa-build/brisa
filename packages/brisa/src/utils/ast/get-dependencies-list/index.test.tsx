@@ -7,7 +7,7 @@ import { getConstants } from '@/constants';
 
 describe('utils', () => {
   afterEach(() => {
-    globalThis.mockConstants = undefined;
+    globalThis.brisaConstants = undefined;
   });
   describe('ast', () => {
     describe('get-dependencies-list', () => {
