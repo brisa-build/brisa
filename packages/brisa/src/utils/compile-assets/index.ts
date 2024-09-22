@@ -23,6 +23,7 @@ export default async function compileAssets() {
     await precompressAssets(outAssetsDir).catch(console.error);
   }
 
+  // Generate sitemap.xml
   if (IS_PRODUCTION) {
     const sitemapPathname = getImportableFilepath('sitemap', SRC_DIR);
     if (!sitemapPathname) return;
