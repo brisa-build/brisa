@@ -72,10 +72,13 @@ The generated `sitemap.xml` will be:
 Many times there is a lot of additional information that we don't want, if this is your case, that you only want the `<loc>`, you can use the [`fileSystemRouter`](/docs/api-reference/server-apis/fileSystemRouter) from Brisa:
 
 ```ts
+import path from "node:path";
 import type { Sitemap } from "brisa";
 import { fileSystemRouter } from "brisa/server";
 
-const { routes } = fileSystemRouter({ dir: 'pages' });
+const { routes } = fileSystemRouter({ dir: 
+  path.join(import.meta.dirname, "pages") 
+});
 
 console.log(routes);
 // [
@@ -93,12 +96,15 @@ However, even if you need additional information, you can put it at the page lev
 Example:
 
 ```ts
+import path from "node:path";
 import type { Sitemap } from "brisa";
 import { fileSystemRouter } from "brisa/server";
 
-const { routes } = fileSystemRouter({ dir: 'pages' });
+const { routes } = fileSystemRouter({ 
+  dir: path.join(import.meta.dirname, "pages") 
+});
 
-async function sitemap(): Sitemap {
+async function sitemap(): Promise<Sitemap> {
   return Promise.all(routes.map(async ([pathname, filePath]) => ({
     loc: `https://example.com${pathname}`,
     ...((await import(filePath)).sitemap ?? {}),
@@ -130,7 +136,34 @@ export const sitemap = {
 In the case that your dynamic pages are linked to `.md` files, for example `/blog/[slug].tsx` that is linked to the content of `src/posts/*.md`, you can use the `fileSystemRouter` to point directly to `posts` and change the extension:
 
 ```ts
-const { routes } = fileSystemRouter({ dir: 'posts', fileExtensions: ['.md'] });
+import type { Sitemap } from 'brisa';
+import path from 'node:path';
+import { fileSystemRouter } from 'brisa/server';
+
+const origin = 'https://example.com';
+const pagesDir = path.join(import.meta.dirname, 'pages');
+const postsDir = path.join(import.meta.dirname, 'posts');
+
+const pages = fileSystemRouter({ dir: pagesDir });
+const posts = fileSystemRouter({
+    dir: postsDir,
+    // Change the extension to .md
+		fileExtensions: ['.md'],
+});
+
+const staticPages = pages.routes.filter(
+  ([pathname]) => pathname !== '/blog/[slug]' && pathname !== '/_404'
+);
+
+export default [
+	...staticPages.map(([pathname]) => ({
+			loc: origin + pathname,
+	})),
+  // Dynamic pages (posts):
+	...posts.routes.map(([pathname]) => ({
+			loc: origin + '/blog' + pathname,
+	})),
+] satisfies Sitemap;
 ```
 
 ## Types

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { describe, it, beforeEach, afterEach, expect } from 'bun:test';
+import { describe, it, beforeEach, afterEach, expect, spyOn } from 'bun:test';
 import compileAssets from '.';
 import { getConstants } from '@/constants';
 import { toInline } from '@/helpers';
@@ -69,11 +69,14 @@ describe('compileAssets', () => {
   });
 
   it('should not compress fixtures assets in development and neither create the sitemap.xml', async () => {
+    const log = spyOn(console, 'log');
     globalThis.mockConstants!.IS_PRODUCTION = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
       ['favicon.ico', 'some-dir'].toSorted(),
     );
+    expect(log).not.toHaveBeenCalled();
+    log.mockClear();
   });
 
   it('should not compress fixtures assets if assetCompression is false', async () => {
@@ -85,6 +88,7 @@ describe('compileAssets', () => {
   });
 
   it('should create the sitemap.xml asset file according src/sitemap.ts file in Production', async () => {
+    const log = spyOn(console, 'log');
     const sitemapFilepath = path.join(BUILD_DIR, 'public', 'sitemap.xml');
 
     await compileAssets();
@@ -107,5 +111,7 @@ describe('compileAssets', () => {
         </urlset>
       `),
     );
+    expect(log.mock.calls.toString()).toContain('sitemap.xml generated in');
+    log.mockClear();
   });
 });
