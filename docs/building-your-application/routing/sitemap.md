@@ -141,12 +141,38 @@ The `Sitemap` type is:
 type SitemapItem = {
   loc: string;
   lastmod?: string;
-  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+  changefreq?:
+    | 'always'
+    | 'hourly'
+    | 'daily'
+    | 'weekly'
+    | 'monthly'
+    | 'yearly'
+    | 'never';
   priority?: number;
   images?: {
     loc: string;
     title?: string;
     caption?: string;
+  }[];
+  videos?: {
+    thumbnail_loc: string;
+    title: string;
+    description: string;
+    content_loc: string;
+    player_loc: string;
+    duration?: number;
+    expiration_date?: string;
+    rating?: number;
+    view_count?: number;
+    publication_date?: string;
+    family_friendly?: string;
+    tag?: string;
+    live?: 'yes' | 'no';
+    requires_subscription?: 'yes' | 'no';
+    restriction?: string;
+    platform?: string;
+    uploader?: string;
   }[];
 };
 
