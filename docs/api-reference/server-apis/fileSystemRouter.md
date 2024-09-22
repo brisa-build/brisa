@@ -47,10 +47,11 @@ The `fileSystemRouter` function creates a new instance of the file system router
 ## Example usage
 
 ```tsx
+import path from 'node:path';
 import { fileSystemRouter } from 'brisa/server';
 
 const router = fileSystemRouter({
-  dir: 'pages',
+  dir: path.join(import.meta.dirname, 'pages'),
 });
 
 const matchedRoute = router.match('/blog/hello-world?foo=bar');
@@ -94,10 +95,11 @@ The `routes` property is the entries of routes and file paths.
 > `routes` entries are in alphabetical order
 
 ```tsx
+import path from 'node:path';
 import { fileSystemRouter } from 'brisa/server';
 
 const router = fileSystemRouter({
-  dir: 'pages',
+  dir: path.join(import.meta.dirname, 'pages'),
 });
 
 console.log(router.routes);
