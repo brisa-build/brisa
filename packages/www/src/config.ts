@@ -68,6 +68,10 @@ export default {
               text: 'Static assets',
               link: '/building-your-application/routing/static-assets',
             },
+            {
+              text: 'Sitemap',
+              link: '/building-your-application/routing/sitemap',
+            },
           ],
         },
 

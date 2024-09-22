@@ -1,16 +1,9 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import {
-  describe,
-  it,
-  beforeEach,
-  afterEach,
-  beforeAll,
-  afterAll,
-  expect,
-} from 'bun:test';
+import { describe, it, beforeEach, afterEach, expect } from 'bun:test';
 import compileAssets from '.';
 import { getConstants } from '@/constants';
+import { toInline } from '@/helpers';
 
 const SRC_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const BUILD_DIR = path.join(SRC_DIR, 'build');
@@ -58,6 +51,7 @@ describe('compileAssets', () => {
         'favicon.ico.br',
         'favicon.ico.gz',
         'some-dir',
+        'sitemap.xml',
       ].toSorted(),
     );
     expect(
@@ -74,7 +68,7 @@ describe('compileAssets', () => {
     );
   });
 
-  it('should not compress fixtures assets in development', async () => {
+  it('should not compress fixtures assets in development and neither create the sitemap.xml', async () => {
     globalThis.mockConstants!.IS_PRODUCTION = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
@@ -86,7 +80,32 @@ describe('compileAssets', () => {
     globalThis.mockConstants!.CONFIG!.assetCompression = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
-      ['favicon.ico', 'some-dir'].toSorted(),
+      ['favicon.ico', 'some-dir', 'sitemap.xml'].toSorted(),
+    );
+  });
+
+  it('should create the sitemap.xml asset file according src/sitemap.ts file in Production', async () => {
+    const sitemapFilepath = path.join(BUILD_DIR, 'public', 'sitemap.xml');
+
+    await compileAssets();
+
+    expect(fs.existsSync(sitemapFilepath)).toBeTrue();
+    expect(toInline(fs.readFileSync(sitemapFilepath, 'utf-8'))).toEqual(
+      toInline(`<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          <url>
+            <loc>https://example.com</loc>
+            <lastmod>2021-10-01T00:00:00.000Z</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>1.0</priority>
+            <image:image>
+              <image:loc>https://example.com/image.jpg</image:loc>
+              <image:title>Image title</image:title>
+              <image:caption>Image caption</image:caption>
+            </image:image>
+          </url>
+        </urlset>
+      `),
     );
   });
 });
