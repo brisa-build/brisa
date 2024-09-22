@@ -141,29 +141,28 @@ import path from 'node:path';
 import { fileSystemRouter } from 'brisa/server';
 
 const origin = 'https://example.com';
+
 const pagesDir = path.join(import.meta.dirname, 'pages');
 const postsDir = path.join(import.meta.dirname, 'posts');
 
 const pages = fileSystemRouter({ dir: pagesDir });
 const posts = fileSystemRouter({
-    dir: postsDir,
-    // Change the extension to .md
-		fileExtensions: ['.md'],
+	dir: postsDir,
+	// Change the extension to .md
+	fileExtensions: ['.md'],
 });
 
-const staticPages = pages.routes.filter(
-  ([pathname]) => pathname !== '/blog/[slug]' && pathname !== '/_404'
-);
+const staticPages = pages.routes
+	.filter(
+		([pathname]) => pathname !== '/blog/[slug]' && pathname !== '/_404'
+	)
+	.map(([pathname]) => ({	loc: origin + pathname }))
 
-export default [
-	...staticPages.map(([pathname]) => ({
-			loc: origin + pathname,
-	})),
-  // Dynamic pages (posts):
-	...posts.routes.map(([pathname]) => ({
-			loc: origin + '/blog' + pathname,
-	})),
-] satisfies Sitemap;
+const dynamicPages = posts.routes.map(([pathname]) => ({
+	loc: origin + '/blog' + pathname,
+}))
+
+export default [...staticPages, ...dynamicPages] satisfies Sitemap;
 ```
 
 ## Types
