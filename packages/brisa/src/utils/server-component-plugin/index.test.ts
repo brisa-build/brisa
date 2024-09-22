@@ -2037,7 +2037,7 @@ describe('utils', () => {
       expect(normalizeHTML(out.code)).toBe(
         normalizeHTML(
           `
-          import {SSRWebComponent as _Brisa_SSRWebComponent} from 'brisa/server';
+          import { SSRWebComponent as _Brisa_SSRWebComponent } from 'brisa/server';
           import _Brisa_WC1 from '${webComponentPath}';
 
           export default function App() {

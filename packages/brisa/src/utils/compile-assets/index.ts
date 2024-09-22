@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import precompressAssets from '@/utils/precompress-assets';
 import getImportableFilepath from '../get-importable-filepath';
-import sitemapJsonToXml from '../sitemap-json-to-xml';
+import sitemapToXml from '../sitemap-to-xml';
 
 export default async function compileAssets() {
   const { SRC_DIR, BUILD_DIR, IS_PRODUCTION } = getConstants();
@@ -29,7 +29,7 @@ export default async function compileAssets() {
     const sitemap = (await import(sitemapPathname)).default;
     fs.writeFileSync(
       path.join(outAssetsDir, 'sitemap.xml'),
-      await sitemapJsonToXml(sitemap),
+      await sitemapToXml(sitemap),
     );
   }
 }

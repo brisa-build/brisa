@@ -764,6 +764,25 @@ type SitemapItem = {
     title?: string;
     caption?: string;
   }[];
+  videos?: {
+    thumbnail_loc: string;
+    title: string;
+    description: string;
+    content_loc: string;
+    player_loc: string;
+    duration?: number;
+    expiration_date?: string;
+    rating?: number;
+    view_count?: number;
+    publication_date?: string;
+    family_friendly?: string;
+    tag?: string;
+    live?: 'yes' | 'no';
+    requires_subscription?: 'yes' | 'no';
+    restriction?: string;
+    platform?: string;
+    uploader?: string;
+  }[];
 };
 
 /**
