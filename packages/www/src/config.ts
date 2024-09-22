@@ -484,7 +484,11 @@ export default {
             },
             {
               text: 'SSRWebComponent',
-              link: '/api-reference/server-apis/ssr-web-component',
+              link: '/api-reference/server-apis/SSRWebComponent',
+            },
+            {
+              text: 'transpileWebComponent',
+              link: '/api-reference/server-apis/transpileWebComponent',
             },
             {
               text: 'Node.js APIs',
