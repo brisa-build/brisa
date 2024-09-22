@@ -6,6 +6,7 @@ import rerenderInAction from '@/utils/rerender-in-action';
 import { getServeOptions } from '@/cli/serve/serve-options';
 import { RenderInitiator } from '@/public-constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
+import transpileWebComponent from '@/utils/transpile-web-component';
 import serve from '@/cli/serve/bun-serve';
 
 export {
@@ -18,4 +19,5 @@ export {
   RenderInitiator,
   fileSystemRouter,
   serve,
+  transpileWebComponent,
 };
