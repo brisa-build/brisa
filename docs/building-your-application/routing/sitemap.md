@@ -156,9 +156,8 @@ const staticPages = pages.routes
 	.filter(([pathname]) => pathname !== '/blog/[slug]')
 	.map(([pathname]) => ({	loc: origin + pathname }))
 
-const dynamicPages = posts.routes.map(([pathname]) => ({
-	loc: origin + '/blog' + pathname,
-}))
+const dynamicPages = posts.routes
+	.map(([pathname]) => ({ loc: origin + '/blog' + pathname }));
 
 export default [...staticPages, ...dynamicPages] satisfies Sitemap;
 ```
