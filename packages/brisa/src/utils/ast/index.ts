@@ -11,7 +11,10 @@ import type { JavaScriptLoader } from 'bun';
 import { type ESTree, parseScript } from 'meriyah';
 
 export default function AST(loader: JavaScriptLoader = 'tsx') {
-  const transpiler = typeof Bun !== 'undefined' ? new Bun.Transpiler({ loader }) : { transformSync: (code: string) => code };
+  const transpiler =
+    typeof Bun !== 'undefined'
+      ? new Bun.Transpiler({ loader })
+      : { transformSync: (code: string) => code };
 
   return {
     parseCodeToAST(code: string): ESTree.Program {
