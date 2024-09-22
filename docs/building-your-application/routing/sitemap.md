@@ -88,7 +88,7 @@ console.log(routes);
 
 export default routes.map(([pathname]) => ({
   loc: `https://example.com${pathname}`,
-})) as Sitemap;
+})) satisfies Sitemap;
 ```
 
 However, even if you need additional information, you can put it at the page level as you like and use the `filePath` of the entry that `routes` returns to load this extra information.
