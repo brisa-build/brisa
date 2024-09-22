@@ -747,6 +747,35 @@ export type WebContextPlugin = (
   extras: WebContextPluginExtras,
 ) => WebContext;
 
+type SitemapItem = {
+  loc: string;
+  lastmod?: string;
+  changefreq?:
+    | 'always'
+    | 'hourly'
+    | 'daily'
+    | 'weekly'
+    | 'monthly'
+    | 'yearly'
+    | 'never';
+  priority?: number;
+  images?: {
+    loc: string;
+    title?: string;
+    caption?: string;
+  }[];
+};
+
+/**
+ * Description:
+ *
+ * The `Sitemap` type is used to define the sitemap of your application.
+ *
+ * Docs:
+ * - https://brisa.build/building-your-application/routing/sitemap
+ */
+export type Sitemap = SitemapItem[] | Promise<SitemapItem[]>;
+
 export type ReactiveMap = {
   get: <T>(key: string) => T;
   set: <T>(key: string, value: T) => void;

@@ -41,7 +41,7 @@ The `fileSystemRouter` function creates a new instance of the file system router
 #### Returns
 
 - A `FileSystemRouter` object with the following properties:
-  - `routes`: A record with the routes and file paths.
+  - `routes`: Entries with the routes and file paths. `[pathname, filePath][]`.
   - `match(route: string): MatchedBrisaRoute | null`: A function to match a route with the file system routes.
 
 ## Example usage
@@ -102,11 +102,11 @@ const router = fileSystemRouter({
 
 console.log(router.routes);
 // [
-//   ['/', 'pages/index.tsx'],
-//   ['/[[...catchall]]', 'pages/[[...catchall]].tsx'],
-//   ['/blog', 'pages/blog/index.tsx'],
-//   ['/blog/[slug]', 'pages/blog/[slug].tsx'],
-//   ['/settings', 'pages/settings.tsx'],
+//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],
+//   ['/[[...catchall]]', '/Users/aralroca/my-app/src/pages/[[...catchall]].tsx'],
+//   ['/blog', '/Users/aralroca/my-app/src/pages/blog/index.tsx'],
+//   ['/blog/[slug]', '/Users/aralroca/my-app/src/pages/blog/[slug].tsx'],
+//   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],
 // ]
 ```
 
