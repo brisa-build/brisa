@@ -987,7 +987,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#returns",
     "title": "Returns",
-    "text": "A FileSystemRouter object with the following properties:\n\nroutes: A record with the routes and file paths.\nmatch(route: string): MatchedBrisaRoute | null: A function to match a route with the file system routes.",
+    "text": "A FileSystemRouter object with the following properties:\n\nroutes: Entries with the routes and file paths. [pathname, filePath][].\nmatch(route: string): MatchedBrisaRoute | null: A function to match a route with the file system routes.",
     "titles": [
       "fileSystemRouter",
       "Reference",
@@ -1015,7 +1015,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#routes-property",
     "title": "routes property",
-    "text": "The routes property is the entries of routes and file paths. routes entries are in alphabetical order import { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: 'pages',\n});\n\nconsole.log(router.routes);\n// [\n//   ['/', 'pages/index.tsx'],\n//   ['/[[...catchall]]', 'pages/[[...catchall]].tsx'],\n//   ['/blog', 'pages/blog/index.tsx'],\n//   ['/blog/[slug]', 'pages/blog/[slug].tsx'],\n//   ['/settings', 'pages/settings.tsx'],\n// ]",
+    "text": "The routes property is the entries of routes and file paths. routes entries are in alphabetical order import { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: 'pages',\n});\n\nconsole.log(router.routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/[[...catchall]]', '/Users/aralroca/my-app/src/pages/[[...catchall]].tsx'],\n//   ['/blog', '/Users/aralroca/my-app/src/pages/blog/index.tsx'],\n//   ['/blog/[slug]', '/Users/aralroca/my-app/src/pages/blog/[slug].tsx'],\n//   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],\n// ]",
     "titles": ["fileSystemRouter"]
   },
   {
@@ -3664,6 +3664,36 @@
     ]
   },
   {
+    "id": "/building-your-application/routing/sitemap#sitemap",
+    "title": "Sitemap",
+    "text": "A sitemap is a file that lists the URLs for a site. It allows devs to include additional information about each URL: when it was last updated, how often it changes, and how important it is in relation to other URLs in the site. This information helps search engines crawl your site more intelligently. To create the sitemap.xml file during the build process, you can create this file in your project: src/sitemap.ts\nsrc/sitemap.js\nsrc/sitemap/index.ts\nsrc/sitemap/index.js The sitemap.xml file will be generated in the root of the output directory. And this generation only happens in production mode. You can try it with brisa build && brisa start. In order that the sitemap.xml file works, you need to add to your src/public/robots.txt file the following line:\nSitemap: https://example.com/sitemap.xml\n\nNote: Replace https://example.com with your domain.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/routing/sitemap#example-of-srcsitemapts",
+    "title": "Example of src/sitemap.ts",
+    "text": "import type { Sitemap } from \"brisa\";\n\nexport default [{\n  loc: \"https://example.com\",\n  lastmod: \"2021-10-01T00:00:00.000Z\",\n  changefreq: \"daily\",\n  priority: 1.0,\n  images: [\n    {\n      loc: \"https://example.com/image.jpg\",\n      title: \"Image title\",\n      caption: \"Image caption\",\n    },\n  ],\n}] as Sitemap; The generated sitemap.xml will be: sitemap.xml <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n  <url>\n    <loc>https://example.com</loc>\n    <lastmod>2021-10-01T00:00:00.000Z</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n    <image:image>\n      <image:loc>https://example.com/image.jpg</image:loc>\n      <image:title>Image title</image:title>\n      <image:caption>Image caption</image:caption>\n    </image:image>\n  </url>\n</urlset>",
+    "titles": ["Sitemap"]
+  },
+  {
+    "id": "/building-your-application/routing/sitemap#lets-make-it-simpler",
+    "title": "Let's make it simpler",
+    "text": "Many times there is a lot of additional information that we don't want, if this is your case, that you only want the <loc>, you can use the fileSystemRouter from Brisa: import type { Sitemap } from \"brisa\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst { routes } = fileSystemRouter({ dir: 'pages' });\n\nconsole.log(routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/about', '/Users/aralroca/my-app/src/pages/about.tsx'],\n// ]\n\nexport default routes.map(([pathname]) => ({\n  loc: `https://example.com${pathname}`,\n})) as Sitemap; However, even if you need additional information, you can put it at the page level as you like and use the filePath of the entry that routes returns to load this extra information. Example: import type { Sitemap } from \"brisa\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst { routes } = fileSystemRouter({ dir: 'pages' });\n\nasync function sitemap(): Sitemap {\n  return Promise.all(routes.map(async ([pathname, filePath]) => ({\n    loc: `https://example.com${pathname}`,\n    ...((await import(filePath)).sitemap ?? {}),\n  })));\n}\n\nexport default sitemap(); And in your page: export const sitemap = {\n  lastmod: \"2021-10-01T00:00:00.000Z\",\n  changefreq: \"daily\",\n  priority: 1.0,\n  images: [\n    {\n      loc: \"https://example.com/image.jpg\",\n      title: \"Image title\",\n      caption: \"Image caption\",\n    },\n  ],\n};",
+    "titles": ["Sitemap"]
+  },
+  {
+    "id": "/building-your-application/routing/sitemap#map-md-content",
+    "title": "Map .md content",
+    "text": "In the case that your dynamic pages are linked to .md files, for example /blog/[slug].tsx that is linked to the content of src/posts/*.md, you can use the fileSystemRouter to point directly to posts and change the extension: const { routes } = fileSystemRouter({ dir: 'posts', fileExtensions: ['.md'] });",
+    "titles": ["Sitemap"]
+  },
+  {
+    "id": "/building-your-application/routing/sitemap#types",
+    "title": "Types",
+    "text": "The Sitemap type is: type SitemapItem = {\n  loc: string;\n  lastmod?: string;\n  changefreq?: \"always\" | \"hourly\" | \"daily\" | \"weekly\" | \"monthly\" | \"yearly\" | \"never\";\n  priority?: number;\n  images?: {\n    loc: string;\n    title?: string;\n    caption?: string;\n  }[];\n};\n\ntype Sitemap = SitemapItem[] | Promise<SitemapItem[]>;",
+    "titles": ["Sitemap"]
+  },
+  {
     "id": "/building-your-application/routing/static-assets#static-assets-in-public",
     "title": "Static Assets in public",
     "text": "Brisa can serve static files, like images, under a folder called public in the src directory. Files inside src/public can then be referenced by your code starting from the base URL (/). For example, the file src/public/images/cat.png can be viewed by visiting the /images/cat.png path. The code to display that image might look like: export function Cat({ id, alt }) {\n  return (\n    <img\n      src={`/images/${id}.png`}\n      alt={alt}\n      class=\"cat\"\n      loading=\"lazy\"\n      width=\"64\"\n      height=\"64\"\n    />\n  );\n} The folder is also useful for robots.txt, favicon.ico, Google Site Verification, and any other static files (including .html). But make sure to not have a static file with the same name as a file in the pages/ directory, as this will result in an error. We recommend to create subfolders to avoid conflicts with page names: src/public/assets or /src/public/images, src/public/fonts, etc.",
@@ -4206,7 +4236,7 @@
   {
     "id": "/getting-started/project-structure#src-level-folders",
     "title": "src-level folders",
-    "text": "pages\nPages Router\n\n\napi\nApi Router\n\n\npublic\nStatic assets to be served\n\n\nmiddleware\nMiddleware\n\n\nlayout\nLayout / Layouts\n\n\nwebsocket\nWebsocket\n\n\ni18n\nInternationalization routing & translations\n\n\nweb-components\nClient components",
+    "text": "pages\nPages Router\n\n\napi\nApi Router\n\n\npublic\nStatic assets to be served\n\n\nmiddleware\nMiddleware\n\n\nlayout\nLayout / Layouts\n\n\nwebsocket\nWebsocket\n\n\ni18n\nInternationalization routing & translations\n\n\nweb-components\nClient components\n\n\nsitemap\nSpecify a Sitemap in an easy way",
     "titles": ["Brisa Project Structure"]
   },
   {

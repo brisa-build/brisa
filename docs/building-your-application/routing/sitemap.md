@@ -4,7 +4,7 @@ description: Learn how to generate a sitemap for your Brisa project
 
 # Sitemap
 
-A sitemap is a file that lists the URLs for a site. It allows devs to include additional information about each URL: when it was last updated, how often it changes, and how important it is in relation to other URLs in the site. This information helps search engines crawl your site more intelligently.
+A [sitemap](https://en.wikipedia.org/wiki/Site_map) is a file that lists the URLs for a site. It allows devs to include additional information about each URL: when it was last updated, how often it changes, and how important it is in relation to other URLs in the site. This information helps search engines crawl your site more intelligently.
 
 To create the `sitemap.xml` file during the build process, you can create this file in your project:
 
@@ -17,7 +17,16 @@ To create the `sitemap.xml` file during the build process, you can create this f
 >
 > The `sitemap.xml` file will be generated in the root of the output directory. And this generation only happens in production mode. You can try it with `brisa build && brisa start`.
 
-### Example of `src/sitemap.ts`
+> [!CAUTION]
+>
+> In order that the `sitemap.xml` file works, you need to add to your `src/public/robots.txt` file the following line:
+>
+> ```sh
+> Sitemap: https://example.com/sitemap.xml
+> ```
+> **Note:** Replace `https://example.com` with your domain.
+
+## Example of `src/sitemap.ts`
 
 ```ts
 import type { Sitemap } from "brisa";
