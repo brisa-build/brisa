@@ -154,7 +154,7 @@ const posts = fileSystemRouter({
 
 const staticPages = pages.routes
 	.filter(
-		([pathname]) => pathname !== '/blog/[slug]' && pathname !== '/_404'
+		([pathname]) => pathname !== '/blog/[slug]'
 	)
 	.map(([pathname]) => ({	loc: origin + pathname }))
 
