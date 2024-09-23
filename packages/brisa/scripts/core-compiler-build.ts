@@ -1,13 +1,5 @@
 import path from 'node:path';
 
-// Skip in Windows for now for a Bug in Bun.build and absolute paths
-// inside onResolve. TODO: Change it when this issue is fixed
-// https://github.com/oven-sh/bun/issues/13897
-if (process.platform === 'win32') {
-  console.error('Skipping "compiler" on Windows');
-  process.exit(0);
-}
-
 const src = path.join(import.meta.dirname, '..', 'src');
 const outdir = path.join(import.meta.dirname, '..', 'compiler');
 
@@ -25,7 +17,11 @@ const output = await Bun.build({
           (args) => {
             return {
               ...args,
-              path: path.resolve(path.join(src, 'empty-server.ts')),
+              path: path
+                .resolve(path.join(src, 'empty-server.ts'))
+                // Workaround to work in Windows
+                // https://github.com/oven-sh/bun/issues/13897
+                .replaceAll('\\', '/'),
             };
           },
         );
