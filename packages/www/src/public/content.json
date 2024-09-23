@@ -26,7 +26,13 @@
   {
     "id": "/api-reference#server-apis",
     "title": "Server APIs",
-    "text": "renderInAction\nrenderToReadableStream\nrenderToString\ngetServeOptions\nfileSystemRouter\nRenderInitator\nserve\nSSRWebComponent\ntranspileWebComponent\nNode.js APIs\n\nserve\nhandler",
+    "text": "renderInAction\nrenderToReadableStream\nrenderToString\ngetServeOptions\nfileSystemRouter\nRenderInitator\nserve\nSSRWebComponent\nNode.js APIs\n\nserve\nhandler",
+    "titles": ["API Reference"]
+  },
+  {
+    "id": "/api-reference#compiler-apis",
+    "title": "Compiler APIs",
+    "text": "compileWC",
     "titles": ["API Reference"]
   },
   {
@@ -148,6 +154,54 @@
     "title": "Changing the port",
     "text": "The application will start at http://localhost:3000 by default. The default port can be changed via process.env.PORT or with -p flag, like so: brisa start -p 8080",
     "titles": ["Production Server (brisa start)"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#compilewc",
+    "title": "compileWC",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": ["compileWC"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#compilewccode-string-string",
+    "title": "compileWC(code: string): string",
+    "text": "The compileWC function transpiles a JSX web component to be compatible with the browser. It is very likely that in your day to day with Brisa you will not need to use this function, but if you need to do something more advanced, such as a Bundler plugin, or a Playground, this function can be useful. The Web Component is expected to be defined in the same way as it is defined inside src/web-components, that is, with an export default.",
+    "titles": ["compileWC", "Reference"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#parameters",
+    "title": "Parameters",
+    "text": "code: The code of the web component.",
+    "titles": ["compileWC", "Reference", "compileWC(code: string): string"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#returns",
+    "title": "Returns",
+    "text": "The transpiled code of the web component.",
+    "titles": ["compileWC", "Reference", "compileWC(code: string): string"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#example",
+    "title": "Example",
+    "text": "import { compileWC } from \"brisa/compiler\";\n\nconst code = `\n\texport default function MyComponent() { \n\t\treturn <div>Hello World</div>;\n\t}\n`;\nconst finalCode = compileWC(code);\nconsole.log(finalCode);\n/*\n\timport {brisaElement} from \"brisa/client\";\n\t\t\t\n\tfunction MyComponent() {\n\t\treturn [\"div\", {}, \"Hello World\"];\n\t}\n\t\t\t\n\texport default brisaElement(MyComponent);\n*/",
+    "titles": ["compileWC"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#outside-bunjs",
+    "title": "Outside Bun.js",
+    "text": "This function is intended to be used within the Bun runtime, as it uses the Bun transpiler to convert TSX to JS. However, if you want to use it in other environments, such as Node.js or in the browser, you can do so, but you will need to transpile the TSX to JS beforehand, for example with @swc/wasm-web. Bun.Transpiler is not applied when the environment is not Bun.js, so you will need to transpile the code before using compileWC to convert it to js.",
+    "titles": ["compileWC"]
+  },
+  {
+    "id": "/api-reference/compiler-apis/compileWC#example-with-swcwasm-web",
+    "title": "Example with @swc/wasm-web",
+    "text": "import { compileWC } from \"brisa/compiler\";\nimport initSwc, { transformSync } from \"@swc/wasm-web\";\n\nasync function main() {\n\tawait initSwc();\n\tconst code = `\n\t\texport default function MyComponent() { \n\t\t\treturn <div>Hello World</div>;\n\t\t}\n\t`;\n\tconst transpiledCode = transformSync(code, {\n\t\tjsc: {\n\t\t\tparser: {\n\t\t\t\tsyntax: \"typescript\",\n\t\t\t\ttsx: true,\n\t\t\t},\n\t\t},\n\t});\n\tconst finalCode = compileWC(transpiledCode.code);\n\tconsole.log(finalCode);\n}",
+    "titles": ["compileWC", "Outside Bun.js"]
   },
   {
     "id": "/api-reference/components/context-provider#context-provider",
@@ -1319,50 +1373,6 @@
     "title": "Types",
     "text": "export function SSRWebComponent<T>(\n  props: T & { selector: string, Component: ComponentType<T>, children?: JSX.Element },\n): JSX.Element;",
     "titles": ["SSRWebComponent"]
-  },
-  {
-    "id": "/api-reference/server-apis/transpileWebComponent#transpilewebcomponent",
-    "title": "transpileWebComponent",
-    "text": "",
-    "titles": []
-  },
-  {
-    "id": "/api-reference/server-apis/transpileWebComponent#reference",
-    "title": "Reference",
-    "text": "",
-    "titles": ["transpileWebComponent"]
-  },
-  {
-    "id": "/api-reference/server-apis/transpileWebComponent#transpilewebcomponentcode-string-string",
-    "title": "transpileWebComponent(code: string): string",
-    "text": "The transpileWebComponent function transpiles a JSX web component to be compatible with the browser. It is very likely that in your day to day with Brisa you will not need to use this function, but if you need to do something more advanced, such as a Bundler plugin, or a Playground, this function can be useful. The Web Component is expected to be defined in the same way as it is defined inside src/web-components, that is, with an export default.",
-    "titles": ["transpileWebComponent", "Reference"]
-  },
-  {
-    "id": "/api-reference/server-apis/transpileWebComponent#parameters",
-    "title": "Parameters",
-    "text": "code: The code of the web component.",
-    "titles": [
-      "transpileWebComponent",
-      "Reference",
-      "transpileWebComponent(code: string): string"
-    ]
-  },
-  {
-    "id": "/api-reference/server-apis/transpileWebComponent#returns",
-    "title": "Returns",
-    "text": "The transpiled code of the web component.",
-    "titles": [
-      "transpileWebComponent",
-      "Reference",
-      "transpileWebComponent(code: string): string"
-    ]
-  },
-  {
-    "id": "/api-reference/server-apis/transpileWebComponent#example",
-    "title": "Example",
-    "text": "const code = `\n\texport default function MyComponent() { \n\t\treturn <div>Hello World</div>;\n\t}\n`;\nconst transpiledCode = transpileWebComponent(code);\nconsole.log(transpiledCode);\n/*\n\timport {brisaElement} from \"brisa/client\";\n\t\t\t\n\tfunction MyComponent() {\n\t\treturn [\"div\", {}, \"Hello World\"];\n\t}\n\t\t\t\n\texport default brisaElement(MyComponent);\n*/",
-    "titles": ["transpileWebComponent"]
   },
   {
     "id": "/building-your-application/authentication#authentication",
@@ -4418,7 +4428,7 @@
   {
     "id": "/getting-started/what-is-brisa#vuejs",
     "title": "Vue.js",
-    "text": "Finally, I want to thank An Phan, a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support. The official documentation of Brisa is currently with Vitepress as we like it very much, and soon we will iterate to Brisapress, strongly inspired by Vitepress.",
+    "text": "Finally, I want to thank An Phan, a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support. The first version of the documentation was created with Vitepress, then we moved it to Brisa but inspired by Vitepress.",
     "titles": ["What is Brisa?", "Inspirations"]
   }
 ]
