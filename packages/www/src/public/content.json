@@ -26,7 +26,7 @@
   {
     "id": "/api-reference#server-apis",
     "title": "Server APIs",
-    "text": "renderInAction\nrenderToReadableStream\nrenderToString\ngetServeOptions\nfileSystemRouter\nRenderInitator\nserve\nNode.js APIs\n\nserve\nhandler",
+    "text": "renderInAction\nrenderToReadableStream\nrenderToString\ngetServeOptions\nfileSystemRouter\nRenderInitator\nserve\nSSRWebComponent\ntranspileWebComponent\nNode.js APIs\n\nserve\nhandler",
     "titles": ["API Reference"]
   },
   {
@@ -997,7 +997,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#example-usage",
     "title": "Example usage",
-    "text": "import { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: 'pages',\n});\n\nconst matchedRoute = router.match('/blog/hello-world?foo=bar');\n\nif (matchedRoute) {\n  console.log(matchedRoute); \n  // {\n  //   filePath: 'pages/blog/[slug].tsx',\n  //   kind: 'dynamic',\n  //   name: '/blog/[slug]',\n  //   pathname: '/blog/hello-world',\n  //   src: 'blog/[slug].tsx',\n  //   params: { slug: 'hello-world' },\n  //   query: { foo: 'bar' },\n  // }\n}",
+    "text": "import path from 'node:path';\nimport { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: path.join(import.meta.dirname, 'pages'),\n});\n\nconst matchedRoute = router.match('/blog/hello-world?foo=bar');\n\nif (matchedRoute) {\n  console.log(matchedRoute); \n  // {\n  //   filePath: 'pages/blog/[slug].tsx',\n  //   kind: 'dynamic',\n  //   name: '/blog/[slug]',\n  //   pathname: '/blog/hello-world',\n  //   src: 'blog/[slug].tsx',\n  //   params: { slug: 'hello-world' },\n  //   query: { foo: 'bar' },\n  // }\n}",
     "titles": ["fileSystemRouter"]
   },
   {
@@ -1015,7 +1015,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#routes-property",
     "title": "routes property",
-    "text": "The routes property is the entries of routes and file paths. routes entries are in alphabetical order import { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: 'pages',\n});\n\nconsole.log(router.routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/[[...catchall]]', '/Users/aralroca/my-app/src/pages/[[...catchall]].tsx'],\n//   ['/blog', '/Users/aralroca/my-app/src/pages/blog/index.tsx'],\n//   ['/blog/[slug]', '/Users/aralroca/my-app/src/pages/blog/[slug].tsx'],\n//   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],\n// ]",
+    "text": "The routes property is the entries of routes and file paths. routes entries are in alphabetical order import path from 'node:path';\nimport { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: path.join(import.meta.dirname, 'pages'),\n});\n\nconsole.log(router.routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/[[...catchall]]', '/Users/aralroca/my-app/src/pages/[[...catchall]].tsx'],\n//   ['/blog', '/Users/aralroca/my-app/src/pages/blog/index.tsx'],\n//   ['/blog/[slug]', '/Users/aralroca/my-app/src/pages/blog/[slug].tsx'],\n//   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],\n// ]",
     "titles": ["fileSystemRouter"]
   },
   {
@@ -1291,34 +1291,78 @@
     "titles": ["serve"]
   },
   {
-    "id": "/api-reference/server-apis/ssr-web-component#ssrwebcomponent",
+    "id": "/api-reference/server-apis/SSRWebComponent#ssrwebcomponent",
     "title": "SSRWebComponent",
     "text": "",
     "titles": []
   },
   {
-    "id": "/api-reference/server-apis/ssr-web-component#reference",
+    "id": "/api-reference/server-apis/SSRWebComponent#reference",
     "title": "Reference",
     "text": "",
     "titles": ["SSRWebComponent"]
   },
   {
-    "id": "/api-reference/server-apis/ssr-web-component#ssrwebcomponent-1",
+    "id": "/api-reference/server-apis/SSRWebComponent#ssrwebcomponent-1",
     "title": "SSRWebComponent",
     "text": "The SSRWebComponent is a component wrapper that allows you to render a web component on the server side taking care of Declarative Shadow DOM and Custom Elements.",
     "titles": ["SSRWebComponent", "Reference"]
   },
   {
-    "id": "/api-reference/server-apis/ssr-web-component#example-usage",
+    "id": "/api-reference/server-apis/SSRWebComponent#example-usage",
     "title": "Example usage:",
     "text": "In the next example, we use the SSRWebComponent to render a web component on the server side. import { SSRWebComponent } from \"brisa/server\";\nimport MyComponent from \"@/web-components/my-component\";\n\nexport function MyComponent() {\n  // It's the same than: <my-component someProp=\"foo\" /> \n  // but without compilation process:\n  return (\n    <SSRWebComponent\n      selector=\"my-component\"\n      Component={MyComponent}\n      someProp=\"value\"\n    />\n  );\n} This work is usually done by Brisa for you during compilation, so you can use <web-component /> directly in your code without having to do 2 imports and use this wrapper. However, it is exposed in case someone needs to do it manually for some reason. The selector prop is required and must match the web component's tag name, also the Component prop is required and must be the web component itself.",
     "titles": ["SSRWebComponent"]
   },
   {
-    "id": "/api-reference/server-apis/ssr-web-component#types",
+    "id": "/api-reference/server-apis/SSRWebComponent#types",
     "title": "Types",
     "text": "export function SSRWebComponent<T>(\n  props: T & { selector: string, Component: ComponentType<T>, children?: JSX.Element },\n): JSX.Element;",
     "titles": ["SSRWebComponent"]
+  },
+  {
+    "id": "/api-reference/server-apis/transpileWebComponent#transpilewebcomponent",
+    "title": "transpileWebComponent",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/server-apis/transpileWebComponent#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": ["transpileWebComponent"]
+  },
+  {
+    "id": "/api-reference/server-apis/transpileWebComponent#transpilewebcomponentcode-string-string",
+    "title": "transpileWebComponent(code: string): string",
+    "text": "The transpileWebComponent function transpiles a JSX web component to be compatible with the browser. It is very likely that in your day to day with Brisa you will not need to use this function, but if you need to do something more advanced, such as a Bundler plugin, or a Playground, this function can be useful. The Web Component is expected to be defined in the same way as it is defined inside src/web-components, that is, with an export default.",
+    "titles": ["transpileWebComponent", "Reference"]
+  },
+  {
+    "id": "/api-reference/server-apis/transpileWebComponent#parameters",
+    "title": "Parameters",
+    "text": "code: The code of the web component.",
+    "titles": [
+      "transpileWebComponent",
+      "Reference",
+      "transpileWebComponent(code: string): string"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/transpileWebComponent#returns",
+    "title": "Returns",
+    "text": "The transpiled code of the web component.",
+    "titles": [
+      "transpileWebComponent",
+      "Reference",
+      "transpileWebComponent(code: string): string"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/transpileWebComponent#example",
+    "title": "Example",
+    "text": "const code = `\n\texport default function MyComponent() { \n\t\treturn <div>Hello World</div>;\n\t}\n`;\nconst transpiledCode = transpileWebComponent(code);\nconsole.log(transpiledCode);\n/*\n\timport {brisaElement} from \"brisa/client\";\n\t\t\t\n\tfunction MyComponent() {\n\t\treturn [\"div\", {}, \"Hello World\"];\n\t}\n\t\t\t\n\texport default brisaElement(MyComponent);\n*/",
+    "titles": ["transpileWebComponent"]
   },
   {
     "id": "/building-your-application/authentication#authentication",
@@ -3040,7 +3084,7 @@
   {
     "id": "/building-your-application/deploying/writing-a-custom-adapter#parameters-of-adapt",
     "title": "Parameters of adapt",
-    "text": "The adapt receives the following parameters: The brisaConstants parameter is an object that contains all the constants used by Brisa and the output adapter. It contains information about the build, the environment, the configuration, and more.\nThe prerenderedRoutes parameter is a map of routes to prerendered HTML files. In the case of a static export, this map will contain all the prerendered routes. In the case of a server output, this map will be filled with the prerendered routes, saved in the BUILD_DIR directory, under the prerendered-pages folder. And BrisaConstants type is: /**\n * Internal types used by Brisa and output adapters.\n */\nexport type BrisaConstants = {\n  PAGE_404: string;\n  PAGE_500: string;\n  VERSION: string;\n  VERSION_HASH: ReturnType<typeof Bun.hash>;\n  WEB_CONTEXT_PLUGINS: string[];\n  RESERVED_PAGES: string[];\n  IS_PRODUCTION: boolean;\n  IS_DEVELOPMENT: boolean;\n  IS_SERVE_PROCESS: boolean;\n  PORT: number;\n  BUILD_DIR: string;\n  ROOT_DIR: string;\n  SRC_DIR: string;\n  ASSETS_DIR: string;\n  PAGES_DIR: string;\n  I18N_CONFIG: I18nConfig;\n  LOG_PREFIX: {\n    WAIT: string;\n    READY: string;\n    INFO: string;\n    ERROR: string;\n    WARN: string;\n    TICK: string;\n  };\n  LOCALES_SET: Set<string>;\n  CONFIG: Configuration;\n  IS_STATIC_EXPORT: boolean;\n  REGEX: Record<string, RegExp>;\n  BOOLEANS_IN_HTML: Set<string>;\n  HEADERS: {\n    CACHE_CONTROL: string;\n  };\n};",
+    "text": "The adapt receives the following parameters: The brisaConstants parameter is an object that contains all the constants used by Brisa and the output adapter. It contains information about the build, the environment, the configuration, and more.\nThe prerenderedRoutes parameter is a map of routes to prerendered HTML files. In the case of a static export, this map will contain all the prerendered routes. In the case of a server output, this map will be filled with the prerendered routes, saved in the BUILD_DIR directory, under the prerendered-pages folder. And BrisaConstants type is: /**\n * Internal types used by Brisa and output adapters.\n */\nexport type BrisaConstants = {\n  PAGE_404: string;\n  PAGE_500: string;\n  VERSION: string;\n  VERSION_HASH: ReturnType<typeof Bun.hash>;\n  WEB_CONTEXT_PLUGINS: string[];\n  RESERVED_PAGES: string[];\n  IS_PRODUCTION: boolean;\n  IS_DEVELOPMENT: boolean;\n  IS_SERVE_PROCESS: boolean;\n  PORT: number;\n  BUILD_DIR: string;\n  ROOT_DIR: string;\n  SRC_DIR: string;\n  ASSETS_DIR: string;\n  PAGES_DIR: string;\n  I18N_CONFIG: I18nConfig;\n  LOG_PREFIX: {\n    WAIT: string;\n    READY: string;\n    INFO: string;\n    ERROR: string;\n    WARN: string;\n    TICK: string;\n  };\n  LOCALES_SET: Set<string>;\n  CONFIG: Configuration;\n  IS_STATIC_EXPORT: boolean;\n  REGEX: Record<string, RegExp>;\n  HEADERS: {\n    CACHE_CONTROL: string;\n  };\n};",
     "titles": ["Writing a custom adapter", "adapt"]
   },
   {
@@ -3678,13 +3722,13 @@
   {
     "id": "/building-your-application/routing/sitemap#lets-make-it-simpler",
     "title": "Let's make it simpler",
-    "text": "Many times there is a lot of additional information that we don't want, if this is your case, that you only want the <loc>, you can use the fileSystemRouter from Brisa: import path from \"node:path\";\nimport type { Sitemap } from \"brisa\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst { routes } = fileSystemRouter({ dir: \n  path.join(import.meta.dirname, \"pages\") \n});\n\nconsole.log(routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/about', '/Users/aralroca/my-app/src/pages/about.tsx'],\n// ]\n\nexport default routes.map(([pathname]) => ({\n  loc: `https://example.com${pathname}`,\n})) as Sitemap; However, even if you need additional information, you can put it at the page level as you like and use the filePath of the entry that routes returns to load this extra information. Example: import path from \"node:path\";\nimport type { Sitemap } from \"brisa\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst { routes } = fileSystemRouter({ \n  dir: path.join(import.meta.dirname, \"pages\") \n});\n\nasync function sitemap(): Promise<Sitemap> {\n  return Promise.all(routes.map(async ([pathname, filePath]) => ({\n    loc: `https://example.com${pathname}`,\n    ...((await import(filePath)).sitemap ?? {}),\n  })));\n}\n\nexport default sitemap(); And in your page: export const sitemap = {\n  lastmod: \"2021-10-01T00:00:00.000Z\",\n  changefreq: \"daily\",\n  priority: 1.0,\n  images: [\n    {\n      loc: \"https://example.com/image.jpg\",\n      title: \"Image title\",\n      caption: \"Image caption\",\n    },\n  ],\n};",
+    "text": "Many times there is a lot of additional information that we don't want, if this is your case, that you only want the <loc>, you can use the fileSystemRouter from Brisa: import path from \"node:path\";\nimport type { Sitemap } from \"brisa\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst { routes } = fileSystemRouter({ dir: \n  path.join(import.meta.dirname, \"pages\") \n});\n\nconsole.log(routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/about', '/Users/aralroca/my-app/src/pages/about.tsx'],\n// ]\n\nexport default routes.map(([pathname]) => ({\n  loc: `https://example.com${pathname}`,\n})) satisfies Sitemap; However, even if you need additional information, you can put it at the page level as you like and use the filePath of the entry that routes returns to load this extra information. Example: import path from \"node:path\";\nimport type { Sitemap } from \"brisa\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst { routes } = fileSystemRouter({ \n  dir: path.join(import.meta.dirname, \"pages\") \n});\n\nasync function sitemap(): Promise<Sitemap> {\n  return Promise.all(routes.map(async ([pathname, filePath]) => ({\n    loc: `https://example.com${pathname}`,\n    ...((await import(filePath)).sitemap ?? {}),\n  })));\n}\n\nexport default sitemap(); And in your page: export const sitemap = {\n  lastmod: \"2021-10-01T00:00:00.000Z\",\n  changefreq: \"daily\",\n  priority: 1.0,\n  images: [\n    {\n      loc: \"https://example.com/image.jpg\",\n      title: \"Image title\",\n      caption: \"Image caption\",\n    },\n  ],\n};",
     "titles": ["Sitemap"]
   },
   {
     "id": "/building-your-application/routing/sitemap#map-md-content",
     "title": "Map .md content",
-    "text": "In the case that your dynamic pages are linked to .md files, for example /blog/[slug].tsx that is linked to the content of src/posts/*.md, you can use the fileSystemRouter to point directly to posts and change the extension: import type { Sitemap } from 'brisa';\nimport path from 'node:path';\nimport { fileSystemRouter } from 'brisa/server';\n\nconst origin = 'https://example.com';\nconst pagesDir = path.join(import.meta.dirname, 'pages');\nconst postsDir = path.join(import.meta.dirname, 'posts');\n\nconst pages = fileSystemRouter({ dir: pagesDir });\nconst posts = fileSystemRouter({\n    dir: postsDir,\n    // Change the extension to .md\n\t\tfileExtensions: ['.md'],\n});\n\nconst staticPages = pages.routes.filter(\n  ([pathname]) => pathname !== '/blog/[slug]' && pathname !== '/_404'\n);\n\nexport default [\n\t...staticPages.map(([pathname]) => ({\n\t\t\tloc: origin + pathname,\n\t})),\n  // Dynamic pages (posts):\n\t...posts.routes.map(([pathname]) => ({\n\t\t\tloc: origin + '/blog' + pathname,\n\t})),\n] satisfies Sitemap;",
+    "text": "In the case that your dynamic pages are linked to .md files, for example /blog/[slug].tsx that is linked to the content of src/posts/*.md, you can use the fileSystemRouter to point directly to posts and change the extension: import type { Sitemap } from 'brisa';\nimport path from 'node:path';\nimport { fileSystemRouter } from 'brisa/server';\n\nconst origin = 'https://example.com';\n\nconst pagesDir = path.join(import.meta.dirname, 'pages');\nconst postsDir = path.join(import.meta.dirname, 'posts');\n\nconst pages = fileSystemRouter({ dir: pagesDir });\nconst posts = fileSystemRouter({\n\tdir: postsDir,\n\t// Change the extension to .md\n\tfileExtensions: ['.md'],\n});\n\nconst staticPages = pages.routes\n\t.filter(([pathname]) => pathname !== '/blog/[slug]')\n\t.map(([pathname]) => ({\tloc: origin + pathname }))\n\nconst dynamicPages = posts.routes\n\t.map(([pathname]) => ({ loc: origin + '/blog' + pathname }));\n\nexport default [...staticPages, ...dynamicPages] satisfies Sitemap;",
     "titles": ["Sitemap"]
   },
   {

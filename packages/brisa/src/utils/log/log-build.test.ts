@@ -2,7 +2,6 @@ import { describe, it, expect, mock, afterEach, spyOn } from 'bun:test';
 import { logTable, logError, logBuildError } from './log-build';
 import { getConstants } from '@/constants';
 import extendRequestContext from '@/utils/extend-request-context';
-import type { RequestContext } from '@/types';
 import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
 
 describe('utils', () => {

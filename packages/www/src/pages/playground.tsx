@@ -1,3 +1,7 @@
+export function Head() {
+  return <script type="module" src="modules/index.js"></script>;
+}
+
 export default function Playground() {
   return (
     <main class="hero">
@@ -10,7 +14,7 @@ export default function Playground() {
             height="100"
           />
           <h1>Brisa Playground</h1>
-          <p>TODO</p>
+          <play-ground />
         </hgroup>
       </section>
     </main>

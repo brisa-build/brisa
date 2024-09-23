@@ -13,6 +13,7 @@ import isAnAction from '@/utils/is-an-action';
 import { addBasePathToStringURL } from '@/utils/base-path';
 import { logWarning } from '@/utils/log/log-build';
 import { boldLog } from '@/utils/log/log-color';
+import { BOOLEANS_IN_HTML } from '@/public-constants';
 
 const PROPS_TO_IGNORE = new Set([
   'children',
@@ -35,7 +36,7 @@ export default function renderAttributes({
   componentProps?: Props;
   componentID?: string;
 }): string {
-  const { IS_PRODUCTION, CONFIG, BOOLEANS_IN_HTML } = getConstants();
+  const { IS_PRODUCTION, CONFIG } = getConstants();
   const locale = request.i18n?.locale;
   const { basePath, assetPrefix } = CONFIG;
   const keys = new Set<string>();

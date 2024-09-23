@@ -487,10 +487,6 @@ export default {
               link: '/api-reference/server-apis/SSRWebComponent',
             },
             {
-              text: 'transpileWebComponent',
-              link: '/api-reference/server-apis/transpileWebComponent',
-            },
-            {
               text: 'Node.js APIs',
               items: [
                 {
@@ -506,8 +502,18 @@ export default {
           ],
         },
         {
+          id: '/api-reference/compiler-apis',
+          text: '🛠️ Compiler APIs',
+          items: [
+            {
+              text: 'compileWC',
+              link: '/api-reference/compiler-apis/compileWC',
+            },
+          ],
+        },
+        {
           id: '/api-reference/brisa-cli',
-          text: '🛠️ Brisa CLI',
+          text: '🎮 Brisa CLI',
           link: '/api-reference/brisa-cli',
           items: [
             {

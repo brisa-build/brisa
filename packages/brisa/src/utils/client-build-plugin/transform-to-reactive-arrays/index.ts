@@ -4,6 +4,7 @@ import { NO_REACTIVE_CHILDREN_EXPRESSION } from '@/utils/client-build-plugin/con
 import wrapWithArrowFn from '@/utils/client-build-plugin/wrap-with-arrow-fn';
 import { logError, logWarning } from '@/utils/log/log-build';
 import { JSX_NAME } from '@/utils/ast/constants';
+import { BOOLEANS_IN_HTML } from '@/public-constants';
 
 export const logsPerFile = new Set<string | undefined>();
 
@@ -11,7 +12,7 @@ export default function transformToReactiveArrays(
   ast: ESTree.Program,
   path?: string,
 ) {
-  const { BOOLEANS_IN_HTML, IS_SERVE_PROCESS } = getConstants();
+  const { IS_SERVE_PROCESS } = getConstants();
 
   function traverseAToB(key: string, value: any) {
     // css`color: ${someVar.value};` -> css`color: ${() => someVar.value};`

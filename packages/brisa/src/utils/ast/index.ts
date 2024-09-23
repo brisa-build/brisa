@@ -1,11 +1,3 @@
-/**
- * TODO:
- *
- * When Bun will support AST utils, then:
- *
- * - Replace this file to Bun code and remove this file
- * - Remove astring and meriyah dependencies
- */
 import { generate } from 'astring';
 import type { JavaScriptLoader } from 'bun';
 import { type ESTree, parseScript } from 'meriyah';
