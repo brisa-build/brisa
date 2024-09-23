@@ -6121,6 +6121,25 @@ describe('integration', () => {
       expect(webComponent.shadowRoot?.textContent).toBe(' some divsome span');
     });
 
+    it('should remove import from "react/jsx-runtime" (some TSX -> JS transpilers like @swc add it, but then jsx-runtme is not used...)', () => {
+      const code = `
+        import { jsx as _jsx } from 'react/jsx-runtime';
+        export default function WebComponent() {
+          return _jsx('div', { children: 'Hello World' });
+        }
+      `;
+
+      document.body.innerHTML = `<web-component />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/web-component.tsx');
+
+      const webComponent = document.querySelector(
+        'web-component',
+      ) as HTMLElement;
+
+      expect(webComponent.shadowRoot?.innerHTML).toBe('<div>Hello World</div>');
+    });
+
     // TODO: This test should work after this happydom feat about ElementInternals
     // https://github.com/capricorn86/happy-dom/issues/1419
     it.todo('it should work associating a form to the custom element', () => {
