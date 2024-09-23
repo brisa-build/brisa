@@ -14,6 +14,15 @@ export default function processClientAst(ast: ESTree.Program) {
   const newAst = JSON.parse(JSON.stringify(ast), (key, value) => {
     useI18n ||= value?.type === 'Identifier' && value?.name === 'i18n';
 
+    // Remove react/jsx-runtime import, some transpilers like @swc add it,
+    // but we are not using jsx-runtime here, we are using jsx-buildtime
+    if (
+      value?.type === 'ImportDeclaration' &&
+      value?.source?.value === 'react/jsx-runtime'
+    ) {
+      return null;
+    }
+
     if (
       value?.type === 'CallExpression' &&
       ((value?.callee?.type === 'Identifier' && value?.callee?.name === 't') ||

@@ -1,7 +1,7 @@
 import { describe, it, expect, spyOn } from 'bun:test';
 import AST from '@/utils/ast';
 import processClientAst from '.';
-import { toInline } from '@/helpers';
+import { normalizeHTML, toInline } from '@/helpers';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
@@ -228,6 +228,25 @@ describe('utils', () => {
         }
 
         if (true) {}
+      `),
+      );
+    });
+
+    it('should remove import from "react/jsx-runtime" (some TSX -> JS transpilers like @swc add it, but then jsx-runtme is not used...)', () => {
+      const ast = parseCodeToAST(`
+        import { jsx } from 'react/jsx-runtime';
+        export default function Component() {
+          return jsx('div', null, 'Hello World');
+        }
+      `);
+
+      const res = processClientAst(ast);
+
+      expect(toInline(generateCodeFromAST(res.ast))).toBe(
+        normalizeHTML(`
+        export default function Component() {
+          return jsx('div', null, 'Hello World');
+        }
       `),
       );
     });
