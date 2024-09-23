@@ -4,6 +4,7 @@ import path from 'node:path';
 // inside onResolve. TODO: Change it when this issue is fixed
 // https://github.com/oven-sh/bun/issues/13897
 if (process.platform === 'win32') {
+  console.error('Skipping "compiler" on Windows');
   process.exit(0);
 }
 
