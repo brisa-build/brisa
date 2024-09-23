@@ -82,7 +82,7 @@ export default function ErrorDialog(
         ...(store.get<Error[]>('__BRISA_ERRORS__') ?? []),
         {
           title: 'Uncaught Error',
-          details: [e.error.message],
+          details: [e.error?.message ?? 'Unknown error'],
           stack: e.error?.stack,
         },
       ]);
