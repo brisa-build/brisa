@@ -7,28 +7,20 @@ const output = await Bun.build({
   outdir,
   entrypoints: [path.join(src, 'core', 'compiler', 'index.ts')],
   minify: true,
+  // Remove all server dependencies
   plugins: [
     {
       name: 'remove-node-deps',
       setup(build) {
-        build.onResolve({ filter: /^node:/ }, (args) => {
-          return {
-            ...args,
-            path: path.resolve(path.join(src, 'empty-node.ts')),
-          };
-        });
-        build.onResolve({ filter: /^@\/utils\/wyhash/ }, (args) => {
-          return {
-            ...args,
-            path: path.resolve(path.join(src, 'empty-node.ts')),
-          };
-        });
-        build.onResolve({ filter: /^@\/constants/ }, (args) => {
-          return {
-            ...args,
-            path: path.resolve(path.join(src, 'empty-node.ts')),
-          };
-        });
+        build.onResolve(
+          { filter: /^(node:|@\/(utils\/wyhash|constants))/ },
+          (args) => {
+            return {
+              ...args,
+              path: path.resolve(path.join(src, 'empty-server.ts')),
+            };
+          },
+        );
       },
     },
   ],
