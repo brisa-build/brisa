@@ -117,7 +117,7 @@ In Brisa we wanted to make a direct integration with Tauri. So that from the Bri
 
 ### Vue.js
 
-Finally, I want to thank [An Phan](https://twitter.com/notphanan), a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support. The official documentation of Brisa is currently with Vitepress as we like it very much, and soon we will iterate to Brisapress, strongly inspired by Vitepress.
+Finally, I want to thank [An Phan](https://twitter.com/notphanan), a co-worker who is in the core team of Vue.js and when he found out that I was starting to make a framework, he gave me a lot of support. The first version of the documentation was created with Vitepress, then we moved it to Brisa but inspired by Vitepress.
 
 ## Documentation
 
