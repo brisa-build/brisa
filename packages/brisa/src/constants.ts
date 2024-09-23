@@ -81,34 +81,6 @@ if (CONFIG?.basePath && !CONFIG.basePath.startsWith(path.sep)) {
 // in the server side. (For the client-side it's solved during the build process)
 globalThis.__BASE_PATH__ = CONFIG.basePath;
 
-const BOOLEANS_IN_HTML = new Set([
-  'allowfullscreen',
-  'async',
-  'autofocus',
-  'autoplay',
-  'checked',
-  'controls',
-  'default',
-  'disabled',
-  'formnovalidate',
-  'hidden',
-  'indeterminate',
-  'ismap',
-  'loop',
-  'multiple',
-  'muted',
-  'nomodule',
-  'novalidate',
-  'open',
-  'playsinline',
-  'readonly',
-  'required',
-  'reversed',
-  'seamless',
-  'selected',
-  'data-action',
-]);
-
 const OS_CAN_LOAD_BALANCE =
   process.platform !== 'darwin' && process.platform !== 'win32';
 
@@ -162,7 +134,6 @@ const constants = {
     DYNAMIC: /\[.*?\]/g,
     REST_DYNAMIC: /\[\.{3}.*?\]/g,
   },
-  BOOLEANS_IN_HTML,
   HEADERS: {
     CACHE_CONTROL,
   },

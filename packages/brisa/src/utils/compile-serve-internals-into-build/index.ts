@@ -9,6 +9,7 @@ const NO_SERVER_EXPORTS = new Set([
   './client',
   './client-simplified',
   './macros',
+  './compiler',
   './test',
   './cli.js',
 ]);

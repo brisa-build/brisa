@@ -63,7 +63,6 @@ export type BrisaConstants = {
   CONFIG: Configuration;
   IS_STATIC_EXPORT: boolean;
   REGEX: Record<string, RegExp>;
-  BOOLEANS_IN_HTML: Set<string>;
   HEADERS: {
     CACHE_CONTROL: string;
   };

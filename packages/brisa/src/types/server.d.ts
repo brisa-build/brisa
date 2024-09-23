@@ -52,14 +52,6 @@ export function renderToReadableStream(
 ): ReadableStream<any>;
 
 /**
- * `transpileWebComponent`
- *
- * This function converts the JSX code of a web component to a format
- * that can be used in the browser.
- */
-export function transpileWebComponent(code: string): string;
-
-/**
  * `renderToString`
  *
  * This is a helper function to render a component to a string:

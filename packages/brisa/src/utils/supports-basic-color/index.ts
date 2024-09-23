@@ -1,9 +1,10 @@
+// These imports for client (browser) are replaced
 import process from 'node:process';
 import os from 'node:os';
 import tty from 'node:tty';
 
 function getForceColorDefinition() {
-  const { env } = process;
+  const env = process?.env ?? {};
   if (!env.FORCE_COLOR) return;
   if (env.FORCE_COLOR === 'true' || env.FORCE_COLOR.length === 0) return true;
   if (env.FORCE_COLOR === 'false') return false;
@@ -11,7 +12,7 @@ function getForceColorDefinition() {
 }
 
 export default function isANSIColorsSupported() {
-  const { env } = process;
+  const env = process?.env ?? {};
   const hasForceColor = getForceColorDefinition();
 
   if (hasForceColor !== undefined) return hasForceColor;
