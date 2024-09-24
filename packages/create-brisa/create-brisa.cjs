@@ -57,8 +57,6 @@ function createProject(PROJECT_NAME) {
     },
     devDependencies: {
       '@types/bun': 'latest',
-    },
-    peerDependencies: {
       typescript: 'latest',
     },
   };

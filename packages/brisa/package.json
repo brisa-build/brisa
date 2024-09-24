@@ -131,12 +131,10 @@
   "devDependencies": {
     "@happy-dom/global-registrator": "15.7.3",
     "@types/bun": "1.1.8",
-    "brisa": "0.0.208-canary.1",
+    "brisa": "latest",
     "@types/mime-types": "2.1.4",
-    "mime-types": "2.1.35"
-  },
-  "peerDependencies": {
-    "typescript": "5.5.4"
+    "mime-types": "2.1.35",
+    "typescript": "5.6.2"
   },
   "packageManager": "bun@1.1.28",
   "engines": {

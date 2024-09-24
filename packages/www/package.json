@@ -7,7 +7,8 @@
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",
     "build:json": "bun run src/scripts/docs-to-json.ts",
-    "build": "bun run build:json && brisa build",
+    "build:editor": "cp ../../node_modules/monaco-editor/min/vs/language/typescript/tsWorker.js ../../node_modules/monaco-editor/min/vs/editor/editor.main.js src/public/monaco-editor/",
+    "build": "bun run build:editor && bun run build:json && brisa build",
     "start": "brisa start"
   },
   "dependencies": {
@@ -22,7 +23,8 @@
     "search-engine-wc": "0.2.2",
     "shikiji-transformers": "0.10.2",
     "slugify": "1.6.6",
-    "@swc/wasm-web": "1.7.26"
+    "@swc/wasm-web": "1.7.28",
+    "monaco-editor": "0.52.0"
   },
   "devDependencies": {
     "@types/bun": "1.1.10",

@@ -1,4 +1,6 @@
-import { type WebContext } from 'brisa';
+import type { WebContext } from 'brisa';
+
+const tsWorker = new Worker('monaco-editor/tsWorker.js', { type: 'module' });
 
 const defaultValue = ` export default function Counter({ name }: any, { state }: any) {
   const count = state(0);
@@ -18,10 +20,15 @@ export default async function PlayGround(
 ) {
   const code = state<string>('');
   const iframeRef = state<HTMLIFrameElement | null>(null);
+  const codeRef = state<HTMLDivElement | null>(null);
+
+  // Initialize Monaco Editor
+  const editorPromise = initEditor();
 
   function onReceiveCompiledCode(e: MessageEvent) {
+    if (e.data.source !== 'brisa-playground-preview') return;
     if (e.data.ready) sendDefaultCode();
-    if (typeof e.data?.code === 'string') {
+    if (typeof e.data.code === 'string') {
       code.value = e.data.code;
     }
   }
@@ -30,7 +37,14 @@ export default async function PlayGround(
     iframeRef.value!.contentWindow?.postMessage({ code: defaultValue });
   }
 
-  onMount(() => {
+  onMount(async () => {
+    const editor = await editorPromise;
+    const monacoEditor = editor.create(codeRef.value!, {
+      value: defaultValue,
+      language: 'typescript',
+      theme: 'vs-dark', // TODO: Change with the website theme
+    });
+    monacoEditor.onDidChangeModelContent((e) => console.log(e));
     window.addEventListener('message', onReceiveCompiledCode);
   });
 
@@ -78,9 +92,10 @@ export default async function PlayGround(
 
   return (
     <section class="playground">
+      <script></script>
       <div class="original-code">
         <h2>Original code:</h2>
-        <textarea onInput={onInput}>{defaultValue}</textarea>
+        <div ref={codeRef}></div>
       </div>
       <div class="output">
         <h2>Web Component:</h2>
@@ -90,4 +105,12 @@ export default async function PlayGround(
       </div>
     </section>
   );
+}
+
+function initEditor() {
+  return eval(`import('./monaco-editor/editor.main.js')`).then((m: any) => {
+    // @ts-ignore
+    window.MonacoEnvironment = { getWorker: () => tsWorker };
+    return m.default;
+  });
 }

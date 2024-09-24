@@ -1,6 +1,7 @@
 import { dangerHTML, type WebContext } from 'brisa';
 import { compileWC } from 'brisa/compiler';
 
+const source = 'brisa-playground-preview';
 const workerCode = `import initSwc, { transformSync } from "https://unpkg.com/@swc/wasm-web@1.7.26/wasm.js";
 initSwc().then(() => self.postMessage({ type: "ready" }));
 self.addEventListener("message", async (event) => {
@@ -20,7 +21,7 @@ self.addEventListener("message", async (event) => {
       target: "es2020",
     },
   });
-  self.postMessage(result.code);
+  self.postMessage(result);
 });`;
 
 export default async function PlayGroundPreview(
@@ -37,12 +38,12 @@ export default async function PlayGroundPreview(
   async function onUpdateCode(e: MessageEvent) {
     if (e.data?.type === 'ready') {
       ready.value = true;
-      window.parent.postMessage({ ready: true });
+      window.parent.postMessage({ source, ready: true });
       return;
     }
-    const compiledCode = compileWC(e.data);
+    const compiledCode = compileWC(e.data.code);
 
-    window.parent.postMessage({ code: compiledCode });
+    window.parent.postMessage({ source, code: compiledCode });
 
     const codeBlob = new Blob([compiledCode], {
       type: 'application/javascript',

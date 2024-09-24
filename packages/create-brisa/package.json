@@ -28,6 +28,6 @@
     "pnpm": "please-use-bun"
   },
   "devDependencies": {
-    "brisa": "0.0.208-canary.1"
+    "brisa": "latest"
   }
 }
