@@ -1,6 +1,6 @@
 import Nav from '@/components/navigation';
 import Footer from '@/components/footer';
-import { dangerHTML } from 'brisa';
+import { dangerHTML, type RequestContext } from 'brisa';
 
 const meta = {
   title: 'Brisa - The Web Platform Framework',
@@ -22,7 +22,14 @@ const speculationrules = {
   ],
 };
 
-export default function Layout({ children }: { children: JSX.Element }) {
+export default function Layout(
+  { children }: { children: JSX.Element },
+  { route }: RequestContext,
+) {
+  if (route.pathname === '/playground/preview') {
+    return <PreviewLayout>{children}</PreviewLayout>;
+  }
+
   return (
     <html lang="en">
       <head>
@@ -84,6 +91,25 @@ export default function Layout({ children }: { children: JSX.Element }) {
         {children}
         <Footer />
       </body>
+    </html>
+  );
+}
+
+function PreviewLayout({ children }: { children: JSX.Element }) {
+  return (
+    <html lang="en">
+      <head>
+        <script type="importmap">
+          {dangerHTML(`
+           {
+            "imports": {
+              "brisa/client": "https://unpkg.com/brisa@latest/client-simplified/index.js"
+            }
+          }
+        `)}
+        </script>
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
