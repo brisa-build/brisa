@@ -12,7 +12,7 @@ export default function Playground() {
           <h1>Brisa Playground</h1>
         </hgroup>
       </section>
-      <play-ground />
+      <play-ground skipSSR />
     </main>
   );
 }
