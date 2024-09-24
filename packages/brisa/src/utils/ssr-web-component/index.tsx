@@ -1,5 +1,5 @@
 import { toInline } from '@/helpers';
-import { Fragment } from '@/jsx-runtime';
+import { Fragment as BrisaFragment } from '@/jsx-runtime';
 import type { RequestContext } from '@/types';
 import { getConstants } from '@/constants';
 
@@ -99,7 +99,7 @@ export default async function SSRWebComponent(
           {style.length > 0 && <style>{toInline(style)}</style>}
         </template>
       )}
-      <Fragment slot="">{props.children}</Fragment>
+      <BrisaFragment slot="">{props.children}</BrisaFragment>
     </Selector>
   );
 }

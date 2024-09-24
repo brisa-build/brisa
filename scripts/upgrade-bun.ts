@@ -66,7 +66,6 @@ fs.writeFileSync(pipelinePath, yml);
 const dockerMdPath = join(
   import.meta.dir,
   '..',
-  'packages',
   'docs',
   'building-your-application',
   'deploying',
@@ -75,7 +74,6 @@ const dockerMdPath = join(
 const quickStartMdPath = join(
   import.meta.dir,
   '..',
-  'packages',
   'docs',
   'getting-started',
   'quick-start.md',

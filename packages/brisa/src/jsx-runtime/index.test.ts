@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { Fragment, jsx } from '.';
+import { Fragment as BrisaFragment, jsx } from '.';
 
 describe('utils', () => {
   describe('jsx (createNode) SERVER', () => {
@@ -35,7 +35,7 @@ describe('utils', () => {
     });
 
     it('should transform a fragment with elements in the same way that the web components', () => {
-      const output = Fragment({
+      const output = BrisaFragment({
         children: [
           ' ',
           jsx('div', { children: 'some div' }),

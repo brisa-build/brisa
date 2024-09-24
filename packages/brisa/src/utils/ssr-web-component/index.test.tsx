@@ -11,7 +11,7 @@ import extendRequestContext from '@/utils/extend-request-context';
 import createContext from '@/utils/create-context';
 import translateCore from '@/utils/translate-core';
 import { getConstants } from '@/constants';
-import { Fragment, jsx } from '@/jsx-runtime';
+import { Fragment as BrisaFragment } from '@/jsx-runtime';
 
 const FIXTURES = join(import.meta.dir, '..', '..', '__fixtures__');
 const JSX = Symbol.for('isJSX');
@@ -65,7 +65,7 @@ describe('utils', () => {
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
       expect(output[2][0][2][0][2]).toEqual(
-        Fragment({ children: ['hello ', 'world'] })[2],
+        BrisaFragment({ children: ['hello ', 'world'] })[2],
       );
     });
 
@@ -137,7 +137,7 @@ describe('utils', () => {
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
       expect(output[2][0][2][0][2]).toEqual(
-        Fragment({ children: ['hello ', 'world'] })[2],
+        BrisaFragment({ children: ['hello ', 'world'] })[2],
       );
     });
 
@@ -159,7 +159,7 @@ describe('utils', () => {
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
       expect(output[2][0][2][0][2]).toEqual(
-        Fragment({ children: ['hello ', 'world'] })[2],
+        BrisaFragment({ children: ['hello ', 'world'] })[2],
       );
     });
 
@@ -262,7 +262,7 @@ describe('utils', () => {
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
       expect(output[2][0][2][0][2]).toEqual(
-        Fragment({ children: ['hello ', 'world'] })[2],
+        BrisaFragment({ children: ['hello ', 'world'] })[2],
       );
     });
 
@@ -366,7 +366,9 @@ describe('utils', () => {
       expect(output[2][0][1].shadowrootmode).toBe('open');
       expect(output[2][0][2][0][0]).toBe('div');
       expect(output[2][0][2][0][2]).toEqual(
-        Fragment({ children: ['Ops! ', 'some error', ', hello ', 'world'] })[2],
+        BrisaFragment({
+          children: ['Ops! ', 'some error', ', hello ', 'world'],
+        })[2],
       );
     });
 
@@ -587,7 +589,7 @@ describe('utils', () => {
             Object.assign([null, {}, false], { [JSX]: true }),
             Object.assign(
               [
-                Fragment,
+                BrisaFragment,
                 {
                   slot: '',
                   key: undefined,
