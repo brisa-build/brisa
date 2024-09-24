@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    {
+      "source": "/discord",
+      "destination": "https://discord.com/invite/MsE9RN3FU4"
+    },
+    {
+      "source": "/x",
+      "destination": "https://x.com/brisadotbuild"
+    },
+    {
+      "source": "/github",
+      "destination": "https://github.com/brisa-build/brisa"
+    }
+  ]
+}
