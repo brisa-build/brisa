@@ -182,6 +182,10 @@ main {
   height: 100%;
 }
 
+.dark .multi-platform img {
+  filter: invert(1);
+}
+
 .home-section {
   padding: 1rem 2rem;
   width: 100vw;
@@ -198,7 +202,13 @@ main {
   margin: 10px;
 }
 
-.fast-apps, .actions {
+.multi-platform img {
+  aspect-ratio: 500 / 332;
+  height: auto;
+  width: auto;
+}
+
+.fast-apps, .actions, .multi-platform {
   background-image: var(--section1-bg-color);
 }
 

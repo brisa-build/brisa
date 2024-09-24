@@ -66,6 +66,16 @@ function I18nExample({}, { i18n: { t, lang } }) {
   );
 }`;
 
+const multiPlatformCode = `
+// brisa.config.ts
+import type { Configuration } from "brisa";
+
+export default {
+  // bun, node, static, android, ios, desktop
+  output: "android",
+} satisfies Configuration;
+`;
+
 export default function Homepage() {
   return (
     <main>
@@ -187,6 +197,30 @@ export default function Homepage() {
             <RenderCode code={i18nCode} />
             <p class="bytes">+0 B (Server Components)</p>
             <p class="bytes">+800 B (Web Components)</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-section multi-platform">
+        <div class="code-example">
+          <div class="info">
+            <h2>📱 Multi-platform</h2>
+            <p>
+              Brisa allows you to build web applications that can be easily
+              converted to native applications for Android, iOS, and desktop.
+              It's full integrated with Tauri.
+            </p>
+            <img
+              width="500"
+              height="332"
+              src="/images/multi-platform.avif"
+              alt="Multi-platform"
+              loading="lazy"
+            />
+          </div>
+          <div class="code">
+            <RenderCode code={multiPlatformCode} />
+            <p class="bytes">Web or: .apk, .ipa, .exe, .dmg, .deb</p>
           </div>
         </div>
       </section>
