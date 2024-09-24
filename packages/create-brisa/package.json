@@ -1,6 +1,6 @@
 {
   "name": "create-brisa",
-  "version": "0.0.221",
+  "version": "0.0.222",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -16,7 +16,10 @@
     "url": "https://github.com/brisa-build/brisa.git",
     "directory": "packages/create-brisa"
   },
-  "files": ["create-brisa.cjs", "basic-template"],
+  "files": [
+    "create-brisa.cjs",
+    "basic-template"
+  ],
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   },
