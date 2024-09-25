@@ -109,7 +109,7 @@ function PreviewLayout({ children }: { children: JSX.Element }) {
         `)}
         </script>
       </head>
-      <body>{children}</body>
+      <body style={{ backgroundColor: 'white' }}>{children}</body>
     </html>
   );
 }
