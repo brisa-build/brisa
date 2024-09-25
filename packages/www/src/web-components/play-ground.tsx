@@ -62,7 +62,7 @@ export default async function PlayGround(
   return (
     <section class="playground">
       <div class="original-code">
-        <h2>Original code:</h2>
+        <h2>Code:</h2>
         <slot name="code-editor" />
       </div>
       <div class="output">
