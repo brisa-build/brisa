@@ -21,6 +21,9 @@ describe('utils', () => {
         path.join(assetsPath, 'some-dir', 'some-text.txt'),
         path.join(assetsPath, 'some-dir', 'some-text.txt.br'),
         path.join(assetsPath, 'some-dir', 'some-text.txt.gz'),
+        path.join(assetsPath, 'user', 'static.js'),
+        path.join(assetsPath, 'user', 'static.js.br'),
+        path.join(assetsPath, 'user', 'static.js.gz'),
       ]);
 
       expect(new Set(output)).toEqual(expected);

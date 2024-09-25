@@ -1138,6 +1138,38 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(response.status).toBe(404);
   });
 
+  it('should src/pages/user/[username].tsx dynamic page work', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: undefined,
+    };
+    const req = new Request(`http:///localhost:1234${basePath}/user/foo`);
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe(
+      'text/html; charset=utf-8',
+    );
+    expect(response.text()).resolves.toContain('<div>user</div>');
+  });
+
+  it('should prefer src/public/user/static.js asset than src/pages/user/[username].tsx page', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: undefined,
+    };
+    const req = new Request(`http:///localhost:1234${basePath}/user/static.js`);
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe(
+      'application/javascript;charset=utf-8',
+    );
+    expect(response.text()).resolves.toContain("console.log('from public')");
+  });
+
   it('should cache client page code in production', async () => {
     globalThis.mockConstants = {
       ...getConstants(),

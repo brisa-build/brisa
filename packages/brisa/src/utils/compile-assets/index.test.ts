@@ -52,6 +52,7 @@ describe('compileAssets', () => {
         'favicon.ico.gz',
         'some-dir',
         'sitemap.xml',
+        'user',
       ].toSorted(),
     );
     expect(
@@ -66,6 +67,9 @@ describe('compileAssets', () => {
         'some-text.txt',
       ].toSorted(),
     );
+    expect(
+      fs.readdirSync(path.join(BUILD_DIR, 'public', 'user')).toSorted(),
+    ).toEqual(['static.js', 'static.js.br', 'static.js.gz'].toSorted());
   });
 
   it('should not compress fixtures assets in development and neither create the sitemap.xml', async () => {
@@ -73,7 +77,7 @@ describe('compileAssets', () => {
     globalThis.mockConstants!.IS_PRODUCTION = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
-      ['favicon.ico', 'some-dir'].toSorted(),
+      ['favicon.ico', 'some-dir', 'user'].toSorted(),
     );
     expect(log).not.toHaveBeenCalled();
     log.mockClear();
@@ -83,7 +87,7 @@ describe('compileAssets', () => {
     globalThis.mockConstants!.CONFIG!.assetCompression = false;
     await compileAssets();
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
-      ['favicon.ico', 'some-dir', 'sitemap.xml'].toSorted(),
+      ['favicon.ico', 'some-dir', 'sitemap.xml', 'user'].toSorted(),
     );
   });
 
