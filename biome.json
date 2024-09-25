@@ -11,8 +11,8 @@
       "**/brisa/client/*",
       "**/brisa/jsx-runtime/*",
       "**/brisa/jsx-dev-runtime/*",
-      "**/docs/.vitepress/cache/*",
-      "**/docs/.vitepress/dist/*"
+      "**/www/src/public/*",
+      "**/www/.vercel/*"
     ]
   },
   "formatter": {

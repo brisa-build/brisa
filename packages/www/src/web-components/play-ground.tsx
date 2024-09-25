@@ -1,6 +1,4 @@
-import type { WebContext } from 'brisa';
-
-const tsWorker = new Worker('monaco-editor/tsWorker.js', { type: 'module' });
+import { dangerHTML, type WebContext } from 'brisa';
 
 const defaultValue = ` export default function Counter({ name }: any, { state }: any) {
   const count = state(0);
@@ -20,12 +18,11 @@ export default async function PlayGround(
 ) {
   const code = state<string>('');
   const iframeRef = state<HTMLIFrameElement | null>(null);
-  const codeRef = state<HTMLDivElement | null>(null);
-
-  // Initialize Monaco Editor
-  const editorPromise = initEditor();
 
   function onReceiveCompiledCode(e: MessageEvent) {
+    if (e.data.source === 'monaco-editor') {
+      return initMonacoEditor();
+    }
     if (e.data.source !== 'brisa-playground-preview') return;
     if (e.data.ready) sendDefaultCode();
     if (typeof e.data.code === 'string') {
@@ -33,18 +30,15 @@ export default async function PlayGround(
     }
   }
 
+  function initMonacoEditor() {
+    window.editor.onDidChangeModelContent((e) => console.log(e));
+  }
+
   function sendDefaultCode() {
     iframeRef.value!.contentWindow?.postMessage({ code: defaultValue });
   }
 
-  onMount(async () => {
-    const editor = await editorPromise;
-    const monacoEditor = editor.create(codeRef.value!, {
-      value: defaultValue,
-      language: 'typescript',
-      theme: 'vs-dark', // TODO: Change with the website theme
-    });
-    monacoEditor.onDidChangeModelContent((e) => console.log(e));
+  onMount(() => {
     window.addEventListener('message', onReceiveCompiledCode);
   });
 
@@ -92,10 +86,31 @@ export default async function PlayGround(
 
   return (
     <section class="playground">
-      <script></script>
+      <script type="importmap">
+        {dangerHTML(`
+          {
+            "imports": {
+                "monaco-editor": "./monaco-editor/esm/vs/editor/editor.main.js"
+             }
+          }
+          `)}
+      </script>
+      <script type="module">
+        {dangerHTML(`
+          import * as monaco from 'monaco-editor';
+          const tsWorker = new Worker('./monaco-editor/esm/vs/language/typescript/ts.worker.js', { type: 'module' });
+          window.MonacoEnvironment = { getWorker: () => tsWorker };
+          window.editor = monaco.editor.create(document.querySelector('#code'), {
+            value: \`${defaultValue}\`,
+            language: 'typescript',
+            theme: 'vs-dark', // TODO: Change with the website theme
+          });
+          window.postMessage({ source: 'monaco-editor', ready: true });
+        `)}
+      </script>
       <div class="original-code">
         <h2>Original code:</h2>
-        <div ref={codeRef}></div>
+        <div id="code"></div>
       </div>
       <div class="output">
         <h2>Web Component:</h2>
@@ -105,12 +120,4 @@ export default async function PlayGround(
       </div>
     </section>
   );
-}
-
-function initEditor() {
-  return eval(`import('./monaco-editor/editor.main.js')`).then((m: any) => {
-    // @ts-ignore
-    window.MonacoEnvironment = { getWorker: () => tsWorker };
-    return m.default;
-  });
 }
