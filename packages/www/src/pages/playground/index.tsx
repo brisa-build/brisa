@@ -1,18 +1,18 @@
 export default function Playground() {
   return (
-    <main class="hero">
-      <section class="home-section">
-        <hgroup>
-          <img
-            src="/brisa.svg"
-            alt="Brisa Framework logo"
-            width="100"
-            height="100"
-          />
-          <h1>Brisa Playground</h1>
-        </hgroup>
-      </section>
-      <play-ground skipSSR />
+    <main>
+      <play-ground skipSSR>
+        <div
+          slot="code-editor"
+          style={{ height: '500px', width: '100%' }}
+          id="code-editor"
+        ></div>
+        <iframe
+          slot="preview-iframe"
+          id="preview-iframe"
+          src="/playground/preview"
+        />
+      </play-ground>
     </main>
   );
 }

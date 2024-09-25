@@ -14,15 +14,12 @@ const defaultValue = ` export default function Counter({ name }: any, { state }:
 
 export default async function PlayGround(
   {},
-  { state, css, cleanup, onMount }: WebContext,
+  { state, css, cleanup, onMount, self }: WebContext,
 ) {
   const code = state<string>('');
-  const iframeRef = state<HTMLIFrameElement | null>(null);
+  const preview: HTMLIFrameElement = self.querySelector('#preview-iframe')!;
 
   function onReceiveCompiledCode(e: MessageEvent) {
-    if (e.data.source === 'monaco-editor') {
-      return initMonacoEditor();
-    }
     if (e.data.source !== 'brisa-playground-preview') return;
     if (e.data.ready) sendDefaultCode();
     if (typeof e.data.code === 'string') {
@@ -30,12 +27,8 @@ export default async function PlayGround(
     }
   }
 
-  function initMonacoEditor() {
-    window.editor.onDidChangeModelContent((e) => console.log(e));
-  }
-
   function sendDefaultCode() {
-    iframeRef.value!.contentWindow?.postMessage({ code: defaultValue });
+    preview.contentWindow?.postMessage({ code: defaultValue });
   }
 
   onMount(() => {
@@ -45,12 +38,6 @@ export default async function PlayGround(
   cleanup(() => {
     window.removeEventListener('message', onReceiveCompiledCode);
   });
-
-  function onInput(e: Event) {
-    iframeRef.value!.contentWindow?.postMessage({
-      code: (e.target as HTMLInputElement).value,
-    });
-  }
 
   css`
     .playground {
@@ -86,35 +73,53 @@ export default async function PlayGround(
 
   return (
     <section class="playground">
-      <script type="importmap">
-        {dangerHTML(`
-          {
-            "imports": {
-                "monaco-editor": "./monaco-editor/esm/vs/editor/editor.main.js"
-             }
-          }
-          `)}
-      </script>
       <script type="module">
         {dangerHTML(`
-          import * as monaco from 'monaco-editor';
-          const tsWorker = new Worker('./monaco-editor/esm/vs/language/typescript/ts.worker.js', { type: 'module' });
-          window.MonacoEnvironment = { getWorker: () => tsWorker };
-          window.editor = monaco.editor.create(document.querySelector('#code'), {
-            value: \`${defaultValue}\`,
-            language: 'typescript',
-            theme: 'vs-dark', // TODO: Change with the website theme
+          import * as monaco from 'https://esm.sh/monaco-editor';
+          import editorWorker from 'https://esm.sh/monaco-editor/esm/vs/editor/editor.worker?worker';
+          import jsonWorker from 'https://esm.sh/monaco-editor/esm/vs/language/json/json.worker?worker';
+          import cssWorker from 'https://esm.sh/monaco-editor/esm/vs/language/css/css.worker?worker';
+          import htmlWorker from 'https://esm.sh/monaco-editor/esm/vs/language/html/html.worker?worker';
+          import tsWorker from 'https://esm.sh/monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+
+          self.MonacoEnvironment  = { 
+            getWorker(_, label) {
+              if (label === 'json') return new jsonWorker();
+              if (label === 'css' || label === 'scss' || label === 'less') return new cssWorker();
+              if (label === 'html' || label === 'handlebars' || label === 'razor') return new htmlWorker();
+              if (label === 'typescript' || label === 'javascript') return new tsWorker();
+              return new editorWorker();
+            }
+          };
+
+          const modelUri = monaco.Uri.file("wc-counter.tsx")
+          const codeModel = monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
+
+          monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+              jsx: monaco.languages.typescript.JsxEmit.React, 
+              target: monaco.languages.typescript.ScriptTarget.ESNext,
+              allowNonTsExtensions: true
           });
-          window.postMessage({ source: 'monaco-editor', ready: true });
+
+          const preview = document.querySelector('#preview-iframe');
+          const editor = monaco.editor.create(document.querySelector('#code-editor'), {
+           model: codeModel,
+           language: "typescript",
+           theme: "vs-dark",
+           automaticLayout: true
+         });
+         editor.onDidChangeModelContent((e) => {
+            preview.contentWindow.postMessage({ code: editor.getValue() }, '*');
+         });
         `)}
       </script>
       <div class="original-code">
         <h2>Original code:</h2>
-        <div id="code"></div>
+        <slot name="code-editor" />
       </div>
       <div class="output">
         <h2>Web Component:</h2>
-        <iframe ref={iframeRef} src="/playground/preview" />
+        <slot name="preview-iframe" />
         <h2>Compiled Code:</h2>
         <textarea disabled>{code.value}</textarea>
       </div>
