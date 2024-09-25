@@ -1,6 +1,9 @@
 import { dangerHTML } from 'brisa';
 
-const defaultValue = ` export default function Counter({ name }: any, { state }: any) {
+const defaultValue = `// src/web-components/wc-counter.tsx
+import type { WebContext } from 'brisa';
+
+export default function Counter({ name }: { name: string }, { state }: WebContext) {
   const count = state(0);
 
   return (
@@ -15,61 +18,81 @@ const defaultValue = ` export default function Counter({ name }: any, { state }:
 export default function Playground() {
   return (
     <>
-      <main style={{ paddingTop: '120px' }}>
+      <main style={{ paddingTop: '100px' }}>
         <play-ground skipSSR defaultValue={defaultValue}>
           <div
             slot="code-editor"
-            style={{ height: '500px', width: '100%' }}
+            style={{
+              height: '500px',
+              width: '100%',
+              border: '1px solid var(--color-primary)',
+            }}
             id="code-editor"
           >
             <script type="module">
               {dangerHTML(`
                 import * as monaco from 'https://esm.sh/monaco-editor';
-                import editorWorker from 'https://esm.sh/monaco-editor/esm/vs/editor/editor.worker?worker';
-                import jsonWorker from 'https://esm.sh/monaco-editor/esm/vs/language/json/json.worker?worker';
-                import cssWorker from 'https://esm.sh/monaco-editor/esm/vs/language/css/css.worker?worker';
-                import htmlWorker from 'https://esm.sh/monaco-editor/esm/vs/language/html/html.worker?worker';
                 import tsWorker from 'https://esm.sh/monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 
                 window.MonacoEnvironment  = { 
                   getWorker(_, label) {
-                    if (label === 'json') return new jsonWorker();
-                    if (label === 'css' || label === 'scss' || label === 'less') return new cssWorker();
-                    if (label === 'html' || label === 'handlebars' || label === 'razor') return new htmlWorker();
-                    if (label === 'typescript' || label === 'javascript') return new tsWorker();
-                    return new editorWorker();
+                    return new tsWorker();
                   }
                 };
 
                 const modelUri = monaco.Uri.file("wc-counter.tsx")
-                const codeModel = monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
+                const existingModel = monaco.editor.getModels().find(m => m.uri.toString() === modelUri.toString());
+                const codeModel = existingModel ?? monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
 
-                monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+                 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
                     jsx: monaco.languages.typescript.JsxEmit.React, 
                     target: monaco.languages.typescript.ScriptTarget.ESNext,
-                    allowNonTsExtensions: true
+                    allowNonTsExtensions: true,
                 });
 
-                const preview = document.querySelector('#preview-iframe');
-                const editor = monaco.editor.create(document.querySelector('#code-editor'), {
-                model: codeModel,
-                language: "typescript",
-                theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
-                automaticLayout: true
+               const preview = document.querySelector('#preview-iframe');
+               const editor = monaco.editor.create(document.querySelector('#code-editor'), {
+                  model: codeModel,
+                  language: "typescript",
+                  theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
+                  automaticLayout: true
               });
               editor.onDidChangeModelContent((e) => {
                   preview.contentWindow.postMessage({ code: editor.getValue() }, '*');
               });
+              window._xm = "native";
             `)}
             </script>
           </div>
           <iframe
             slot="preview-iframe"
             id="preview-iframe"
+            style={{
+              width: '100%',
+              border: '1px solid var(--color-primary)',
+              height: '500px',
+              color: 'var(--color-primary)',
+            }}
             src="/playground/preview"
           />
         </play-ground>
       </main>
+    </>
+  );
+}
+
+export function Head() {
+  return (
+    <>
+      <link
+        rel="preload"
+        href="https://esm.sh/monaco-editor/min/vs/editor/editor.main.css"
+        as="style"
+      />
+      <link
+        rel="stylesheet"
+        href="https://esm.sh/monaco-editor/min/vs/editor/editor.main.css"
+      />
     </>
   );
 }
