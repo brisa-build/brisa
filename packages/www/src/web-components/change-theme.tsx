@@ -13,6 +13,10 @@ export default function ChangeTheme({}, { state, css }: WebContext) {
     document.body.classList.remove('dark');
     document.body.classList.remove('light');
     document.body.classList.add(theme);
+    if ('changeTheme' in window) {
+      // @ts-ignore
+      window.changeTheme(theme === 'dark' ? 'vs-dark' : 'vs-light');
+    }
     isDark.value = !isDark.value;
   }
 
@@ -43,7 +47,8 @@ export default function ChangeTheme({}, { state, css }: WebContext) {
       aria-label="Change theme"
       onClick={() => {
         'startViewTransition' in document
-          ? document.startViewTransition(changeColor)
+          ? // @ts-ignore
+            document.startViewTransition(changeColor)
           : changeColor();
       }}
     >

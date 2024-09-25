@@ -67,6 +67,7 @@ export default function Playground() {
                   preview.contentWindow.postMessage({ code: editor.getValue() }, '*');
               });
               window._xm = "native";
+              window.changeTheme = monaco.editor.setTheme.bind(monaco.editor);
             `)}
             </script>
           </div>
