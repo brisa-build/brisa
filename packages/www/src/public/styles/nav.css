@@ -3,7 +3,7 @@
   background-color: var(--color-white);
   position: fixed;
   color: var(--color-primary);
-  z-index: 2;
+  z-index: 6;
   padding: 1rem 2rem;
   width: 100vw;
   border-bottom: 1px solid var(--color-border);
