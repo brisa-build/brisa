@@ -2,7 +2,7 @@ import { dangerHTML, type WebContext } from 'brisa';
 import { compileWC } from 'brisa/compiler';
 
 const source = 'brisa-playground-preview';
-const workerCode = `import initSwc, { transformSync } from "https://unpkg.com/@swc/wasm-web@1.7.26/wasm.js";
+const workerCode = `import initSwc, { transformSync } from "https://esm.sh/@swc/wasm-web@1.7.26/wasm.js";
 initSwc().then(() => self.postMessage({ type: "ready" }));
 self.addEventListener("message", async (event) => {
   const { code } = event.data;
