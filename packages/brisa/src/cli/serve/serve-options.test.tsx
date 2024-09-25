@@ -1170,6 +1170,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(response.text()).resolves.toContain("console.log('from public')");
   });
 
+  it('should prefer src/public/user/static.js asset than src/pages/user/[username].tsx page (without .js ext)', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: undefined,
+    };
+    const req = new Request(`http:///localhost:1234${basePath}/user/static`);
+    const response = await testRequest(req);
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe(
+      'application/javascript;charset=utf-8',
+    );
+    expect(response.text()).resolves.toContain("console.log('from public')");
+  });
+
   it('should cache client page code in production', async () => {
     globalThis.mockConstants = {
       ...getConstants(),

@@ -144,10 +144,8 @@ export async function getServeOptions() {
       }
 
       const isClientPage = url.pathname.startsWith(PUBLIC_CLIENT_PAGE_SUFFIX);
-      const isHome = url.pathname === '/';
-      const assetPath = path.join(ASSETS_DIR, url.pathname);
-      const isAnAsset = !isHome && fs.existsSync(assetPath);
-      const i18nRes = isAnAsset ? {} : handleI18n(request);
+      const assetPath = detectAsset(url, ASSETS_DIR);
+      const i18nRes = assetPath ? {} : handleI18n(request);
 
       if (isClientPage) {
         const clientPagePath = path.join(
@@ -173,7 +171,7 @@ export async function getServeOptions() {
         rootRouter = i18nRes.rootRouter;
       }
 
-      if (!isAnAsset) {
+      if (!assetPath) {
         const redirect = redirectTrailingSlash(request);
 
         if (redirect) return isValidRoute() ? redirect : error404(request);
@@ -181,7 +179,7 @@ export async function getServeOptions() {
 
       request.getIP = () => server.requestIP(req);
 
-      return handleRequest(request, { isAnAsset }).catch((error) => {
+      return handleRequest(request, { assetPath }).catch((error) => {
         // 404 page
         if (isNotFoundError(error)) return error404(request);
 
@@ -243,7 +241,7 @@ export async function getServeOptions() {
   ///////////////////////////////////////////////////////
   async function handleRequest(
     req: RequestContext,
-    { isAnAsset }: { isAnAsset: boolean },
+    { assetPath }: { assetPath: string | null },
   ) {
     const locale = req.i18n.locale;
     const url = new URL(req.finalURL);
@@ -264,10 +262,7 @@ export async function getServeOptions() {
     }
 
     // Assets
-    if (isAnAsset) {
-      const assetPath = path.join(ASSETS_DIR, url.pathname);
-      return serveAsset(assetPath, req);
-    }
+    if (assetPath) return serveAsset(assetPath, req);
 
     // Pages
     if (!isApi && route && !isReservedPathname) {
@@ -348,6 +343,15 @@ export async function getServeOptions() {
 
     return responseRenderedPage({ req, route: route404, status: 404 });
   }
+}
+
+function detectAsset(url: URL, assetsDir: string) {
+  const isHome = url.pathname === '/';
+  let assetPath = path.join(assetsDir, url.pathname);
+  if (isHome) return null;
+  if (fs.existsSync(assetPath)) return assetPath;
+  if (fs.existsSync(assetPath + '.js')) return assetPath + '.js';
+  return null;
 }
 
 export function setUpEnvVars(
