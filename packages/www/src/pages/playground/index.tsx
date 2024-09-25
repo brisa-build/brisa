@@ -1,4 +1,5 @@
 import { dangerHTML } from 'brisa';
+import getMonacoEditorExtraLibs from '@/helpers/monaco-extra-libs';
 
 const defaultValue = `// src/web-components/wc-counter.tsx
 import type { WebContext } from 'brisa';
@@ -44,19 +45,24 @@ export default function Playground() {
                 const existingModel = monaco.editor.getModels().find(m => m.uri.toString() === modelUri.toString());
                 const codeModel = existingModel ?? monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
 
-                 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-                    jsx: monaco.languages.typescript.JsxEmit.React, 
-                    target: monaco.languages.typescript.ScriptTarget.ESNext,
-                    allowNonTsExtensions: true,
+               monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+                  jsx: "react",
+                  target: monaco.languages.typescript.ScriptTarget.ES2020,
+                  moduleResolution: monaco.languages.typescript.ModuleResolutionKind.Classic,
+                  allowNonTsExtensions: true
                 });
 
+                ${getMonacoEditorExtraLibs()}
+
+                monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+                  noSemanticValidation: false,
+                  noSyntaxValidation: false
+                });
                const preview = document.querySelector('#preview-iframe');
                const editor = monaco.editor.create(document.querySelector('#code-editor'), {
-                  model: codeModel,
-                  language: "typescript",
                   theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
-                  automaticLayout: true
               });
+              editor.setModel(codeModel);
               editor.onDidChangeModelContent((e) => {
                   preview.contentWindow.postMessage({ code: editor.getValue() }, '*');
               });
