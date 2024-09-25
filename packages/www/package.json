@@ -7,7 +7,7 @@
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",
     "build:json": "bun run src/scripts/docs-to-json.ts",
-    "build:editor": "cp ../../node_modules/monaco-editor/min/vs/language/typescript/tsWorker.js ../../node_modules/monaco-editor/min/vs/editor/editor.main.js src/public/monaco-editor/",
+    "build:editor": "cp -R ../../node_modules/monaco-editor ./src/public/monaco-editor",
     "build": "bun run build:editor && bun run build:json && brisa build",
     "start": "brisa start"
   },

@@ -3,3 +3,4 @@ node_modules
 out
 .vercel
 .DS_Store
+src/public/monaco-editor/*
