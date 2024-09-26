@@ -3,7 +3,7 @@ import { rerenderInAction } from 'brisa/server';
 
 export default function CounterServer(
   { initialValue = 0 }: { initialValue: number },
-  { store }: RequestContext,
+  { store, i18n }: RequestContext,
 ) {
   if (!store.has('count')) store.set('count', initialValue);
   store.transferToClient(['count']);
@@ -21,7 +21,7 @@ export default function CounterServer(
   return (
     <div class="counter">
       <div class="counter-container">
-        <h2>Server counter</h2>
+        <h2>{i18n.t('home.server-counter')}</h2>
         <button class="increment-button" onClick={increment}></button>
         <div class="counter-value">{store.get('count')}</div>
         <button class="decrement-button" onClick={decrement}></button>
