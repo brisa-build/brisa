@@ -1,30 +1,9 @@
 # with-external-web-component
 
-Project created with [Brisa](https://github.com/brisa-build/brisa).
+Example of how to use an external web component in a Brisa application.
 
 ## Getting Started
 
-### Installation
-
 ```bash
-bun install
+bun create brisa --example with-external-web-component
 ```
-
-### Development
-
-```bash
-bun dev
-```
-
-### Build
-
-```bash
-bun build
-```
-
-### Start
-
-```bash
-bun start
-```
-

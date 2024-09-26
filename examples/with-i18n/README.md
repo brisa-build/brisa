@@ -1,30 +1,9 @@
 # with-i18n
 
-Project created with [Brisa](https://github.com/brisa-build/brisa).
+Example of how to use i18n with Brisa
 
 ## Getting Started
 
-### Installation
-
 ```bash
-bun install
+bun create brisa --example with-i18n
 ```
-
-### Development
-
-```bash
-bun dev
-```
-
-### Build
-
-```bash
-bun build
-```
-
-### Start
-
-```bash
-bun start
-```
-
