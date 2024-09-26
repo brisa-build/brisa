@@ -21,6 +21,7 @@
     "docs:build": "bun run --cwd packages/www build",
     "docs:dev": "bun run --cwd packages/www dev",
     "docs:preview": "bun run --cwd packages/www start",
+    "create-brisa:build": "bun run --cwd packages/create-brisa build",
     "format": "bun run biome format --write .",
     "lint": "bun run biome lint --write .",
     "release-all": "bun run release-brisa && bun run release-create-brisa && bun run release-adapter-vercel",
