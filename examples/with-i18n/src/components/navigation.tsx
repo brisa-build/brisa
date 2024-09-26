@@ -1,4 +1,6 @@
-export default function Nav() {
+import type { RequestContext } from 'brisa';
+
+export default function Nav({}, { i18n: { t } }: RequestContext) {
   return (
     <nav>
       <div class="nav-content">
@@ -8,10 +10,10 @@ export default function Nav() {
         </a>
         <ul>
           <li>
-            <a href="/">Home</a>
+            <a href="/">{t('home.title')}</a>
           </li>
           <li>
-            <a href="/about">About Brisa</a>
+            <a href="/about">{t('about.title')}</a>
           </li>
         </ul>
       </div>
