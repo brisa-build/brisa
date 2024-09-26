@@ -9,7 +9,7 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "0.0.223"
+    "brisa": "latest"
   },
   "devDependencies": {
     "@types/bun": "latest",
