@@ -100,6 +100,7 @@ export function Head() {
         rel="stylesheet"
         href="https://esm.sh/monaco-editor/min/vs/editor/editor.main.css"
       />
+      <title id="title">Brisa Playground</title>
     </>
   );
 }

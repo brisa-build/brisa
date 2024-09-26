@@ -16,3 +16,7 @@ export default function Blog() {
     </main>
   );
 }
+
+export function Head() {
+  return <title id="title">Brisa Blog</title>;
+}

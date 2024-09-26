@@ -116,7 +116,8 @@ export default function Homepage() {
             <h2>🚀 Build fast apps fast</h2>
             <p>
               Brisa pages are dynamically server-rendered JSX components, so
-              there's zero JavaScript shipped to the browser by default.
+              there's <b>zero JavaScript</b> shipped to the browser{' '}
+              <b>by default</b>.
             </p>
             <p>Simple to write; fast to run.</p>
           </div>
@@ -134,9 +135,9 @@ export default function Homepage() {
             <p>
               In Brisa everything by default runs only on the server, except the{' '}
               <code>src/web-components</code> folder that also runs on the
-              client. Web components are rendered on the server (SSR) and
+              client. Web components are rendered on the server (<b>SSR</b>) and
               hydrated on the client using native Web APIs, as they are
-              transformed into Web Components with Signals.
+              transformed into Web Components with <b>Signals</b>.
             </p>
             <custom-counter start={5} />
           </div>
@@ -153,10 +154,11 @@ export default function Homepage() {
           <div class="info">
             <h2>📲 Browser-events on Server </h2>
             <p>
-              Brisa mixes ideas from React's "Server Actions" and HTMX concepts.
-              With Brisa, you can handle all browser events on the server, such
-              as forms, click events, etc. In addition, we offer some extra HTML
-              attributes to manage debounces, optimistic updates, etc.
+              Brisa mixes ideas from React's "<b>Server Actions</b>" and HTMX
+              concepts. With Brisa, you can handle all browser events on the
+              server, such as forms, click events, etc. In addition, we offer
+              some extra <b>HTML attributes</b> to manage debounces, optimistic
+              updates, etc.
             </p>
             <p>
               The idea is that if you want you can create a SPA without Web
@@ -183,8 +185,8 @@ export default function Homepage() {
             <h2>🌐 Full i18n support</h2>
             <p>
               Brisa has a built-in internationalization (i18n) support that
-              allows you to translate your text and routing, carrying only the
-              translations you consume.
+              allows you to <b>translate</b> your pages and <b>routing</b>,
+              carrying only the translations you consume.
             </p>
             <a
               class="cta"
@@ -207,8 +209,8 @@ export default function Homepage() {
             <h2>📱 Multi-platform</h2>
             <p>
               Brisa allows you to build web applications that can be easily
-              converted to native applications for Android, iOS, and desktop.
-              It's full integrated with Tauri.
+              converted to native applications for <b>Android</b>, <b>iOS</b>,
+              and <b>desktop</b>. It's full integrated with Tauri.
             </p>
             <img
               width="500"
