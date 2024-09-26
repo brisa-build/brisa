@@ -58,11 +58,18 @@ body {
   margin-bottom: 2rem;
 }
 
-.counters {
+.animals {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 2rem;
+}
+
+.animals select {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 /* Counter Container Styles */
