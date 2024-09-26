@@ -186,7 +186,7 @@ main {
   filter: invert(1);
 }
 
-.home-section {
+.brisa-section {
   padding: 1rem 2rem;
   width: 100vw;
   display: flex;
@@ -212,7 +212,40 @@ main {
   background-image: var(--section1-bg-color);
 }
 
-.home-section:has(.code-example) {
+.examples {
+  padding: 50px 0px;
+  background-image: var(--section1-bg-color);
+
+  h2 {
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+
+  ul {
+    padding: 0;
+  }
+
+  li {
+    list-style-type: none;
+    padding: 5px 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px dashed var(--color-primary);
+    transition: color 0.3s ease-in-out;
+  }
+
+  a:hover {
+    color: var(--color-primary);
+  }
+}
+
+.examples.more {
+  background-image: var(--section2-bg-color);
+}
+
+.brisa-section:has(.code-example) {
   padding: 2rem 1rem;
   max-width: none;
   line-height: 34px;
@@ -440,7 +473,7 @@ p {
 }
 
 @media (max-width: 860px) {
-  .home-section h2 {
+  .brisa-section h2 {
     text-align: center;
   }
   .info {

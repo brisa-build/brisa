@@ -80,7 +80,7 @@ export default function Homepage() {
   return (
     <main>
       <div class="hero">
-        <section class="home-section">
+        <section class="brisa-section">
           <hgroup>
             <img
               src="/brisa.svg"
@@ -110,7 +110,7 @@ export default function Homepage() {
           </div>
         </section>
       </div>
-      <section class="home-section fast-apps">
+      <section class="brisa-section fast-apps">
         <div class="code-example">
           <div class="info">
             <h2>🚀 Build fast apps fast</h2>
@@ -127,7 +127,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="home-section wc">
+      <section class="brisa-section wc">
         <div class="code-example">
           <div class="info">
             <h2>🏝️ Web Component island-based</h2>
@@ -148,7 +148,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="home-section actions">
+      <section class="brisa-section actions">
         <div class="code-example">
           <div class="info">
             <h2>📲 Browser-events on Server </h2>
@@ -177,7 +177,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="home-section i18n">
+      <section class="brisa-section i18n">
         <div class="code-example">
           <div class="info">
             <h2>🌐 Full i18n support</h2>
@@ -201,7 +201,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="home-section multi-platform">
+      <section class="brisa-section multi-platform">
         <div class="code-example">
           <div class="info">
             <h2>📱 Multi-platform</h2>

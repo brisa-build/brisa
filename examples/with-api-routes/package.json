@@ -2,6 +2,8 @@
   "name": "with-api-routes",
   "module": "src/pages/index.tsx",
   "type": "module",
+  "webTitle": "API Routes",
+  "example-category": "basics",
   "scripts": {
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",

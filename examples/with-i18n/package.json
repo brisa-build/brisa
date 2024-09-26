@@ -2,6 +2,8 @@
   "name": "with-i18n",
   "module": "src/pages/index.tsx",
   "type": "module",
+  "example-category": "basics",
+  "webTitle": "Internationalization (i18n)",
   "scripts": {
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",
