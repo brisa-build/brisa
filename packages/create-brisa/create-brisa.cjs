@@ -49,7 +49,7 @@ if (PROJECT_NAME === '--example') {
         console.log('👋 Bye!');
         process.exit(0);
       }
-      copyExample(examples[number - 1]);
+      copyExample(examples[number]);
     });
   } else {
     copyExample(PROJECT_NAME);
