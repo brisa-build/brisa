@@ -113,3 +113,7 @@ function normalize(str: string) {
   const name = str.replace('with-', '').replaceAll('-', ' ');
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
+
+export function Head() {
+  return <title id="title">Brisa by Example</title>;
+}
