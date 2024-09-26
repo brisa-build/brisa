@@ -1,30 +1,7 @@
 # with-middleware
 
-Project created with [Brisa](https://github.com/brisa-build/brisa).
-
-## Getting Started
-
-### Installation
+Example with Middleware in Brisa.
 
 ```bash
-bun install
+bun create brisa --example with-middleware
 ```
-
-### Development
-
-```bash
-bun dev
-```
-
-### Build
-
-```bash
-bun build
-```
-
-### Start
-
-```bash
-bun start
-```
-

@@ -9,7 +9,9 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "latest"
+    "brisa": "latest",
+    "counter-wc": "0.1.1",
+    "calendar-native-web-component": "0.0.32"
   },
   "devDependencies": {
     "@types/bun": "latest",
