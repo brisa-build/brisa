@@ -2,6 +2,8 @@
   "name": "with-tailwind",
   "module": "src/pages/index.tsx",
   "type": "module",
+  "webTitle": "Tailwind CSS",
+  "example-category": "integrations",
   "scripts": {
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",

@@ -2,6 +2,8 @@
   "name": "with-external-web-component",
   "module": "src/pages/index.tsx",
   "type": "module",
+  "example-category": "integrations",
+  "webTitle": "External Web Component",
   "scripts": {
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",

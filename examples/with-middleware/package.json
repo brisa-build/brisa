@@ -2,6 +2,7 @@
   "name": "with-middleware",
   "module": "src/pages/index.tsx",
   "type": "module",
+  "example-category": "basics",
   "scripts": {
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",
