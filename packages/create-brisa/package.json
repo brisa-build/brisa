@@ -4,8 +4,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "release": "npm publish",
-    "release:alpha": "npm publish --tag next"
+    "build": "rm -rf examples && mkdir examples && cp -r ../../examples/* examples",
+    "release": "bun run build && npm publish",
+    "release:alpha": "bun run build && npm publish --tag next"
   },
   "author": {
     "name": "Aral Roca Gòmez",
@@ -16,7 +17,7 @@
     "url": "https://github.com/brisa-build/brisa.git",
     "directory": "packages/create-brisa"
   },
-  "files": ["create-brisa.cjs", "basic-template"],
+  "files": ["create-brisa.cjs", "basic-template", "examples"],
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   },

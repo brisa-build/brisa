@@ -6,15 +6,59 @@ const { version } = require('./package.json');
 const { execSync } = require('node:child_process');
 const readline = require('node:readline');
 const BRISA_VERSION = version;
+const EXAMPLES_FOLDER = path.join(import.meta.dirname, 'examples');
 const isPowerShell = process.env.PSModulePath !== undefined;
+const and = isPowerShell ? ';' : ' &&';
 let PROJECT_NAME = process.argv[2];
 
-if (!PROJECT_NAME) {
-  const rl = readline.createInterface({
+function initRL() {
+  return readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
+}
 
+// With an example:
+if (PROJECT_NAME === '--example') {
+  PROJECT_NAME = process.argv[3]?.startsWith?.('--')
+    ? undefined
+    : process.argv[3];
+
+  const copyExample = (projectName) => {
+    fs.cpSync(path.join(EXAMPLES_FOLDER, projectName), projectName, {
+      recursive: true,
+    });
+    console.log('\n✨ Example created successfully\n');
+    console.log(`📀 Run: cd ${projectName}${and} bun i${and} bun dev`);
+    process.exit(0);
+  };
+
+  if (!PROJECT_NAME) {
+    // Show a list of examples to choose:
+    console.log('Choose an example:');
+    console.log('\t0. Exit');
+    const examples = fs.readdirSync(EXAMPLES_FOLDER);
+    examples
+      .toSorted((a, b) => a.localeCompare(b))
+      .forEach((example, index) => {
+        console.log(`\t${index + 1}. ${example}`);
+      });
+    const rl = initRL();
+    rl.question('Enter the number of the example: ', (number) => {
+      if (number === '0') {
+        console.log('👋 Bye!');
+        process.exit(0);
+      }
+      copyExample(examples[number - 1]);
+    });
+  } else {
+    copyExample(PROJECT_NAME);
+  }
+}
+
+// Without an example:
+else if (!PROJECT_NAME) {
+  const rl = initRL();
   rl.question('Enter project name: ', (name) => {
     rl.close();
     PROJECT_NAME = name;
@@ -141,7 +185,5 @@ bun start
   process.chdir('..');
 
   console.log('\n✨ Project created successfully\n');
-  console.log(
-    `📀 Run: cd ${PROJECT_NAME}${isPowerShell ? ';' : ' &&'} bun dev`,
-  );
+  console.log(`📀 Run: cd ${PROJECT_NAME}${and} bun dev`);
 }
