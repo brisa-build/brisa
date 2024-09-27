@@ -1,3 +1,4 @@
+import type { RequestContext } from 'brisa';
 import { rerenderInAction } from 'brisa/server';
 import { Database } from 'bun:sqlite';
 
@@ -13,7 +14,8 @@ const insertMovieQuery = db.query(
 );
 
 // More info about SQLite: https://bun.sh/docs/api/sqlite
-export default function Homepage() {
+export default function Homepage({}, { css, indicate }: RequestContext) {
+  const pending = indicate('insertMovieQuery');
   const movies = query.all();
 
   async function addMoviesServerAction(e: FormDataEvent) {
@@ -24,6 +26,15 @@ export default function Homepage() {
     insertMovieQuery.run({ $title, $year });
     rerenderInAction({ type: 'page' });
   }
+
+  // Disabling button via CSS during the request
+  css`
+    button.brisa-request {
+      opacity: 0.5;
+      cursor: wait;
+      pointer-events: none;
+    }
+  `;
 
   return (
     <>
@@ -47,11 +58,11 @@ export default function Homepage() {
             ))}
           </ul>
         </div>
-        <form onSubmit={addMoviesServerAction}>
+        <form onSubmit={addMoviesServerAction} indicateSubmit={pending}>
           <h2>Insert a Movie</h2>
           <input name="title" type="text" placeholder="Title"></input>
           <input name="year" type="number" placeholder="Year"></input>
-          <button>Add movies into the DB</button>
+          <button indicator={pending}>Add movies into the DB</button>
         </form>
       </section>
     </>

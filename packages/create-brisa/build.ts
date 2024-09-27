@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-if(fs.existsSync('examples')) {
+if (fs.existsSync('examples')) {
   fs.rmSync('examples', { recursive: true, force: true });
 }
 
