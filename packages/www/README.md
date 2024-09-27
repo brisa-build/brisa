@@ -1,6 +1,8 @@
-# brisa-docs
+# www
 
-Project created with [Brisa](https://github.com/brisa-build/brisa).
+This project is the Brisa Web. Where there is: documentation, playground and examples.
+
+Site: [https://brisa.build](https://brisa.build)
 
 ## Getting Started
 

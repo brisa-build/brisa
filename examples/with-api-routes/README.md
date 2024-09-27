@@ -1,6 +1,6 @@
 # with-api-routes
 
-Project created with [Brisa](https://github.com/brisa-build/brisa).
+Example with [API Routes](https://brisa.build/building-your-application/routing/api-routes#api-routes).
 
 ## Getting Started
 
