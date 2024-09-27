@@ -18,20 +18,19 @@ export default function Counter({ name }: { name: string }, { state }: WebContex
 
 export default function Playground() {
   return (
-    <>
-      <main style={{ paddingTop: '100px' }}>
-        <play-ground skipSSR defaultValue={defaultValue}>
-          <div
-            slot="code-editor"
-            style={{
-              height: '500px',
-              width: '100%',
-              border: '1px solid var(--color-primary)',
-            }}
-            id="code-editor"
-          >
-            <script type="module">
-              {dangerHTML(`
+    <main style={{ paddingTop: '100px' }}>
+      <play-ground skipSSR defaultValue={defaultValue}>
+        <div
+          slot="code-editor"
+          style={{
+            height: '500px',
+            width: '100%',
+            border: '1px solid var(--color-primary)',
+          }}
+          id="code-editor"
+        >
+          <script type="module">
+            {dangerHTML(`
                 import * as monaco from 'https://esm.sh/monaco-editor';
                 import tsWorker from 'https://esm.sh/monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 
@@ -69,22 +68,22 @@ export default function Playground() {
               window._xm = "native";
               window.changeTheme = monaco.editor.setTheme.bind(monaco.editor);
             `)}
-            </script>
-          </div>
-          <iframe
-            slot="preview-iframe"
-            id="preview-iframe"
-            style={{
-              width: '100%',
-              border: '1px solid var(--color-primary)',
-              height: '500px',
-              color: 'var(--color-primary)',
-            }}
-            src="/playground/preview"
-          />
-        </play-ground>
-      </main>
-    </>
+          </script>
+        </div>
+        <iframe
+          slot="preview-iframe"
+          id="preview-iframe"
+          title="Preview"
+          style={{
+            width: '100%',
+            border: '1px solid var(--color-primary)',
+            height: '500px',
+            color: 'var(--color-primary)',
+          }}
+          src="/playground/preview"
+        />
+      </play-ground>
+    </main>
   );
 }
 

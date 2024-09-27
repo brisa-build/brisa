@@ -19,7 +19,7 @@ export function Head({}, { route }: RequestContext) {
 }
 
 export default async function Documentation({}, { route }: RequestContext) {
-  const pathnameParts = route.pathname.split('/');
+  const pathnameParts = route.pathname.split('/').filter(Boolean);
   let filePath = path.join(
     docsDir,
     ...pathnameParts.slice(0, -1),
