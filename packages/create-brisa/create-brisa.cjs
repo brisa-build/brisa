@@ -37,19 +37,19 @@ if (PROJECT_NAME === '--example') {
     // Show a list of examples to choose:
     console.log('Choose an example:');
     console.log('\t0. Exit');
-    const examples = fs.readdirSync(EXAMPLES_FOLDER);
-    examples
-      .toSorted((a, b) => a.localeCompare(b))
-      .forEach((example, index) => {
-        console.log(`\t${index + 1}. ${example}`);
-      });
+    const examples = fs
+      .readdirSync(EXAMPLES_FOLDER)
+      .toSorted((a, b) => a.localeCompare(b));
+    examples.forEach((example, index) => {
+      console.log(`\t${index + 1}. ${example}`);
+    });
     const rl = initRL();
     rl.question('Enter the number of the example: ', (number) => {
       if (number === '0') {
         console.log('👋 Bye!');
         process.exit(0);
       }
-      copyExample(examples[number]);
+      copyExample(examples[number - 1]);
     });
   } else {
     copyExample(PROJECT_NAME);
