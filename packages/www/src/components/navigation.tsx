@@ -72,6 +72,7 @@ export default function Nav({}, { route }: RequestContext) {
                 }}
                 href="https://github.com/brisa-build/brisa/releases"
                 target="_blank"
+                rel="noreferrer"
               >
                 {version} <ExternalArrowIcon size={10} />
               </a>
@@ -88,6 +89,7 @@ export default function Nav({}, { route }: RequestContext) {
                 href="https://github.com/brisa-build/brisa"
                 target="_blank"
                 aria-label="GitHub"
+                rel="noreferrer"
               >
                 <GitHubIcon size={20} />
               </a>
@@ -97,6 +99,7 @@ export default function Nav({}, { route }: RequestContext) {
                 href="https://x.com/brisadotbuild"
                 target="_blank"
                 aria-label="Twitter / X"
+                rel="noreferrer"
               >
                 <XIcon size={20} />
               </a>
@@ -106,6 +109,7 @@ export default function Nav({}, { route }: RequestContext) {
                 href="https://discord.com/invite/MsE9RN3FU4"
                 target="_blank"
                 aria-label="Discord"
+                rel="noreferrer"
               >
                 <DiscordIcon size={20} />
               </a>

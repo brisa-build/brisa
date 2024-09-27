@@ -54,7 +54,7 @@ export default async function responseAction(req: RequestContext) {
           type: 'formdata',
         },
       ]
-    : body?.args ?? [];
+    : (body?.args ?? []);
 
   const isWebComponentEvent =
     typeof params[0] === 'object' &&

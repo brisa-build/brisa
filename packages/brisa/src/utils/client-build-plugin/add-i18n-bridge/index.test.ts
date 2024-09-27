@@ -363,7 +363,7 @@ describe('utils', () => {
           isTranslateCoreAdded: false,
         });
 
-        let output = generateCodeFromAST(ast);
+        const output = generateCodeFromAST(ast);
         const script = document.createElement('script');
 
         script.innerHTML = output;
@@ -418,7 +418,7 @@ describe('utils', () => {
           isTranslateCoreAdded: false,
         });
 
-        let output = generateCodeFromAST(ast);
+        const output = generateCodeFromAST(ast);
         const script = document.createElement('script');
 
         script.innerHTML = output;

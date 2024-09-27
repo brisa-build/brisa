@@ -1,2 +1,2 @@
-bun run format
 bun run tsc:check
+bun run format --staged

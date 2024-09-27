@@ -383,7 +383,7 @@ describe('Node.js handler', () => {
 function createMockResponse(req) {
   const res = new http.ServerResponse(req);
   const originalWrite = res.write.bind(res);
-  let headers = {};
+  const headers = {};
   let body = '';
 
   return {

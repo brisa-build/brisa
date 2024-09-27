@@ -33,6 +33,7 @@ export default function About({}, { i18n: { t } }: RequestContext) {
               href="https://brisa.build"
               target="_blank"
               data-replace={t('about.more')}
+              rel="noreferrer"
             >
               <span>{t('about.more')}</span>
             </a>

@@ -17,7 +17,7 @@ export default function getRouteMatcher(
       url.pathname = url.pathname.replace(new RegExp(`/${locale}(/|$)`), '');
     }
 
-    let route = router.match(url.toString());
+    const route = router.match(url.toString());
 
     if (isTestFile(route?.name) || url.pathname.endsWith(path.sep + 'index')) {
       return { route: null, isReservedPathname: false };

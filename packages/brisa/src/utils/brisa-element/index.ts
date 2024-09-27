@@ -65,7 +65,7 @@ export default function brisaElement(
   const createTextNode = (text: Children) => {
     if ((text as any) === false) text = '';
     return $document.createTextNode(
-      (Array.isArray(text) ? text.join('') : text ?? '').toString(),
+      (Array.isArray(text) ? text.join('') : (text ?? '')).toString(),
     );
   };
 

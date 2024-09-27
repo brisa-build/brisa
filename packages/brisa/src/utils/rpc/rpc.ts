@@ -12,7 +12,7 @@ let isReady = 0;
 
 const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
   // @ts-ignore
-  const xs = $window._s ? [..._s.Map] : $window._S ?? [];
+  const xs = $window._s ? [..._s.Map] : ($window._S ?? []);
 
   if (isFormData) {
     const form = new FormData(

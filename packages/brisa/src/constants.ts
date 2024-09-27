@@ -33,7 +33,7 @@ const IS_BUILD_PROCESS = Boolean(
 
 const BRISA_DIR = process.argv[1]?.replace(new RegExp(`${CLI_DIR}.*`), 'brisa');
 
-let rootDir = IS_STANDALONE_SERVER ? import.meta.dirname : process.cwd();
+const rootDir = IS_STANDALONE_SERVER ? import.meta.dirname : process.cwd();
 const staticExportOutputOption = new Set([
   'static',
   'desktop',
@@ -47,7 +47,7 @@ const srcDir = IS_STANDALONE_SERVER
 
 const buildDir = IS_STANDALONE_SERVER
   ? import.meta.dirname
-  : process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build');
+  : (process.env.BRISA_BUILD_FOLDER ?? path.resolve(rootDir, 'build'));
 
 const WORKSPACE = IS_BUILD_PROCESS ? srcDir : buildDir;
 

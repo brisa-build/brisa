@@ -29,14 +29,14 @@ for (const [pathname, filePath] of routes) {
   const headings = Array.from(
     dom.window.document.querySelectorAll('h1, h2, h3, h4, h5, h6'),
   );
-  let parents: { level: number; title: string }[] = [];
+  const parents: { level: number; title: string }[] = [];
 
   headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName[1]);
+    const level = Number.parseInt(heading.tagName[1]);
     const id = `${pathname}#${heading.id}`;
     const title = heading.textContent?.trim() ?? '';
 
-    let nextHeading = headings[index + 1];
+    const nextHeading = headings[index + 1];
     let text = '';
     let sibling = heading.nextElementSibling;
 

@@ -96,12 +96,8 @@ describe('utils', () => {
         allWebComponents,
         pageWebComponents,
       });
-      expect(output!.rpc).toMatch(
-        new RegExp('fetch(.*destination.url,{signal:.*()})', 'gm'),
-      );
-      expect(output!.rpc).not.toMatch(
-        new RegExp('fetch\\(.*destination.url,{method.*', 'gm'),
-      );
+      expect(output!.rpc).toMatch(/fetch(.*destination.url,{signal:.*()})/gm);
+      expect(output!.rpc).not.toMatch(/fetch\(.*destination.url,{method.*/gm);
     });
 
     it('should the RPC with IS_STATIC_EXPORT and IS_DEVELOPMENT be POST for SPA', async () => {
@@ -116,11 +112,9 @@ describe('utils', () => {
         allWebComponents,
         pageWebComponents,
       });
-      expect(output!.rpc).toMatch(
-        new RegExp('fetch\\(.*destination.url,{method.*', 'gm'),
-      );
+      expect(output!.rpc).toMatch(/fetch\(.*destination.url,{method.*/gm);
       expect(output!.rpc).not.toMatch(
-        new RegExp('fetch(.*destination.url,{signal:.*()})', 'gm'),
+        /fetch(.*destination.url,{signal:.*()})/gm,
       );
     });
 
@@ -136,11 +130,9 @@ describe('utils', () => {
         allWebComponents,
         pageWebComponents,
       });
-      expect(output!.rpc).toMatch(
-        new RegExp('fetch\\(.*destination.url,{method.*', 'gm'),
-      );
+      expect(output!.rpc).toMatch(/fetch\(.*destination.url,{method.*/gm);
       expect(output!.rpc).not.toMatch(
-        new RegExp('fetch(.*destination.url,{signal:.*()})', 'gm'),
+        /fetch(.*destination.url,{signal:.*()})/gm,
       );
     });
 

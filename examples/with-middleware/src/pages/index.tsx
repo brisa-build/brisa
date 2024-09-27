@@ -31,7 +31,7 @@ export default function Homepage() {
         </p>
         <p>
           Example:{' '}
-          <a href="?throws-error=true" target="_blank">
+          <a href="?throws-error=true" target="_blank" rel="noreferrer">
             Test internal error
           </a>
         </p>
@@ -44,7 +44,7 @@ export default function Homepage() {
         </p>
         <p>
           Example:{' '}
-          <a href="?throws-not-found=true" target="_blank">
+          <a href="?throws-not-found=true" target="_blank" rel="noreferrer">
             Test 404 Not Found
           </a>
         </p>
@@ -57,7 +57,7 @@ export default function Homepage() {
         </p>
         <p>
           Example:{' '}
-          <a href="?redirect-to-about=true" target="_blank">
+          <a href="?redirect-to-about=true" target="_blank" rel="noreferrer">
             Redirect to /about
           </a>
         </p>
@@ -79,7 +79,7 @@ export default function Homepage() {
         </p>
         <p>
           Example:{' '}
-          <a href="?navigate=/about" target="_blank">
+          <a href="?navigate=/about" target="_blank" rel="noreferrer">
             Navigate to /about
           </a>
         </p>

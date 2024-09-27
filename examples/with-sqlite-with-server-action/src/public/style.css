@@ -3,7 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -14,9 +14,14 @@ body {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(240, 240, 255, 1) 26%, rgba(149, 237, 255, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(240, 240, 255, 1) 26%,
+    rgba(149, 237, 255, 1) 100%
+  );
   background-attachment: fixed;
-  padding: 6rem 2rem 2rem
+  padding: 6rem 2rem 2rem;
 }
 
 .hero h1 {
@@ -24,7 +29,11 @@ body {
   line-height: 1.25;
   font-weight: 700;
   background-clip: text;
-  background-image: linear-gradient(120deg, rgb(44, 235, 207) 30%, rgb(44, 197, 226));
+  background-image: linear-gradient(
+    120deg,
+    rgb(44, 235, 207) 30%,
+    rgb(44, 197, 226)
+  );
   color: rgba(0, 0, 0, 0);
 
   .h1_addition {
@@ -32,7 +41,11 @@ body {
     font-weight: 700;
     background-clip: text;
     margin: 0px;
-    background-image: linear-gradient(to right, rgb(69, 177, 228), rgb(96, 108, 226));
+    background-image: linear-gradient(
+      to right,
+      rgb(69, 177, 228),
+      rgb(96, 108, 226)
+    );
     color: rgba(0, 0, 0, 0);
   }
 }
@@ -57,7 +70,8 @@ body {
     justify-self: center;
   }
 
-  input, button {
+  input,
+  button {
     display: block;
     padding: 10px;
     margin: 10px;
@@ -87,7 +101,7 @@ body {
   width: 90%;
   max-width: 800px;
   margin: auto;
-h2 {
+  h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #333;
@@ -95,11 +109,11 @@ h2 {
   }
   summary {
     text-align: left;
-      color: #2c3e50;
-      margin: 2rem auto;
-      max-width: 600px;
-      font-size: 0.9rem;
-    }
+    color: #2c3e50;
+    margin: 2rem auto;
+    max-width: 600px;
+    font-size: 0.9rem;
+  }
 
   section {
     padding: 1rem;
@@ -107,77 +121,85 @@ h2 {
     max-width: 800px;
     text-align: left;
     text-wrap: pretty;
-    
-      p {
-        margin: 1rem auto;
-      }
+
+    p {
+      margin: 1rem auto;
     }
-    }
-    
-    .edit-note {
-      margin-top: 10px;
-      font-family: "Permanent Marker", cursive;
-      color: #2c3e50;
-      font-size: 0.9rem;
-    }
-    
-    code {
-      background: #ffeff0;
-      word-wrap: break-word;
-      box-decoration-break: clone;
-      padding: .1rem .3rem .2rem;
-      border-radius: .2rem;
-    }
-    
-    .CTA {
-      overflow: hidden;
-      position: relative;
-      display: inline-block;
-      text-decoration: none;
-      color: #18272F;
-      font-weight: 700;
-      vertical-align: top;
-    }
-    
-    .CTA::before,
-    .CTA::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      left: 0;
-    }
-    
-    .CTA::before {
-      background-clip: text;
-      background-image: linear-gradient(120deg, rgb(44, 235, 207) 30%, rgb(44, 197, 226));
-      color: rgba(0, 0, 0, 0);
-      height: 2px;
-      bottom: 0;
-      transform-origin: 100% 50%;
-      transform: scaleX(0);
-      transition: transform .3s cubic-bezier(0.76, 0, 0.24, 1);
-    }
-    
-    .CTA::after {
-      content: attr(data-replace);
-      height: 100%;
-      top: 0;
-      transform-origin: 100% 50%;
-      transform: translate3d(200%, 0, 0);
-      transition: transform .3s cubic-bezier(0.76, 0, 0.24, 1);
-      background-clip: text;
-      background-image: linear-gradient(120deg, rgb(44, 235, 207) 30%, rgb(44, 197, 226));
-      color: rgba(0, 0, 0, 0);
-    }
-    
-    .CTA:hover::before {
-      transform-origin: 0% 50%;
-      transform: scaleX(1);
-    }
-    
-    .CTA:hover::after {
-      transform: translate3d(0, 0, 0);
-    }
+  }
+}
+
+.edit-note {
+  margin-top: 10px;
+  font-family: "Permanent Marker", cursive;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+code {
+  background: #ffeff0;
+  word-wrap: break-word;
+  box-decoration-break: clone;
+  padding: .1rem .3rem .2rem;
+  border-radius: .2rem;
+}
+
+.CTA {
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: #18272f;
+  font-weight: 700;
+  vertical-align: top;
+}
+
+.CTA::before,
+.CTA::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+
+.CTA::before {
+  background-clip: text;
+  background-image: linear-gradient(
+    120deg,
+    rgb(44, 235, 207) 30%,
+    rgb(44, 197, 226)
+  );
+  color: rgba(0, 0, 0, 0);
+  height: 2px;
+  bottom: 0;
+  transform-origin: 100% 50%;
+  transform: scaleX(0);
+  transition: transform .3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.CTA::after {
+  content: attr(data-replace);
+  height: 100%;
+  top: 0;
+  transform-origin: 100% 50%;
+  transform: translate3d(200%, 0, 0);
+  transition: transform .3s cubic-bezier(0.76, 0, 0.24, 1);
+  background-clip: text;
+  background-image: linear-gradient(
+    120deg,
+    rgb(44, 235, 207) 30%,
+    rgb(44, 197, 226)
+  );
+  color: rgba(0, 0, 0, 0);
+}
+
+.CTA:hover::before {
+  transform-origin: 0% 50%;
+  transform: scaleX(1);
+}
+
+.CTA:hover::after {
+  transform: translate3d(0, 0, 0);
+}
 
 .CTA span {
   display: inline-block;

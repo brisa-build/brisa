@@ -9,7 +9,7 @@ export default async function HeadingsMap(
   }: { popoverTarget?: string; popoverTargetAction?: 'show' | 'hide' },
   { state, cleanup, onMount, self }: WebContext,
 ) {
-  let headings = state(
+  const headings = state(
     Array.from(document.querySelectorAll('h2, h3, h4, h5, h6')),
   );
   const top = state<string>('0px');

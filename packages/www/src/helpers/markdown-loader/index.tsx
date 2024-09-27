@@ -82,7 +82,7 @@ md.core.ruler.after('block', 'add_heading_ids', (state) => {
 
       if (nextToken && nextToken.type === 'inline') {
         const text = nextToken.content.trim();
-        let originalId = slugify(text, { lower: true, strict: true });
+        const originalId = slugify(text, { lower: true, strict: true });
         let id = originalId;
         let num = 1;
         while (ids.has(id)) id = `${originalId}-${num++}`;

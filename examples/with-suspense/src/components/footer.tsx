@@ -9,6 +9,7 @@ export default function Footer() {
           id="github-link"
           target="_blank"
           data-replace="GitHub"
+          rel="noreferrer"
         >
           <span>GitHub</span>
         </a>

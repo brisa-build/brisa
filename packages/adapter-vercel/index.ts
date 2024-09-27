@@ -1,7 +1,7 @@
 import type { Adapter } from 'brisa';
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import { Config } from '.';
+import type { Config } from '.';
 
 const REGEX_INDEX_HTML = /(\/?index)?\.html?$/;
 

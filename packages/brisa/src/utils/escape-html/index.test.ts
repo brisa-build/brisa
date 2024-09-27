@@ -23,8 +23,8 @@ const BATTERY_OF_TESTS: [
   [{}, '[object Object]'],
   [null, 'null'],
   [undefined, 'undefined'],
-  [NaN, 'NaN'],
-  [Infinity, 'Infinity'],
+  [Number.NaN, 'NaN'],
+  [Number.POSITIVE_INFINITY, 'Infinity'],
   [0.1, '0.1'],
   [
     `<a href="https://example.com">`,

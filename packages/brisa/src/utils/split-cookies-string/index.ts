@@ -8,7 +8,7 @@ export default function splitCookiesString(
   if (Array.isArray(cookiesString)) return cookiesString;
   if (typeof cookiesString !== 'string') return [];
 
-  let cookiesStrings = [];
+  const cookiesStrings = [];
   let pos = 0;
   let start;
   let ch;

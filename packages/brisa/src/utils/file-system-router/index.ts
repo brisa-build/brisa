@@ -113,8 +113,8 @@ function getParamsAndQuery(route: string, pathname: string, url: URL) {
       if (part.startsWith('[')) {
         const key = part.replace(EXTRACT_PARAM_KEY_REGEX, '');
         acc[key] = part.includes('...')
-          ? pathnameParts.slice(index) ?? ''
-          : pathnameParts[index] ?? '';
+          ? (pathnameParts.slice(index) ?? '')
+          : (pathnameParts[index] ?? '');
       }
 
       return acc;
@@ -170,8 +170,8 @@ function sortPathsBySegments([a]: [string, string], [b]: [string, string]) {
     const partB = partsB[i];
     const isPartASymbol = SYMBOLS.has(partA[0]);
     const isPartBSymbol = SYMBOLS.has(partB[0]);
-    const numA = parseInt('' + partA.match(DIGIT_REGEX), 10);
-    const numB = parseInt('' + partB.match(DIGIT_REGEX), 10);
+    const numA = Number.parseInt('' + partA.match(DIGIT_REGEX), 10);
+    const numB = Number.parseInt('' + partB.match(DIGIT_REGEX), 10);
 
     if (!isNaN(numA) && !isNaN(numB)) {
       const numComparison = numA - numB;

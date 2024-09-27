@@ -107,6 +107,7 @@ export default function About() {
               href="https://brisa.build"
               target="_blank"
               data-replace="Read the docs"
+              rel="noreferrer"
             >
               <span>Read the docs</span>
             </a>

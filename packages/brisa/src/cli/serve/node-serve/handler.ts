@@ -1,4 +1,4 @@
-import http from 'node:http';
+import type http from 'node:http';
 import { getServeOptions } from '@/cli/serve/serve-options';
 import splitCookiesString from '@/utils/split-cookies-string';
 

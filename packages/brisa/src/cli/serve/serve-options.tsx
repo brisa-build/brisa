@@ -1,4 +1,4 @@
-import { type ServerWebSocket, type Serve } from 'bun';
+import type { ServerWebSocket, Serve } from 'bun';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
@@ -84,7 +84,7 @@ export async function getServeOptions() {
     async fetch(req: Request, server) {
       const requestId = crypto.randomUUID();
       const attachedData = wsModule?.attach
-        ? (await wsModule.attach(req)) ?? {}
+        ? ((await wsModule.attach(req)) ?? {})
         : {};
 
       if (server.upgrade(req, { data: { id: requestId, ...attachedData } })) {
@@ -347,7 +347,7 @@ export async function getServeOptions() {
 
 function detectAsset(url: URL, assetsDir: string) {
   const isHome = url.pathname === '/';
-  let assetPath = path.join(assetsDir, url.pathname);
+  const assetPath = path.join(assetsDir, url.pathname);
   if (isHome) return null;
   if (fs.existsSync(assetPath)) return assetPath;
   if (fs.existsSync(assetPath + '.js')) return assetPath + '.js';

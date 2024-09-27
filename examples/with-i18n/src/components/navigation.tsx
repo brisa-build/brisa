@@ -4,7 +4,12 @@ export default function Nav({}, { i18n: { t } }: RequestContext) {
   return (
     <nav>
       <div class="nav-content">
-        <a class="logo" href="https://brisa.build" target="_blank">
+        <a
+          class="logo"
+          href="https://brisa.build"
+          target="_blank"
+          rel="noreferrer"
+        >
           <img src="/brisa.svg" alt="Brisa Framework logo" width="30" />
           Brisa
         </a>
