@@ -1029,7 +1029,7 @@ describe('utils', () => {
         type: 'div',
       });
 
-      expect(attributes).toBe(` indicator="["__ind:increment"]"`);
+      expect(attributes).toBe(` indicator='["__ind:increment"]'`);
     });
 
     it('should simplify multi indicatorSignals to indicatorIds inside "indicator" attribute', () => {
@@ -1049,7 +1049,7 @@ describe('utils', () => {
       });
 
       expect(attributes).toBe(
-        ` indicator="["__ind:increment","__ind:decrement"]"`,
+        ` indicator='["__ind:increment","__ind:decrement"]'`,
       );
     });
 

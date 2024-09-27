@@ -120,7 +120,8 @@ export default function renderAttributes({
     // Simplify indicator signals
     if (key === 'indicator') {
       const arr = Array.isArray(value) ? value : [value];
-      value = serializeServer(arr.map((a) => a.id));
+      attributes += ` ${key}='${serializeServer(arr.map((a) => a.id))}'`;
+      continue;
     }
     // `indicate` attribute
     if (
