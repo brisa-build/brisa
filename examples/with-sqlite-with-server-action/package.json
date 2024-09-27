@@ -1,8 +1,8 @@
 {
-  "name": "with-sqlite",
+  "name": "with-sqlite-with-server-action",
   "module": "src/pages/index.tsx",
   "type": "module",
-  "webTitle": "SQLite",
+  "webTitle": "SQLite with Server Action",
   "example-category": "integrations",
   "scripts": {
     "dev": "brisa dev",
