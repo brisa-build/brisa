@@ -88,7 +88,7 @@ export default function Homepage() {
               width="100"
               height="100"
             />
-            <h1>Brisa Web Framework</h1>
+            <h1>The Web Platform Framework</h1>
             <p>
               <b>Build</b> web applications with <b>speed</b> and{' '}
               <b>simplicity</b>
@@ -224,6 +224,55 @@ export default function Homepage() {
             <RenderCode code={multiPlatformCode} />
             <p class="bytes">Web or: .apk, .ipa, .exe, .dmg, .deb</p>
           </div>
+        </div>
+      </section>
+
+      <section class="brisa-section i18n">
+        <div class="code-example">
+          <h2>🤔 Why it is the Web Platform Framework?</h2>
+          <p>
+            Brisa is designed to integrate all aspects of the Web Platform,
+            making development more efficient and flexible. One key feature is
+            the ease with which <b>Web Components</b> can be used, utilizing{' '}
+            <b>Declarative Shadow DOM</b> and <b>signals</b> to enhance your
+            workflow in conjunction with <b>JSX</b>.
+          </p>
+
+          <p>
+            We bring ideas from the Web to the server. You can{' '}
+            <b>capture browser events on the server</b>, such as forms, click
+            events, Web Components events, etc. And you can propagate them
+            through your server components.
+          </p>
+
+          <p>
+            It also <b>streams Hypermedia</b> over the wire during navigation
+            and Server Actions, utilizing HTTP in the way it was originally
+            intended. This is closely connected with Web Components because they
+            are part of the DOM, their attributes are updated, and signals react
+            to these changes.
+          </p>
+
+          <p>
+            That said, it should be clarified that although we support Web
+            Components, you can create a MPA like a{' '}
+            <b>SPA without using any Web Component</b>, the grace is that you
+            only add a Web Component when you need to touch the Web Platform or
+            when a user interaction doesn't require the server.
+          </p>
+
+          <p>
+            Additionally, it incorporates a bridge to{' '}
+            <b>ECMAScript's Intl API</b>, keeping the client-side footprint as
+            small as 800 bytes while providing an elegant solution for
+            multilingual applications. As a tip, if you move the translations to
+            the server, are 0 bytes.
+          </p>
+          <p>
+            Furthermore, <b>Web Components</b> written with Brisa are{' '}
+            <b>fully compatible</b> with any <b>other framework</b>, reinforcing
+            the use of the Web Platform as the foundation of modern development.
+          </p>
         </div>
       </section>
     </main>

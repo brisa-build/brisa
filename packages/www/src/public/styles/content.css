@@ -580,6 +580,28 @@ body.dark .github-light {
   }
 }
 
+.landing .hero { 
+  text-align: center;
+}
+
+.landing section {
+  padding: 20px;
+  max-width: 1200px;
+  font-family: Poppins, sans-serif;
+  margin: 0 auto;
+  font-size: 1rem;
+
+  p {
+    margin: 1rem auto;
+  }
+
+  &:last-child {
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+}
+  
+
 @media (max-width: 1530px) {
   .docs-content {
     grid-template-columns: 300px 1fr;
