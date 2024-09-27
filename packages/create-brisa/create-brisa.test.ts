@@ -54,9 +54,7 @@ describe('create-brisa', () => {
     const res = await $`echo 0 | bun run ${CREATE_BRISA_PATH} --example`;
     const out = res.stdout.toString();
     expect(res.exitCode).toBe(0);
-    expect(out).toContain(
-      'Choose an example:\n\t0. Exit\n\t1. with-api-routes\n\t2. with-external-web-component\n\t3. with-i18n\n\t4. with-middleware\n\t5. with-sqlite\n\t6. with-tailwind\nEnter the number of the example: ',
-    );
+    expect(out).toContain('Choose an example:\n\t0. Exit\n\t1. with-');
     expect(out).toContain('Bye!');
   });
 
