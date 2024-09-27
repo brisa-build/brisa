@@ -6,6 +6,8 @@ export default function ListInStreaming() {
   );
 }
 
+// This example is very silly, but it makes sense in other cases such
+// as connecting it to the streaming of rows in a database, or an AI
 async function* ListItems() {
   yield <li>{await loadItem(0)}</li>;
   yield <li>{await loadItem()}</li>;
