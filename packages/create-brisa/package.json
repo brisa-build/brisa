@@ -4,7 +4,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "rm -rf examples && mkdir examples && cp -r ../../examples/* examples",
+    "build": "bun run build.ts",
     "release": "bun run build && npm publish",
     "release:alpha": "bun run build && npm publish --tag next"
   },
