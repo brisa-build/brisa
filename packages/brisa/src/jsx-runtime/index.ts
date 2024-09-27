@@ -1,12 +1,11 @@
-import type { BrisaElement, JSXType, Primitives, Props } from '@/types';
+import type { BrisaElement, JSXType, Props } from '@/types';
+
+export type JSXSymbolMark = { [JSX_SYMBOL]: boolean };
+export type ElementWithJSXMark = JSX.Element & JSXSymbolMark;
 
 const JSX_SYMBOL = Symbol.for('isJSX');
 
-function Fragment(
-  props: Props<{
-    children?: BrisaElement | Primitives;
-  }>,
-) {
+function Fragment(props: Props) {
   return createNode(null, props);
 }
 
@@ -16,24 +15,21 @@ function createNode(
     children,
     ...props
   }: Props & {
-    children?:
-      | (BrisaElement & { [JSX_SYMBOL]?: boolean })[]
-      | (BrisaElement & { [JSX_SYMBOL]?: boolean })
-      | Primitives;
+    children?: JSX.Element | JSX.Element[];
   },
   key?: string,
-): { [JSX_SYMBOL]: boolean } & BrisaElement {
-  let child = children;
+): JSXSymbolMark & BrisaElement {
+  let child: any = children;
 
   if (Array.isArray(children) && !isArrawOfJSXContent(children)) {
     child = children.map((c) =>
-      c?.[JSX_SYMBOL] ? c : Fragment({ children: c }),
+      (c as ElementWithJSXMark)?.[JSX_SYMBOL] ? c : Fragment({ children: c }),
     );
   }
 
   return Object.assign([type, { ...props, key }, child], {
     [JSX_SYMBOL]: true,
-  }) as { [JSX_SYMBOL]: boolean } & BrisaElement;
+  }) as JSXSymbolMark & BrisaElement;
 }
 
 export function isArrawOfJSXContent(

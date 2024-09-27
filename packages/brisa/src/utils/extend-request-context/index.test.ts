@@ -130,7 +130,7 @@ describe('brisa core', () => {
           locales: ['en', 'es'],
           t: mockT,
           overrideMessages: () => {},
-        },
+        } as any,
       });
 
       expect(requestContext.i18n.locale).toBe('es');

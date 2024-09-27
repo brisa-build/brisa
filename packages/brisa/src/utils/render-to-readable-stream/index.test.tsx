@@ -13,6 +13,7 @@ import renderToReadableStream from '.';
 import { getConstants } from '@/constants';
 import { normalizeHTML, toInline } from '@/helpers';
 import type {
+  BrisaConstants,
   ComponentType,
   I18n,
   MatchedBrisaRoute,
@@ -331,7 +332,7 @@ describe('utils', () => {
     });
 
     it('should render the error component as fallback if the component throws an error', async () => {
-      const Component = () => {
+      const Component = (_: any) => {
         throw new Error('Test');
       };
 
@@ -578,7 +579,7 @@ describe('utils', () => {
           ...i18n,
           hrefLangOrigin: 'https://test.com',
         },
-      };
+      } as BrisaConstants;
 
       const element = (
         <html>
@@ -612,7 +613,7 @@ describe('utils', () => {
           ...i18n,
           hrefLangOrigin: 'https://test.com',
         },
-      };
+      } as BrisaConstants;
 
       const element = (
         <html>
@@ -1305,7 +1306,8 @@ describe('utils', () => {
         return (
           <ul>
             {locales.map((lang) => {
-              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+              const pathname =
+                (pages as any)[route.name]?.[lang] ?? route.pathname;
 
               if (lang === locale) return null;
 
@@ -1366,7 +1368,8 @@ describe('utils', () => {
         return (
           <ul>
             {locales.map((lang) => {
-              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+              const pathname =
+                (pages as any)[route.name]?.[lang] ?? route.pathname;
 
               if (lang === locale) return null;
 
@@ -1435,7 +1438,8 @@ describe('utils', () => {
         return (
           <ul>
             {locales.map((lang) => {
-              const pathname = pages[route.name]?.[lang] ?? route.pathname;
+              const pathname =
+                (pages as any)[route.name]?.[lang] ?? route.pathname;
 
               if (lang === locale) return null;
 
@@ -1666,7 +1670,15 @@ describe('utils', () => {
 
     it('should be possible to inject HTML as string in the JSX using the danger HTML element', async () => {
       const element = (
-        <div>{['HTML', { html: "<script>alert('test')</script>" }, null]}</div>
+        <div>
+          {
+            [
+              'HTML',
+              { html: "<script>alert('test')</script>" },
+              null,
+            ] as JSX.Element
+          }
+        </div>
       );
       const stream = renderToReadableStream(element, testOptions);
       const result = await Bun.readableStreamToText(stream);
@@ -2544,8 +2556,10 @@ describe('utils', () => {
           selector="theme-provider"
           color="red"
         >
+          {/* @ts-ignore */}
           <ServerComponent slot="with-theme" />
           <ServerComponent />
+          {/* @ts-ignore */}
           <ServerComponent slot="with-theme" />
         </SSRWebComponent>,
         testOptions,

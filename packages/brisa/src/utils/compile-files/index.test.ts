@@ -998,7 +998,7 @@ describe('utils', () => {
         path.join(SRC_DIR, 'out', 'pages-client', `index-${HASH}.js`),
       ).text();
 
-      const serverHTML = await renderToString(jsx(HomePage, {}));
+      const serverHTML = await renderToString(jsx(HomePage, {}) as JSX.Element);
 
       expect(serverHTML).toBe(
         toInline(`

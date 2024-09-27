@@ -196,7 +196,7 @@ describe('utils', () => {
           prefix: '[[',
           suffix: ']]',
         },
-      };
+      } as I18nConfig;
       const t = translateCore('en', config);
       expect(t<string>('key_1', { name: 'test' })).toBe('hello test');
     });

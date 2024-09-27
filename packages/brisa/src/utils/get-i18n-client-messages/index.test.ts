@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import getI18nClientMessages from '.';
+import type { BrisaConstants } from '@/types';
 
 const I18N_CONFIG = {
   defaultLocale: 'en-US',
@@ -83,7 +84,7 @@ const I18N_CONFIG = {
 describe('utils', () => {
   describe('getI18nClientMessages', () => {
     beforeEach(() => {
-      globalThis.mockConstants = { I18N_CONFIG };
+      globalThis.mockConstants = { I18N_CONFIG } as unknown as BrisaConstants;
     });
 
     afterEach(() => {
@@ -248,7 +249,7 @@ describe('utils', () => {
           },
           keySeparator: '___',
         },
-      };
+      } as unknown as BrisaConstants;
 
       const i18nKeys = new Set<string>(['hello___world']);
       const output = getI18nClientMessages('en-US', i18nKeys);

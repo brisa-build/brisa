@@ -39,7 +39,8 @@
     "update-version": "bun run scripts/update-brisa-version.ts",
     "upgrade": "bun run scripts/upgrade-bun.ts",
     "validate-urls": "bun run scripts/validate-urls.ts",
-    "www:dev": "bun run --cwd packages/www dev"
+    "www:dev": "bun run --cwd packages/www dev",
+    "prepare": "husky"
   },
   "packageManager": "bun@1.1.28",
   "engines": {
@@ -49,6 +50,7 @@
     "pnpm": "please-use-bun"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3"
+    "@biomejs/biome": "1.9.2",
+    "husky": "9.1.6"
   }
 }

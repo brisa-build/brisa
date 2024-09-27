@@ -2,6 +2,7 @@ import { describe, expect, it, afterEach } from 'bun:test';
 import { join } from 'node:path';
 import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '.';
 import type {
+  BrisaConstants,
   I18nConfig,
   MatchedBrisaRoute,
   WebContext,
@@ -535,7 +536,7 @@ describe('utils', () => {
         WEB_CONTEXT_PLUGINS: [
           (ctx) => ({ ...ctx, newOne: 'hello world' }),
         ] satisfies WebContextPlugin[],
-      };
+      } as unknown as BrisaConstants;
 
       const Component = ({}, { newOne }: any) => {
         return <div>{newOne}</div>;

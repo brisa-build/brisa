@@ -818,7 +818,11 @@ export type Primitives = symbol | string | number | boolean | undefined | null;
 
 export type JSXType = string | number | ComponentType | null;
 
-export type BrisaElement = [JSXType, Props, BrisaElement[] | Primitives];
+export type BrisaElement = [
+  JSXType,
+  Props,
+  BrisaElement | BrisaElement[] | Primitives,
+];
 
 export interface ComponentType<
   T extends Record<string, unknown> = Record<string, unknown>,

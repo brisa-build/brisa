@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test';
-import { Fragment as BrisaFragment, jsx } from '.';
+import { Fragment as BrisaFragment, jsx, type JSXSymbolMark } from '.';
 import type { BrisaElement } from '@/types';
 
 describe('utils', () => {
@@ -8,7 +8,7 @@ describe('utils', () => {
       const node = jsx('div', { id: 'test', children: 'Hello World' });
 
       expect(node).toEqual(
-        isTransformedJSX(['div', { id: 'test' }, 'Hello World']),
+        transformedJSX(['div', { id: 'test' }, 'Hello World']),
       );
     });
 
@@ -19,10 +19,10 @@ describe('utils', () => {
       });
 
       expect(node).toEqual(
-        isTransformedJSX([
+        transformedJSX([
           'div',
           { id: 'test' },
-          isTransformedJSX(['span', {}, 'Hello World']),
+          transformedJSX(['span', {}, 'Hello World']),
         ]),
       );
     });
@@ -31,7 +31,7 @@ describe('utils', () => {
       const node = jsx('div', { id: 'test', children: 'Hello World' }, 'key');
 
       expect(node).toEqual(
-        isTransformedJSX(['div', { id: 'test', key: 'key' }, 'Hello World']),
+        transformedJSX(['div', { id: 'test', key: 'key' }, 'Hello World']),
       );
     });
 
@@ -43,23 +43,23 @@ describe('utils', () => {
           jsx('span', { children: 'some span' }),
         ],
       });
-      const expected = [
+      const expected: BrisaElement = [
         null,
         {},
         [
-          isTransformedJSX([null, { key: undefined }, ' ']),
-          isTransformedJSX(['div', { key: undefined }, 'some div']),
-          isTransformedJSX(['span', { key: undefined }, 'some span']),
+          transformedJSX([null, { key: undefined }, ' ']),
+          transformedJSX(['div', { key: undefined }, 'some div']),
+          transformedJSX(['span', { key: undefined }, 'some span']),
         ],
       ];
 
-      expect(output).toEqual(isTransformedJSX(expected));
+      expect(output).toEqual(transformedJSX(expected));
     });
   });
 });
 
 const JSX_SYMBOL = Symbol.for('isJSX');
-const isTransformedJSX = ([type, props, children]: BrisaElement) =>
+const transformedJSX = ([type, props, children]: BrisaElement) =>
   Object.assign([type, { key: undefined, ...props }, children], {
     [JSX_SYMBOL]: true,
-  }) as { [JSX_SYMBOL]: boolean } & BrisaElement;
+  }) as unknown as JSXSymbolMark & BrisaElement;

@@ -37,7 +37,7 @@ function getHrefLangDomain(locale: string): string {
   const domain =
     typeof hrefLangOrigin === 'string'
       ? hrefLangOrigin
-      : hrefLangOrigin?.[locale];
+      : hrefLangOrigin?.[locale as any];
 
   if (!domain) return '';
 
@@ -65,7 +65,7 @@ function getURLInAnotherLang(
   const url = new URL(page, domain);
   const { pages = {} } = I18N_CONFIG ?? {};
   const pageRoute = request.route?.name || '';
-  const pageTranslatedRoute = pages[pageRoute]?.[locale] || pageRoute;
+  const pageTranslatedRoute = (pages as any)[pageRoute]?.[locale] || pageRoute;
   const translation = substituteI18nRouteValues(pageTranslatedRoute, page);
 
   url.pathname = `/${locale}${translation}`;

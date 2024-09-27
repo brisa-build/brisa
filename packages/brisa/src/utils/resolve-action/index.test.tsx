@@ -15,7 +15,7 @@ const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 let mockLog: ReturnType<typeof spyOn>;
 
-const getReq = (url = 'http://localhost', ...params) =>
+const getReq = (url = 'http://localhost', ...params: any) =>
   extendRequestContext({
     originalRequest: new Request(url, {
       headers: {
