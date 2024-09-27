@@ -6,7 +6,7 @@ description: inject HTML string into the DOM
 
 ## Reference
 
-### `dangerHTML(html: string): DangerHTMLOutput`
+### `dangerHTML(html: string): JSX.Element`
 
 Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the `dangerHTML` function. Since without this function it is escaped by security.
 
