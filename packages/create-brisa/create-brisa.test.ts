@@ -59,7 +59,8 @@ describe('create-brisa', () => {
   });
 
   it('should "bun create brisa --example" list the examples', async () => {
-    await $`echo 1 | bun run ${CREATE_BRISA_PATH} --example`;
+    const res = await $`echo 1 | bun run ${CREATE_BRISA_PATH} --example`;
+    expect(res.exitCode).toBe(0);
     expect(fs.existsSync(join('with-api-routes', 'src', 'api'))).toBeTrue();
   });
 

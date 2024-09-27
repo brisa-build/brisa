@@ -39,6 +39,8 @@ if (PROJECT_NAME === '--example') {
     console.log('\t0. Exit');
     const examples = fs
       .readdirSync(EXAMPLES_FOLDER)
+      // Remove .DS_Store and other hidden files
+      .filter((f) => !f.startsWith('.'))
       .toSorted((a, b) => a.localeCompare(b));
     examples.forEach((example, index) => {
       console.log(`\t${index + 1}. ${example}`);
