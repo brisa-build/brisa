@@ -174,6 +174,7 @@ body {
   font-family: "Inter", sans-serif;
   background-color: var(--color-white);
   color: var(--color-black);
+  overflow-x: hidden;
 }
 
 main {
