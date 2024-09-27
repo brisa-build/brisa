@@ -1,0 +1,20 @@
+{
+  "name": "with-view-transitions",
+  "module": "src/pages/index.tsx",
+  "type": "module",
+  "webTitle": "View Transitions",
+  "example-category": "basics",
+  "scripts": {
+    "dev": "brisa dev",
+    "dev:debug": "brisa dev --debug",
+    "build": "brisa build",
+    "start": "brisa start"
+  },
+  "dependencies": {
+    "brisa": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}
