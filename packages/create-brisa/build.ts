@@ -1,3 +1,9 @@
-import { $ } from 'bun';
+import fs from 'node:fs';
+import path from 'node:path';
 
-await $`rm -rf examples && mkdir examples && cp -r ../../examples/* examples`;
+if(fs.existsSync('examples')) {
+  fs.rmSync('examples', { recursive: true, force: true });
+}
+
+fs.mkdirSync('examples');
+fs.cpSync(path.join('..', '..', 'examples'), 'examples', { recursive: true });
