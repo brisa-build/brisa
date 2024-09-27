@@ -21,8 +21,7 @@ packages/brisa/build
 packages/brisa/test
 
 # Docs
-packages/docs/.vitepress/cache/
-packages/docs/.vitepress/dist/
+mydb.sqlite
 
 tsconfig.tsbuildinfo
 

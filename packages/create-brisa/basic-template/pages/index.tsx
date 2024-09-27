@@ -8,7 +8,7 @@ export default function Homepage() {
           <span class="h1_addition">Welcome to </span>Brisa
         </h1>
         <p class="edit-note">✏️ Change this page on </p>
-        <code>src/pages/counter/index.tsx</code>
+        <code>src/pages/index.tsx</code>
       </div>
 
       <section class="counter-section">

@@ -16,7 +16,7 @@ export default function Homepage({}, { i18n: { t, locale } }: RequestContext) {
           )}
         </h1>
         <p class="edit-note">✏️ {t('change-page')}</p>
-        <code>src/pages/counter/index.tsx</code>
+        <code>src/pages/index.tsx</code>
       </div>
 
       <section class="counter-section">
