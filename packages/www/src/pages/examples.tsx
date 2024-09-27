@@ -3,30 +3,7 @@ import path from 'node:path';
 
 type PackageJSON = Record<string, any>;
 
-const EXAMPLES_FOLDER = path.join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  '..',
-  'examples',
-);
-const examples = fs
-  .readdirSync(EXAMPLES_FOLDER)
-  .toSorted((a, b) => a.localeCompare(b));
-const basics: PackageJSON[] = [];
-const integrations: PackageJSON[] = [];
-
-for (const example of examples) {
-  const packageJSON = JSON.parse(
-    fs.readFileSync(
-      path.join(EXAMPLES_FOLDER, example, 'package.json'),
-      'utf-8',
-    ),
-  );
-  if (packageJSON['example-category'] === 'basics') basics.push(packageJSON);
-  else integrations.push(packageJSON);
-}
+const { integrations, basics } = loadExamples();
 
 export default function Examples() {
   const renderListItem = ({ name, webTitle }: PackageJSON) => (
@@ -76,6 +53,7 @@ export default function Examples() {
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            alignItems: 'self-start',
             gap: '30px',
           }}
         >
@@ -118,4 +96,42 @@ function normalize(str: string) {
 
 export function Head() {
   return <title id="title">Brisa by Example</title>;
+}
+
+function loadExamples() {
+  const basics: PackageJSON[] = [];
+  const integrations: PackageJSON[] = [];
+
+  try {
+    const EXAMPLES_FOLDER = path.join(
+      import.meta.dirname,
+      '..',
+      '..',
+      '..',
+      '..',
+      'examples',
+    );
+    const examples = fs
+      .readdirSync(EXAMPLES_FOLDER)
+      .toSorted((a, b) => a.localeCompare(b));
+
+    for (const example of examples) {
+      // .DS_Store ...
+      if (example.startsWith('.')) continue;
+
+      const packageJSON = JSON.parse(
+        fs.readFileSync(
+          path.join(EXAMPLES_FOLDER, example, 'package.json'),
+          'utf-8',
+        ),
+      );
+      if (packageJSON['example-category'] === 'basics')
+        basics.push(packageJSON);
+      else integrations.push(packageJSON);
+    }
+  } catch (error) {
+    console.error('Error loading examples:', error);
+  }
+
+  return { basics, integrations };
 }
