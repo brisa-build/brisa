@@ -11,7 +11,9 @@ const EXAMPLES_FOLDER = path.join(
   '..',
   'examples',
 );
-const examples = fs.readdirSync(EXAMPLES_FOLDER);
+const examples = fs
+  .readdirSync(EXAMPLES_FOLDER)
+  .toSorted((a, b) => a.localeCompare(b));
 const basics: PackageJSON[] = [];
 const integrations: PackageJSON[] = [];
 
