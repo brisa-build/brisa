@@ -1,6 +1,10 @@
 import Nav from '@/components/navigation';
 import Footer from '@/components/footer';
 
+import '@/styles/style.css';
+import '@/styles/nav.css';
+import '@/styles/footer.css';
+
 export default function Layout({ children }: { children: JSX.Element }) {
   return (
     <html lang="en">
@@ -18,9 +22,6 @@ export default function Layout({ children }: { children: JSX.Element }) {
           href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
           rel="stylesheet"
         />
-        <link rel="stylesheet" href="/style.css" />
-        <link rel="stylesheet" href="/nav.css" />
-        <link rel="stylesheet" href="/footer.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>

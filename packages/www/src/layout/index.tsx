@@ -2,6 +2,11 @@ import Nav from '@/components/navigation';
 import Footer from '@/components/footer';
 import { dangerHTML, type RequestContext } from 'brisa';
 
+import '@/styles/style.css';
+import '@/styles/nav.css';
+import '@/styles/content.css';
+import '@/styles/footer.css';
+
 const meta = {
   title: 'Brisa - The Web Platform Framework',
   description:
@@ -35,19 +40,6 @@ export default function Layout(
       <head>
         <title id="title">{meta.title}</title>
         <link rel="icon" href="/brisa.svg" />
-
-        <link rel="preload" href="/styles/style.css" as="style" />
-        <link rel="stylesheet" href="/styles/style.css" />
-
-        <link rel="preload" href="/styles/nav.css" as="style" />
-        <link rel="stylesheet" href="/styles/nav.css" />
-
-        <link rel="preload" href="/styles/content.css" as="style" />
-        <link rel="stylesheet" href="/styles/content.css" />
-
-        <link rel="preload" href="/styles/footer.css" as="style" />
-        <link rel="stylesheet" href="/styles/footer.css" />
-
         <link rel="manifest" href="/manifest.json" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ccfbf1" />
