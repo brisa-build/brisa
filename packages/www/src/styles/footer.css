@@ -19,25 +19,25 @@ footer {
   }
 
   h2 {
-     font-size: 0.8rem;
+    font-size: 0.8rem;
   }
 
   ul {
     padding: 0;
   }
-  
+
   li {
     list-style-type: none;
     padding: 5px 0;
   }
-  
+
   a {
     text-decoration: none;
     color: inherit;
     border-bottom: 1px dashed var(--color-primary);
     transition: color 0.3s ease-in-out;
   }
-  
+
   a:hover {
     color: var(--color-primary);
   }
@@ -55,7 +55,8 @@ footer {
       margin-bottom: 5px;
     }
 
-    input, button {
+    input,
+    button {
       width: 100%;
       font-size: 1rem;
       padding: 5px;
@@ -79,7 +80,11 @@ footer {
     }
 
     button:hover {
-      background-image:linear-gradient(to right, var(--cta-hover-start), var(--cta-hover-end));
+      background-image: linear-gradient(
+        to right,
+        var(--cta-hover-start),
+        var(--cta-hover-end)
+      );
     }
   }
 

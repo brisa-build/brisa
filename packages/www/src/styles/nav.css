@@ -92,7 +92,6 @@
       height: calc(100vh - 70px);
       z-index: 9999;
 
-
       ul:first-child li {
         margin: 0;
         width: 100%;
@@ -115,7 +114,6 @@
         }
       }
 
-
       ul:first-child {
         width: 100%;
         flex-direction: column;
@@ -126,7 +124,8 @@
         order: 3;
       }
 
-      ul:nth-child(2), ul:nth-child(3){
+      ul:nth-child(2),
+      ul:nth-child(3) {
         flex-grow: 1;
         flex-direction: row;
       }
