@@ -21,4 +21,3 @@ Brisa supports different ways of styling your application, including:
 In addition, you can also style your web components and server components:
 
 - [Styling web components](/building-your-application/styling/web-components)
-- [Styling server components](/building-your-application/styling/server-components)
