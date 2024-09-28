@@ -2,7 +2,7 @@ import { watch, existsSync, statSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { spawnSync } from 'node:child_process';
-import constants from '@/constants';
+import constants, { reinitConstants } from '@/constants';
 import dangerHTML from '@/utils/danger-html';
 import { toInline } from '@/helpers';
 import { logError } from '@/utils/log/log-build';
@@ -85,6 +85,7 @@ async function activateHotReload() {
 
     if (!globalThis.brisaServer) return;
 
+    await reinitConstants();
     globalThis.brisaServer.publish('hot-reload', LIVE_RELOAD_COMMAND);
 
     if (waitFilename) {
