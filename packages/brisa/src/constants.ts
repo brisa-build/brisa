@@ -53,36 +53,6 @@ const WORKSPACE = IS_BUILD_PROCESS ? srcDir : buildDir;
 
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
-const CSS_FILES =
-  (await importFileIfExists('css-files.json', buildDir))?.default ?? [];
-const integrations = await importFileIfExists(
-  '_integrations',
-  path.resolve(buildDir, 'web-components'),
-);
-const I18N_CONFIG = (await importFileIfExists('i18n', WORKSPACE))
-  ?.default as I18nConfig;
-const CONFIG =
-  (await importFileIfExists('brisa.config', rootDir))?.default ?? {};
-
-// Remove trailing slash from pages
-if (I18N_CONFIG?.pages) {
-  I18N_CONFIG.pages = JSON.parse(
-    JSON.stringify(I18N_CONFIG.pages, (key, value) =>
-      typeof value === 'string' && value.length > 1
-        ? value.replace(/\/$/g, '')
-        : value,
-    ),
-  );
-}
-
-if (CONFIG?.basePath && !CONFIG.basePath.startsWith(path.sep)) {
-  CONFIG.basePath = path.sep + CONFIG.basePath;
-}
-
-// This is needed for some helpers like "navigate" to work properly
-// in the server side. (For the client-side it's solved during the build process)
-globalThis.__BASE_PATH__ = CONFIG.basePath;
-
 const OS_CAN_LOAD_BALANCE =
   process.platform !== 'darwin' && process.platform !== 'win32';
 
@@ -99,16 +69,14 @@ const defaultConfig = {
   clustering: IS_PRODUCTION && OS_CAN_LOAD_BALANCE,
 };
 
-const constants = {
+let constants = {
   JS_RUNTIME: typeof Bun !== 'undefined' ? 'bun' : 'node',
   PAGE_404,
   PAGE_500,
   VERSION: version,
   VERSION_HASH: hash(version),
-  WEB_CONTEXT_PLUGINS: integrations?.webContextPlugins ?? [],
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION,
-  CSS_FILES,
   IS_DEVELOPMENT:
     process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development',
   IS_SERVE_PROCESS,
@@ -120,7 +88,6 @@ const constants = {
   SRC_DIR: srcDir,
   ASSETS_DIR: path.resolve(buildDir, 'public'),
   PAGES_DIR: path.resolve(buildDir, 'pages'),
-  I18N_CONFIG,
   LOG_PREFIX: {
     WAIT: cyanLog('[ wait ]') + ' ',
     READY: greenLog('[ ready ] ') + ' ',
@@ -129,9 +96,6 @@ const constants = {
     WARN: yellowLog('[ warn ] ') + ' ',
     TICK: greenLog('✓ ') + ' ',
   },
-  LOCALES_SET: new Set(I18N_CONFIG?.locales || []) as Set<string>,
-  CONFIG: { ...defaultConfig, ...CONFIG } as Configuration,
-  IS_STATIC_EXPORT: staticExportOutputOption.has(CONFIG?.output),
   REGEX: {
     CATCH_ALL: /\[\[\.{3}.*?\]\]/g,
     DYNAMIC: /\[.*?\]/g,
@@ -140,6 +104,7 @@ const constants = {
   HEADERS: {
     CACHE_CONTROL,
   },
+  ...(await loadDynamicConstants()),
 } satisfies BrisaConstants;
 
 /**
@@ -153,6 +118,61 @@ export const getConstants = (): BrisaConstants =>
   globalThis.mockConstants
     ? (globalThis.mockConstants as typeof constants)
     : constants;
+
+async function loadDynamicConstants() {
+  const CSS_FILES =
+    (await importFileIfExists('css-files.json', buildDir))?.default ?? [];
+  const integrations = await importFileIfExists(
+    '_integrations',
+    path.resolve(buildDir, 'web-components'),
+  );
+  const WEB_CONTEXT_PLUGINS = integrations?.webContextPlugins ?? [];
+  const I18N_CONFIG = (await importFileIfExists('i18n', WORKSPACE))
+    ?.default as I18nConfig;
+  const CONFIG = {
+    ...defaultConfig,
+    ...((await importFileIfExists('brisa.config', rootDir))?.default ?? {}),
+  };
+  const IS_STATIC_EXPORT = staticExportOutputOption.has(CONFIG?.output);
+
+  // Remove trailing slash from pages
+  if (I18N_CONFIG?.pages) {
+    I18N_CONFIG.pages = JSON.parse(
+      JSON.stringify(I18N_CONFIG.pages, (key, value) =>
+        typeof value === 'string' && value.length > 1
+          ? value.replace(/\/$/g, '')
+          : value,
+      ),
+    );
+  }
+
+  const LOCALES_SET = new Set(I18N_CONFIG?.locales || []) as Set<string>;
+
+  if (CONFIG.basePath && !CONFIG.basePath.startsWith(path.sep)) {
+    CONFIG.basePath = path.sep + CONFIG.basePath;
+  }
+
+  // This is needed for some helpers like "navigate" to work properly
+  // in the server side. (For the client-side it's solved during the build process)
+  globalThis.__BASE_PATH__ = CONFIG.basePath;
+
+  return {
+    CSS_FILES,
+    CONFIG,
+    I18N_CONFIG,
+    WEB_CONTEXT_PLUGINS,
+    LOCALES_SET,
+    IS_STATIC_EXPORT,
+  };
+}
+
+// Update all that can change during hotreloading
+export async function reinitConstants() {
+  constants = globalThis.mockConstants = {
+    ...constants,
+    ...(await loadDynamicConstants()),
+  };
+}
 
 declare global {
   var mockConstants: Partial<BrisaConstants> | undefined;
