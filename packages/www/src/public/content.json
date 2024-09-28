@@ -1024,8 +1024,8 @@
     ]
   },
   {
-    "id": "/api-reference/functions/dangerHTML#dangerhtmlhtml-string-dangerhtmloutput",
-    "title": "dangerHTML(html: string): DangerHTMLOutput",
+    "id": "/api-reference/functions/dangerHTML#dangerhtmlhtml-string-jsxelement",
+    "title": "dangerHTML(html: string): JSX.Element",
     "text": "Make situations that we want to inject HTML that we have in string to the DOM. For these occasions, you can use the dangerHTML function. Since without this function it is escaped by security. import { dangerHTML } from \"brisa\";\n\nexport default function SomeComponent() {\n  return (\n    <>\n      {/* Escaped by default (doesn't work for security): */}\n      {'<script>alert(\"This is escaped and is not going to work\")</script>'}\n\n      {/* Force to inject an string as HTML: */}\n      {dangerHTML(\n        '<script>alert(\"This is injected and is going to work\")</script>',\n      )}\n    </>\n  );\n} Another way to use dangerHTML is to import an HTML file and inject it into the DOM. For this, you can use the with keyword to import the file with the type text. import html from \"./file.html\" with { type: \"text\" };\n\nexport default function Page() {\n  return dangerHTML(html);\n} By serving the HTML in this way, only 1 chunk will be sent during the streaming of the HTML without having to waste time rendering the JSX. A better way to serve static HTML without having to render is prerendering the page or using the renderOn extended property to prerender only some parts of the page.",
     "titles": [
       "dangerHTML",
@@ -1039,7 +1039,7 @@
     "titles": [
       "dangerHTML",
       "Reference",
-      "dangerHTML(html: string): DangerHTMLOutput"
+      "dangerHTML(html: string): JSX.Element"
     ]
   },
   {
@@ -1049,7 +1049,7 @@
     "titles": [
       "dangerHTML",
       "Reference",
-      "dangerHTML(html: string): DangerHTMLOutput"
+      "dangerHTML(html: string): JSX.Element"
     ]
   },
   {
