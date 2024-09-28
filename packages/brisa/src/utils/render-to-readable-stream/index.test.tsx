@@ -158,6 +158,90 @@ describe('utils', () => {
       expect(result).toBe(expected);
     });
 
+    it('should render CSSFiles defined on constant inside the head tag', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CSS_FILES: ['test.css'],
+      };
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = normalizeHTML(`
+        <html>
+          <head>
+            <link rel="preload" href="/test.css" as="style"></link>
+            <link rel="stylesheet" href="/test.css"></link>
+          </head>
+          <body></body>
+        </html>
+      `);
+      expect(normalizeHTML(result)).toBe(expected);
+    });
+
+    it('should render CSSFile with basePath when CSSFiles and basePath are provided', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CSS_FILES: ['test.css'],
+        CONFIG: {
+          basePath: '/docs',
+        },
+      };
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = normalizeHTML(`
+        <html>
+          <head basepath="/docs">
+            <link rel="preload" href="/docs/test.css" as="style"></link>
+            <link rel="stylesheet" href="/docs/test.css"></link>
+          </head>
+          <body></body>
+        </html>
+      `);
+      expect(normalizeHTML(result)).toBe(expected);
+    });
+
+    it('should render CSSFile with basePath when CSSFiles and basePath with trailing slash are provided', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CSS_FILES: ['test.css'],
+        CONFIG: {
+          basePath: '/docs/',
+        },
+      };
+      const element = (
+        <html>
+          <head></head>
+          <body></body>
+        </html>
+      );
+      const stream = renderToReadableStream(element, testOptions);
+      const result = await Bun.readableStreamToText(stream);
+
+      const expected = normalizeHTML(`
+        <html>
+          <head basepath="/docs/">
+            <link rel="preload" href="/docs/test.css" as="style"></link>
+            <link rel="stylesheet" href="/docs/test.css"></link>
+          </head>
+          <body></body>
+        </html>
+      `);
+      expect(normalizeHTML(result)).toBe(expected);
+    });
+
     it('should not display the "head" tag warning if isPage=false', async () => {
       const element = <div class="test">Hello World</div>;
       const stream = renderToReadableStream(element, {

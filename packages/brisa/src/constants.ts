@@ -53,7 +53,8 @@ const WORKSPACE = IS_BUILD_PROCESS ? srcDir : buildDir;
 
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
-const CSS_FILES = (await importFileIfExists('css-files.json', buildDir))?.default ?? [];
+const CSS_FILES =
+  (await importFileIfExists('css-files.json', buildDir))?.default ?? [];
 const integrations = await importFileIfExists(
   '_integrations',
   path.resolve(buildDir, 'web-components'),

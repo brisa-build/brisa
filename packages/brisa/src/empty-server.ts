@@ -3,6 +3,7 @@ const nothing = (v: any) => v;
 const constants = {
   IS_SERVE_PROCESS: false,
   LOG_PREFIX: {},
+  CSS_FILES: [],
 };
 
 export const fileURLToPath = nothing;

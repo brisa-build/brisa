@@ -335,6 +335,7 @@ async function enqueueDuringRendering(
 
     // Open head tag
     if (type === 'head') {
+      enqueueCSSFiles(controller, suspenseId);
       controller.insideHeadTag = true;
       if (controller.head) {
         await enqueueComponent(
@@ -665,6 +666,23 @@ async function isInPathList(pathname: string, request: RequestContext) {
   const route = (request.route?.filePath ?? '').replace(BUILD_DIR, '');
 
   return new Set(listText.split('\n')).has(route);
+}
+
+function enqueueCSSFiles(controller: Controller, suspenseId?: number) {
+  const { CONFIG, CSS_FILES } = getConstants();
+  const basePath = (CONFIG.basePath || '').replace(/\/$/, '');
+
+  if (!CSS_FILES?.length) return;
+
+  for (const cssFile of CSS_FILES) {
+    const href = `${basePath}/${cssFile}`;
+    controller.enqueue(
+      `<link rel="preload" href="${href}" as="style"></link>
+       <link rel="stylesheet" href="${href}"></link>
+      `,
+      suspenseId,
+    );
+  }
 }
 
 function injectCSS(
