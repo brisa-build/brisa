@@ -11,7 +11,7 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "file:../../packages/brisa"
+    "brisa": "latest"
   },
   "devDependencies": {
     "@types/bun": "latest",
