@@ -148,10 +148,6 @@ export default {
               text: 'Styling Web Components',
               link: '/building-your-application/styling/web-components',
             },
-            {
-              text: 'Styling Server Components',
-              link: '/building-your-application/styling/server-components',
-            },
           ],
         },
         {
