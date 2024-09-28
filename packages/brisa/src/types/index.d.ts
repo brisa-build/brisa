@@ -51,6 +51,7 @@ export type BrisaConstants = {
   ASSETS_DIR: string;
   PAGES_DIR: string;
   I18N_CONFIG: I18nConfig;
+  CSS_FILES: string[];
   LOG_PREFIX: {
     WAIT: string;
     READY: string;
