@@ -1,6 +1,6 @@
 {
   "name": "brisa",
-  "version": "0.0.225",
+  "version": "0.0.226",
   "description": "Brisa, the next-gen web framework.",
   "repository": {
     "type": "git",
@@ -100,7 +100,9 @@
     "test",
     "cli.js"
   ],
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test && bun run build:core-compiler",
     "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",

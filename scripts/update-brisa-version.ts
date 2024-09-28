@@ -6,6 +6,29 @@ import createBrisaPackageJSON from '../packages/create-brisa/package.json';
 import wwwPackageJSON from '../packages/www/package.json';
 import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
 
+function updatePackageJSONOfExamplesToLatestVersion(version: string) {
+  const EXAMPLES_FOLDER = join(import.meta.dir, '..', 'examples');
+  const examples = fs.readdirSync(EXAMPLES_FOLDER);
+
+  examples.forEach((example) => {
+    const examplePath = join(EXAMPLES_FOLDER, example);
+    const examplePackageJSONPath = join(examplePath, 'package.json');
+
+    if (fs.existsSync(examplePackageJSONPath)) {
+      const examplePackageJSON = JSON.parse(
+        fs.readFileSync(examplePackageJSONPath).toString(),
+      );
+
+      examplePackageJSON.dependencies.brisa = version;
+
+      fs.writeFileSync(
+        examplePackageJSONPath,
+        JSON.stringify(examplePackageJSON, null, 2),
+      );
+    }
+  });
+}
+
 const currentVersion = packageJSON.version;
 const version = prompt(
   `Introduce the new version of Brisa (now ${currentVersion}): `,
@@ -20,6 +43,9 @@ if (
   console.error('Invalid version, must be greater than the current one.');
   process.exit(1);
 }
+
+// Examples package.json
+updatePackageJSONOfExamplesToLatestVersion(version);
 
 // Root monorepo package.json
 packageJSON.version = version;
