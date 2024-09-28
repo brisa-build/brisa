@@ -512,7 +512,7 @@ body.dark .github-light {
 
   .h6 {
     padding-left: 25px;
-    font-size:  12px;
+    font-size: 12px;
   }
 
   li {
@@ -580,7 +580,7 @@ body.dark .github-light {
   }
 }
 
-.landing .hero { 
+.landing .hero {
   text-align: center;
 }
 
@@ -600,7 +600,6 @@ body.dark .github-light {
     border-bottom: 1px solid var(--color-light-gray);
   }
 }
-  
 
 @media (max-width: 1530px) {
   .docs-content {
