@@ -5,7 +5,7 @@ import { toInline } from '@/helpers';
 
 const { generateCodeFromAST } = AST('tsx');
 
-export default function processClientAst(ast: ESTree.Program) {
+export default function processClientAst(ast: ESTree.Program, path = '') {
   let i18nKeys = new Set<string>();
   let useI18n = false;
   const logs: any[] = [];
@@ -20,6 +20,31 @@ export default function processClientAst(ast: ESTree.Program) {
       value?.type === 'ImportDeclaration' &&
       value?.source?.value === 'react/jsx-runtime'
     ) {
+      return null;
+    }
+
+    // Remove ".css" imports and log a warning
+    // TODO: Remove this restriction when this Bun feature is solved:
+    // https://github.com/oven-sh/bun/issues/8280
+    if (
+      value?.type === 'ImportDeclaration' &&
+      value?.source?.value.endsWith('.css')
+    ) {
+      logWarning(
+        [
+          'CSS Global imports in web components',
+          '',
+          `Code: import '${value.source.value}';`,
+          `Path: ${path}`,
+          '',
+          'Add this global import into the layout or the page.',
+          'Currently, CSS Global imports only work in Web Components when it does not have the "skipSSR", to avoid problems, it is better not to use it here yet.',
+          '',
+          'If you have any questions or need further assistance,',
+          'feel free to contact us. We are happy to help!',
+        ],
+        'Docs: https://brisa.build/building-your-application/styling/web-components#global-styles-in-web-components',
+      );
       return null;
     }
 

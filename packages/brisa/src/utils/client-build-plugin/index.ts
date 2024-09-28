@@ -54,7 +54,7 @@ export default function clientBuildPlugin(
   }
 
   const rawAst = parseCodeToAST(code);
-  let { useI18n, i18nKeys, ast } = processClientAst(rawAst);
+  let { useI18n, i18nKeys, ast } = processClientAst(rawAst, path);
 
   if (useI18n) {
     ast = addI18nBridge(ast, {
