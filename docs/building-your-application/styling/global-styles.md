@@ -11,7 +11,7 @@ In Brisa, you can add global styles to your website by creating a CSS file and i
 
 ## Adding Global Styles
 
-To add global styles to your website, create a CSS file in the `src` directory of your project. For example, you can create `/src/styles/global.css` with the following content:
+To add global styles to your website, create a CSS file in the `src` directory of your project. For example, you can create `src/styles/global.css` with the following content:
 
 ```css
 body {
