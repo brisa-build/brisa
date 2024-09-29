@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { getConstants } from '@/constants';
 
 export default async function handleCSSFiles() {
-  const { BUILD_DIR, CONFIG, LOG_PREFIX } = getConstants();
+  const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_PRODUCTION } = getConstants();
   const publicFolder = path.join(BUILD_DIR, 'public');
   const allFiles = fs.readdirSync(BUILD_DIR);
   const cssFilePaths: string[] = [];
@@ -19,7 +19,14 @@ export default async function handleCSSFiles() {
 
     for (const integration of integrations) {
       const startTime = Date.now();
-      console.log(LOG_PREFIX.INFO, `Transpiling CSS with ${integration.name}`);
+
+      if (IS_PRODUCTION) {
+        console.log(
+          LOG_PREFIX.INFO,
+          `Transpiling CSS with ${integration.name}`,
+        );
+      }
+
       let useDefault = true;
 
       for (const file of cssFiles) {
@@ -46,13 +53,15 @@ export default async function handleCSSFiles() {
         cssFilePaths.unshift(filename);
       }
 
-      const endTime = Date.now();
-      const ms = ((endTime - startTime) / 1000).toFixed(2);
-      console.log(
-        LOG_PREFIX.INFO,
-        LOG_PREFIX.TICK,
-        `CSS transpiled with ${integration.name} in ${ms}ms`,
-      );
+      if (IS_PRODUCTION) {
+        const endTime = Date.now();
+        const ms = ((endTime - startTime) / 1000).toFixed(2);
+        console.log(
+          LOG_PREFIX.INFO,
+          LOG_PREFIX.TICK,
+          `CSS transpiled with ${integration.name} in ${ms}ms`,
+        );
+      }
     }
   }
 

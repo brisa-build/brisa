@@ -132,7 +132,12 @@ describe('utils/handle-css-files', () => {
 
   it('should add a log during transpiling TailwindCSS', async () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
-    globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
+    globalThis.mockConstants = {
+      BUILD_DIR,
+      CONFIG,
+      LOG_PREFIX,
+      IS_PRODUCTION: true,
+    };
     await handleCSSFiles();
     expect(mockLog).toHaveBeenCalledTimes(2);
     expect(mockLog).toHaveBeenCalledWith(
@@ -144,5 +149,17 @@ describe('utils/handle-css-files', () => {
       LOG_PREFIX.TICK,
       expect.stringContaining('CSS transpiled with brisa-tailwindcss in'),
     );
+  });
+
+  it('should NOT add a log during transpiling TailwindCSS in development mode', async () => {
+    const CONFIG = { integrations: [brisaTailwindCSS()] };
+    globalThis.mockConstants = {
+      BUILD_DIR,
+      CONFIG,
+      LOG_PREFIX,
+      IS_PRODUCTION: false,
+    };
+    await handleCSSFiles();
+    expect(mockLog).toHaveBeenCalledTimes(0);
   });
 });
