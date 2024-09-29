@@ -29,12 +29,17 @@ declare module './cli.ts' {
 }
 
 const FIXTURES = path.join(import.meta.dir, 'src', '__fixtures__');
-const MDX_PATH = path.join(
+const INTEGRATIONS_PATH = path.join(
   import.meta.dir,
   'out',
   'cli',
   'integrations',
-  'mdx.js',
+);
+const MDX_PATH = path.join(INTEGRATIONS_PATH, 'mdx', 'index.js');
+const TAILWINDCSS_PATH = path.join(
+  INTEGRATIONS_PATH,
+  'tailwindcss',
+  'index.js',
 );
 const BUILD_PATH = path.join(import.meta.dir, 'out', 'cli', 'build.js');
 const SERVE_PATH = path.join(
@@ -1307,6 +1312,24 @@ describe('Brisa CLI', () => {
     expect(mockSpawnSync.mock.calls[2]).toEqual([
       'bun',
       [MDX_PATH],
+      devOptions,
+    ]);
+  });
+
+  it('should "brisa add tailwindcss" command integrate TailwindCSS', async () => {
+    process.argv = ['bun', 'brisa', 'add', 'tailwindcss'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync).toHaveBeenCalledTimes(2);
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      'bun',
+      ['--version'],
+      { stdio: 'ignore' },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [TAILWINDCSS_PATH],
       devOptions,
     ]);
   });

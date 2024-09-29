@@ -1,7 +1,7 @@
 import path from 'node:path';
 import type { BunPlugin } from 'bun';
 import { version } from '../package.json';
-import type { BrisaConstants, Configuration, I18nConfig } from './types';
+import type { BrisaConstants, I18nConfig } from './types';
 import importFileIfExists from './utils/import-file-if-exists';
 import { hash } from '@/utils/wyhash';
 import {
