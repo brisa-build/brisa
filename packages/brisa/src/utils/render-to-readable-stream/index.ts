@@ -632,8 +632,9 @@ function getValueOfComponent(
         throw error;
       }
       if (!isComponent(componentFn.error)) {
-        const customElementName = props['ssr-selector']
-        const componentName = props['ssr-selector'] || componentFn.name || 'Component';
+        const customElementName = props['ssr-selector'];
+        const componentName =
+          props['ssr-selector'] || componentFn.name || 'Component';
         const title = `Error in SSR of ${componentName} ${customElementName ? 'web' : 'server'} component with props ${JSON.stringify(
           props,
         )}`;

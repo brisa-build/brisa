@@ -16,14 +16,19 @@ type Props = {
 const voidFn = () => {};
 
 export default async function SSRWebComponent(
-  { 'ssr-Component': Component, 'ssr-selector': selector, __key, ...props }: Props,
+  {
+    'ssr-Component': Component,
+    'ssr-selector': selector,
+    __key,
+    ...props
+  }: Props,
   { store, useContext, i18n, indicate, route }: RequestContext,
 ) {
   // Note: only can happen with libraries in old versions of Brisa
   // TODO: Remove in the future
-  if(!Component) {
-    Component = props.Component
-    selector = props.selector
+  if (!Component) {
+    Component = props.Component;
+    selector = props.selector;
   }
 
   const { WEB_CONTEXT_PLUGINS } = getConstants();

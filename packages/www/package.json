@@ -1,6 +1,6 @@
 {
   "name": "www",
-  "version": "0.0.226",
+  "version": "0.0.227",
   "module": "src/pages/index.tsx",
   "type": "module",
   "scripts": {
