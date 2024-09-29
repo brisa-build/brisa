@@ -15,7 +15,7 @@ export default function Footer() {
           <button>Subscribe to our newsletter</button>
         </form>
         <div>
-          <h2>Content</h2>
+          <b>Content</b>
           <ul>
             <li>
               <a title="Documentation" href="/getting-started/quick-start">
@@ -40,7 +40,7 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h2>Social</h2>
+          <b>Social</b>
           <ul>
             <li>
               <a title="x" href="/x" target="_blank" rel="noopener noreferrer">
@@ -70,7 +70,7 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h2>Legal</h2>
+          <b>Legal</b>
           <ul>
             <li>
               <a title="Privacy Policy" href="/privacy">

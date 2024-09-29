@@ -5122,8 +5122,64 @@
   {
     "id": "/building-your-application/styling#styling",
     "title": "Styling",
-    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Modules\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS In addition, you can also style your web components and server components: Styling web components\nStyling server components",
+    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Modules\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS In addition, you can also style your web components and server components: Styling web components",
     "titles": []
+  },
+  {
+    "id": "/building-your-application/styling/css-inlined-in-jsx#css-inlined-in-jsx",
+    "title": "CSS Inlined in JSX",
+    "text": "In Brisa, you can add CSS styles directly to your JSX components using the style attribute. This allows you to define styles for individual elements without creating a separate CSS file.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/styling/css-inlined-in-jsx#adding-css-styles",
+    "title": "Adding CSS Styles",
+    "text": "To add CSS styles to an element in JSX, use the style attribute and pass an object with the desired styles. For example, you can add a red background color to a <div> element like this: const MyComponent = () => {\n  return (\n    <div style={{ backgroundColor: \"red\" }}>\n      Hello, world!\n    </div>\n  );\n}; In the example above, the style attribute is set to an object with the backgroundColor property set to \"red\". This will apply a red background color to the <div> element. Using TypeScript with inline styles is a great way to ensure type safety and avoid common CSS errors.",
+    "titles": [
+      "CSS Inlined in JSX"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#css-modules",
+    "title": "CSS Modules",
+    "text": "In Brisa, you can use CSS Modules to style your components. CSS Modules allow you to define styles for individual components without worrying about naming conflicts or global styles.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#adding-css-modules",
+    "title": "Adding CSS Modules",
+    "text": "To add CSS Modules to your components, create a CSS file with the desired styles and import it into your component. For example, you can create a styles.module.css file with the following content: /* styles.module.css */\n.container {\n  background-color: red;\n} Next, import the CSS file in your component and use the generated class names to apply the styles. For example, you can create a my-component.tsx file with the following content: // my-component.tsx\nimport styles from \"./styles.module.css\";\n\nconst MyComponent = () => {\n  return (\n    <div className={styles.container}>\n      Hello, world!\n    </div>\n  );\n}; In the example above, the styles object contains the generated class names from the styles.module.css file. By using the className attribute with the appropriate class name, you can apply the styles defined in the CSS Module to your component. CSS Modules are a great way to encapsulate styles and prevent naming conflicts in your components. They also make it easier to manage styles for individual components without affecting other parts of your website. TODO: Confirm CSS Modules after Bun CSS Parser, waiting to finish this task: https://github.com/brisa-build/brisa/issues/156",
+    "titles": [
+      "CSS Modules"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-template-literal#css-template-literal",
+    "title": "CSS Template Literal",
+    "text": "In Brisa, you can add CSS styles to your components using CSS template literals. This allows you to define styles for individual elements without creating a separate CSS file.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/styling/css-template-literal#adding-css-styles",
+    "title": "Adding CSS Styles",
+    "text": "To add CSS styles to an element using a template literal, create a template string with the desired styles. For example, you can add a red background color to a <div> element like this: export default const MyWebComponent = ({}, { css }) => {\n  css`\n    div {\n      background-color: red;\n    }\n  `;\n\n  return (\n    <div>\n      Hello, world!\n    </div>\n  );\n}; In Brisa, you can use CSS template literals with both Web Components and Server Components. Web Components encapsulate their styles, while Server Components do not. This means that styles defined with CSS template literals in a Web Component will only apply to that component, while styles defined in a Server Component will apply globally to all components on the page.",
+    "titles": [
+      "CSS Template Literal"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/global-styles#global-styles",
+    "title": "Global Styles",
+    "text": "Global styles are CSS rules that apply to all elements on your website. You can use global styles to set the default font, color, and other styles for your website. In Brisa, you can add global styles to your website by creating a CSS file and importing it into your layout component.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/styling/global-styles#adding-global-styles",
+    "title": "Adding Global Styles",
+    "text": "To add global styles to your website, create a CSS file in the src directory of your project. For example, you can create src/styles/global.css with the following content: body {\n  font-family: Arial, sans-serif;\n  color: #333;\n} Next, import the CSS file in the src/layout.tsx file: import \"@/styles/global.css\"; Now, the styles defined in the global.css file will be applied to all pages on your website.",
+    "titles": [
+      "Global Styles"
+    ]
   },
   {
     "id": "/building-your-application/styling/web-components#styling-web-components",
