@@ -6,6 +6,7 @@ import brisaPackageJSON from '../packages/brisa/package.json';
 import createBrisaPackageJSON from '../packages/create-brisa/package.json';
 import wwwwPackageJSON from '../packages/www/package.json';
 import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
+import brisaTailwindCSSPackageJSON from '../packages/brisa-tailwindcss/package.json';
 
 const oldVersion = packageJSON.packageManager.replace('bun@', '');
 
@@ -16,10 +17,16 @@ const version = (await $`bun --version`.text()).trim();
 packageJSON.packageManager =
   brisaPackageJSON.packageManager =
   createBrisaPackageJSON.packageManager =
+  wwwwPackageJSON.packageManager =
+  adapterVercelPackageJSON.packageManager =
+  brisaTailwindCSSPackageJSON.packageManager =
     `bun@${version}`;
 packageJSON.engines =
   brisaPackageJSON.engines =
   createBrisaPackageJSON.engines =
+  wwwwPackageJSON.engines =
+  adapterVercelPackageJSON.engines =
+  brisaTailwindCSSPackageJSON.engines =
     {
       bun: `>= ${version}`,
       npm: 'please-use-bun',
@@ -46,6 +53,10 @@ fs.writeFileSync(
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'adapter-vercel', 'package.json'),
   JSON.stringify(adapterVercelPackageJSON, null, 2),
+);
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'packages', 'brisa-tailwindcss', 'package.json'),
+  JSON.stringify(brisaTailwindCSSPackageJSON, null, 2),
 );
 
 // Update the test.yml file
