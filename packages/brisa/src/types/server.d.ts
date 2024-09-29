@@ -178,7 +178,7 @@ export function serve(options: ServeOptions): {
  * import Component from '@/web-components/web-component';
  *
  * // ...
- * <SSRWebComponent selector="web-component" Component={Component} foo="bar" />
+ * <SSRWebComponent ssr-selector="web-component" ssr-Component={Component} foo="bar" />
  * ```
  *
  * Docs:
@@ -187,8 +187,8 @@ export function serve(options: ServeOptions): {
  */
 export function SSRWebComponent<T>(
   props: T & {
-    selector: string;
-    Component: ComponentType<T>;
+    'ssr-selector': string;
+    'ssr-Component': ComponentType<T>;
     children?: JSX.Element;
   },
 ): JSX.Element;

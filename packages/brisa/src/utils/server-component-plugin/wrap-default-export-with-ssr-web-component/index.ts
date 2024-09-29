@@ -49,7 +49,7 @@ export default function wrapDefaultExportWithSSRWebComponent(
                   properties: [
                     {
                       type: 'Property',
-                      key: { type: 'Identifier', name: 'Component' },
+                      key: { type: 'Literal', value: 'ssr-Component' },
                       value:
                         exportDefaultDeclaration.id ?? exportDefaultDeclaration,
                       kind: 'init',
@@ -59,7 +59,7 @@ export default function wrapDefaultExportWithSSRWebComponent(
                     },
                     {
                       type: 'Property',
-                      key: { type: 'Identifier', name: 'selector' },
+                      key: { type: 'Literal', value: 'ssr-selector' },
                       value: { type: 'Literal', value: selector },
                       kind: 'init',
                       computed: false,

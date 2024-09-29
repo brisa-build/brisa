@@ -398,8 +398,8 @@ export default function serverComponentPlugin(
           {
             type: 'Property',
             key: {
-              type: 'Identifier',
-              name: 'Component',
+              type: 'Literal',
+              value: 'ssr-Component',
             },
             value: {
               type: 'Identifier',
@@ -413,8 +413,8 @@ export default function serverComponentPlugin(
           {
             type: 'Property',
             key: {
-              type: 'Identifier',
-              name: 'selector',
+              type: 'Literal',
+              value: 'ssr-selector',
             },
             value: {
               type: 'Literal',

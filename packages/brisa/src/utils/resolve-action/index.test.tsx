@@ -397,8 +397,8 @@ describe('utils', () => {
           <div>
             Test{' '}
             <SSRWebComponent
-              selector="some-web-component-to-transfer-store"
-              Component={() => <div />}
+              ssr-selector="some-web-component-to-transfer-store"
+              ssr-Component={() => <div />}
             />
           </div>
         );

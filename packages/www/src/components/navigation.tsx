@@ -33,7 +33,7 @@ export default function Nav({}, { route }: RequestContext) {
           </a>
           <search-engine-wc jsonUrl="/content.json" />
         </div>
-        <menu-btn selector="#nav-list" skipSSR>
+        <menu-btn selector="#nav-list">
           <MenuIcon />
           <CrossIcon />
         </menu-btn>

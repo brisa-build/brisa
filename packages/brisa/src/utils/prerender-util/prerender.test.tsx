@@ -42,8 +42,8 @@ describe('utils/prerender-util/prerender', () => {
       componentModuleName: 'SSRWebComponent',
       dir: COMPONENTS,
       componentProps: {
-        Component: path.join(COMPONENTS, 'web-component.tsx'),
-        selector: 'web-component',
+        'ssr-Component': path.join(COMPONENTS, 'web-component.tsx'),
+        'ssr-selector': 'web-component',
         name: 'Bar',
       },
     })) as any;

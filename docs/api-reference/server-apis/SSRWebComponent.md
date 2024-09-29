@@ -23,8 +23,8 @@ export function MyComponent() {
   // but without compilation process:
   return (
     <SSRWebComponent
-      selector="my-component"
-      Component={MyComponent}
+      ssr-selector="my-component"
+      ssr-Component={MyComponent}
       someProp="value"
     />
   );
@@ -37,13 +37,13 @@ export function MyComponent() {
 
 > [!CAUTION]
 >
-> The `selector` prop is required and must match the web component's tag name, also the `Component` prop is required and must be the web component itself.
+> The `ssr-selector` prop is required and must match the web component's tag name, also the `ssr-Component` prop is required and must be the web component itself.
 
 ## Types
 
 ```tsx
 export function SSRWebComponent<T>(
-  props: T & { selector: string, Component: ComponentType<T>, children?: JSX.Element },
+  props: T & { 'ssr-selector': string, 'ssr-Component': ComponentType<T>, children?: JSX.Element },
 ): JSX.Element;
 ```
 

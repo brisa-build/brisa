@@ -8,17 +8,24 @@ export const AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL = Symbol.for(
 );
 
 type Props = {
-  Component: any;
-  selector: string;
+  'ssr-Component': any;
+  'ssr-selector': string;
   [key: string]: any;
 };
 
 const voidFn = () => {};
 
 export default async function SSRWebComponent(
-  { Component, selector, __key, ...props }: Props,
+  { 'ssr-Component': Component, 'ssr-selector': selector, __key, ...props }: Props,
   { store, useContext, i18n, indicate, route }: RequestContext,
 ) {
+  // Note: only can happen with libraries in old versions of Brisa
+  // TODO: Remove in the future
+  if(!Component) {
+    Component = props.Component
+    selector = props.selector
+  }
+
   const { WEB_CONTEXT_PLUGINS } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
   const self = { shadowRoot: {}, attachInternals: voidFn } as any;
@@ -71,11 +78,11 @@ export default async function SSRWebComponent(
 
   if (showContent) {
     try {
-      content = await (typeof Component.suspense === 'function'
+      content = await (typeof Component?.suspense === 'function'
         ? Component.suspense(componentProps, webContext)
         : Component(componentProps, webContext));
     } catch (error) {
-      if (Component.error) {
+      if (Component?.error) {
         content = await Component.error(
           { ...componentProps, error },
           webContext,
@@ -104,5 +111,3 @@ export default async function SSRWebComponent(
     </Selector>
   );
 }
-
-SSRWebComponent.__isWebComponent = true;

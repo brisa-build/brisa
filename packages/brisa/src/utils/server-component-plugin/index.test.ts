@@ -88,8 +88,8 @@ describe('utils', () => {
         
         export default function (props) {
           return jsxDEV(_Brisa_SSRWebComponent, {
-           Component: WebComponent,
-           selector: "web-component",
+           'ssr-Component': WebComponent,
+           'ssr-selector': "web-component",
            ...props
          });
         }
@@ -269,7 +269,7 @@ describe('utils', () => {
         import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
-          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
+          return <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" onClick={() => console.log('clicked')} data-action-onclick="a1_1" data-action />;
         }
 
         ServerComponent._hasActions = true;
@@ -299,7 +299,7 @@ describe('utils', () => {
         import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
-          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" __key="foo" key="foo" />;
+          return <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" __key="foo" key="foo" />;
         }
       `),
       );
@@ -624,7 +624,7 @@ describe('utils', () => {
         import _Brisa_WC1 from "${webComponentPath}";
 
         export default function ServerComponent() {
-          return <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" />;
+          return <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" />;
         }
       `);
 
@@ -664,7 +664,7 @@ describe('utils', () => {
           return (
             <>
             {Array.from({ length: 3 }, (_, i) => (
-              <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" name={'Hello'+i}>
+              <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" name={'Hello'+i}>
                 <b> Child </b>
               </_Brisa_SSRWebComponent>
             ))}
@@ -1021,8 +1021,8 @@ describe('utils', () => {
         export default function ServerComponent() {
           return (
             <>
-              <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" />
-              <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" />
+              <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" />
+              <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" />
             </>
           );
         }
@@ -1074,7 +1074,7 @@ describe('utils', () => {
               <Foo />
               <Bar />
               <Baz />
-              <_Brisa_SSRWebComponent Component={_Brisa_WC1} selector="web-component" />
+              <_Brisa_SSRWebComponent ssr-Component={_Brisa_WC1} ssr-selector="web-component" />
             </>
           );
         }

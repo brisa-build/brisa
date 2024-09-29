@@ -38,7 +38,7 @@ describe('utils', () => {
       const Component = () => <div>hello world</div>;
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -54,8 +54,8 @@ describe('utils', () => {
       const selector = 'my-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          'ssr-selector': selector,
           name: 'world',
         },
         requestContext,
@@ -82,7 +82,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -108,7 +108,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -129,7 +129,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -151,7 +151,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -174,7 +174,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -195,7 +195,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -216,7 +216,7 @@ describe('utils', () => {
       };
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -235,7 +235,7 @@ describe('utils', () => {
 
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -254,7 +254,7 @@ describe('utils', () => {
 
       const selector = 'my-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -276,8 +276,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          'ssr-Component': Component,
+          'ssr-selector': selector,
           children: 'world',
         },
         requestContext,
@@ -301,8 +301,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          'ssr-Component': Component,
+          'ssr-selector': selector,
           children: 'world',
         },
         requestContext,
@@ -327,8 +327,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          'ssr-Component': Component,
+          'ssr-selector': selector,
           children: 'world',
         },
         requestContext,
@@ -355,8 +355,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          'ssr-selector': selector,
           name: 'world',
         },
         requestContext,
@@ -386,8 +386,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -409,8 +409,8 @@ describe('utils', () => {
       try {
         (await SSRWebComponent(
           {
-            Component,
-            selector,
+            'ssr-Component': Component,
+            'ssr-selector': selector,
           },
           requestContext,
         )) as any;
@@ -438,8 +438,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -483,8 +483,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         request,
       )) as any;
@@ -514,8 +514,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component: ComponentWithAsyncEvent,
-          selector,
+          'ssr-Component': ComponentWithAsyncEvent,
+          'ssr-selector': selector,
         },
         requestContext,
       )) as any;
@@ -546,8 +546,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -576,7 +576,7 @@ describe('utils', () => {
       req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
 
       const output = (await SSRWebComponent(
-        { Component, selector, children: <h1>CHILD</h1> },
+        { 'ssr-Component': Component, 'ssr-selector': selector, children: <h1>CHILD</h1> },
         req,
       )) as any;
 
@@ -621,8 +621,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -644,8 +644,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -666,8 +666,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -686,8 +686,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -707,8 +707,8 @@ describe('utils', () => {
 
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -724,7 +724,7 @@ describe('utils', () => {
       const __key = 'some-key';
 
       const output = (await SSRWebComponent(
-        { Component, selector, foo: 'bar', __key },
+        { 'ssr-Component': Component, 'ssr-selector': selector, foo: 'bar', __key },
         requestContext,
       )) as any;
 
@@ -740,8 +740,8 @@ describe('utils', () => {
       const selector = 'my-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -757,8 +757,8 @@ describe('utils', () => {
       const selector = 'my-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -774,8 +774,8 @@ describe('utils', () => {
       const selector = 'my-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -791,8 +791,8 @@ describe('utils', () => {
       const selector = 'my-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -809,8 +809,8 @@ describe('utils', () => {
       const selector = 'my-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          "ssr-Component": Component,
+          "ssr-selector": selector
         },
         requestContext,
       )) as any;
@@ -823,7 +823,7 @@ describe('utils', () => {
       const Component = webComponentPath;
       const selector = 'web-component';
       const output = (await SSRWebComponent(
-        { Component, selector },
+        { 'ssr-Component': Component, 'ssr-selector': selector },
         requestContext,
       )) as any;
 
@@ -836,8 +836,8 @@ describe('utils', () => {
       const selector = 'web-component';
       const output = (await SSRWebComponent(
         {
-          Component,
-          selector,
+          'ssr-Component': Component,
+          'ssr-selector': selector,
           foo: <span id="server-part">bar</span>,
         },
         requestContext,
