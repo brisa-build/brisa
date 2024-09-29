@@ -14,9 +14,9 @@
   },
   "files": ["index.ts", "index.d.ts"],
   "dependencies": {
-    "@tailwindcss/postcss": "4.0.0-alpha.21",
+    "@tailwindcss/postcss": "4.0.0-alpha.25",
     "postcss": "8.4.47",
-    "tailwindcss": "4.0.0-alpha.21"
+    "tailwindcss": "4.0.0-alpha.25"
   },
   "packageManager": "bun@1.1.30",
   "engines": {
