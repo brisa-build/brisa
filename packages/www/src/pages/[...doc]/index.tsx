@@ -7,10 +7,6 @@ import BreadcrumbNav from '@/components/breadcrumb-nav';
 import HeadingsBar from '@/components/headings-bar';
 import { fileSystemRouter } from 'brisa/server';
 
-const docsDir = path.resolve(
-  path.join(import.meta.dirname, '..', '..', '..', '..', '..', 'docs'),
-);
-
 export function Head({}, { route }: RequestContext) {
   const name = (route.params?.doc as string[])
     ?.map?.(kebabCaseToNormal)
@@ -19,9 +15,9 @@ export function Head({}, { route }: RequestContext) {
 }
 
 export default async function Documentation({}, { route }: RequestContext) {
-  const pathnameParts = route.pathname.split('/').filter(Boolean);
+  const pathnameParts = route.params?.doc as string[];
   let filePath = path.join(
-    docsDir,
+    getDocsDir(),
     ...pathnameParts.slice(0, -1),
     pathnameParts.at(-1) + '.md',
   );
@@ -48,7 +44,7 @@ export default async function Documentation({}, { route }: RequestContext) {
 
 export async function prerender() {
   const { routes } = fileSystemRouter({
-    dir: docsDir,
+    dir: getDocsDir(),
     fileExtensions: ['.md'],
   });
   return routes.map(([pathname]) => ({
@@ -61,4 +57,10 @@ function kebabCaseToNormal(str: string) {
     .split('-')
     .map((word) => word[0].toUpperCase() + word.slice(1))
     .join(' ');
+}
+
+function getDocsDir() {
+  return path.resolve(
+    path.join(import.meta.dirname, '..', '..', '..', '..', '..', 'docs'),
+  );
 }

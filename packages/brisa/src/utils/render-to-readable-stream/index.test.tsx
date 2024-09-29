@@ -3272,11 +3272,11 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
       expect(result).toContain(
-        'Error in SSR of Component server component with props {}',
+        `Error in SSR on 'Component' server component with props {}`,
       );
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
-        'Error in SSR of Component server component with props {}',
+        `Error in SSR on 'Component' server component with props {}`,
       );
     });
 
@@ -3298,11 +3298,11 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
       expect(result).toStartWith(toInline(`<html><head></head><body>`));
       expect(result).toContain(
-        'Error in SSR of SomeTestComponent server component with props {}',
+        `Error in SSR on 'SomeTestComponent' server component with props {}`,
       );
       expect(result).toEndWith(toInline(`</body></html>`));
       expect(mockLog.mock.calls.toString()).toContain(
-        'Error in SSR of SomeTestComponent server component with props {}',
+        `Error in SSR on 'SomeTestComponent' server component with props {}`,
       );
     });
 

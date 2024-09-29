@@ -19,7 +19,7 @@
     "markdown-it-container": "4.0.0",
     "markdown-it-shikiji": "0.10.2",
     "minisearch": "7.1.0",
-    "search-engine-wc": "0.2.2",
+    "search-engine-wc": "0.2.3",
     "shikiji-transformers": "0.10.2",
     "slugify": "1.6.6",
     "@swc/wasm-web": "1.7.28"

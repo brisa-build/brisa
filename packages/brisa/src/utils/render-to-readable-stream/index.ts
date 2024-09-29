@@ -635,12 +635,12 @@ function getValueOfComponent(
         const customElementName = props['ssr-selector'];
         const componentName =
           props['ssr-selector'] || componentFn.name || 'Component';
-        const title = `Error in SSR of ${componentName} ${customElementName ? 'web' : 'server'} component with props ${JSON.stringify(
+        const title = `Error in SSR on '${componentName}' ${customElementName ? 'web' : 'server'} component with props ${JSON.stringify(
           props,
         )}`;
         logError({
           req: request,
-          messages: [title, error.message],
+          messages: [title, (error as any).code, error.message ?? error.toString()].filter(Boolean),
           stack: error.stack,
           docTitle: 'Documentation about SSR',
           docLink: customElementName
