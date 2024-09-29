@@ -121,6 +121,7 @@ export const getConstants = (): BrisaConstants =>
     : constants;
 
 async function loadDynamicConstants() {
+  const binaryExternalLibs = ['lightningcss'];
   const CSS_FILES =
     (await importFileIfExists('css-files.json', buildDir))?.default ?? [];
   const integrations = await importFileIfExists(
@@ -152,6 +153,10 @@ async function loadDynamicConstants() {
   if (CONFIG.basePath && !CONFIG.basePath.startsWith(path.sep)) {
     CONFIG.basePath = path.sep + CONFIG.basePath;
   }
+
+  // Add external libraries to the list of external libraries
+  if (!CONFIG.external) CONFIG.external = binaryExternalLibs;
+  else CONFIG.external = [...CONFIG.external, ...binaryExternalLibs];
 
   // This is needed for some helpers like "navigate" to work properly
   // in the server side. (For the client-side it's solved during the build process)
