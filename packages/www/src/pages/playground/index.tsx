@@ -23,9 +23,9 @@ export default function Playground() {
         <div
           slot="code-editor"
           style={{
-            height: '500px',
+            height: '100%',
             width: '100%',
-            border: '1px solid var(--color-primary)',
+            border: '0',
           }}
           id="code-editor"
         >
@@ -76,8 +76,8 @@ export default function Playground() {
           title="Preview"
           style={{
             width: '100%',
-            border: '1px solid var(--color-primary)',
-            height: '500px',
+            border: '0',
+            height: '100%',
             color: 'var(--color-primary)',
           }}
           src="/playground/preview"
