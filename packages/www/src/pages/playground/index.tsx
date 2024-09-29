@@ -60,6 +60,7 @@ export default function Playground() {
                const preview = document.querySelector('#preview-iframe');
                const editor = monaco.editor.create(document.querySelector('#code-editor'), {
                   theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
+                  automaticLayout: true,
               });
               editor.setModel(codeModel);
               editor.onDidChangeModelContent((e) => {
