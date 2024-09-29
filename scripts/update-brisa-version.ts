@@ -5,6 +5,7 @@ import brisaPackageJSON from '../packages/brisa/package.json';
 import createBrisaPackageJSON from '../packages/create-brisa/package.json';
 import wwwPackageJSON from '../packages/www/package.json';
 import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
+import brisaTailwindCSSPackageJSON from '../packages/brisa-tailwindcss/package.json';
 
 function updatePackageJSONOfExamplesToLatestVersion(version: string) {
   const EXAMPLES_FOLDER = join(import.meta.dir, '..', 'examples');
@@ -80,6 +81,13 @@ adapterVercelPackageJSON.version = version;
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'adapter-vercel', 'package.json'),
   JSON.stringify(adapterVercelPackageJSON, null, 2),
+);
+
+// brisa-tailwindcss package.json
+brisaTailwindCSSPackageJSON.version = version;
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'packages', 'brisa-tailwindcss', 'package.json'),
+  JSON.stringify(brisaTailwindCSSPackageJSON, null, 2),
 );
 
 // Update Brisa CLI version
