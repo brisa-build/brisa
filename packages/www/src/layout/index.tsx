@@ -81,7 +81,7 @@ export default function Layout(
           <Nav />
         </header>
         {children}
-        <Footer />
+        {route.pathname !== '/playground' && <Footer />}
       </body>
     </html>
   );
