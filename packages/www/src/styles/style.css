@@ -57,6 +57,7 @@
   );
   --clear-hover: #f9f9f9b3;
   --overlay-bg-color: rgba(0, 0, 0, 0.5);
+  --playground-bg-color: #f9fafb;
 }
 
 :root::view-transition-old(*),
@@ -131,6 +132,7 @@ body.dark {
   );
   --clear-hover: #2d2d2db3;
   --overlay-bg-color: rgba(0, 0, 0, 0.5);
+  --playground-bg-color: #18181b;
 }
 
 *,

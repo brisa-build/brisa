@@ -29,13 +29,6 @@ export default async function PlayGround(
   });
 
   css`
-    :root {
-      --playground-bg-color: #f9fafb;
-    }
-    .dark {
-      --playground-bg-color: #18181b;
-    }
-
     .playground {
       display: flex;
       flex-direction: row;
