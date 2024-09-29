@@ -3,8 +3,8 @@
   "version": "0.0.228",
   "license": "MIT",
   "type": "module",
-  "main": "./index.js",
-  "module": "./index.js",
+  "main": "./index.ts",
+  "module": "./index.ts",
   "types": "./index.d.ts",
   "author": "Aral Roca Gòmez <contact@aralroca.com>",
   "repository": {
@@ -15,9 +15,7 @@
   "files": ["index.ts", "index.d.ts"],
   "dependencies": {
     "@tailwindcss/postcss": "4.0.0-alpha.21",
-    "postcss": "8.4.47"
-  },
-  "peerDependencies": {
+    "postcss": "8.4.47",
     "tailwindcss": "4.0.0-alpha.21"
   },
   "packageManager": "bun@1.1.30",

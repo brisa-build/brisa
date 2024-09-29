@@ -1,12 +1,7 @@
-import { describe, expect, it, afterEach } from 'bun:test';
-import fs from 'node:fs';
+import { describe, expect, it } from 'bun:test';
 import brisaTailwindcss from '.';
 
 describe('brisa-tailwindcss', () => {
-  afterEach(() => {
-    if (fs.existsSync('out')) fs.rmSync('out', { recursive: true });
-  });
-
   it('should return the correct name', () => {
     const integration = brisaTailwindcss();
     expect(integration.name).toBe('brisa-tailwindcss');
@@ -19,9 +14,9 @@ describe('brisa-tailwindcss', () => {
 
   it('should return default CSS content', () => {
     const integration = brisaTailwindcss();
-    expect(integration.defaultCSSContent).toContain('@tailwind base;');
-    expect(integration.defaultCSSContent).toContain('@tailwind components;');
-    expect(integration.defaultCSSContent).toContain('@tailwind utilities;');
+    expect(integration.defaultCSS.content).toContain('@tailwind base;');
+    expect(integration.defaultCSS.content).toContain('@tailwind components;');
+    expect(integration.defaultCSS.content).toContain('@tailwind utilities;');
   });
 
   it('should transpile CSS', async () => {
@@ -34,10 +29,45 @@ describe('brisa-tailwindcss', () => {
           --color: red;
         }
       `;
-    fs.mkdirSync('out');
-    fs.writeFileSync('out/index.css', cssCode);
     const integration = brisaTailwindcss();
-    const transpiledCSS = await integration.transpileCSS('out/index.css');
+    const transpiledCSS = await integration.transpileCSS(
+      'out/index.css',
+      cssCode,
+    );
     expect(transpiledCSS).toContain(' MIT License | https://tailwindcss.com ');
+  });
+
+  it('should add :host to all :root selectors', async () => {
+    const cssCode = `
+        @tailwind base; 
+        @tailwind components; 
+        @tailwind utilities;
+
+        :root {
+          --color: red;
+        }
+      `;
+    const integration = brisaTailwindcss();
+    const transpiledCSS = await integration.transpileCSS(
+      'out/index.css',
+      cssCode,
+    );
+    expect(transpiledCSS).toContain(':host');
+  });
+
+  it('should not import tailwindcss when @tailwind is not present', async () => {
+    const cssCode = `
+        body {
+          color: red;
+        }
+      `;
+    const integration = brisaTailwindcss();
+    const transpiledCSS = await integration.transpileCSS(
+      'out/index.css',
+      cssCode,
+    );
+    expect(transpiledCSS).not.toContain(
+      ' MIT License | https://tailwindcss.com ',
+    );
   });
 });

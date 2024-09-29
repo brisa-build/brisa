@@ -67,6 +67,7 @@ const defaultConfig = {
   extendPlugins: (plugins: BunPlugin[]) => plugins,
   output: 'bun',
   clustering: IS_PRODUCTION && OS_CAN_LOAD_BALANCE,
+  integrations: [],
 };
 
 let constants = {
