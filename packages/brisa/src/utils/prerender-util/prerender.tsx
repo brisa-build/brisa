@@ -23,19 +23,19 @@ async function prerender({
   const { LOG_PREFIX, SRC_DIR } = getConstants();
   const isWebComponent =
     componentPath === 'brisa/server' &&
-    typeof componentProps.Component === 'string' &&
-    componentProps.selector;
+    typeof componentProps['ssr-Component'] === 'string' &&
+    componentProps['ssr-selector'];
   const relativeDir = dir?.replace(SRC_DIR, '') || '';
   let componentRelative = componentPath.replace(SRC_DIR, '');
 
   // SSR of Web Components
   if (isWebComponent) {
     componentPath = brisaServerPath;
-    componentProps.Component = resolveImportSync(
-      componentProps.Component as string,
+    componentProps['ssr-Component'] = resolveImportSync(
+      componentProps['ssr-Component'] as string,
       dir,
     );
-    componentRelative = (componentProps.Component as string).replace(
+    componentRelative = (componentProps['ssr-Component'] as string).replace(
       SRC_DIR,
       '',
     );

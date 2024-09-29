@@ -290,7 +290,7 @@ describe('utils', () => {
 		export default function App() {
 			return (
 				<div>
-					<_Brisa_SSRWebComponent Component={Foo} selector="web-component" renderOn="build" foo="bar" />
+					<_Brisa_SSRWebComponent ssr-Component={Foo} ssr-selector="web-component" renderOn="build" foo="bar" />
 				</div>
 			);
 		}
@@ -304,7 +304,7 @@ describe('utils', () => {
 					componentPath: "brisa/server",
 					dir: "./foo",
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
+					componentProps: {'ssr-Component': '@/foo','ssr-selector': "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}
@@ -320,7 +320,7 @@ describe('utils', () => {
 		export default function App() {
 			return (
 				<div>
-					<_Brisa_SSRWebComponent Component={Foo} selector="web-component" renderOn="build" foo="bar" />
+					<_Brisa_SSRWebComponent ssr-Component={Foo} ssr-selector="web-component" renderOn="build" foo="bar" />
 				</div>
 			);
 		}
@@ -333,7 +333,7 @@ describe('utils', () => {
 					componentPath: "brisa/server",
 					dir: "./foo",
 					componentModuleName: "SSRWebComponent",
-					componentProps: {Component: '@/foo',selector: "web-component",foo: "bar"}
+					componentProps: {'ssr-Component': '@/foo','ssr-selector': "web-component",foo: "bar"}
 				})}, undefined, false, undefined, this
 			);
 		}

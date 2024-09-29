@@ -256,7 +256,7 @@ function processPrerenderProperties(
   }
 
   for (const prop of (jsxCall.arguments[1] as any).properties) {
-    if (isSSRWebComponent && prop?.key?.name === 'Component') {
+    if (isSSRWebComponent && prop?.key?.value === 'ssr-Component') {
       const component = imports.get(prop.value.name);
       if (component) {
         (prop.value = {

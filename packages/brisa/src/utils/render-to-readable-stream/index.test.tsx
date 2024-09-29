@@ -542,8 +542,8 @@ describe('utils', () => {
           <h1>Test</h1>
           {Array.from({ length: 3 }, (_, i) => (
             <SSRWebComponent
-              Component={WebComponent}
-              selector="web-component"
+              ssr-Component={WebComponent}
+              ssr-selector="web-component"
               name={'World' + i}
             >
               <b> Child </b>
@@ -2127,13 +2127,13 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
           ></SSRWebComponent>
         </SSRWebComponent>,
         testOptions,
@@ -2181,17 +2181,17 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
           ></SSRWebComponent>
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
             slot="with-theme"
           ></SSRWebComponent>
         </SSRWebComponent>,
@@ -2246,18 +2246,18 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <div>
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
             ></SSRWebComponent>
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
               slot="with-theme"
             ></SSRWebComponent>
           </div>
@@ -2315,32 +2315,32 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <SSRWebComponent
-            Component={ThemeProvider}
-            selector="theme-provider"
+            ssr-Component={ThemeProvider}
+            ssr-selector="theme-provider"
             color="blue"
           >
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
             ></SSRWebComponent>
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
               slot="with-theme"
             ></SSRWebComponent>
           </SSRWebComponent>
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
           ></SSRWebComponent>
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
             slot="with-theme"
           ></SSRWebComponent>
         </SSRWebComponent>,
@@ -2413,18 +2413,18 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <div slot="with-theme">
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
             ></SSRWebComponent>
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
               slot="with-theme"
             ></SSRWebComponent>
           </div>
@@ -2484,8 +2484,8 @@ describe('utils', () => {
         return (
           <>
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
               slot={useTheme ? 'with-theme' : undefined}
             ></SSRWebComponent>
           </>
@@ -2494,8 +2494,8 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <ServerComponent useTheme={false} />
@@ -2552,22 +2552,22 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
             slot="with-theme"
           ></SSRWebComponent>
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
           ></SSRWebComponent>
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
             slot="with-theme"
           ></SSRWebComponent>
         </SSRWebComponent>,
@@ -2628,16 +2628,16 @@ describe('utils', () => {
       function ServerComponent() {
         return (
           <SSRWebComponent
-            Component={ChildComponent}
-            selector="child-component"
+            ssr-Component={ChildComponent}
+            ssr-selector="child-component"
           />
         );
       }
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ThemeProvider}
-          selector="theme-provider"
+          ssr-Component={ThemeProvider}
+          ssr-selector="theme-provider"
           color="red"
         >
           {/* @ts-ignore */}
@@ -2689,13 +2689,13 @@ describe('utils', () => {
           <context-provider context={ThemeCtx} value={{ color }}>
             <context-provider context={ThemeCtx} value={{ color: 'blue' }}>
               <SSRWebComponent
-                Component={ChildComponent}
-                selector="child-component"
+                ssr-Component={ChildComponent}
+                ssr-selector="child-component"
               ></SSRWebComponent>
             </context-provider>
             <SSRWebComponent
-              Component={ChildComponent}
-              selector="child-component"
+              ssr-Component={ChildComponent}
+              ssr-selector="child-component"
             ></SSRWebComponent>
           </context-provider>
         );
@@ -2708,8 +2708,8 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(
         <SSRWebComponent
-          Component={ColorTest}
-          selector="theme-provider"
+          ssr-Component={ColorTest}
+          ssr-selector="theme-provider"
           color="red"
         />,
         testOptions,
@@ -3656,7 +3656,7 @@ describe('utils', () => {
             <link rel="stylesheet" href="test.css"></link>
           </head>
           <body>
-            <SSRWebComponent Component={Component} selector="test" />
+            <SSRWebComponent ssr-Component={Component} ssr-selector="test" />
           </body>
         </html>,
         testOptions,
@@ -3693,7 +3693,7 @@ describe('utils', () => {
           <head></head>
           <body>
             <ServerComponent />
-            <SSRWebComponent Component={WebComponent} selector="test" />
+            <SSRWebComponent ssr-Component={WebComponent} ssr-selector="test" />
           </body>
         </html>,
         testOptions,
@@ -3767,7 +3767,7 @@ describe('utils', () => {
             <link rel="stylesheet" href="test.css"></link>
           </head>
           <body>
-            <SSRWebComponent Component={Component} selector="test" />
+            <SSRWebComponent ssr-Component={Component} ssr-selector="test" />
           </body>
         </html>,
         testOptions,

@@ -23,8 +23,8 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
 
 			export default function (props) {
 				return jsxDEV(_Brisa_SSRWebComponent, {
-						Component: WebComponent,
-						selector: "web-component",
+						'ssr-Component': WebComponent,
+						'ssr-selector': "web-component",
 						...props
 				});
 			}
@@ -43,8 +43,8 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
       normalizeHTML(`
 			export default function (props) {
 				return jsxDEV(_Brisa_SSRWebComponent, {
-						Component: WebComponent,
-						selector: "web-component",
+						'ssr-Component': WebComponent,
+						'ssr-selector': "web-component",
 						...props
 				});
 			}
@@ -63,8 +63,8 @@ describe('utils/server-component-plugin/wrap-default-export-with-ssr-web-compone
       normalizeHTML(`
 			export default function (props) {
 				return jsxDEV(_Brisa_SSRWebComponent, {
-						Component: () => 'hello',
-						selector: "web-component",
+						'ssr-Component': () => 'hello',
+						'ssr-selector': "web-component",
 						...props
 				});
 			}

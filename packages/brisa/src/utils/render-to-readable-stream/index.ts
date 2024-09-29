@@ -172,7 +172,7 @@ async function enqueueDuringRendering(
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
     const isFragment = type === null;
     const isTagToIgnore = isFragment || isServerProvider;
-    const isWebComponent = type?.__isWebComponent || props?.__isWebComponent;
+    const isWebComponent = props?.['ssr-Component'] || props?.__isWebComponent;
     const isElement = typeof type === 'string';
     const isWebComponentSelector = isWebComponent && isElement;
     let slottedContentProviders: ProviderType[] | undefined;
@@ -632,10 +632,9 @@ function getValueOfComponent(
         throw error;
       }
       if (!isComponent(componentFn.error)) {
-        const isWebComponent = (componentFn as any).__isWebComponent;
-        const componentName =
-          (isWebComponent ? props.selector : componentFn.name) || 'Component';
-        const title = `Error in SSR of ${componentName} ${isWebComponent ? 'web' : 'server'} component with props ${JSON.stringify(
+        const customElementName = props['ssr-selector']
+        const componentName = props['ssr-selector'] || componentFn.name || 'Component';
+        const title = `Error in SSR of ${componentName} ${customElementName ? 'web' : 'server'} component with props ${JSON.stringify(
           props,
         )}`;
         logError({
@@ -643,7 +642,7 @@ function getValueOfComponent(
           messages: [title, error.message],
           stack: error.stack,
           docTitle: 'Documentation about SSR',
-          docLink: isWebComponent
+          docLink: customElementName
             ? 'https://brisa.build/building-your-application/components-details/web-components.html#server-side-rendering'
             : 'https://brisa.build/building-your-application/components-details/server-components.html',
         });

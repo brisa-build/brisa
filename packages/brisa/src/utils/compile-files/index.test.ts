@@ -279,12 +279,12 @@ describe('utils', () => {
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
     ${info}λ /pages/index                   | 821 B     | ${greenLog('3 kB')}
-    ${info}λ /pages/page-with-web-component | 749 B     | ${greenLog('5 kB')}
+    ${info}λ /pages/page-with-web-component | 761 B     | ${greenLog('5 kB')}
     ${info}λ /pages/somepage                | 1 kB      | ${greenLog('0 B')}
     ${info}λ /pages/somepage-with-context   | 1 kB     | ${greenLog('0 B')}  
     ${info}λ /pages/user/[username]         | 437 B     | ${greenLog('0 B')}
-    ${info}λ /pages/_404                    | 810 B     | ${greenLog('5 kB')}
-    ${info}λ /pages/_500                    | 816 B     | ${greenLog('5 kB')}
+    ${info}λ /pages/_404                    | 822 B     | ${greenLog('5 kB')}
+    ${info}λ /pages/_500                    | 828 B     | ${greenLog('5 kB')}
     ${info}ƒ /middleware                    | 828 B     |
     ${info}λ /api/example                   | 283 B     |
     ${info}Δ /layout                        | 604 B     |
@@ -373,7 +373,7 @@ describe('utils', () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 444 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 810 B     |
+    ${info}Δ /layout       | 822 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -648,7 +648,7 @@ describe('utils', () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 444 B     | ${greenLog('5 kB')}  
-    ${info}Δ /layout       | 843 B     |
+    ${info}Δ /layout       | 855 B     |
     ${info}Ω /i18n         | 221 B     |
     ${info}
     ${info}λ Server entry-points
@@ -723,7 +723,7 @@ describe('utils', () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 444 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 961 B     |
+    ${info}Δ /layout       | 973 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -982,7 +982,7 @@ describe('utils', () => {
         ${info}
         ${info}Route           | JS server | JS client (gz)  
         ${info}----------------------------------------------
-        ${info}λ /pages/index  | 716 B      | ${greenLog('3 kB')}  
+        ${info}λ /pages/index  | 728 B      | ${greenLog('3 kB')}  
         ${info}
         ${info}λ Server entry-points
         ${info}Φ JS shared by all

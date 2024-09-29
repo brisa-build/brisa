@@ -13,7 +13,7 @@ export default function BreadcrumbNav({}, { route }: RequestContext) {
   return (
     <div class="breadcrumb-wrapper">
       <nav aria-label="Breadcrumb" class="breadcrumb">
-        <menu-btn selector=".sidebar" useOverlay skipSSR>
+        <menu-btn selector=".sidebar" useOverlay>
           <MenuIcon />
           <CrossIcon />
         </menu-btn>
