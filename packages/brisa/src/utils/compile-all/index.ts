@@ -12,7 +12,7 @@ export default async function compileAll() {
     logBuildError('Failed to compile pages', logs);
   }
 
-  handleCSSFiles();
+  await handleCSSFiles();
 
   return { success, logs, pagesSize };
 }

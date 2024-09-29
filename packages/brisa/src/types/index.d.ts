@@ -1210,6 +1210,37 @@ export type Configuration = {
    *
    */
   clustering?: boolean;
+
+  /**
+   * Description:
+   *
+   * The `integrations` config property is used to add integrations to your project.
+   *
+   * Example with Tailwind CSS:
+   *
+   *  *
+   * ```ts
+   * import tailwindCSS from 'brisa-tailwindcss';
+   *
+   * export default {
+   *  integrations: [tailwindCSS()],
+   * };
+   * ```
+   *
+   * - [Integration docs](https://brisa.build/building-your-application/configuring/integrations)
+   * - [Tailwind CSS integration docs](https://brisa.build/building-your-application/integrations/tailwind-css#integrating-tailwind-css)
+   *
+   */
+  integrations?: Integration[];
+};
+
+export type Integration = {
+  name: string;
+  transpileCSS?(pathname: string, content: string): Promise<string>;
+  defaultCSS?: {
+    content: string;
+    applyDefaultWhenEvery: (content: string) => boolean;
+  };
 };
 
 export interface I18nDictionary {

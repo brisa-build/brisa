@@ -203,6 +203,10 @@ export default {
               link: '/building-your-application/configuring/output-adapter',
             },
             {
+              text: 'Integrations',
+              link: '/building-your-application/configuring/integrations',
+            },
+            {
               text: 'External dependencies',
               link: '/building-your-application/configuring/external',
             },

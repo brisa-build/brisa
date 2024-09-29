@@ -7,6 +7,7 @@ description: Use brisa.config.js file to configure Brisa.
 The `brisa.config.(js|ts|jsx|tsx)` file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the `Configuration` type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them.
 
 ```ts filename="brisa.config.ts"
+import brisaTailwindCSS from "brisa-tailwindcss";
 import type { Configuration } from "brisa";
 
 const config: Configuration = {
@@ -67,6 +68,12 @@ const config: Configuration = {
    * Default: undefined (no external dependencies)
    */
   external: ["lightningcss"],
+
+  /**
+   * `integrations` configuration
+   * Default: undefined (no integrations added)
+   */
+  integrations: [brisaTailwindCSS()],
 };
 
 // Export the configuration as the default export
@@ -124,3 +131,8 @@ The `external` option allows you to define external dependencies that should not
 > [!NOTE]
 >
 > More information about the output configuration can be found in the [Configuration](/building-your-application/configuring/output) documentation.
+
+## [`integrations`](/building-your-application/configuring/integrations)
+
+The `integrations` option allows you to integrate third-party libraries with the Brisa internals. This is useful when you want to automatically handle the integration of libraries like TailwindCSS.
+

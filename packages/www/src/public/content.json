@@ -1748,7 +1748,7 @@
   {
     "id": "/api-reference/server-apis/SSRWebComponent#example-usage",
     "title": "Example usage:",
-    "text": "In the next example, we use the SSRWebComponent to render a web component on the server side. import { SSRWebComponent } from \"brisa/server\";\nimport MyComponent from \"@/web-components/my-component\";\n\nexport function MyComponent() {\n  // It's the same than: <my-component someProp=\"foo\" /> \n  // but without compilation process:\n  return (\n    <SSRWebComponent\n      selector=\"my-component\"\n      Component={MyComponent}\n      someProp=\"value\"\n    />\n  );\n} This work is usually done by Brisa for you during compilation, so you can use <web-component /> directly in your code without having to do 2 imports and use this wrapper. However, it is exposed in case someone needs to do it manually for some reason. The selector prop is required and must match the web component's tag name, also the Component prop is required and must be the web component itself.",
+    "text": "In the next example, we use the SSRWebComponent to render a web component on the server side. import { SSRWebComponent } from \"brisa/server\";\nimport MyComponent from \"@/web-components/my-component\";\n\nexport function MyComponent() {\n  // It's the same than: <my-component someProp=\"foo\" /> \n  // but without compilation process:\n  return (\n    <SSRWebComponent\n      ssr-selector=\"my-component\"\n      ssr-Component={MyComponent}\n      someProp=\"value\"\n    />\n  );\n} This work is usually done by Brisa for you during compilation, so you can use <web-component /> directly in your code without having to do 2 imports and use this wrapper. However, it is exposed in case someone needs to do it manually for some reason. The ssr-selector prop is required and must match the web component's tag name, also the ssr-Component prop is required and must be the web component itself.",
     "titles": [
       "SSRWebComponent"
     ]
@@ -1756,7 +1756,7 @@
   {
     "id": "/api-reference/server-apis/SSRWebComponent#types",
     "title": "Types",
-    "text": "export function SSRWebComponent<T>(\n  props: T & { selector: string, Component: ComponentType<T>, children?: JSX.Element },\n): JSX.Element;",
+    "text": "export function SSRWebComponent<T>(\n  props: T & { 'ssr-selector': string, 'ssr-Component': ComponentType<T>, children?: JSX.Element },\n): JSX.Element;",
     "titles": [
       "SSRWebComponent"
     ]
@@ -3217,6 +3217,12 @@
     "titles": [
       "External Dependencies"
     ]
+  },
+  {
+    "id": "/building-your-application/configuring/integrations#integrations",
+    "title": "Integrations",
+    "text": "Brisa, offers versatile integration with third-party libraries like TailwindCSS to be automatically handled for the Brisa internals. If you use brisa add tailwindcss and you do not have brisa.config.ts yet, this will be automatically generated: brisa.config.ts import brisaTailwindCSS from \"brisa-tailwindcss\";\nimport type { Configuration } from \"brisa\";\n\nexport default {\n  integrations: [brisaTailwindCSS()],\n} satisfies Configuration; In this example, this piece of code help to integrate TailwindCSS inside the Brisa internals.",
+    "titles": []
   },
   {
     "id": "/building-your-application/configuring/output#output",
