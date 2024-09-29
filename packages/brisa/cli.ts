@@ -12,7 +12,21 @@ const outPath = path
   // There are some cases where the CLI is executed from the node_modules/.bin folder
   .replace(`node_modules${path.sep}.bin`, `node_modules${path.sep}brisa`);
 
-const mdxIntegrationPath = path.join(outPath, 'cli', 'integrations', 'mdx.js');
+const mdxIntegrationPath = path.join(
+  outPath,
+  'cli',
+  'integrations',
+  'mdx',
+  'index.js',
+);
+const tailwindCSSIntegrationPath = path.join(
+  outPath,
+  'cli',
+  'integrations',
+  'tailwindcss',
+  'index.js',
+);
+
 const buildFilepath = path.join(outPath, 'cli', 'build.js');
 const buildStandaloneFilePath = path.join(
   outPath,
@@ -316,7 +330,7 @@ async function main({
         cp.spawnSync(BUN_EXEC, ['i', '@mdx-js/esbuild@3.0.1'], devOptions);
         cp.spawnSync(BUN_EXEC, [mdxIntegrationPath], devOptions);
       } else if (integration === 'tailwindcss') {
-        console.log('TODO: Not implemented yet');
+        cp.spawnSync(BUN_EXEC, [tailwindCSSIntegrationPath], devOptions);
       } else {
         console.log('Integration not found');
         console.log('Usage: brisa add <integration>');

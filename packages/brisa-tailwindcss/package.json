@@ -12,10 +12,7 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/brisa-tailwindcss"
   },
-  "files": [
-    "index.ts",
-    "index.d.ts"
-  ],
+  "files": ["index.ts", "index.d.ts"],
   "dependencies": {
     "@tailwindcss/postcss": "4.0.0-alpha.21",
     "postcss": "8.4.47",

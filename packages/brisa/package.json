@@ -100,13 +100,11 @@
     "test",
     "cli.js"
   ],
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test && bun run build:core-compiler",
     "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
-    "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts && bun build --minify --target=node --outdir=out/cli src/cli/serve/index.tsx src/cli/integrations/mdx.ts",
+    "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts && bun build --minify --target=node --outdir=out/cli src/cli/serve/index.tsx src/cli/integrations/mdx/index.ts src/cli/integrations/tailwindcss/index.ts",
     "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
     "build:core-compiler": "cd scripts && bun run core-compiler-build.ts && cd .. && cp src/types/compiler.d.ts compiler/index.d.ts",
     "build:core-macros": "bun build --minify --target=bun --outdir=macros src/core/macros/index.ts && bun run build:cli",
