@@ -640,7 +640,11 @@ function getValueOfComponent(
         )}`;
         logError({
           req: request,
-          messages: [title, (error as any).code, error.message ?? error.toString()].filter(Boolean),
+          messages: [
+            title,
+            (error as any).code,
+            error.message ?? error.toString(),
+          ].filter(Boolean),
           stack: error.stack,
           docTitle: 'Documentation about SSR',
           docLink: customElementName
