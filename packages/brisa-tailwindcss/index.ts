@@ -13,7 +13,13 @@ export default function brisaTailwindcss() {
       return transpiledContent.css.replaceAll(':root', ':root, :host');
     },
     defaultCSS: {
-      content: '@tailwind base;\n@tailwind components;\n@tailwind utilities;',
+      content: `
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+        @import 'tailwindcss/preflight';
+        @import 'tailwindcss/theme';
+      `,
       applyDefaultWhenEvery: (content: string) =>
         !content.includes('@tailwind'),
     },

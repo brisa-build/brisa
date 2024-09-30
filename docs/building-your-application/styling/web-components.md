@@ -11,6 +11,7 @@ Brisa provides a different ways to style your web components, including:
 - [**CSS Template String**](#css-template-string): A powerful way to create reactive styles to signals within web components.
 - [**CSS Modules**](#css-modules): You can import CSS files directly into your web components. It's useful to separate styles into different files.
 - [**CSS inlined in JSX**](#css-inlined-in-jsx): You can use the `style` attribute to apply styles directly to the HTML element.
+- [**Tailwind CSS**](#tailwind-css): A CSS framework that lets you use utility classes instead of writing CSS.
 
 ## Global Styles in Web Components
 
@@ -123,3 +124,19 @@ In this example, the `color` prop is applied directly to the `style` attribute o
 > [!NOTE]
 >
 > For more information about CSS inlined in JSX, check the [CSS inlined in JSX](/building-your-application/styling/css-inlined-in-jsx) page.
+
+## Tailwind CSS
+
+The shadow DOM is adapted to be possible to use Tailwind CSS classes in your elements.
+
+```tsx
+import type { WebContext } from "brisa";
+
+export default function MyWebComponent() {
+  return <div className="bg-gray-100">Hello World</div>;
+}
+```
+
+> [!NOTE]
+>
+> Read more about how to integrate Tailwind CSS in your Brisa project in the [Tailwind CSS](/building-your-application/integrations/tailwind-css) page.

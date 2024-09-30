@@ -21,6 +21,9 @@ function updatePackageJSONOfExamplesToLatestVersion(version: string) {
       );
 
       examplePackageJSON.dependencies.brisa = version;
+      if (examplePackageJSON.dependencies['brisa-tailwindcss']) {
+        examplePackageJSON.dependencies['brisa-tailwindcss'] = version;
+      }
 
       fs.writeFileSync(
         examplePackageJSONPath,
