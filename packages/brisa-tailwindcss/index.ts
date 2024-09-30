@@ -20,8 +20,7 @@ export default function brisaTailwindcss() {
         @import 'tailwindcss/preflight';
         @import 'tailwindcss/theme';
       `,
-      applyDefaultWhenEvery: (content: string) =>
-        !content.includes('@tailwind'),
+      applyDefaultWhenEvery: (content: string) => !content.includes('tailwind'),
     },
   };
 }

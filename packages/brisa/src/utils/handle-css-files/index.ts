@@ -33,13 +33,11 @@ export default async function handleCSSFiles() {
 
         for (const file of cssFiles) {
           const pathname = path.join(BUILD_DIR, file);
+          const rawContent = fs.readFileSync(pathname, 'utf-8');
           const content =
-            (await integration.transpileCSS?.(
-              pathname,
-              fs.readFileSync(pathname, 'utf-8'),
-            )) ?? '';
+            (await integration.transpileCSS?.(pathname, rawContent)) ?? '';
           useDefault &&=
-            integration.defaultCSS?.applyDefaultWhenEvery?.(content) ?? true;
+            integration.defaultCSS?.applyDefaultWhenEvery?.(rawContent) ?? true;
           fs.writeFileSync(path.join(publicFolder, file), content);
           cssFilePaths.push(file);
         }

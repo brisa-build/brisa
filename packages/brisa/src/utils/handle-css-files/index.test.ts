@@ -130,6 +130,29 @@ describe('utils/handle-css-files', () => {
     expect(cssFiles).toEqual(['test.css'].toSorted());
   });
 
+  it('should NOT create a base.css file when some file has an import of "tailwindcss/*"', async () => {
+    const code = `
+      @import "tailwindcss/preflight" layer(base);
+      @import "tailwindcss/utilities" layer(utilities);
+
+      html {
+        color: white;
+      }
+    `;
+    fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), code);
+
+    const CONFIG = { integrations: [brisaTailwindCSS()] };
+    globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
+
+    await handleCSSFiles();
+
+    const cssFiles = JSON.parse(
+      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    ).toSorted();
+
+    expect(cssFiles).toEqual(['test.css'].toSorted());
+  });
+
   it('should add a log during transpiling TailwindCSS', async () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
     globalThis.mockConstants = {
