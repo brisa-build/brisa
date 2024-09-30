@@ -53,7 +53,7 @@ If you don't have any `.css` file with `@tailwind` directive or `tailwind` impor
 @tailwind components;
 @tailwind utilities;
 @import 'tailwindcss/preflight';
-@import 'tailwindcss/theme' theme(reference);
+@import 'tailwindcss/theme';
 ```
 
 In the case you want to override the default CSS file, you can create a `.css` file in your `src` with `@tailwind` directives or `@import 'tailwindcss/...` and Brisa will use it instead of the default one. This `.css` file you need to import it in your `src/layout.ts` file.
