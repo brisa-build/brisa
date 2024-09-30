@@ -1,5 +1,7 @@
-import { dangerHTML } from 'brisa';
+import { dangerHTML as esm } from 'brisa';
 import getMonacoEditorExtraLibs from '@/helpers/monaco-extra-libs';
+
+import '@/styles/playground.css';
 
 const defaultValue = `// src/web-components/wc-counter.tsx
 import type { WebContext } from 'brisa';
@@ -22,6 +24,7 @@ export default function Playground() {
       <play-ground skipSSR defaultValue={defaultValue}>
         <div
           slot="code-editor"
+          class="editor"
           style={{
             height: '100%',
             width: '100%',
@@ -30,7 +33,7 @@ export default function Playground() {
           id="code-editor"
         >
           <script type="module">
-            {dangerHTML(`
+            {esm(`
               import * as monaco from 'https://esm.sh/monaco-editor';
               import tsWorker from 'https://esm.sh/monaco-editor/esm/vs/language/typescript/ts.worker?worker';
               import { MonacoJsxSyntaxHighlight, getWorker } from 'https://esm.sh/monaco-jsx-syntax-highlight'
@@ -46,7 +49,6 @@ export default function Playground() {
               const modelUri = monaco.Uri.file("wc-counter.tsx")
               const existingModel = monaco.editor.getModels().find(m => m.uri.toString() === modelUri.toString());
               const codeModel = existingModel ?? monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
-
 
               monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
                 jsx: monaco.languages.typescript.JsxEmit.Preserve,
@@ -73,8 +75,9 @@ export default function Playground() {
               const { highlighter } = monacoJsxSyntaxHighlight.highlighterBuilder({
                 editor,
                 filePath: modelUri?.toString() ?? modelUri?.path,
-              })
-              highlighter()
+              });
+
+              highlighter();
 
               editor.setModel(codeModel);
 
