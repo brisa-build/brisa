@@ -9,18 +9,18 @@
 body.dark .jsx-expression-braces,
 body.dark .bracket-highlighting-0,
 body.dark .bracket-highlighting-4 {
-  color: #A89984 !important;
+  color: #a89984 !important;
 }
 
 .bracket-highlighting-1,
 .bracket-highlighting-3 {
-  color: #A89984;
+  color: #a89984;
 }
 
 /* Dark mode styles */
 body.dark .bracket-highlighting-1,
 body.dark .bracket-highlighting-3 {
-  color: #EBDBB2 !important;
+  color: #ebdbb2 !important;
 }
 
 .jsx-tag-angle-bracket {
@@ -29,7 +29,7 @@ body.dark .bracket-highlighting-3 {
 
 /* Dark mode styles */
 body.dark .jsx-tag-angle-bracket {
-  color: #83A598 !important;
+  color: #83a598 !important;
 }
 
 .jsx-tag-name {
@@ -38,18 +38,21 @@ body.dark .jsx-tag-angle-bracket {
 
 /* Dark mode styles */
 body.dark .jsx-tag-name {
-  color: #8EC07C !important;
+  color: #8ec07c !important;
 }
 
 .jsx-tag-attribute-key,
-.jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
+.jsx-expression-braces
+  + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
   color: #6f42c1 !important;
 }
 
 /* Dark mode styles */
 body.dark .jsx-tag-attribute-key,
-body.dark .jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
-  color: #FABD2F !important;
+body.dark
+  .jsx-expression-braces
+  + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
+  color: #fabd2f !important;
 }
 
 .jsx-text {
@@ -58,5 +61,5 @@ body.dark .jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-hig
 
 /* Dark mode styles */
 body.dark .jsx-text {
-  color: #EBDBB2 !important;
+  color: #ebdbb2 !important;
 }
