@@ -188,6 +188,11 @@ export default async function compileFiles() {
       const isPrerender = prerenderedRoutes.length === 1;
       let symbol = 'λ';
 
+      // Do not show assets in the table (css files)
+      if (route.endsWith('.css')) {
+        return [];
+      }
+
       if (isChunk) {
         symbol = 'Φ';
       } else if (route.startsWith('/middleware')) {
