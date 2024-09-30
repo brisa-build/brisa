@@ -34,7 +34,7 @@ describe('brisa-tailwindcss', () => {
       'out/index.css',
       cssCode,
     );
-    expect(transpiledCSS).toContain(' MIT License | https://tailwindcss.com ');
+    expect(transpiledCSS).toContain('@layer base');
   });
 
   it('should add :host to all :root selectors', async () => {
@@ -67,7 +67,7 @@ describe('brisa-tailwindcss', () => {
       cssCode,
     );
     expect(transpiledCSS).not.toContain(
-      ' MIT License | https://tailwindcss.com ',
+      '@layer base',
     );
   });
 });
