@@ -46,7 +46,7 @@ And you are ready to use TailwindCSS in your Brisa project.
 
 ## Defaults
 
-If you don't have any `.css` file with `@tailwind` directive, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than [TailwindCSS CDN](https://tailwindcss.com/docs/installation/play-cdn):
+If you don't have any `.css` file with `@tailwind` directive or `tailwind` import, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than [TailwindCSS CDN](https://tailwindcss.com/docs/installation/play-cdn):
 
 ```css
 @tailwind base;
@@ -56,7 +56,7 @@ If you don't have any `.css` file with `@tailwind` directive, Brisa will automat
 @import 'tailwindcss/theme' theme(reference);
 ```
 
-In the case you want to override the default CSS file, you can create a `.css` file in your `src` with `@tailwind` directives and Brisa will use it instead of the default one, and import it in your `src/layout.ts` file.
+In the case you want to override the default CSS file, you can create a `.css` file in your `src` with `@tailwind` directives or `@import 'tailwindcss/...` and Brisa will use it instead of the default one. This `.css` file you need to import it in your `src/layout.ts` file.
 
 ## Usage
 

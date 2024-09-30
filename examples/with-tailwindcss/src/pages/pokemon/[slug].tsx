@@ -10,10 +10,7 @@ export default function PokemonPage({}, { route }: RequestContext) {
   return (
     <div class="max-w-4xl mx-auto relative">
       <div class="flex gap-2 pb-10 items-center text-gray-500">
-        <a
-          class="after:content-['/'] after:pl-2 capitalize"
-          href="/"
-        >
+        <a class="after:content-['/'] after:pl-2 capitalize" href="/">
           Poke
         </a>
         <span class="after:content-['/'] after:pl-2 capitalize">
@@ -34,11 +31,7 @@ export default function PokemonPage({}, { route }: RequestContext) {
             <h1 class="text-3xl sm:text-5xl font-bold animate-in">
               {pokemon.name}
             </h1>
-            <p
-              class="max-w-sm py-4 text-lg"
-            >
-              {pokemon.description}
-            </p>
+            <p class="max-w-sm py-4 text-lg">{pokemon.description}</p>
           </div>
           <p>
             <Attacks attacks={pokemon.attacks} />
