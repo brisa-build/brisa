@@ -1,6 +1,6 @@
 {
   "name": "brisa-tailwindcss",
-  "version": "0.0.232",
+  "version": "0.0.233",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
