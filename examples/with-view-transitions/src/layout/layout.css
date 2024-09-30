@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "tailwindcss/preflight";
+@import "tailwindcss/theme";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: theme("colors.gray.50");
+}
+
+.animate-in {
+  animation: animate-in 0.5s ease-in-out;
+}
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #c7c7c7 #ededed;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ededed;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #c7c7c7;
+  border-radius: 5px;
+  border: 2px solid #ffffff;
+}
+@keyframes animate-in {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
