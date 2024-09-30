@@ -185,4 +185,34 @@ describe('utils/handle-css-files', () => {
     await handleCSSFiles();
     expect(mockLog).toHaveBeenCalledTimes(0);
   });
+
+  it('should compress to gzip and brotli the CSS files when CONFIG.assetCompression and IS_PRODUCTION is true', async () => {
+    const CONFIG = { assetCompression: true };
+    globalThis.mockConstants = {
+      BUILD_DIR,
+      CONFIG,
+      LOG_PREFIX,
+      IS_PRODUCTION: true,
+    };
+    fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
+    await handleCSSFiles();
+    expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
+      ['test.css', 'test.css.br', 'test.css.gz'].toSorted(),
+    );
+  });
+
+  it('should NOT compress to gzip and brotli the CSS files when CONFIG.assetCompression is true but is DEV', async () => {
+    const CONFIG = { assetCompression: true };
+    globalThis.mockConstants = {
+      BUILD_DIR,
+      CONFIG,
+      LOG_PREFIX,
+      IS_PRODUCTION: false,
+    };
+    fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
+    await handleCSSFiles();
+    expect(fs.readdirSync(path.join(BUILD_DIR, 'public'))).toEqual([
+      'test.css',
+    ]);
+  });
 });

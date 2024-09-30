@@ -2,10 +2,13 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logError } from '../log/log-build';
+import { gzipSync } from 'bun';
+import { brotliCompressSync } from 'node:zlib';
 
 export default async function handleCSSFiles() {
   try {
-    const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_BUILD_PROCESS } = getConstants();
+    const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_BUILD_PROCESS, IS_PRODUCTION } =
+      getConstants();
     const publicFolder = path.join(BUILD_DIR, 'public');
     const allFiles = fs.readdirSync(BUILD_DIR);
     const cssFilePaths: string[] = [];
@@ -75,6 +78,27 @@ export default async function handleCSSFiles() {
         );
         cssFilePaths.push(file);
       }
+    }
+
+    // Compression to gzip & brotli
+    if (IS_PRODUCTION && CONFIG.assetCompression) {
+      const start = Date.now();
+
+      for (const file of cssFilePaths) {
+        const buffer = fs.readFileSync(path.join(publicFolder, file));
+        Bun.write(path.join(publicFolder, file + '.gz'), gzipSync(buffer));
+        Bun.write(
+          path.join(publicFolder, file + '.br'),
+          brotliCompressSync(buffer),
+        );
+      }
+
+      const ms = ((Date.now() - start) / 1000).toFixed(2);
+      console.log(
+        LOG_PREFIX.INFO,
+        LOG_PREFIX.TICK,
+        `CSS files compressed successfully in ${ms}ms`,
+      );
     }
 
     // Write css-files.json
