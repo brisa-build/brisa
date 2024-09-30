@@ -31,41 +31,62 @@ export default function Playground() {
         >
           <script type="module">
             {dangerHTML(`
-                import * as monaco from 'https://esm.sh/monaco-editor';
-                import tsWorker from 'https://esm.sh/monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+              import * as monaco from 'https://esm.sh/monaco-editor';
+              import tsWorker from 'https://esm.sh/monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+              import { MonacoJsxSyntaxHighlight, getWorker } from 'https://esm.sh/monaco-jsx-syntax-highlight'
+              
+              const monacoJsxSyntaxHighlight = new MonacoJsxSyntaxHighlight(getWorker(), monaco)
 
-                window.MonacoEnvironment  = { 
-                  getWorker(_, label) {
-                    return new tsWorker();
-                  }
-                };
+              window.MonacoEnvironment  = { 
+                getWorker(_, label) {
+                  return new tsWorker();
+                }
+              };
 
-                const modelUri = monaco.Uri.file("wc-counter.tsx")
-                const existingModel = monaco.editor.getModels().find(m => m.uri.toString() === modelUri.toString());
-                const codeModel = existingModel ?? monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
+              const modelUri = monaco.Uri.file("wc-counter.tsx")
+              const existingModel = monaco.editor.getModels().find(m => m.uri.toString() === modelUri.toString());
+              const codeModel = existingModel ?? monaco.editor.createModel(\`${defaultValue}\`, "typescript", modelUri);
 
-               monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-                  jsx: "react",
-                  target: monaco.languages.typescript.ScriptTarget.ES2020,
-                  moduleResolution: monaco.languages.typescript.ModuleResolutionKind.Classic,
-                  allowNonTsExtensions: true
-                });
 
-                ${getMonacoEditorExtraLibs()}
-
-                monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-                  noSemanticValidation: false,
-                  noSyntaxValidation: false
-                });
-               const preview = document.querySelector('#preview-iframe');
-               const editor = monaco.editor.create(document.querySelector('#code-editor'), {
-                  theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
-                  automaticLayout: true,
+              monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+                jsx: monaco.languages.typescript.JsxEmit.Preserve,
+                target: monaco.languages.typescript.ScriptTarget.ES2020,
+                esModuleInterop: true,
+                moduleResolution: monaco.languages.typescript.ModuleResolutionKind.Classic,
+                allowNonTsExtensions: true,
               });
+
+              ${getMonacoEditorExtraLibs()}
+
+              monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+                noSemanticValidation: false,
+                noSyntaxValidation: false,
+              });
+              
+              const preview = document.querySelector('#preview-iframe');
+
+              const editor = monaco.editor.create(document.querySelector('#code-editor'), {
+                theme: document.body.classList.contains('dark') ? "vs-dark" : "vs-light",
+                automaticLayout: true,
+              });
+
+              const { highlighter } = monacoJsxSyntaxHighlight.highlighterBuilder({
+                editor,
+                filePath: modelUri?.toString() ?? modelUri?.path,
+              })
+              highlighter()
+
               editor.setModel(codeModel);
+
               editor.onDidChangeModelContent((e) => {
-                  preview.contentWindow.postMessage({ code: editor.getValue() }, '*');
+                highlighter()
+                preview.contentWindow.postMessage({ code: editor.getValue() }, '*');
               });
+
+              editor.onDidChangeModelContent(() => {
+                highlighter()
+              })
+
               window._xm = "native";
               window.changeTheme = monaco.editor.setTheme.bind(monaco.editor);
             `)}
