@@ -856,5 +856,26 @@ describe('utils', () => {
       expect(output[2][0][2][0][2][0]).toBe('span');
       expect(output[2][0][2][0][2][2]).toBe('bar');
     });
+
+    it('should add style with the CSS_FILES imports when CSS_FILES comes and is not skipping global styles', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CSS_FILES: ['foo.css', 'bar.css'],
+      } as unknown as BrisaConstants;
+      const Component = ({ foo }: any) => <div>{foo}</div>;
+      const selector = 'web-component';
+      const output = (await SSRWebComponent(
+        {
+          'ssr-Component': Component,
+          'ssr-selector': selector,
+          foo: <span id="server-part">bar</span>,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[2][0][2][2][1]).toEqual({
+        html: `<style>@import '/foo.css';@import '/bar.css'</style>`,
+      });
+    });
   });
 });
