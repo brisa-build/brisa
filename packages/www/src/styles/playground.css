@@ -14,7 +14,7 @@ body.dark .bracket-highlighting-4 {
 
 .bracket-highlighting-1,
 .bracket-highlighting-3 {
-  color: #000000;
+  color: #A89984;
 }
 
 /* Dark mode styles */
@@ -24,7 +24,7 @@ body.dark .bracket-highlighting-3 {
 }
 
 .jsx-tag-angle-bracket {
-  color: #000000;
+  color: #694003 !important;
 }
 
 /* Dark mode styles */
@@ -33,7 +33,7 @@ body.dark .jsx-tag-angle-bracket {
 }
 
 .jsx-tag-name {
-  color: #22863a;
+  color: #22863a !important;
 }
 
 /* Dark mode styles */
@@ -43,7 +43,7 @@ body.dark .jsx-tag-name {
 
 .jsx-tag-attribute-key,
 .jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
-  color: #6f42c1;
+  color: #6f42c1 !important;
 }
 
 /* Dark mode styles */
@@ -53,7 +53,7 @@ body.dark .jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-hig
 }
 
 .jsx-text {
-  color: #000000;
+  color: #951616 !important;
 }
 
 /* Dark mode styles */
