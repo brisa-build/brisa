@@ -13,10 +13,10 @@ next:
 Brisa supports different ways of styling your application, including:
 
 - [Global styles](/building-your-application/styling/global-styles)
-- [CSS Modules](/building-your-application/styling/css-modules)
 - [CSS Template literal](/building-your-application/styling/css-template-literal)
 - [CSS inlined in JSX](/building-your-application/styling/css-inlined-in-jsx)
 - [Tailwind CSS](/building-your-application/styling/tailwind-css)
+- _CSS Modules_ (coming soon)
 
 In addition, you can also style your web components and server components:
 

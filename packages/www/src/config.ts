@@ -129,10 +129,6 @@ export default {
               link: '/building-your-application/styling/global-styles',
             },
             {
-              text: 'CSS Modules',
-              link: '/building-your-application/styling/css-modules',
-            },
-            {
               text: 'CSS Template literal',
               link: '/building-your-application/styling/css-template-literal',
             },

@@ -4098,7 +4098,7 @@
   {
     "id": "/building-your-application/integrations/tailwind-css#defaults",
     "title": "Defaults",
-    "text": "If you don't have any .css file with @tailwind directive, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than TailwindCSS CDN: @tailwind base;\n@tailwind components;\n@tailwind utilities;\n@import 'tailwindcss/preflight';\n@import 'tailwindcss/theme' theme(reference); In the case you want to override the default CSS file, you can create a .css file in your src with @tailwind directives and Brisa will use it instead of the default one, and import it in your src/layout.ts file.",
+    "text": "If you don't have any .css file with @tailwind directive or tailwindcss import, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than TailwindCSS CDN: @tailwind base;\n@tailwind components;\n@tailwind utilities;\n@import 'tailwindcss/preflight';\n@import 'tailwindcss/theme'; In the case you want to override the default CSS file, you can create a .css file in your src with @tailwind directives or @import 'tailwindcss/... and Brisa will use it instead of the default one. This .css file you need to import it in your src/layout.ts file.",
     "titles": [
       "Integrating Tailwind CSS"
     ]
@@ -5194,20 +5194,6 @@
     ]
   },
   {
-    "id": "/building-your-application/styling/css-modules#css-modules",
-    "title": "CSS Modules",
-    "text": "In Brisa, you can use CSS Modules to style your components. CSS Modules allow you to define styles for individual components without worrying about naming conflicts or global styles.",
-    "titles": []
-  },
-  {
-    "id": "/building-your-application/styling/css-modules#adding-css-modules",
-    "title": "Adding CSS Modules",
-    "text": "To add CSS Modules to your components, create a CSS file with the desired styles and import it into your component. For example, you can create a styles.module.css file with the following content: /* styles.module.css */\n.container {\n  background-color: red;\n} Next, import the CSS file in your component and use the generated class names to apply the styles. For example, you can create a my-component.tsx file with the following content: // my-component.tsx\nimport styles from \"./styles.module.css\";\n\nconst MyComponent = () => {\n  return (\n    <div className={styles.container}>\n      Hello, world!\n    </div>\n  );\n}; In the example above, the styles object contains the generated class names from the styles.module.css file. By using the className attribute with the appropriate class name, you can apply the styles defined in the CSS Module to your component. CSS Modules are a great way to encapsulate styles and prevent naming conflicts in your components. They also make it easier to manage styles for individual components without affecting other parts of your website. TODO: Confirm CSS Modules after Bun CSS Parser, waiting to finish this task: https://github.com/brisa-build/brisa/issues/156",
-    "titles": [
-      "CSS Modules"
-    ]
-  },
-  {
     "id": "/building-your-application/styling/css-template-literal#css-template-literal",
     "title": "CSS Template Literal",
     "text": "In Brisa, you can add CSS styles to your components using CSS template literals. This allows you to define styles for individual elements without creating a separate CSS file.",
@@ -5244,7 +5230,7 @@
   {
     "id": "/building-your-application/styling/web-components#styling-web-components",
     "title": "Styling Web Components",
-    "text": "Brisa provides a different ways to style your web components, including: Global Styles in Web Components: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.\nCSS Template String: A powerful way to create reactive styles to signals within web components.\nCSS Modules: You can import CSS files directly into your web components. It's useful to separate styles into different files.\nCSS inlined in JSX: You can use the style attribute to apply styles directly to the HTML element.\nTailwind CSS: A CSS framework that lets you use utility classes instead of writing CSS.",
+    "text": "Brisa provides a different ways to style your web components, including: Global Styles in Web Components: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.\nCSS Template String: A powerful way to create reactive styles to signals within web components.\nCSS inlined in JSX: You can use the style attribute to apply styles directly to the HTML element.\nTailwind CSS: A CSS framework that lets you use utility classes instead of writing CSS.",
     "titles": []
   },
   {
@@ -5259,22 +5245,6 @@
     "id": "/building-your-application/styling/web-components#css-template-string",
     "title": "CSS Template String",
     "text": "The CSS template string is a powerful way to create reactive styles to signals within web components. It allows you to define styles in a template literal and use the css tag to apply them to the shadow DOM. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent({ color }, { css }: WebContext) {\n  css`\n    div {\n      color: ${color};\n    }\n  `;\n\n  return <div>Hello World</div>;\n} In this example, the color prop is reactive, so when it changes, the style will be updated accordingly. Also useful to create animations, hover effects, and more. You can use tag names directly in the CSS template string because is scoped to the shadow DOM, so you don't need to worry about naming conflicts with other components, or outside styles. For more information about CSS template string, check the CSS Template Literal page.",
-    "titles": [
-      "Styling Web Components"
-    ]
-  },
-  {
-    "id": "/building-your-application/styling/web-components#css-modules",
-    "title": "CSS Modules",
-    "text": "You can import CSS files directly into your web components. It's useful to separate styles into different files and keep your components more organized. import type { WebContext } from \"brisa\";\nimport styles from \"./MyWebComponent.module.css\";\n\nexport default function MyWebComponent() {\n  return <div class={styles.foo}>Hello World</div>;\n} In this example, the styles object contains all the CSS classes defined in the MyWebComponent.module.css file. You can use them directly in the class attribute of the HTML element. CSS Modules are not using the encapsulated shadow DOM, but is using a different approach to encapsulate the styles locally to avoid naming conflicts and improve maintainability. For more information about CSS Modules, check the CSS Modules page. TODO: Confirm CSS Modules after the implementation of this task: https://github.com/brisa-build/brisa/issues/156",
-    "titles": [
-      "Styling Web Components"
-    ]
-  },
-  {
-    "id": "/building-your-application/styling/web-components#css-inlined-in-jsx",
-    "title": "CSS inlined in JSX",
-    "text": "You can also use the style attribute to apply styles directly to the HTML element. This is useful for simple styles or when you need to apply styles dynamically. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent({ color }, { css }: WebContext) {\n  return <div style={{ color }}>Hello World</div>;\n} In this example, the color prop is applied directly to the style attribute of the div element. You can use any CSS property in the style object. For more information about CSS inlined in JSX, check the CSS inlined in JSX page.",
     "titles": [
       "Styling Web Components"
     ]
