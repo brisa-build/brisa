@@ -2929,7 +2929,7 @@
   {
     "id": "/building-your-application/configuring/brisa-config-js#brisaconfigjs-options",
     "title": "brisa.config.js options",
-    "text": "The brisa.config.(js|ts|jsx|tsx) file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the Configuration type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them. import type { Configuration } from \"brisa\";\n\nconst config: Configuration = {\n  /**\n   * `trailingSlash` configuration\n   * Default: undefined (trailing slash is not modified)\n   */\n  trailingSlash: true, // Adds trailing slash to URLs\n\n  /**\n   * `assetPrefix` configuration\n   * Default: undefined (no prefix added to assets)\n   */\n  assetPrefix: \"https://cdn.example.com\", // Prefix for assets\n\n  /**\n   * `extendPlugins` configuration\n   * Default: undefined (no additional plugins added)\n   */\n  extendPlugins: (plugins, { dev, isServer }) => [\n    ...plugins,\n    {\n      name: \"my-plugin\",\n      setup(build) {\n        build.onLoad({ filter: /\\.txt$/ }, async (args) => {\n          return {\n            contents: \"export default \" + JSON.stringify(args.path) + \";\",\n            loader: \"js\",\n          };\n        });\n      },\n    },\n  ],\n\n  /**\n   * `basePath` configuration\n   * Default: undefined (no base path added)\n   */\n  basePath: \"/my-app\", // Base path for the application\n\n  /**\n   * `tls` configuration\n   * Default: undefined (HTTPS is not enabled)\n   */\n  tls: {\n    cert: Bun.file(\"cert.pem\"),\n    key: Bun.file(\"key.pem\"),\n  }, // Enable HTTPS\n\n  /**\n   * `output` configuration\n   * Default: 'bun'\n   */\n  output: \"static\", // Output type of the application\n\n  /**\n   * `external` configuration\n   * Default: undefined (no external dependencies)\n   */\n  external: [\"lightningcss\"],\n};\n\n// Export the configuration as the default export\nexport default config satisfies Configuration;",
+    "text": "The brisa.config.(js|ts|jsx|tsx) file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the Configuration type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them. import brisaTailwindCSS from \"brisa-tailwindcss\";\nimport type { Configuration } from \"brisa\";\n\nconst config: Configuration = {\n  /**\n   * `trailingSlash` configuration\n   * Default: undefined (trailing slash is not modified)\n   */\n  trailingSlash: true, // Adds trailing slash to URLs\n\n  /**\n   * `assetPrefix` configuration\n   * Default: undefined (no prefix added to assets)\n   */\n  assetPrefix: \"https://cdn.example.com\", // Prefix for assets\n\n  /**\n   * `extendPlugins` configuration\n   * Default: undefined (no additional plugins added)\n   */\n  extendPlugins: (plugins, { dev, isServer }) => [\n    ...plugins,\n    {\n      name: \"my-plugin\",\n      setup(build) {\n        build.onLoad({ filter: /\\.txt$/ }, async (args) => {\n          return {\n            contents: \"export default \" + JSON.stringify(args.path) + \";\",\n            loader: \"js\",\n          };\n        });\n      },\n    },\n  ],\n\n  /**\n   * `basePath` configuration\n   * Default: undefined (no base path added)\n   */\n  basePath: \"/my-app\", // Base path for the application\n\n  /**\n   * `tls` configuration\n   * Default: undefined (HTTPS is not enabled)\n   */\n  tls: {\n    cert: Bun.file(\"cert.pem\"),\n    key: Bun.file(\"key.pem\"),\n  }, // Enable HTTPS\n\n  /**\n   * `output` configuration\n   * Default: 'bun'\n   */\n  output: \"static\", // Output type of the application\n\n  /**\n   * `external` configuration\n   * Default: undefined (no external dependencies)\n   */\n  external: [\"lightningcss\"],\n\n  /**\n   * `integrations` configuration\n   * Default: undefined (no integrations added)\n   */\n  integrations: [brisaTailwindCSS()],\n};\n\n// Export the configuration as the default export\nexport default config satisfies Configuration;",
     "titles": []
   },
   {
@@ -2984,6 +2984,14 @@
     "id": "/building-your-application/configuring/brisa-config-js#externalbuilding-your-applicationconfiguringexternal",
     "title": "external",
     "text": "The external option allows you to define external dependencies that should not be included in the final bundle. This is useful for libraries that are already included in the runtime environment, or for libraries that should be resolved at runtime. More information about the output configuration can be found in the Configuration documentation.",
+    "titles": [
+      "brisa.config.js options"
+    ]
+  },
+  {
+    "id": "/building-your-application/configuring/brisa-config-js#integrationsbuilding-your-applicationconfiguringintegrations",
+    "title": "integrations",
+    "text": "The integrations option allows you to integrate third-party libraries with the Brisa internals. This is useful when you want to automatically handle the integration of libraries like TailwindCSS.",
     "titles": [
       "brisa.config.js options"
     ]
@@ -3223,6 +3231,14 @@
     "title": "Integrations",
     "text": "Brisa, offers versatile integration with third-party libraries like TailwindCSS to be automatically handled for the Brisa internals. If you use brisa add tailwindcss and you do not have brisa.config.ts yet, this will be automatically generated: brisa.config.ts import brisaTailwindCSS from \"brisa-tailwindcss\";\nimport type { Configuration } from \"brisa\";\n\nexport default {\n  integrations: [brisaTailwindCSS()],\n} satisfies Configuration; In this example, this piece of code help to integrate TailwindCSS inside the Brisa internals.",
     "titles": []
+  },
+  {
+    "id": "/building-your-application/configuring/integrations#types",
+    "title": "Types",
+    "text": "export type Configuration = {\n  // ...\n  integrations?: Integration[];\n};\n\nexport type Integration = {\n  name: string;\n  transpileCSS?(pathname: string, content: string): Promise<string>;\n  defaultCSS?: {\n    content: string;\n    applyDefaultWhenEvery: (content: string) => boolean;\n  }}",
+    "titles": [
+      "Integrations"
+    ]
   },
   {
     "id": "/building-your-application/configuring/output#output",
@@ -4060,8 +4076,40 @@
   {
     "id": "/building-your-application/integrations/tailwind-css#integrating-tailwind-css",
     "title": "Integrating Tailwind CSS",
-    "text": "TODO",
+    "text": "Brisa, offers versatile integration with third-party libraries like TailwindCSS to be automatically handled for the Brisa internals. Tailwind lets you use utility classes instead of writing CSS. These utility classes are mostly one-to-one with a certain CSS property setting: for example, adding the text-lg to an element is equivalent to setting font-size: 1.125rem in CSS. You might find it easier to write and maintain your styles using these predefined utility classes!",
     "titles": []
+  },
+  {
+    "id": "/building-your-application/integrations/tailwind-css#installation",
+    "title": "Installation",
+    "text": "Run this command to integrate TailwindCSS in your Brisa project: brisa add tailwindcss And you are ready to use TailwindCSS in your Brisa project.",
+    "titles": [
+      "Integrating Tailwind CSS"
+    ]
+  },
+  {
+    "id": "/building-your-application/integrations/tailwind-css#manual-installation",
+    "title": "Manual Installation",
+    "text": "If you want to install TailwindCSS manually, you can do it by running: npm install tailwindcss postcss brisa-tailwindcss And then, you can add the integration in your brisa.config.ts file: brisa.config.ts import brisaTailwindCSS from \"brisa-tailwindcss\";\n\nexport default {\n  integrations: [brisaTailwindCSS()],\n} satisfies Configuration; And you are ready to use TailwindCSS in your Brisa project. Installing the dependencies manually, take care to use a TailwindCSS version v.4.x.",
+    "titles": [
+      "Integrating Tailwind CSS"
+    ]
+  },
+  {
+    "id": "/building-your-application/integrations/tailwind-css#defaults",
+    "title": "Defaults",
+    "text": "If you don't have any .css file with @tailwind directive, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than TailwindCSS CDN: @tailwind base;\n@tailwind components;\n@tailwind utilities;\n@import 'tailwindcss/preflight';\n@import 'tailwindcss/theme' theme(reference); In the case you want to override the default CSS file, you can create a .css file in your src with @tailwind directives and Brisa will use it instead of the default one, and import it in your src/layout.ts file.",
+    "titles": [
+      "Integrating Tailwind CSS"
+    ]
+  },
+  {
+    "id": "/building-your-application/integrations/tailwind-css#usage",
+    "title": "Usage",
+    "text": "You can use TailwindCSS classes in your Brisa project as you would in a regular TSX file: export default function Home() {\n  return (\n    <div className=\"bg-gray-100\">\n      <h1 className=\"text-2xl font-bold text-gray-800\">Hello, world!</h1>\n    </div>\n  );\n}",
+    "titles": [
+      "Integrating Tailwind CSS"
+    ]
   },
   {
     "id": "/building-your-application/integrations/tauri#integrating-tauri",
@@ -5188,9 +5236,15 @@
     ]
   },
   {
+    "id": "/building-your-application/styling/tailwind-css#tailwind-css",
+    "title": "Tailwind CSS",
+    "text": "One option in Brisa is to integrate your app with Tailwind CSS, a CSS framework that lets you use utility classes instead of writing CSS. These utility classes are mostly one-to-one with a certain CSS property setting: for example, adding the text-lg to an element is equivalent to setting font-size: 1.125rem in CSS. You might find it easier to write and maintain your styles using these predefined utility classes! Then you can use in your .tsx: export default function Home() {\n  return (\n    <div className=\"text-lg\">Hello, world!</div>\n  );\n} To integrate Tailwind CSS into your Brisa project, take a look at the integration with Tailwind CSS in the integrations section.",
+    "titles": []
+  },
+  {
     "id": "/building-your-application/styling/web-components#styling-web-components",
     "title": "Styling Web Components",
-    "text": "Brisa provides a different ways to style your web components, including: Global Styles in Web Components: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.\nCSS Template String: A powerful way to create reactive styles to signals within web components.\nCSS Modules: You can import CSS files directly into your web components. It's useful to separate styles into different files.\nCSS inlined in JSX: You can use the style attribute to apply styles directly to the HTML element.",
+    "text": "Brisa provides a different ways to style your web components, including: Global Styles in Web Components: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.\nCSS Template String: A powerful way to create reactive styles to signals within web components.\nCSS Modules: You can import CSS files directly into your web components. It's useful to separate styles into different files.\nCSS inlined in JSX: You can use the style attribute to apply styles directly to the HTML element.\nTailwind CSS: A CSS framework that lets you use utility classes instead of writing CSS.",
     "titles": []
   },
   {
@@ -5221,6 +5275,14 @@
     "id": "/building-your-application/styling/web-components#css-inlined-in-jsx",
     "title": "CSS inlined in JSX",
     "text": "You can also use the style attribute to apply styles directly to the HTML element. This is useful for simple styles or when you need to apply styles dynamically. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent({ color }, { css }: WebContext) {\n  return <div style={{ color }}>Hello World</div>;\n} In this example, the color prop is applied directly to the style attribute of the div element. You can use any CSS property in the style object. For more information about CSS inlined in JSX, check the CSS inlined in JSX page.",
+    "titles": [
+      "Styling Web Components"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/web-components#tailwind-css",
+    "title": "Tailwind CSS",
+    "text": "The shadow DOM is adapted to be possible to use Tailwind CSS classes in your elements. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent() {\n  return <div className=\"bg-gray-100\">Hello World</div>;\n} Read more about how to integrate Tailwind CSS in your Brisa project in the Tailwind CSS page.",
     "titles": [
       "Styling Web Components"
     ]
