@@ -1,0 +1,62 @@
+/* Base styles */
+.jsx-expression-braces,
+.bracket-highlighting-0,
+.bracket-highlighting-4 {
+  color: #000000;
+}
+
+/* Dark mode styles */
+body.dark .jsx-expression-braces,
+body.dark .bracket-highlighting-0,
+body.dark .bracket-highlighting-4 {
+  color: #A89984 !important;
+}
+
+.bracket-highlighting-1,
+.bracket-highlighting-3 {
+  color: #000000;
+}
+
+/* Dark mode styles */
+body.dark .bracket-highlighting-1,
+body.dark .bracket-highlighting-3 {
+  color: #EBDBB2 !important;
+}
+
+.jsx-tag-angle-bracket {
+  color: #000000;
+}
+
+/* Dark mode styles */
+body.dark .jsx-tag-angle-bracket {
+  color: #83A598 !important;
+}
+
+.jsx-tag-name {
+  color: #22863a;
+}
+
+/* Dark mode styles */
+body.dark .jsx-tag-name {
+  color: #8EC07C !important;
+}
+
+.jsx-tag-attribute-key,
+.jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
+  color: #6f42c1;
+}
+
+/* Dark mode styles */
+body.dark .jsx-tag-attribute-key,
+body.dark .jsx-expression-braces + :not(.jsx-tag-angle-bracket):not(.bracket-highlighting-3) {
+  color: #FABD2F !important;
+}
+
+.jsx-text {
+  color: #000000;
+}
+
+/* Dark mode styles */
+body.dark .jsx-text {
+  color: #EBDBB2 !important;
+}
