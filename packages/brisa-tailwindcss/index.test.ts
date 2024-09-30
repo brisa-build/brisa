@@ -66,8 +66,6 @@ describe('brisa-tailwindcss', () => {
       'out/index.css',
       cssCode,
     );
-    expect(transpiledCSS).not.toContain(
-      '@layer base',
-    );
+    expect(transpiledCSS).not.toContain('@layer base');
   });
 });
