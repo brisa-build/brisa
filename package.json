@@ -18,9 +18,6 @@
   "scripts": {
     "build": "bun run --cwd packages/brisa build",
     "clean": "bun run --cwd packages/brisa clean",
-    "docs:build": "bun run --cwd packages/www build",
-    "docs:dev": "bun run --cwd packages/www dev",
-    "docs:preview": "bun run --cwd packages/www start",
     "create-brisa:build": "bun run --cwd packages/create-brisa build",
     "format": "bun run biome format --write .",
     "lint": "bun run biome lint --write .",
@@ -40,7 +37,9 @@
     "update-version": "bun run scripts/update-brisa-version.ts",
     "upgrade": "bun run scripts/upgrade-bun.ts",
     "validate-urls": "bun run scripts/validate-urls.ts",
+    "www:build": "bun run --cwd packages/www build",
     "www:dev": "bun run --cwd packages/www dev",
+    "www:deploy": "bun run docs:build && vercel --prod",
     "prepare": "husky"
   },
   "packageManager": "bun@1.1.28",
