@@ -6,12 +6,18 @@ import SideBar from '@/components/side-bar';
 import BreadcrumbNav from '@/components/breadcrumb-nav';
 import HeadingsBar from '@/components/headings-bar';
 import { fileSystemRouter } from 'brisa/server';
+import OpenGraphImages from '@/components/open-graph-images';
 
 export function Head({}, { route }: RequestContext) {
   const name = (route.params?.doc as string[])
     ?.map?.(kebabCaseToNormal)
     .join(' / ');
-  return <title id="title">{name} - Brisa</title>;
+  return (
+    <>
+      <title id="title">{name} - Brisa</title>
+      <OpenGraphImages title={name} />
+    </>
+  );
 }
 
 export default async function Documentation({}, { route }: RequestContext) {
