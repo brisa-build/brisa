@@ -5176,7 +5176,7 @@
   {
     "id": "/building-your-application/styling#styling",
     "title": "Styling",
-    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Modules\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS In addition, you can also style your web components and server components: Styling web components",
+    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS\nCSS Modules (coming soon) In addition, you can also style your web components and server components: Styling web components",
     "titles": []
   },
   {

@@ -12,7 +12,7 @@ const meta = {
   description:
     'Brisa is a web platform framework that provides a refreshing development experience.',
   keywords: 'web, framework, brisa, web platform, web development',
-  image: 'https://brisa.build/brisa.svg',
+  image: 'https://brisa.build/brisa-og.webp',
   url: 'https://brisa.build/',
 };
 
