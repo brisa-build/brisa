@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect, spyOn } from 'bun:test';
 import AST from '.';
 
 describe('utils', () => {
@@ -71,6 +71,15 @@ describe('utils', () => {
       });
 
       expect(code.trim()).toEqual('const a = 1;');
+    });
+
+    it('should log error when parsing code to ast fails', () => {
+      const mockLog = spyOn(console, 'log');
+      const ast = AST('ts').parseCodeToAST('const await = 123');
+      expect(ast).toEqual({ type: 'Program', body: [] } as any);
+      expect(mockLog.mock.calls.toString()).toContain(
+        'Error parsing code to AST:',
+      );
     });
   });
 });
