@@ -21,6 +21,7 @@ export default function Counter({ name }: { name: string }, { state }: WebContex
 export default function Playground() {
   return (
     <main style={{ paddingTop: '100px' }}>
+      <h1 style={{ display: 'hidden' }}>Brisa Playground</h1>
       <play-ground skipSSR defaultValue={defaultValue}>
         <div
           slot="code-editor"
@@ -113,6 +114,10 @@ export default function Playground() {
 }
 
 export function Head() {
+  const title = `Brisa Playground`;
+  const description = `Play with Brisa in the browser! Web Components are the future of web development, and Brisa makes it easy to build them with JSX, signals and TypeScript.`;
+  const keywords = `brisa, playground, web components, jsx, typescript`;
+
   return (
     <>
       <link
@@ -124,7 +129,22 @@ export function Head() {
         rel="stylesheet"
         href="https://esm.sh/monaco-editor/min/vs/editor/editor.main.css"
       />
-      <title id="title">Brisa Playground</title>
+      <title id="title">{title}</title>
+      <meta id="meta:title" name="title" content={title} />
+      <meta id="og:title" property="og:title" content={title} />
+      <meta id="twitter:title" property="twitter:title" content={title} />
+      <meta id="keywords" name="keywords" content={keywords} />
+      <meta id="meta:description" name="description" content={description} />
+      <meta
+        id="og:description"
+        property="og:description"
+        content={description}
+      />
+      <meta
+        id="twitter:description"
+        property="twitter:description"
+        content={description}
+      />
     </>
   );
 }

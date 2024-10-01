@@ -80,5 +80,28 @@ export default function Privacy() {
 }
 
 export function Head() {
-  return <title id="title">Privacy Policy | Brisa</title>;
+  const title = `Privacy Policy | Brisa`;
+  const description = `The Brisa Privacy Policy describes the privacy practices of the Brisa website and services.`;
+  const keywords = `brisa, privacy, policy`;
+
+  return (
+    <>
+      <title id="title">{title}</title>
+      <meta id="meta:title" name="title" content={title} />
+      <meta id="og:title" property="og:title" content={title} />
+      <meta id="twitter:title" property="twitter:title" content={title} />
+      <meta id="keywords" name="keywords" content={keywords} />
+      <meta id="meta:description" name="description" content={description} />
+      <meta
+        id="og:description"
+        property="og:description"
+        content={description}
+      />
+      <meta
+        id="twitter:description"
+        property="twitter:description"
+        content={description}
+      />
+    </>
+  );
 }

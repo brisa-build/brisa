@@ -95,7 +95,30 @@ function normalize(str: string) {
 }
 
 export function Head() {
-  return <title id="title">Brisa by Example</title>;
+  const title = `Brisa by Example`;
+  const description = `A collection of annotated Brisa examples, to be used as a reference for how to build with Brisa, or as a guide to learn about many of Brisa's features 📚`;
+  const keywords = `brisa, examples, basics, integrations`;
+
+  return (
+    <>
+      <title id="title">{title}</title>
+      <meta id="meta:title" name="title" content={title} />
+      <meta id="og:title" property="og:title" content={title} />
+      <meta id="twitter:title" property="twitter:title" content={title} />
+      <meta id="keywords" name="keywords" content={keywords} />
+      <meta id="meta:description" name="description" content={description} />
+      <meta
+        id="og:description"
+        property="og:description"
+        content={description}
+      />
+      <meta
+        id="twitter:description"
+        property="twitter:description"
+        content={description}
+      />
+    </>
+  );
 }
 
 function loadExamples() {

@@ -98,5 +98,28 @@ export default function Privacy() {
 }
 
 export function Head() {
-  return <title id="title">Terms & Conditions | Brisa</title>;
+  const title = `Terms & Conditions | Brisa`;
+  const description = `The Brisa Terms & Conditions describe the terms of use for the Brisa website and services.`;
+  const keywords = `brisa, terms, conditions`;
+
+  return (
+    <>
+      <title id="title">{title}</title>
+      <meta id="meta:title" name="title" content={title} />
+      <meta id="og:title" property="og:title" content={title} />
+      <meta id="twitter:title" property="twitter:title" content={title} />
+      <meta id="keywords" name="keywords" content={keywords} />
+      <meta id="meta:description" name="description" content={description} />
+      <meta
+        id="og:description"
+        property="og:description"
+        content={description}
+      />
+      <meta
+        id="twitter:description"
+        property="twitter:description"
+        content={description}
+      />
+    </>
+  );
 }

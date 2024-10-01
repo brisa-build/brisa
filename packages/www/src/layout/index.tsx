@@ -11,7 +11,8 @@ const meta = {
   title: 'Brisa - The Web Platform Framework',
   description:
     'Brisa is a web platform framework that provides a refreshing development experience.',
-  keywords: 'web, framework, brisa, web platform, web development',
+  keywords:
+    'web, framework, brisa, web platform, web development, static site generator, signals, jsx, typescript, server side rendering, ssr, web components',
   url: 'https://brisa.build/',
 };
 
@@ -44,19 +45,35 @@ export default function Layout(
         <link rel="manifest" href="/manifest.json" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ccfbf1" />
-        <meta name="title" content={meta.title} />
-        <meta name="description" content={meta.description} />
-        <meta name="keywords" content={meta.keywords} />
+        <meta id="meta:title" name="title" content={meta.title} />
+        <meta
+          id="meta:description"
+          name="description"
+          content={meta.description}
+        />
+        <meta id="keywords" name="keywords" content={meta.keywords} />
         <meta name="author" content="Brisa Team" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={meta.url} />
-        <meta property="og:title" content={meta.title} />
-        <meta property="og:description" content={meta.description} />
+        <meta id="og:title" property="og:title" content={meta.title} />
+        <meta
+          id="og:description"
+          property="og:description"
+          content={meta.description}
+        />
         <meta id="og:image" property="og:image" content={image} />
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content={meta.url} />
-        <meta property="twitter:title" content={meta.title} />
-        <meta property="twitter:description" content={meta.description} />
+        <meta
+          id="twitter:title"
+          property="twitter:title"
+          content={meta.title}
+        />
+        <meta
+          id="twitter:description"
+          property="twitter:description"
+          content={meta.description}
+        />
         <meta id="twitter:image" property="twitter:image" content={image} />
         <meta name="robots" content="index, follow" />
         <script type="speculationrules">
