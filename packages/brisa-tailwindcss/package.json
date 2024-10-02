@@ -6,7 +6,10 @@
   "main": "./index.ts",
   "module": "./index.ts",
   "types": "./index.d.ts",
-  "author": "Aral Roca Gòmez <contact@aralroca.com>",
+  "author": {
+    "name": "Brisa Team",
+    "email": "contact@brisa.build.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brisa-build/brisa.git",

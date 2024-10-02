@@ -3,7 +3,11 @@ export default function Footer() {
   return (
     <footer>
       <div class="footer-content">
-        <form class="nl">
+        <form
+          class="nl"
+          method="POST"
+          action="https://build.us8.list-manage.com/subscribe/post?u=bc31ee7c9223ccdf6cc63f9d8&id=6878b40d47"
+        >
           <p>
             <b>Let's keep in touch</b>
           </p>
@@ -11,7 +15,12 @@ export default function Footer() {
             Enter your email to stay up to date with the latest updates from
             Brisa.
           </p>
-          <input type="email" placeholder="your@email.com" />
+          <input
+            type="email"
+            placeholder="your@email.com"
+            name="MERGE0"
+            id="MERGE0"
+          />
           <button>Subscribe to our newsletter</button>
         </form>
         <div>
@@ -85,17 +94,35 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <p class="copyright">
-        <a
-          href="https://github.com/brisa-build/brisa/blob/main/LICENSE"
-          target="_blank"
-          title="MIT License"
-          rel="noopener noreferrer"
-        >
-          MIT License &copy; {year}
-        </a>{' '}
-        Brisa Framework
-      </p>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <p class="copyright">
+          <a
+            href="https://github.com/brisa-build/brisa/blob/main/LICENSE"
+            target="_blank"
+            title="MIT License"
+            rel="noopener noreferrer"
+          >
+            MIT License &copy; {year}
+          </a>{' '}
+          Brisa Framework
+        </p>
+        <p>
+          <a
+            href="mailto:contact@brisa.build"
+            title="Contact us"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            contact@brisa.build
+          </a>
+        </p>
+      </div>
     </footer>
   );
 }

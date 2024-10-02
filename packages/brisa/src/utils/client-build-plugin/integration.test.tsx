@@ -3154,14 +3154,14 @@ describe('integration', () => {
 
       testComponent.setAttribute(
         'user',
-        '{ "emails": ["contact@aralroca.com"] }',
+        '{ "emails": ["contact@brisa.build.com"] }',
       );
 
       expect(window.mockSignalParent).toHaveBeenCalledTimes(2);
       expect(window.mockSignalChild).toHaveBeenCalledTimes(1);
       expect(window.mockSignalGrandChild).toHaveBeenCalledTimes(1);
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        '<div><b>contact@aralroca.com</b></div>',
+        '<div><b>contact@brisa.build.com</b></div>',
       );
 
       testComponent.removeAttribute('user');

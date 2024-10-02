@@ -9,8 +9,8 @@
     "release:alpha": "bun run build && npm publish --tag next"
   },
   "author": {
-    "name": "Aral Roca Gòmez",
-    "email": "contact@aralroca.com"
+    "name": "Brisa Team",
+    "email": "contact@brisa.build.com"
   },
   "repository": {
     "type": "git",
