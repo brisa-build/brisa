@@ -1,5 +1,6 @@
 import CopyBox from '@/components/copy-box';
 import { RenderCode } from '@/helpers/markdown-loader';
+import VideoIcon from '@/icons/video-icon';
 
 const fastAppsCode = `
 // src/pages/index.tsx
@@ -231,11 +232,11 @@ export default function Homepage() {
         <div class="code-example">
           <h2>🤔 Why it is the Web Platform Framework?</h2>
           <p>
-            Brisa is designed to integrate all aspects of the Web Platform,
-            making development more efficient and flexible. One key feature is
-            the ease with which <b>Web Components</b> can be used, utilizing{' '}
+            Brisa's mission is to unify the both worlds (server and client)
+            using the Web Platform. One key feature is the ease with which{' '}
+            <b>Web Components</b> can be used, utilizing{' '}
             <b>Declarative Shadow DOM</b> and <b>signals</b> to enhance your
-            workflow in conjunction with <b>JSX</b>.
+            workflow in conjunction with <b>Server Actions</b>.
           </p>
 
           <p>
@@ -262,17 +263,37 @@ export default function Homepage() {
           </p>
 
           <p>
-            Additionally, it incorporates a bridge to{' '}
-            <b>ECMAScript's Intl API</b>, keeping the client-side footprint as
-            small as 800 bytes while providing an elegant solution for
-            multilingual applications. As a tip, if you move the translations to
-            the server, are 0 bytes.
+            Brisa's vision is to become the standard for modern web development,
+            offering developers a <b>unified platform</b> that simplifies the
+            creation of high-performance applications from server to client. We
+            focus on maximizing efficiency by{' '}
+            <b>minimizing the client-side footprint</b> and enabling developers
+            to build scalable, cross-platform applications that fully leverage
+            the web's native capabilities. We aim to empower developers,
+            regardless of their stack or environment, to use Brisa to create
+            advanced interactive experiences with less friction, driving the
+            adoption of the <b>web platform</b> as the foundation for{' '}
+            <b>future</b> development.
           </p>
-          <p>
-            Furthermore, <b>Web Components</b> written with Brisa are{' '}
-            <b>fully compatible</b> with any <b>other framework</b>, reinforcing
-            the use of the Web Platform as the foundation of modern development.
-          </p>
+
+          <a
+            style={{ float: 'right' }}
+            class="launch-video"
+            href="#"
+            target="_blank"
+          >
+            <figure>
+              <img
+                width={500}
+                height={375}
+                alt="Brisa launch of 0.1"
+                src="/images/brisa-launch-video.webp"
+              ></img>
+              <figcaption>
+                <VideoIcon /> Launch of v0.1
+              </figcaption>
+            </figure>
+          </a>
         </div>
       </section>
     </main>

@@ -16,6 +16,14 @@ const meta = {
   url: 'https://brisa.build/',
 };
 
+const ldjson = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Brisa',
+  url: 'https://brisa.build/',
+  logo: 'https://brisa.build/brisa.svg',
+};
+
 const speculationrules = {
   prerender: [
     {
@@ -89,6 +97,9 @@ export default function Layout(
             gtag('js', new Date());
             gtag('config', 'G-V43VPV66EX');
           `)}
+        </script>
+        <script type="application/ld+json">
+          {dangerHTML(JSON.stringify(ldjson))}
         </script>
       </head>
       <body>

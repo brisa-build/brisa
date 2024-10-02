@@ -462,6 +462,19 @@ p {
   }
 }
 
+.launch-video {
+  text-decoration: none;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+
+  figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+}
+
 @media (max-width: 860px) {
   .brisa-section h2 {
     text-align: center;

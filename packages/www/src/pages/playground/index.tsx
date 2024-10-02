@@ -21,7 +21,7 @@ export default function Counter({ name }: { name: string }, { state }: WebContex
 export default function Playground() {
   return (
     <main style={{ paddingTop: '100px' }}>
-      <h1 style={{ display: 'hidden' }}>Brisa Playground</h1>
+      <h1 style={{ display: 'none' }}>Brisa Playground</h1>
       <play-ground skipSSR defaultValue={defaultValue}>
         <div
           slot="code-editor"

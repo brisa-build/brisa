@@ -9,9 +9,20 @@ import CrossIcon from '@/icons/cross-icon';
 export default function BreadcrumbNav({}, { route }: RequestContext) {
   const { items, next } = getItems(route);
   const lastIndex = items.length - 1;
+  const ldJson = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.text,
+      item: item.link,
+    })),
+  };
 
   return (
     <div class="breadcrumb-wrapper">
+      <script type="application/ld+json">{JSON.stringify(ldJson)}</script>
       <nav aria-label="Breadcrumb" class="breadcrumb">
         <menu-btn selector=".sidebar" useOverlay>
           <MenuIcon />
