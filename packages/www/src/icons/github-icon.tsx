@@ -1,10 +1,13 @@
-export default function GitHubIcon({ size = 24 }: { size: number }) {
+export default function GitHubIcon({
+  size = 24,
+  style,
+}: { size?: number; style?: JSX.CSSProperties }) {
   return (
     <svg
       viewBox="0 0 24 24"
       width={size}
       height={size}
-      style={{ color: 'currentColor' }}
+      style={{ color: 'currentColor', ...(style ?? {}) }}
     >
       <path
         fill="currentColor"

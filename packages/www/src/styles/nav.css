@@ -82,7 +82,7 @@
 
     &.open {
       position: absolute;
-      top: 70px;
+      top: 69px;
       padding: 30px;
       left: 0;
       display: flex !important;

@@ -1,5 +1,6 @@
 import CopyBox from '@/components/copy-box';
 import { RenderCode } from '@/helpers/markdown-loader';
+import GitHubIcon from '@/icons/github-icon';
 import VideoIcon from '@/icons/video-icon';
 
 const fastAppsCode = `
@@ -113,7 +114,7 @@ export default function Homepage() {
       </div>
       <section class="brisa-section fast-apps odd-section">
         <div class="code-example">
-          <div class="info">
+          <div class="info sticky">
             <h2>🚀 Build fast apps fast</h2>
             <p>
               Brisa pages are dynamically server-rendered JSX components, so
@@ -131,7 +132,7 @@ export default function Homepage() {
 
       <section class="brisa-section wc">
         <div class="code-example">
-          <div class="info">
+          <div class="info sticky">
             <h2>🏝️ Web Component island-based</h2>
             <p>
               In Brisa everything by default runs only on the server, except the{' '}
@@ -152,7 +153,7 @@ export default function Homepage() {
 
       <section class="brisa-section actions odd-section">
         <div class="code-example">
-          <div class="info">
+          <div class="info sticky">
             <h2>📲 Browser-events on Server </h2>
             <p>
               Brisa mixes ideas from React's "<b>Server Actions</b>" and HTMX
@@ -182,7 +183,7 @@ export default function Homepage() {
 
       <section class="brisa-section i18n">
         <div class="code-example">
-          <div class="info">
+          <div class="info sticky">
             <h2>🌐 Full i18n support</h2>
             <p>
               Brisa has a built-in internationalization (i18n) support that
@@ -221,80 +222,83 @@ export default function Homepage() {
               loading="lazy"
             />
           </div>
-          <div class="code">
+          <div class="code sticky">
             <RenderCode code={multiPlatformCode} />
             <p class="bytes">Web or: .apk, .ipa, .exe, .dmg, .deb</p>
           </div>
         </div>
       </section>
 
-      <section class="brisa-section i18n">
+      <section class="brisa-section goal">
         <div class="code-example">
-          <h2>🤔 Why it is the Web Platform Framework?</h2>
-          <p>
-            Brisa's mission is to unify the both worlds (server and client)
-            using the Web Platform. One key feature is the ease with which{' '}
-            <b>Web Components</b> can be used, utilizing{' '}
-            <b>Declarative Shadow DOM</b> and <b>signals</b> to enhance your
-            workflow in conjunction with <b>Server Actions</b>.
-          </p>
+          <div class="info">
+            <h2>🤔 Web Platform Framework?</h2>
+            <p>
+              Brisa's mission is to unify the both worlds (server and client)
+              using the Web Platform. One key feature is the ease with which{' '}
+              <b>Web Components</b> can be used, utilizing{' '}
+              <b>Declarative Shadow DOM</b> and <b>signals</b> to enhance your
+              workflow in conjunction with <b>Server Actions</b>.
+            </p>
 
-          <p>
-            We bring ideas from the Web to the server. You can{' '}
-            <b>capture browser events on the server</b>, such as forms, click
-            events, Web Components events, etc. And you can propagate them
-            through your server components.
-          </p>
+            <p>
+              We bring ideas from the Web to the server. You can{' '}
+              <b>capture browser events on the server</b>, such as forms, click
+              events, Web Components events, etc. And you can propagate them
+              through your server components.
+            </p>
 
-          <p>
-            It also <b>streams Hypermedia</b> over the wire during navigation
-            and Server Actions, utilizing HTTP in the way it was originally
-            intended. This is closely connected with Web Components because they
-            are part of the DOM, their attributes are updated, and signals react
-            to these changes.
-          </p>
+            <p>
+              It also <b>streams Hypermedia</b> over the wire during navigation
+              and Server Actions, utilizing HTTP in the way it was originally
+              intended. This is closely connected with Web Components because
+              they are part of the DOM, their attributes are updated, and
+              signals react to these changes.
+            </p>
 
-          <p>
-            That said, it should be clarified that although we support Web
-            Components, you can create a MPA like a{' '}
-            <b>SPA without using any Web Component</b>, the grace is that you
-            only add a Web Component when you need to touch the Web Platform or
-            when a user interaction doesn't require the server.
-          </p>
+            <p>
+              That said, it should be clarified that although we support Web
+              Components, you can create a MPA like a{' '}
+              <b>SPA without using any Web Component</b>, the grace is that you
+              only add a Web Component when you need to touch the Web Platform
+              or when a user interaction doesn't require the server.
+            </p>
 
-          <p>
-            Brisa's vision is to become the standard for modern web development,
-            offering developers a <b>unified platform</b> that simplifies the
-            creation of high-performance applications from server to client. We
-            focus on maximizing efficiency by{' '}
-            <b>minimizing the client-side footprint</b> and enabling developers
-            to build scalable, cross-platform applications that fully leverage
-            the web's native capabilities. We aim to empower developers,
-            regardless of their stack or environment, to use Brisa to create
-            advanced interactive experiences with less friction, driving the
-            adoption of the <b>web platform</b> as the foundation for{' '}
-            <b>future</b> development.
-          </p>
-
-          <a
-            style={{ float: 'right' }}
-            class="launch-video"
-            href="#"
-            target="_blank"
-          >
-            <figure>
-              <img
-                width={400}
-                height={267}
-                alt="Brisa launch of 0.1"
-                title="Brisa launch of 0.1"
-                src="/images/brisa-launch-video.webp"
-              ></img>
-              <figcaption>
-                <VideoIcon /> Launch of v0.1
-              </figcaption>
-            </figure>
-          </a>
+            <p>
+              Brisa's vision is to become the standard for modern web
+              development, offering developers a <b>unified platform</b> that
+              simplifies the creation of high-performance applications from
+              server to client. We focus on maximizing efficiency by{' '}
+              <b>minimizing the client-side footprint</b> and enabling
+              developers to build scalable, cross-platform applications that
+              fully leverage the web's native capabilities. We aim to empower
+              developers, regardless of their stack or environment, to use Brisa
+              to create advanced interactive experiences with less friction,
+              driving the adoption of the <b>web platform</b> as the foundation
+              for <b>future</b> development.
+            </p>
+          </div>
+          <div class="code sticky" style={{ padding: '0 30px' }}>
+            <a
+              style={{ float: 'right' }}
+              class="launch-video"
+              href="#"
+              target="_blank"
+            >
+              <figure>
+                <img
+                  width={400}
+                  height={267}
+                  alt="Brisa launch of 0.1"
+                  title="Brisa launch of 0.1"
+                  src="/images/brisa-launch-video.webp"
+                ></img>
+                <figcaption>
+                  <VideoIcon /> Launch of v0.1
+                </figcaption>
+              </figure>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -307,14 +311,49 @@ export default function Homepage() {
               the community. We have a <b>T-shirt gift</b> for the first
               contributors who help us improve the framework.
             </p>
+            <a
+              class="cta"
+              href="https://github.com/brisa-build/brisa"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHubIcon style={{ marginRight: '5px' }} />
+              GitHub
+            </a>
           </div>
-          <div class="code">
+          <div class="code" style={{ padding: '0 80px' }}>
             <img
               width="300"
+              height="325"
               src="/images/t-shirt-gift.webp"
               alt="Brisa T-shirt gift"
               loading="lazy"
+              style={{ objectFit: 'cover' }}
             />
+          </div>
+        </div>
+      </section>
+
+      <section class="brisa-section goal">
+        <div class="code-example">
+          <div class="info" style={{ flex: 1 }}>
+            <h2>📚 Documentation</h2>
+            <p>
+              Learn more about Brisa by reading the{' '}
+              <a href="/getting-started/quick-start">Documentation</a>.
+            </p>
+          </div>
+          <div class="code" style={{ flex: 1, maxWidth: '450px' }}>
+            <h2>💝 Sponsors</h2>
+            <p>
+              <i>
+                We are going to open Open-Collective soon.{' '}
+                <a href="javascript:document.querySelector('#MERGE0').focus()">
+                  Subscribe
+                </a>{' '}
+                to the newsletter to keep tunned.
+              </i>
+            </p>
           </div>
         </div>
       </section>

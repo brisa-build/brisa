@@ -253,9 +253,12 @@ main {
     min-width: 350px;
     max-width: 600px;
     flex: 1;
+    margin-bottom: 20px;
+  }
+
+  .sticky {
     position: sticky;
     top: 95px;
-    margin-bottom: 20px;
   }
 
   .code pre {
@@ -270,6 +273,16 @@ main {
     font-style: italic;
     text-align: right;
     color: var(--color-primary);
+  }
+
+  &.goal {
+    background-image: var(--section2-bg-color);
+    a {
+      text-decoration: none;
+      color: inherit;
+      border-bottom: 1px dashed var(--color-primary);
+      transition: color 0.3s ease-in-out;
+    }
   }
 
   &.wc,
@@ -469,6 +482,7 @@ p {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transition: filter 0.3s ease-in-out;
+    object-fit: contain;
   }
 
   img:hover {
