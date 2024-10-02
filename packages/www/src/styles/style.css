@@ -168,7 +168,7 @@ main {
   height: 100%;
 }
 
-.dark .multi-platform img {
+.dark .inverted img {
   filter: invert(1);
 }
 
@@ -194,9 +194,7 @@ main {
   width: auto;
 }
 
-.fast-apps,
-.actions,
-.multi-platform {
+.odd-section {
   background-image: var(--section1-bg-color);
 }
 
@@ -262,7 +260,6 @@ main {
 
   .code pre {
     font-size: 1rem;
-    transform: rotate(1deg);
     background-color: white !important;
     max-width: 90vw;
   }
@@ -270,7 +267,6 @@ main {
   .bytes {
     font-size: 0.8rem;
     padding: 0;
-    transform: rotate(1deg);
     font-style: italic;
     text-align: right;
     color: var(--color-primary);
@@ -286,11 +282,6 @@ main {
 
     .info {
       order: 2;
-    }
-
-    .code pre,
-    .bytes {
-      transform: rotate(-1deg);
     }
   }
 

@@ -111,7 +111,7 @@ export default function Homepage() {
           </div>
         </section>
       </div>
-      <section class="brisa-section fast-apps">
+      <section class="brisa-section fast-apps odd-section">
         <div class="code-example">
           <div class="info">
             <h2>🚀 Build fast apps fast</h2>
@@ -150,7 +150,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="brisa-section actions">
+      <section class="brisa-section actions odd-section">
         <div class="code-example">
           <div class="info">
             <h2>📲 Browser-events on Server </h2>
@@ -204,7 +204,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="brisa-section multi-platform">
+      <section class="brisa-section multi-platform odd-section inverted">
         <div class="code-example">
           <div class="info">
             <h2>📱 Multi-platform</h2>
@@ -295,6 +295,27 @@ export default function Homepage() {
               </figcaption>
             </figure>
           </a>
+        </div>
+      </section>
+
+      <section class="brisa-section odd-section">
+        <div class="code-example">
+          <div class="info">
+            <h2>🎁 Gift to contributors</h2>
+            <p>
+              Brisa is an open-source project, and we welcome contributions from
+              the community. We have a <b>T-shirt gift</b> for the first
+              contributors who help us improve the framework.
+            </p>
+          </div>
+          <div class="code">
+            <img
+              width="300"
+              src="/images/t-shirt-gift.webp"
+              alt="Brisa T-shirt gift"
+              loading="lazy"
+            />
+          </div>
         </div>
       </section>
     </main>
