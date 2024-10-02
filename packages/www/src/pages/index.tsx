@@ -284,9 +284,10 @@ export default function Homepage() {
           >
             <figure>
               <img
-                width={500}
-                height={375}
+                width={400}
+                height={267}
                 alt="Brisa launch of 0.1"
+                title="Brisa launch of 0.1"
                 src="/images/brisa-launch-video.webp"
               ></img>
               <figcaption>

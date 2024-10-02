@@ -473,6 +473,16 @@ p {
     justify-content: flex-start;
     gap: 10px;
   }
+
+  img {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: filter 0.3s ease-in-out;
+  }
+
+  img:hover {
+    filter: brightness(0.8);
+  }
 }
 
 @media (max-width: 860px) {

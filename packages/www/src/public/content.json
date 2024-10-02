@@ -432,7 +432,7 @@
   {
     "id": "/api-reference/components/web-context#web-context",
     "title": "Web Context",
-    "text": "The WebContext is a set of utilities provided by Brisa to facilitate the development of web components. It encompasses various functionalities such as managing state, handling context, performing effects, and more. This context allows developers to create reactive web components in Brisa applications. import type { WebContext } from \"brisa\";\n\nexport default function WebComponent(props, webContext: WebContext) {\n  const {\n    // Shared data across web components\n    store,\n    useContext,\n\n    // Internal state of this web component\n    state,\n    derived,\n\n    // Manage web component effects\n    effect,\n    cleanup,\n    onMount,\n    reset,\n\n    // Add reactive styles\n    css,\n\n    // Consume translations and control internationalization\n    i18n,\n\n    // Access to the name, pathname, params, and query of the current\n    // page route (also available in SSR)\n    route,\n\n    // Access to the web component DOM element\n    self,\n  } = webContext;\n  // ... Web component implementation ...\n} In contrast to other frameworks that necessitate state imports, our methodology incorporates all state properties directly within each web component. This distinctive design empowers enhanced control over the web component's lifecycle, facilitating the expansion of the web context through precise core management using plugins.",
+    "text": "The WebContext is a set of utilities provided by Brisa to facilitate the development of web components. It encompasses various functionalities such as managing state, handling context, performing effects, and more. This context allows developers to create reactive web components in Brisa applications. import type { WebContext } from \"brisa\";\n\nexport default function WebComponent(props, webContext: WebContext) {\n  const {\n    // Shared data across web components\n    store,\n    useContext,\n\n    // Internal state of this web component\n    state,\n    derived,\n\n    // Manage web component effects\n    effect,\n    cleanup,\n    onMount,\n    reset,\n\n    // Generate unique identifiers (server/client)\n    useId,\n\n    // Add reactive styles\n    css,\n\n    // Consume translations and control internationalization\n    i18n,\n\n    // Access to the name, pathname, params, and query of the current\n    // page route (also available in SSR)\n    route,\n\n    // Access to the web component DOM element\n    self,\n  } = webContext;\n  // ... Web component implementation ...\n} In contrast to other frameworks that necessitate state imports, our methodology incorporates all state properties directly within each web component. This distinctive design empowers enhanced control over the web component's lifecycle, facilitating the expansion of the web context through precise core management using plugins.",
     "titles": []
   },
   {
@@ -521,6 +521,14 @@
     "id": "/api-reference/components/web-context#reset",
     "title": "reset",
     "text": "reset(): void The reset method is used to invoke all cleanup functions and clear all effects and cleanups from the memory of the web component. It is primarily intended for internal use and is exposed but may have limited applicability in many cases. Example: reset(); The reset method is a powerful tool that should be used judiciously. It clears all effects and cleanups, potentially affecting the web component's behavior. Ensure that its usage aligns with the desired functionality and doesn't compromise the integrity of the web component.",
+    "titles": [
+      "Web Context"
+    ]
+  },
+  {
+    "id": "/api-reference/components/web-context#useid",
+    "title": "useId",
+    "text": "useId(): string The useId method generates a unique identifier for the web component. It is useful for creating unique keys for elements in lists or for other purposes that require unique identifiers. The generated ID is unique across all web components and the generation is the same on the server and client. Example: const passwordHintId = useId();\n\nreturn (\n  <>\n    <input type=\"password\" aria-describedby={passwordHintId} />\n    <p id={passwordHintId}>\n  </>\n)",
     "titles": [
       "Web Context"
     ]
