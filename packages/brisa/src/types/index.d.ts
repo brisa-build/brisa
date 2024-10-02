@@ -559,6 +559,18 @@ export interface BaseWebContext {
   /**
    * Description:
    *
+   * The `useId` method will generate a unique identifier for each invocation and guarantees that
+   * these will be consistent when rendering both on the server and the client.
+   *
+   * A common use case for consistent IDs are forms, where <label>-elements use the for attribute
+   * to associate them with a specific <input>-element. The useId hook isn't tied to just forms
+   * though and can be used whenever you need a unique ID.
+   */
+  useId(): string;
+
+  /**
+   * Description:
+   *
    * The `css` method is used to inject reactive CSS into the DOM.
    *
    * Example:

@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach } from 'bun:test';
+import { describe, expect, it, afterEach, spyOn } from 'bun:test';
 import { join } from 'node:path';
 import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '.';
 import type {
@@ -875,6 +875,43 @@ describe('utils', () => {
 
       expect(output[2][0][2][2][1]).toEqual({
         html: `<style>@import '/foo.css';@import '/bar.css'</style>`,
+      });
+    });
+
+    it('should useId add the data-id-num to the web component with an id', async () => {
+      spyOn(crypto, 'randomUUID').mockImplementationOnce(
+        () => '91d4295f-a12c-4807-a213-389e9262c422',
+      );
+      spyOn(crypto, 'randomUUID').mockImplementationOnce(
+        () => 'd519f3a3-c53a-43fe-853a-50dd799194b3',
+      );
+      const WebComponent = ({}, { useId }: WebContext) => {
+        const id1 = useId();
+        const id2 = useId();
+        return (
+          <>
+            <input id={id1} />
+            <input id={id2} />
+          </>
+        );
+      };
+
+      const selector = 'web-component';
+
+      const output = (await SSRWebComponent(
+        {
+          'ssr-Component': WebComponent,
+          'ssr-selector': selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(output[1]).toEqual({
+        __isWebComponent: true,
+        'data-id-1': '91d4295f-a12c-4807-a213-389e9262c422',
+        'data-id-2': 'd519f3a3-c53a-43fe-853a-50dd799194b3',
+        key: undefined,
       });
     });
   });

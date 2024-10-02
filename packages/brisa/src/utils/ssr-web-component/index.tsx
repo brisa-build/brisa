@@ -37,6 +37,11 @@ export default async function SSRWebComponent(
   const self = { shadowRoot: {}, attachInternals: voidFn } as any;
   let style = '';
   const Selector = selector;
+  const ids = {} as Record<
+    string,
+    `${string}-${string}-${string}-${string}-${string}`
+  >;
+  let idCount = 0;
 
   // Note: For renderOn="build" we need to import the component inside
   // to execute the SSRWebComponent in a macro with serialized props.
@@ -52,6 +57,7 @@ export default async function SSRWebComponent(
     store,
     self,
     state: (value: unknown) => ({ value }),
+    useId: () => (ids[`data-id-${++idCount}`] = crypto.randomUUID()),
     effect: voidFn,
     onMount: voidFn,
     reset: voidFn,
@@ -107,7 +113,7 @@ export default async function SSRWebComponent(
 
   return (
     // @ts-ignore
-    <Selector key={__key} {...props} __isWebComponent>
+    <Selector key={__key} {...props} {...ids} __isWebComponent>
       {showContent && (
         <template
           shadowrootmode="open"
