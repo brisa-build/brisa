@@ -21,7 +21,7 @@ import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import analyzeServerAst from '@/utils/analyze-server-ast';
-import { logBuildError } from '@/utils/log/log-build';
+import { logBuildError, logError } from '@/utils/log/log-build';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import getDefinedEnvVar from '../get-defined-env-var';
 
@@ -269,9 +269,14 @@ export async function transformToWebComponents({
                   code = res.code;
                   useI18n ||= res.useI18n;
                   i18nKeys = new Set([...i18nKeys, ...res.i18nKeys]);
-                } catch (error) {
-                  console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
-                  console.log(LOG_PREFIX.ERROR, (error as Error).message);
+                } catch (error: any) {
+                  logError({
+                    messages: [
+                      `Error transforming web component ${path}`,
+                      error?.message,
+                    ],
+                    stack: error?.stack,
+                  });
                 }
 
                 return {

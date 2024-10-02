@@ -52,7 +52,7 @@ export default function optimizeEffects(
   componentBranch: ESTree.FunctionDeclaration,
   allVariableNames = new Set<string>(),
 ): ESTree.FunctionDeclaration {
-  const webContextAst = componentBranch.params[1];
+  const webContextAst = componentBranch?.params?.[1];
   let needsToAwait = false;
 
   if (!webContextAst) return componentBranch;
