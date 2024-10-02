@@ -1,5 +1,13 @@
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+} from 'bun:test';
 import createPortal from '@/utils/create-portal';
 import dangerHTML from '@/utils/danger-html';
 import { serialize } from '@/utils/serialization';
@@ -3950,6 +3958,100 @@ describe('utils', () => {
 
       expect(routeComponent?.shadowRoot?.innerHTML).toBe(
         '<div>/user/aral</div>',
+      );
+    });
+
+    it('should be use the same data-id as useId when exists', () => {
+      const Component = ({}, { useId }: WebContext) => {
+        return useId();
+      };
+
+      customElements.define('id-component', brisaElement(Component));
+
+      document.body.innerHTML = '<id-component data-id-1="1234" />';
+
+      const idComponent = document.querySelector('id-component') as HTMLElement;
+
+      expect(idComponent?.shadowRoot?.innerHTML).toBe('1234');
+    });
+
+    it('should be use multi useId when data-id exists', () => {
+      const Component = ({}, { useId }: WebContext) => {
+        return useId() + useId();
+      };
+
+      customElements.define('id-component', brisaElement(Component));
+
+      document.body.innerHTML =
+        '<id-component data-id-1="1234" data-id-2="5432" />';
+
+      const idComponent = document.querySelector('id-component') as HTMLElement;
+
+      expect(idComponent?.shadowRoot?.innerHTML).toBe('12345432');
+    });
+
+    it('should generate the same useId after unmount and mount again', () => {
+      const Component = ({}, { useId }: WebContext) => {
+        return useId() + useId();
+      };
+
+      customElements.define('id-component', brisaElement(Component));
+
+      document.body.innerHTML =
+        '<id-component data-id-1="1234" data-id-2="5432" />';
+
+      const idComponent = document.querySelector('id-component') as HTMLElement;
+
+      expect(idComponent?.shadowRoot?.innerHTML).toBe('12345432');
+
+      idComponent.remove();
+      document.body.innerHTML =
+        '<id-component data-id-1="1234" data-id-2="5432" />';
+
+      const idComponent2 = document.querySelector(
+        'id-component',
+      ) as HTMLElement;
+
+      expect(idComponent2?.shadowRoot?.innerHTML).toBe('12345432');
+    });
+
+    it('should be generate an useId when data-id does not exists', () => {
+      spyOn(crypto, 'randomUUID').mockImplementation(
+        () => '1234-543-4234-5425-123',
+      );
+      const Component = ({}, { useId }: WebContext) => {
+        return useId();
+      };
+
+      customElements.define('id-component', brisaElement(Component));
+
+      document.body.innerHTML = '<id-component />';
+
+      const idComponent = document.querySelector('id-component') as HTMLElement;
+
+      expect(idComponent?.shadowRoot?.innerHTML).toBe('1234-543-4234-5425-123');
+    });
+
+    it('should be generate multi useId when data-id does not exists', () => {
+      spyOn(crypto, 'randomUUID').mockImplementationOnce(
+        () => '1234-543-4234-5425-123',
+      );
+      spyOn(crypto, 'randomUUID').mockImplementationOnce(
+        () => '1111-222-333-444-555',
+      );
+
+      const Component = ({}, { useId }: WebContext) => {
+        return [useId(), useId()];
+      };
+
+      customElements.define('id-component', brisaElement(Component));
+
+      document.body.innerHTML = '<id-component />';
+
+      const idComponent = document.querySelector('id-component') as HTMLElement;
+
+      expect(idComponent?.shadowRoot?.innerHTML).toBe(
+        '1234-543-4234-5425-1231111-222-333-444-555',
       );
     });
   });

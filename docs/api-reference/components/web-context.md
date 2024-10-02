@@ -25,6 +25,9 @@ export default function WebComponent(props, webContext: WebContext) {
     onMount,
     reset,
 
+    // Generate unique identifiers (server/client)
+    useId,
+
     // Add reactive styles
     css,
 
@@ -235,6 +238,25 @@ reset();
 > [!CAUTION]
 >
 > The `reset` method is a powerful tool that should be used judiciously. It clears all effects and cleanups, potentially affecting the web component's behavior. Ensure that its usage aligns with the desired functionality and doesn't compromise the integrity of the web component.
+
+## `useId`
+
+`useId(): string`
+
+The `useId` method generates a unique identifier for the web component. It is useful for creating unique keys for elements in lists or for other purposes that require unique identifiers. The generated ID is unique across all web components and the generation is the same on the server and client.
+
+Example:
+
+```tsx
+const passwordHintId = useId();
+
+return (
+  <>
+    <input type="password" aria-describedby={passwordHintId} />
+    <p id={passwordHintId}>
+  </>
+)
+```
 
 ## `css`
 

@@ -201,6 +201,7 @@ export default function brisaElement(
       const fnToExecuteAfterMount: (() => void)[] = [];
       const cssStyles: CSSStyles = [];
       const sheet = new CSSStyleSheet();
+      let idCount = 0;
 
       // Add global CSS to apply to the shadowRoot
       const css: string[] = [];
@@ -410,6 +411,9 @@ export default function brisaElement(
           ...renderSignals,
           onMount(cb: () => void) {
             fnToExecuteAfterMount.push(cb);
+          },
+          useId() {
+            return self.dataset[`id-${++idCount}`] ?? crypto.randomUUID();
           },
           // Context
           useContext<T>(context: BrisaContext<T>) {
