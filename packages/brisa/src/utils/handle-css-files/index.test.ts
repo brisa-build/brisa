@@ -31,6 +31,8 @@ describe('utils/handle-css-files', () => {
     } as unknown as BrisaConstants;
     mockHash = spyOn(Bun, 'hash').mockReturnValue(HASH);
     mockLog = spyOn(console, 'log');
+    // Clear the require cache to avoid the css-files.js file to be cached
+    delete require.cache[path.join(BUILD_DIR, 'css-files.js')];
   });
   afterEach(() => {
     fs.rmdirSync(BUILD_DIR, { recursive: true });
@@ -47,11 +49,11 @@ describe('utils/handle-css-files', () => {
     ).toBeTrue();
   });
 
-  it('should create a css-files.json file with the css file names', async () => {
+  it('should create a css-files.js file with the css file names', async () => {
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
     await handleCSSFiles();
-    const cssFiles = JSON.parse(
-      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    const cssFiles = await import(path.join(BUILD_DIR, 'css-files.js')).then(
+      (m) => m.default,
     );
     expect(cssFiles).toEqual(['test.css']);
   });
@@ -71,15 +73,15 @@ describe('utils/handle-css-files', () => {
     ).toBeTrue();
   });
 
-  it('should create a css-files.json file with multiple css file names', async () => {
+  it('should create a css-files.js file with multiple css file names', async () => {
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
     fs.writeFileSync(
       path.join(BUILD_DIR, 'test2.css'),
       'body { color: blue; }',
     );
     await handleCSSFiles();
-    const cssFiles = JSON.parse(
-      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    const cssFiles = (
+      await import(path.join(BUILD_DIR, 'css-files.js')).then((m) => m.default)
     ).toSorted();
     expect(cssFiles).toEqual(['test.css', 'test2.css'].toSorted());
   });
@@ -90,8 +92,8 @@ describe('utils/handle-css-files', () => {
     await handleCSSFiles();
     const expectedFilename = `base-${HASH}.css`;
     const expectedFilepath = path.join(BUILD_DIR, 'public', expectedFilename);
-    const cssFiles = JSON.parse(
-      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    const cssFiles = (
+      await import(path.join(BUILD_DIR, 'css-files.js')).then((m) => m.default)
     ).toSorted();
 
     expect(cssFiles).toEqual([expectedFilename].toSorted());
@@ -108,8 +110,8 @@ describe('utils/handle-css-files', () => {
     await handleCSSFiles();
     const baseCSSFilename = `base-${HASH}.css`;
     const expectedFilepath = path.join(BUILD_DIR, 'public', baseCSSFilename);
-    const cssFiles = JSON.parse(
-      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    const cssFiles = (
+      await import(path.join(BUILD_DIR, 'css-files.js')).then((m) => m.default)
     ).toSorted();
 
     expect(cssFiles).toEqual([baseCSSFilename, 'test.css'].toSorted());
@@ -124,8 +126,8 @@ describe('utils/handle-css-files', () => {
     globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), '@tailwind base;');
     await handleCSSFiles();
-    const cssFiles = JSON.parse(
-      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    const cssFiles = (
+      await import(path.join(BUILD_DIR, 'css-files.js')).then((m) => m.default)
     ).toSorted();
     expect(cssFiles).toEqual(['test.css'].toSorted());
   });
@@ -146,8 +148,8 @@ describe('utils/handle-css-files', () => {
 
     await handleCSSFiles();
 
-    const cssFiles = JSON.parse(
-      fs.readFileSync(path.join(BUILD_DIR, 'css-files.json'), 'utf-8'),
+    const cssFiles = (
+      await import(path.join(BUILD_DIR, 'css-files.js')).then((m) => m.default)
     ).toSorted();
 
     expect(cssFiles).toEqual(['test.css'].toSorted());
