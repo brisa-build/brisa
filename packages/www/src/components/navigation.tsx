@@ -8,8 +8,8 @@ import MenuIcon from '@/icons/menu-icon';
 import CrossIcon from '@/icons/cross-icon';
 
 export default function Nav({}, { route }: RequestContext) {
-  const getActiveClass = (name: string) =>
-    route.name === name ? 'active' : '';
+  const getActiveClass = (...names: string[]) =>
+    names.some((name) => route.name === name) ? 'active' : '';
 
   return (
     <nav class="nav">
@@ -58,7 +58,7 @@ export default function Nav({}, { route }: RequestContext) {
               </a>
             </li>
             <li>
-              <a class={getActiveClass('/blog')} href="/blog">
+              <a class={getActiveClass('/blog', '/blog/[slug]')} href="/blog">
                 Blog
               </a>
             </li>

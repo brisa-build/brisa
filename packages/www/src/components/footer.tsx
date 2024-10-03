@@ -1,3 +1,5 @@
+import RSSIcon from '@/icons/rss-icon';
+
 export default function Footer() {
   const year = new Date().getFullYear();
   return (
@@ -41,9 +43,12 @@ export default function Footer() {
                 Examples
               </a>
             </li>
-            <li>
+            <li style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <a title="Blog" href="/blog">
                 Blog
+              </a>
+              <a title="RSS" href="/rss.xml" style={{ border: 'none' }}>
+                <RSSIcon />
               </a>
             </li>
           </ul>

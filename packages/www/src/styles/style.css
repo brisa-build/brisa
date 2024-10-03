@@ -172,6 +172,29 @@ main {
   filter: invert(1);
 }
 
+.blog-list {
+  background-image: var(--section1-bg-color);
+  color: var(--color-dark);
+  padding: 50px 0;
+}
+
+.blog-list article {
+  padding: 10px;
+  border-bottom: 1px solid var(--color-light-gray);
+}
+
+.blog-list a {
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  display: block;
+  width: 100%;
+}
+
+.blog-list a:hover {
+  background-color: var(--color-light-blue);
+}
+
 .brisa-section {
   padding: 1rem 2rem;
   width: 100vw;

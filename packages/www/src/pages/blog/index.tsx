@@ -1,18 +1,54 @@
+import path from 'node:path';
+import fs from 'node:fs';
+import matter from 'gray-matter';
+
 export default function Blog() {
+  const postsPath = path.join(process.cwd(), 'src', 'posts');
+  const posts = fs
+    .readdirSync(postsPath)
+    .map((slug) => {
+      const { data } = matter(
+        fs.readFileSync(path.join(postsPath, slug), 'utf-8'),
+      );
+      return { slug: slug.replace('.md', ''), data };
+    })
+    .toSorted(
+      (a, b) =>
+        new Date(b.data.created).getTime() - new Date(a.data.created).getTime(),
+    );
+
   return (
-    <main class="hero">
-      <section class="brisa-section">
-        <hgroup>
-          <img
-            src="/brisa.svg"
-            alt="Brisa Framework logo"
-            width="100"
-            height="100"
-          />
-          <h1>Brisa Blog</h1>
-          <p>TODO</p>
-        </hgroup>
-      </section>
+    <main>
+      <div class="hero" style={{ padding: '20px 0' }}>
+        <section class="brisa-section ">
+          <hgroup>
+            <img
+              src="/brisa.svg"
+              alt="Brisa Framework logo"
+              width="100"
+              height="100"
+            />
+            <h1>Brisa Blog</h1>
+          </hgroup>
+        </section>
+      </div>
+      <div class="blog-list">
+        {posts.map(
+          ({ slug, data: { title, created, description, author } }: any) => (
+            <section class="brisa-section">
+              <a href={`/blog/${slug}`}>
+                <article key={slug}>
+                  <h2>{title}</h2>
+                  <p>{description}</p>
+                  <small>
+                    <time dateTime={created}>{created}</time> by {author}
+                  </small>
+                </article>
+              </a>
+            </section>
+          ),
+        )}
+      </div>
     </main>
   );
 }

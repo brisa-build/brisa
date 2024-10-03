@@ -8,7 +8,8 @@
     "dev:debug": "brisa dev --debug",
     "build:json": "bun run src/scripts/docs-to-json.ts",
     "build:og-images": "bun run src/scripts/og-images.tsx",
-    "build": "bun run build:json && brisa build && bun run build:og-images",
+    "build:rss": "bun run src/scripts/generate-rss.ts",
+    "build": "bun run build:json && brisa build && bun run build:og-images && bun run build:rss",
     "start": "brisa start"
   },
   "dependencies": {
