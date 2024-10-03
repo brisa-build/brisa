@@ -100,6 +100,21 @@ export default async function PlayGround(
       font-size: 1rem;
       border-radius: 0.5rem;
     }
+
+    @media (max-width: 968px) {
+      .playground {
+        flex-direction: column;
+      }
+
+      .original-code {
+        width: 100%;
+        height: 100%;
+      }
+
+      .output {
+        width: 100%;
+      }
+     }
   `;
 
   return (

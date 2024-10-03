@@ -33,7 +33,12 @@ export default function BlogContent({}, { store }: RequestContext) {
               {author}
             </a>
           </small>
-          <a title="RSS" href="/rss.xml" target="_blank" rel="noopener noreferrer">
+          <a
+            title="RSS"
+            href="/rss.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <RSSIcon />
           </a>
         </div>

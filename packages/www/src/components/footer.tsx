@@ -47,7 +47,13 @@ export default function Footer() {
               <a title="Blog" href="/blog">
                 Blog
               </a>
-              <a title="RSS" href="/rss.xml" target="_blank" rel="noopener noreferrer" style={{ border: 'none' }}>
+              <a
+                title="RSS"
+                href="/rss.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ border: 'none' }}
+              >
                 <RSSIcon />
               </a>
             </li>
