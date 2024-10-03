@@ -23,12 +23,14 @@ self.addEventListener("message", async (event) => {
   });
   self.postMessage(result);
 });`;
+const loadingSvg = `<img src="/brisa.svg" style="width: 1rem; height: 1rem; animation: spin 1s linear infinite;"/>`
 
 export default async function PlayGroundPreview(
   {},
-  { state, cleanup }: WebContext,
+  {state, css, cleanup}: WebContext,
 ) {
   const ready = state<boolean>(false);
+  const loading = state<boolean>(true);
   const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
   const url = URL.createObjectURL(workerBlob);
   const worker = new Worker(url, { type: 'module', name: 'SWC Worker' });
@@ -53,6 +55,7 @@ export default async function PlayGroundPreview(
     const newSelector = `playground-result-${++count}`;
     customElements.define(newSelector, el);
     selector.value = newSelector;
+    loading.value = false;
   }
 
   function onReceiveUncompiledCode(e: MessageEvent) {
@@ -67,7 +70,20 @@ export default async function PlayGroundPreview(
     window.removeEventListener('message', onReceiveUncompiledCode);
   });
 
+  css`
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+      
+      0% {
+        transform: rotate(0);
+      }
+    }
+  `
+
   if (!ready.value) return null;
 
-  return dangerHTML(`<${selector.value}></${selector.value}>`);
+  return dangerHTML(`${loading.value ? loadingSvg : ''}
+<${selector.value}></${selector.value}>`);
 }
