@@ -101,10 +101,10 @@ export default async function handleCSSFiles() {
       );
     }
 
-    // Write css-files.json
+    // Write css-files.js
     fs.writeFileSync(
-      path.join(BUILD_DIR, 'css-files.json'),
-      JSON.stringify(cssFilePaths),
+      path.join(BUILD_DIR, 'css-files.js'),
+      'export default ' + JSON.stringify(cssFilePaths),
     );
   } catch (e: any) {
     logError({

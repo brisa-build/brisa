@@ -123,7 +123,7 @@ export const getConstants = (): BrisaConstants =>
 async function loadDynamicConstants() {
   const binaryExternalLibs = ['lightningcss'];
   const CSS_FILES =
-    (await importFileIfExists('css-files.json', buildDir))?.default ?? [];
+    (await importFileIfExists('css-files', buildDir))?.default ?? [];
   const integrations = await importFileIfExists(
     '_integrations',
     path.resolve(buildDir, 'web-components'),
