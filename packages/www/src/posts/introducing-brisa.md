@@ -74,14 +74,14 @@ Brisa is a community-driven project. We are committed to building a diverse and 
 
 The first months after 0.1 we will be fixing issues and collecting suggestions and feature ideas to finish building the 1.0 route-map together with the community. For now we have some clear ideas: more runtime-agnostic (Deno), more optimizations, CSS Modules. But we prefer to listen to the community and evolve well.
 
+To help you contribute, we will be giving away free Brisa T-shirts to contributors. Until when? Until the current stock runs out. Take advantage of October to get 2 t-shirts by contributing to Brisa, the Hacktoberfest one and the Brisa one.
+
 
 ## Long-Term Sustainability
 
 **Brisa is and always will be free**. It is an open source project released under the [MIT license](https://github.com/brisa-build/brisa/blob/main/LICENSE).
 
 We care deeply about building a more sustainable future for open source software. At the same time, we need to support Brisa's development long-term. This requires money (donations alone aren’t enough). We are going to publish our Open Collective soon, where you can support us with your company or as an individual. For now, you can <a href="javascript:document.querySelector('#MERGE0').focus()">Subscribe to the Newsletter</a> to be informed about the Open-Collective launch.
-
-To help you contribute, we will be giving away free Brisa T-shirts to contributors. Until when? Until the current stock runs out. Take advantage of October to get 2 t-shirts by contributing to Brisa, the Hacktoberfest one and the Brisa one 😊.
 
 ## More
 
