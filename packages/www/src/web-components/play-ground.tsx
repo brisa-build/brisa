@@ -80,15 +80,6 @@ export default async function PlayGround(
       }
     }
 
-    #tab-wc {
-      padding: 0.5rem
-    }
-    #tab-wc iframe {
-      display: flex;
-      flex-grow: 1;
-      border: none;
-    }
-
     #tab-compiled {
       padding: 0.5rem;
     }
