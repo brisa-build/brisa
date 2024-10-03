@@ -11,7 +11,7 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "0.0.234",
+    "brisa": "0.0.235",
     "counter-wc": "0.1.1",
     "calendar-native-web-component": "0.0.32"
   },
