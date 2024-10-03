@@ -1,5 +1,6 @@
 import type { RequestContext } from 'brisa';
 import path from 'node:path';
+import fs from 'node:fs';
 import { loadMarkdownFromPath } from '@/helpers/markdown-loader';
 import RSSIcon from '@/icons/rss-icon';
 
@@ -76,4 +77,11 @@ export function Head({}, { route, store }: RequestContext) {
       />
     </>
   );
+}
+
+export async function prerender() {
+  const posts = fs.readdirSync(path.join(process.cwd(), 'src', 'posts'));
+  return posts.map((slug) => ({
+    slug: slug.replace('.md', ''),
+  }));
 }

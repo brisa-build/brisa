@@ -26,7 +26,7 @@ for (const post of posts) {
   const { data } = marker(
     fs.readFileSync(path.join(POSTS_PATH, post), 'utf-8'),
   );
-  console.log(data);
+
   rss += `
   <item>
     <title>${data.title}</title>
