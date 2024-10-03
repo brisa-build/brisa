@@ -5,6 +5,7 @@ export default {
     {
       text: '🚀 Getting started',
       id: '/getting-started',
+      collapse: false,
       items: [
         {
           text: 'What is Brisa?',
@@ -23,9 +24,11 @@ export default {
     {
       text: '🛠️ Building your application',
       id: '/building-your-application',
+      collapse: false,
       items: [
         {
           text: '🛣️ Routing',
+          collapse: false,
           id: '/building-your-application/routing',
           items: [
             {

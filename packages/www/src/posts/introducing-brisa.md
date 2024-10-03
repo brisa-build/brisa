@@ -81,7 +81,7 @@ To help you contribute, we will be giving away free Brisa T-shirts to contributo
 
 **Brisa is and always will be free**. It is an open source project released under the [MIT license](https://github.com/brisa-build/brisa/blob/main/LICENSE).
 
-We care deeply about building a more sustainable future for open source software. At the same time, we need to support Brisa's development long-term. This requires money (donations alone aren’t enough). We are going to publish our Open Collective soon, where you can support us with your company or as an individual. For now, you can <a href="javascript:document.querySelector('#MERGE0').focus()">Subscribe to the Newsletter</a> to be informed about the Open-Collective launch.
+We care deeply about building a more sustainable future for open source software. At the same time, we need to support Brisa's development long-term. This requires money (donations alone aren’t enough). We are going to publish our **Open Collective** soon, where you can support us with your company or as an individual. For now, you can <a href="javascript:document.querySelector('#MERGE0').focus()">Subscribe to the Newsletter</a> to be informed about the Open-Collective launch.
 
 ## More
 

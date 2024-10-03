@@ -356,6 +356,7 @@ export default function Homepage() {
             </p>
           </div>
         </div>
+        <i style={{ fontSize: '0.8rem' }}>Enjoy using it</i>
       </section>
     </main>
   );

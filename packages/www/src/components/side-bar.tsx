@@ -46,7 +46,10 @@ function generateList(name: string | undefined, pathname: string) {
 }
 
 function isSummaryOpened(item: Item, pathname: string) {
-  return Boolean(pathname?.startsWith?.(item.id ?? item.link ?? '-'));
+  return (
+    (pathname.startsWith('/getting-started') && item.collapse === false) ||
+    Boolean(pathname?.startsWith?.(item.id ?? item.link ?? '-'))
+  );
 }
 
 function isActive(item: Item, pathname: string) {
