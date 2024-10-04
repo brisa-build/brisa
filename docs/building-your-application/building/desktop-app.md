@@ -16,6 +16,10 @@ export default {
 } satisfies Configuration;
 ```
 
+> [!IMPORTANT]
+>
+> **Prerequisits**: you need to have [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) installed.
+
 To initialize the development environment, run the following command:
 
 ```sh

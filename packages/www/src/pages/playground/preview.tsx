@@ -1,4 +1,4 @@
-import { dangerHTML as esm } from 'brisa'
+import { dangerHTML as esm } from 'brisa';
 
 export default function Playground() {
   const erudaCode = `import eruda from 'https://esm.sh/eruda'
@@ -46,19 +46,18 @@ function __setupErudaTheme() {
   erudaConfig?.set('theme', document.body.classList.contains('dark') ? 'Dark' : 'Light')
 }
 
-__setupEruda()`
+__setupEruda()`;
 
-  return <div style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100vh;">
-    <script type="module">
-      {esm(erudaCode)}
-    </script>
+  return (
+    <div style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100vh;">
+      <script type="module">{esm(erudaCode)}</script>
 
-    <div id="preview-container" style="height: 50%; padding: 0.5rem;">
-      <play-ground-preview skipSSR/>
-    </div>
-    <div id="console-container" style="height: 50%; position: relative;">
-      <div id="eruda-container">
+      <div id="preview-container" style="height: 50%; padding: 0.5rem;">
+        <play-ground-preview skipSSR />
+      </div>
+      <div id="console-container" style="height: 50%; position: relative;">
+        <div id="eruda-container"></div>
       </div>
     </div>
-  </div>
+  );
 }
