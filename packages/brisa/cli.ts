@@ -375,7 +375,7 @@ async function main({
 
     if (!packageJSON?.dependencies?.['@tauri-apps/cli']) {
       console.log('Installing @tauri-apps/cli...');
-      cp.spawnSync(BUN_EXEC, ['i', '@tauri-apps/cli@2.0.0-beta.21'], options);
+      cp.spawnSync(BUN_EXEC, ['i', '@tauri-apps/cli@2.0.0'], options);
     }
 
     if (existsTauri && isMobile) {
