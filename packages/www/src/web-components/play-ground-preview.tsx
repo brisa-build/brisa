@@ -24,9 +24,17 @@ self.addEventListener("message", async (event) => {
   self.postMessage(result);
 });`;
 
+const loadingStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '5px',
+  color: 'var(--color-dark-gray)',
+};
+
 export default async function PlayGroundPreview(
   {},
-  {state, css, cleanup}: WebContext,
+  { state, css, cleanup }: WebContext,
 ) {
   const ready = state<boolean>(false);
   const loading = state<boolean>(true);
@@ -79,14 +87,25 @@ export default async function PlayGroundPreview(
         transform: rotate(0);
       }
     }
-  `
+  `;
 
   if (!ready.value) return null;
 
   return (
-    <div>
-      {loading.value && <img src="/brisa.svg" style={{ width: '1rem', height: '1rem', animation: 'spin 1s linear infinite'}}/>}
+    <>
+      {loading.value && (
+        <figure style={loadingStyle}>
+          <img
+            alt="Loading Playground"
+            width={16}
+            height={16}
+            src="/brisa.svg"
+            style={{ animation: 'spin 1s linear infinite' }}
+          />
+          <caption>Loading Playground...</caption>
+        </figure>
+      )}
       {dangerHTML(`<${selector.value}></${selector.value}>`)}
-    </div>
-  )
+    </>
+  );
 }
