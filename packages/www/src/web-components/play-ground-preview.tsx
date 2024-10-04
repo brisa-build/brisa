@@ -37,7 +37,6 @@ export default async function PlayGroundPreview(
   { state, css, cleanup }: WebContext,
 ) {
   const ready = state<boolean>(false);
-  const loading = state<boolean>(true);
   const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
   const url = URL.createObjectURL(workerBlob);
   const worker = new Worker(url, { type: 'module', name: 'SWC Worker' });
@@ -62,7 +61,6 @@ export default async function PlayGroundPreview(
     const newSelector = `playground-result-${++count}`;
     customElements.define(newSelector, el);
     selector.value = newSelector;
-    loading.value = false;
   }
 
   function onReceiveUncompiledCode(e: MessageEvent) {
@@ -89,23 +87,20 @@ export default async function PlayGroundPreview(
     }
   `;
 
-  if (!ready.value) return null;
+  if (!ready.value) {
+    return (
+      <figure style={loadingStyle}>
+        <img
+          alt="Loading Playground"
+          width={16}
+          height={16}
+          src="/brisa.svg"
+          style={{ animation: 'spin 1s linear infinite' }}
+        />
+        <caption>Loading Playground...</caption>
+      </figure>
+    );
+  }
 
-  return (
-    <>
-      {loading.value && (
-        <figure style={loadingStyle}>
-          <img
-            alt="Loading Playground"
-            width={16}
-            height={16}
-            src="/brisa.svg"
-            style={{ animation: 'spin 1s linear infinite' }}
-          />
-          <caption>Loading Playground...</caption>
-        </figure>
-      )}
-      {dangerHTML(`<${selector.value}></${selector.value}>`)}
-    </>
-  );
+  return dangerHTML(`<${selector.value}></${selector.value}>`);
 }
