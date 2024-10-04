@@ -23,7 +23,6 @@ self.addEventListener("message", async (event) => {
   });
   self.postMessage(result);
 });`;
-const loadingSvg = `<img src="/brisa.svg" style="width: 1rem; height: 1rem; animation: spin 1s linear infinite;"/>`
 
 export default async function PlayGroundPreview(
   {},
@@ -84,6 +83,10 @@ export default async function PlayGroundPreview(
 
   if (!ready.value) return null;
 
-  return dangerHTML(`${loading.value ? loadingSvg : ''}
-<${selector.value}></${selector.value}>`);
+  return (
+    <div>
+      {loading.value && <img src="/brisa.svg" style={{ width: '1rem', height: '1rem', animation: 'spin 1s linear infinite'}}/>}
+      {dangerHTML(`<${selector.value}></${selector.value}>`)}
+    </div>
+  )
 }
