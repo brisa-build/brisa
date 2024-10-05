@@ -1,6 +1,6 @@
 {
   "name": "create-brisa",
-  "version": "0.0.235",
+  "version": "0.1.0",
   "license": "MIT",
   "type": "module",
   "scripts": {

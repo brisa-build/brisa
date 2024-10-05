@@ -1,6 +1,6 @@
 {
   "name": "brisa-monorepo",
-  "version": "0.0.235",
+  "version": "0.1.0",
   "description": "The next-gen web framework.",
   "repository": {
     "type": "git",
