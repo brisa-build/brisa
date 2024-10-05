@@ -42,9 +42,9 @@
     "www:deploy": "bun run build && bun run www:build && vercel --prod",
     "prepare": "husky"
   },
-  "packageManager": "bun@1.1.28",
+  "packageManager": "bun@1.1.29",
   "engines": {
-    "bun": ">= 1.1.28",
+    "bun": ">= 1.1.29",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
