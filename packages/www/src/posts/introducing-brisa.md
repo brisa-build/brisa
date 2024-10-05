@@ -1,12 +1,12 @@
 ---
 title: 'Introducing Brisa: Full-stack Web Platform Framework'
-created: 10/05/2020
+created: 10/05/2024
 description: 'Brisa is a full-stack framework that allows you to mix Server Components + Server Actions with Web Components + Signals, both wrote in JSX.'
 author: Aral Roca
 author_site: https://x.com/aralroca
 ---
 
-Today I’m excited to publicly share Brisa: A full-stack framework that allows you to mix [Server Components](https://brisa.build/building-your-application/components-details/server-components) + [Server Actions](https://brisa.build/building-your-application/data-management/server-actions) with [Web Components](https://brisa.build/building-your-application/components-details/web-components) + [Signals](https://brisa.build/building-your-application/components-details/reactivity), both wrote in JSX. Including:
+Today I’m excited to publicly share Brisa: A full-stack framework that allows you to mix [Server Components](https://brisa.build/building-your-application/components-details/server-components) + [Server Actions](https://brisa.build/building-your-application/data-management/server-actions) with [Web Components](https://brisa.build/building-your-application/components-details/web-components) + [Signals](https://brisa.build/building-your-application/components-details/reactivity), both written in JSX. Including:
 
 - **SSR**: Pages entrypoints are rendered on the server and streamed to the client, including SSR of Web Components using the Declarative Shadow DOM under the hood.
 - **Static site generation**: You can generate static pages on build-time, and even mix them with dynamic pages.
@@ -20,7 +20,7 @@ To build a very fast website, there is a simple secret; bring as little JS code 
 
 One goal of Brisa is to end up coupling as much as possible to the Web Platform, but only when necessary. Because the other goal is that you can create an SPA without needing any Web Component and JS code on the client, thanks to server actions and ideas from HTMX where you can debounce and pending states without adding code to the client. The Web platform is so powerful that we bring it to the server, where all the events of DOM elements can be captured by a server action, and propagate on the server.
 
-These days in X (formally Twitter), there has been a lot of discussion that Web Components take more code and worse performance than frameworks, let's believe that in Brisa we have broken this barrier. If you decide to use Web Components in Brisa, it comes with the Brisa wrapper which is 3 KB including signals (Preact is 3kb, but if you need signals you have to add more packages). And in Brisa instead of JSX-runtime for web components we use JSX-buildtime, to make optimizations to make your Web Components very small.
+These days in X (formelly Twitter), there has been a lot of discussion that Web Components take more code and worse performance than frameworks, let's believe that in Brisa we have broken this barrier. If you decide to use Web Components in Brisa, it comes with the Brisa wrapper which is 3 KB including signals (Preact is 3kb, but if you need signals you have to add more packages). And in Brisa instead of JSX-runtime for web components we use JSX-buildtime, to make optimizations to make your Web Components very small.
 
 
 Example of a Counter Web Component in Brisa:

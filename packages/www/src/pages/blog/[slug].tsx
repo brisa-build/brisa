@@ -3,6 +3,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { loadMarkdownFromPath } from '@/helpers/markdown-loader';
 import RSSIcon from '@/icons/rss-icon';
+import { formatDate } from '@/helpers/date';
 
 export default function BlogContent({}, { store }: RequestContext) {
   const post = store.get('post');
@@ -28,7 +29,7 @@ export default function BlogContent({}, { store }: RequestContext) {
           }}
         >
           <small>
-            <time dateTime={created}>{created}</time> by{' '}
+            <time dateTime={created}>{formatDate(created)}</time> by{' '}
             <a href={author_site} title={author} target="_blank">
               {author}
             </a>

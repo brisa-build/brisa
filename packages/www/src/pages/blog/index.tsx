@@ -1,6 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import matter from 'gray-matter';
+import { formatDate } from '@/helpers/date';
 
 export default function Blog() {
   const postsPath = path.join(process.cwd(), 'src', 'posts');
@@ -41,7 +42,8 @@ export default function Blog() {
                   <h2>{title}</h2>
                   <p>{description}</p>
                   <small>
-                    <time dateTime={created}>{created}</time> by {author}
+                    <time dateTime={created}>{formatDate(created)}</time> by{' '}
+                    {author}
                   </small>
                 </article>
               </a>
