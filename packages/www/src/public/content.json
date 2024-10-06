@@ -2935,8 +2935,8 @@
     ]
   },
   {
-    "id": "/building-your-application/configuring/brisa-config-js#brisaconfigjs-options",
-    "title": "brisa.config.js options",
+    "id": "/building-your-application/configuring/brisa-config-js#brisaconfigts-options",
+    "title": "brisa.config.ts options",
     "text": "The brisa.config.(js|ts|jsx|tsx) file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the Configuration type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them. import brisaTailwindCSS from \"brisa-tailwindcss\";\nimport type { Configuration } from \"brisa\";\n\nconst config: Configuration = {\n  /**\n   * `trailingSlash` configuration\n   * Default: undefined (trailing slash is not modified)\n   */\n  trailingSlash: true, // Adds trailing slash to URLs\n\n  /**\n   * `assetPrefix` configuration\n   * Default: undefined (no prefix added to assets)\n   */\n  assetPrefix: \"https://cdn.example.com\", // Prefix for assets\n\n  /**\n   * `extendPlugins` configuration\n   * Default: undefined (no additional plugins added)\n   */\n  extendPlugins: (plugins, { dev, isServer }) => [\n    ...plugins,\n    {\n      name: \"my-plugin\",\n      setup(build) {\n        build.onLoad({ filter: /\\.txt$/ }, async (args) => {\n          return {\n            contents: \"export default \" + JSON.stringify(args.path) + \";\",\n            loader: \"js\",\n          };\n        });\n      },\n    },\n  ],\n\n  /**\n   * `basePath` configuration\n   * Default: undefined (no base path added)\n   */\n  basePath: \"/my-app\", // Base path for the application\n\n  /**\n   * `tls` configuration\n   * Default: undefined (HTTPS is not enabled)\n   */\n  tls: {\n    cert: Bun.file(\"cert.pem\"),\n    key: Bun.file(\"key.pem\"),\n  }, // Enable HTTPS\n\n  /**\n   * `output` configuration\n   * Default: 'bun'\n   */\n  output: \"static\", // Output type of the application\n\n  /**\n   * `external` configuration\n   * Default: undefined (no external dependencies)\n   */\n  external: [\"lightningcss\"],\n\n  /**\n   * `integrations` configuration\n   * Default: undefined (no integrations added)\n   */\n  integrations: [brisaTailwindCSS()],\n};\n\n// Export the configuration as the default export\nexport default config satisfies Configuration;",
     "titles": []
   },
@@ -2945,7 +2945,7 @@
     "title": "trailingSlash",
     "text": "The trailingSlash option allows you to add a trailing slash to all URLs. This is useful when you want to enforce a trailing slash on all URLs. More information about the trailing slash can be found in the Configuration documentation.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -2953,7 +2953,7 @@
     "title": "assetPrefix",
     "text": "The assetPrefix option allows you to add a prefix to all assets. This is useful when you want to serve assets from a CDN or a different domain. More information about the asset prefix can be found in the Configuration documentation.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -2961,7 +2961,7 @@
     "title": "extendPlugins",
     "text": "The extendPlugins option allows you to add additional plugins to the Brisa build pipeline. This is useful when you want to extend the default behavior of the build process. More information about the asset prefix can be found in the Configuration documentation.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -2969,7 +2969,7 @@
     "title": "basePath",
     "text": "The basePath option allows you to set a base path for the application. This is useful when you want to deploy the application under a sub-path of a domain. More information about the base path can be found in the Configuration documentation.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -2977,7 +2977,7 @@
     "title": "tls",
     "text": "The tls option allows you to enable HTTPS for the application. This is useful when you want to serve the application over a secure connection. More information about the TLS configuration can be found in the Configuration documentation.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -2985,7 +2985,7 @@
     "title": "output",
     "text": "The output option allows you to set the output type of the application. This is useful when you want to change the output directory of the application.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -2993,7 +2993,7 @@
     "title": "external",
     "text": "The external option allows you to define external dependencies that should not be included in the final bundle. This is useful for libraries that are already included in the runtime environment, or for libraries that should be resolved at runtime. More information about the output configuration can be found in the Configuration documentation.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -3001,7 +3001,7 @@
     "title": "integrations",
     "text": "The integrations option allows you to integrate third-party libraries with the Brisa internals. This is useful when you want to automatically handle the integration of libraries like TailwindCSS.",
     "titles": [
-      "brisa.config.js options"
+      "brisa.config.ts options"
     ]
   },
   {
@@ -3907,7 +3907,7 @@
   {
     "id": "/building-your-application/deploying/docker#containerize-with-docker",
     "title": "Containerize with Docker",
-    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.1.28\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
+    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.1.29\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
     "titles": [
       "Docker"
     ]
@@ -4643,7 +4643,7 @@
   {
     "id": "/building-your-application/routing/linking-and-navigating#navigation-with-reactivity",
     "title": "Navigation with reactivity",
-    "text": "Brisa works with MPA like SPA thanks to Navigation API, so we will use the native HTML navigation and you can use the a tag directly: export default function Home() {\n  return (\n    <ul>\n      <li>\n        <a href=\"/\">Home</a>\n      </li>\n      <li>\n        <a href=\"/about\">About Us</a>\n      </li>\n      <li>\n        <a href=\"/blog/hello-world\">Blog Post</a>\n      </li>\n    </ul>\n  );\n} The example above uses multiple a tags. Each one maps a path (href) to a known page: / → src/pages/index.js\n/about → src/pages/about.js\n/blog/hello-world → src/pages/blog/[slug].js By default, without the renderMode attribute, it acts with the reactivity mode. This means that it does a diff of the DOM between the new document and the current one, thus maintaining the states of the web components that are still visible (either because they are in the layout or because we are navigating to the same page in another language) and the store signal between pages. Although it is a DOM diff it works with incremental rendering, that is to say, that if the following page uses suspense, when processing the diff with HTML streaming the suspense mode continues working. The reactivity updates only the content of the page that has changed, keeping the rest of the page intact. This is useful for maintaining the state of the web components that are still visible. Good to know:\nWith reactivity render mode (like SPA), we prioritizes the preservation of <body> attributes during the HTML diffing process. This design choice grants developers greater control over runtime modifications, such as themes, fonts, and other display properties managed through BODY tag attributes.\nMany of these decisions are actions performed by users at runtime. It would be disruptive if a user changed the theme of the page, only for that change to be lost upon navigation.",
+    "text": "Brisa works with MPA like SPA thanks to Navigation API, so we will use the native HTML navigation and you can use the a tag directly: export default function Home() {\n  return (\n    <ul>\n      <li>\n        <a href=\"/\">Home</a>\n      </li>\n      <li>\n        <a href=\"/about\">About Us</a>\n      </li>\n      <li>\n        <a href=\"/blog/hello-world\">Blog Post</a>\n      </li>\n    </ul>\n  );\n} The example above uses multiple a tags. Each one maps a path (href) to a known page: / → src/pages/index.tsx\n/about → src/pages/about.tsx\n/blog/hello-world → src/pages/blog/[slug].tsx By default, without the renderMode attribute, it acts with the reactivity mode. This means that it does a diff of the DOM between the new document and the current one, thus maintaining the states of the web components that are still visible (either because they are in the layout or because we are navigating to the same page in another language) and the store signal between pages. Although it is a DOM diff it works with incremental rendering, that is to say, that if the following page uses suspense, when processing the diff with HTML streaming the suspense mode continues working. The reactivity updates only the content of the page that has changed, keeping the rest of the page intact. This is useful for maintaining the state of the web components that are still visible. Good to know:\nWith reactivity render mode (like SPA), we prioritizes the preservation of <body> attributes during the HTML diffing process. This design choice grants developers greater control over runtime modifications, such as themes, fonts, and other display properties managed through BODY tag attributes.\nMany of these decisions are actions performed by users at runtime. It would be disruptive if a user changed the theme of the page, only for that change to be lost upon navigation.",
     "titles": [
       "Linking and Navigating"
     ]
@@ -4684,7 +4684,7 @@
   {
     "id": "/building-your-application/routing/linking-and-navigating#i18n-navigation",
     "title": "I18n navigation",
-    "text": "If you have i18n routing enabled, during navigation you always have to forget about route translations and during the render of the page will be translated to correct translated page. export default function Home() {\n  return <a href=\"/about\">About Us</a>;\n} In English: /about → /en/about → src/pages/about.js In Spanish: /about → /es/sobre-nosotros → src/pages/about.js For pathname translations, we recommend using server components to avoid the need for client-side translations, however, if you need to use client-side translations, you can use the pages.config.transferToClient configuration property to transfer the needed page pathnames translations to the client.",
+    "text": "If you have i18n routing enabled, during navigation you always have to forget about route translations and during the render of the page will be translated to correct translated page. export default function Home() {\n  return <a href=\"/about\">About Us</a>;\n} In English: /about → /en/about → src/pages/about.tsx In Spanish: /about → /es/sobre-nosotros → src/pages/about.tsx For pathname translations, we recommend using server components to avoid the need for client-side translations, however, if you need to use client-side translations, you can use the pages.config.transferToClient configuration property to transfer the needed page pathnames translations to the client.",
     "titles": [
       "Linking and Navigating"
     ]
@@ -4791,13 +4791,13 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#pages-and-layouts",
     "title": "Pages and Layouts",
-    "text": "The Pages Router has a file-system based router built on the concept of pages (like Next.js pages folder). When a file is added to the pages directory, it's automatically available as a route. In Brisa framework, a page is a Brisa Server Component exported from a .js, .jsx, .ts, or .tsx file in the pages directory. Each page is associated with a route based on its file name. Example: If you create pages/about.js that exports a Brisa component like below, it will be accessible at /about. export default function About() {\n  return <div>About</div>;\n} See the difference between Brisa Components and React Components here.",
+    "text": "The Pages Router has a file-system based router built on the concept of pages (like Next.js pages folder). When a file is added to the pages directory, it's automatically available as a route. In Brisa framework, a page is a Brisa Server Component exported from a .js, .jsx, .ts, or .tsx file in the pages directory. Each page is associated with a route based on its file name. Example: If you create pages/about.tsx that exports a Brisa component like below, it will be accessible at /about. export default function About() {\n  return <div>About</div>;\n} See the difference between Brisa Components and React Components here.",
     "titles": []
   },
   {
     "id": "/building-your-application/routing/pages-and-layouts#index-routes",
     "title": "Index routes",
-    "text": "The router will automatically route files named index to the root of the directory. pages/index.js → /\npages/blog/index.js → /blog",
+    "text": "The router will automatically route files named index to the root of the directory. pages/index.tsx → /\npages/blog/index.tsx → /blog",
     "titles": [
       "Pages and Layouts"
     ]
@@ -4805,7 +4805,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#nested-routes",
     "title": "Nested routes",
-    "text": "The router supports nested files. If you create a nested folder structure, files will automatically be routed in the same way still. pages/blog/first-post.js → /blog/first-post\npages/dashboard/settings/username.js → /dashboard/settings/username",
+    "text": "The router supports nested files. If you create a nested folder structure, files will automatically be routed in the same way still. pages/blog/first-post.tsx → /blog/first-post\npages/dashboard/settings/username.tsx → /dashboard/settings/username",
     "titles": [
       "Pages and Layouts"
     ]
@@ -4813,7 +4813,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#pages-with-dynamic-routes",
     "title": "Pages with Dynamic Routes",
-    "text": "Brisa supports pages with dynamic routes. For example, if you create a file called pages/posts/[id].js, then it will be accessible at posts/1, posts/2, etc. To learn more about dynamic routing, check the Dynamic Routing documentation.",
+    "text": "Brisa supports pages with dynamic routes. For example, if you create a file called pages/posts/[id].tsx, then it will be accessible at posts/1, posts/2, etc. To learn more about dynamic routing, check the Dynamic Routing documentation.",
     "titles": [
       "Pages and Layouts"
     ]
@@ -4821,7 +4821,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#layout",
     "title": "Layout",
-    "text": "The global layout is defined inside /src/layout/index. By default Brisa supports a default layout, but you can modify it here. import { RequestContext } from \"brisa\";\n\nexport default function Layout(\n  { children }: { children: JSX.Element },\n  { route }: RequestContext\n) {\n  return (\n    <html>\n      <head>\n        <title>My layout</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} It must have the same structure: html, head and body. If for example you forget to put the head, you may have issues and you will be alerted with an error during development. All the components of Brisa (pages and layouts included), apart from the props, receive a second argument which is the context of the request, apart from having access to the request, you have access to a series of extra information such as the route of the page. In the layouts, having access to the page route is very useful to create different layouts. Once you have defined the layout, you don't have to import it into your pages, it will automatically be applied to all pages. To apply different layouts to different pages, take a look at multi-layouts.",
+    "text": "The global layout is defined inside /src/layout/index. By default Brisa supports a default layout, but you can modify it here. src/layout/index.tsx import { RequestContext } from \"brisa\";\n\nexport default function Layout(\n  { children }: { children: JSX.Element },\n  { route }: RequestContext\n) {\n  return (\n    <html>\n      <head>\n        <title>My layout</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} It must have the same structure: html, head and body. If for example you forget to put the head, you may have issues and you will be alerted with an error during development. All the components of Brisa (pages and layouts included), apart from the props, receive a second argument which is the context of the request, apart from having access to the request, you have access to a series of extra information such as the route of the page. In the layouts, having access to the page route is very useful to create different layouts. Once you have defined the layout, you don't have to import it into your pages, it will automatically be applied to all pages. To apply different layouts to different pages, take a look at multi-layouts.",
     "titles": [
       "Pages and Layouts"
     ]
@@ -4829,7 +4829,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#example-of-multi-layouts",
     "title": "Example of multi-layouts",
-    "text": "import { type RequestContext } from \"brisa\";\nimport UserLayout from './user-layout'\nimport GlobalLayout from './global-layout'\n\nexport default function Layout({ children }: { children: JSX.Element }, { route }: RequestContext) {\n  // pathname: /en/user/aralroca/settings or /es/usuario/pepe\n  if(route.name.startsWith('/user/[username]')) {\n    return <UserLayout>{children}<UserLayout>\n  }\n\n  return <GlobalLayout>{children}</GlobalLayout>\n}",
+    "text": "src/layout/index.tsx import { type RequestContext } from \"brisa\";\nimport UserLayout from './user-layout'\nimport GlobalLayout from './global-layout'\n\nexport default function Layout({ children }: { children: JSX.Element }, { route }: RequestContext) {\n  // pathname: /en/user/aralroca/settings or /es/usuario/pepe\n  if(route.name.startsWith('/user/[username]')) {\n    return <UserLayout>{children}<UserLayout>\n  }\n\n  return <GlobalLayout>{children}</GlobalLayout>\n}",
     "titles": [
       "Pages and Layouts",
       "Layout"
@@ -4838,7 +4838,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#data-fetching",
     "title": "Data Fetching",
-    "text": "Inside your layout, you can fetch data directly with fetch, in the same way that you can do it in pages: import { RequestContext } from \"brisa\";\n\nexport default async function Layout(\n  { children }: { children: JSX.Element },\n  { route }: RequestContext\n) {\n  const data = await fetch(/* data url */).then((r) => r.json());\n\n  return (\n    <html>\n      <head>\n        <title>My layout</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} The fetch is directly native and has no wrapper to control the cache. We recommend that you do not do the same fetch in several places, but use the store to store the data and consume it from any component. async generators are also supported if you want to stream every item in a list for example:\nasync function* List() {\n  yield <li>{await foo()}</li>;\n  yield <li>{await bar()}</li>;\n  yield <li>{await baz()}</li>;\n}\n\nThis can be used as a server component:\nreturn <List />;\n\nAnd the HTML is resolved via streaming.",
+    "text": "Inside your layout, you can fetch data directly with fetch, in the same way that you can do it in pages: src/layout/index.tsx import { RequestContext } from \"brisa\";\n\nexport default async function Layout(\n  { children }: { children: JSX.Element },\n  { route }: RequestContext\n) {\n  const data = await fetch(/* data url */).then((r) => r.json());\n\n  return (\n    <html>\n      <head>\n        <title>My layout</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} The fetch is directly native and has no wrapper to control the cache. We recommend that you do not do the same fetch in several places, but use the store to store the data and consume it from any component. async generators are also supported if you want to stream every item in a list for example:\nasync function* List() {\n  yield <li>{await foo()}</li>;\n  yield <li>{await bar()}</li>;\n  yield <li>{await baz()}</li>;\n}\n\nThis can be used as a server component:\nreturn <List />;\n\nAnd the HTML is resolved via streaming.",
     "titles": [
       "Pages and Layouts"
     ]
@@ -4862,7 +4862,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#share-data-between-middleware-layout-page-component-responseheaders-head-web-components",
     "title": "Share data between middleware → layout → page → component → responseHeaders → Head → web-components",
-    "text": "You can share data between different parts of the application using the request context. import { type RequestContext } from \"brisa\";\n\nexport default async function Layout({}, request: RequestContext) {\n  const data = await getData(request);\n\n  request.store.set(\"data\", data);\n\n  return (\n    <html>\n      <head>\n        <title>My page</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} import { type RequestContext } from \"brisa\";\n\ntype Props = {\n  name: string;\n};\n\nexport default function SomeComponent(props: Props, { store }: RequestContext) {\n  const data = store.get(\"data\");\n\n  return <h1>Hello {data[props.name]}</h1>;\n}",
+    "text": "You can share data between different parts of the application using the request context. src/layout/index.tsx import { type RequestContext } from \"brisa\";\n\nexport default async function Layout({}, request: RequestContext) {\n  const data = await getData(request);\n\n  request.store.set(\"data\", data);\n\n  return (\n    <html>\n      <head>\n        <title>My page</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} src/components/some-component.tsx import { type RequestContext } from \"brisa\";\n\ntype Props = {\n  name: string;\n};\n\nexport default function SomeComponent(props: Props, { store }: RequestContext) {\n  const data = store.get(\"data\");\n\n  return <h1>Hello {data[props.name]}</h1>;\n}",
     "titles": [
       "Pages and Layouts"
     ]

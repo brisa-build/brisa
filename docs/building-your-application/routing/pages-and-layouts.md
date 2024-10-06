@@ -10,7 +10,7 @@ When a file is added to the `pages` directory, it's automatically available as a
 
 In Brisa framework, a **page** is a [Brisa Server Component](/building-your-application/components-details/server-components) exported from a `.js`, `.jsx`, `.ts`, or `.tsx` file in the `pages` directory. Each page is associated with a route based on its file name.
 
-**Example**: If you create `pages/about.js` that exports a Brisa component like below, it will be accessible at `/about`.
+**Example**: If you create `pages/about.tsx` that exports a Brisa component like below, it will be accessible at `/about`.
 
 ```jsx
 export default function About() {
@@ -24,19 +24,19 @@ See the difference between Brisa Components and React Components [here](/buildin
 
 The router will automatically route files named `index` to the root of the directory.
 
-- `pages/index.js` → `/`
-- `pages/blog/index.js` → `/blog`
+- `pages/index.tsx` → `/`
+- `pages/blog/index.tsx` → `/blog`
 
 ## Nested routes
 
 The router supports nested files. If you create a nested folder structure, files will automatically be routed in the same way still.
 
-- `pages/blog/first-post.js` → `/blog/first-post`
-- `pages/dashboard/settings/username.js` → `/dashboard/settings/username`
+- `pages/blog/first-post.tsx` → `/blog/first-post`
+- `pages/dashboard/settings/username.tsx` → `/dashboard/settings/username`
 
 ## Pages with Dynamic Routes
 
-Brisa supports pages with dynamic routes. For example, if you create a file called `pages/posts/[id].js`, then it will be accessible at `posts/1`, `posts/2`, etc.
+Brisa supports pages with dynamic routes. For example, if you create a file called `pages/posts/[id].tsx`, then it will be accessible at `posts/1`, `posts/2`, etc.
 
 > [!NOTE]
 >
@@ -46,7 +46,9 @@ Brisa supports pages with dynamic routes. For example, if you create a file call
 
 The global layout is defined inside `/src/layout/index`. By default Brisa supports a default layout, but you can modify it here.
 
-```jsx filename="src/layout/index.js"
+**src/layout/index.tsx**
+
+```tsx
 import { RequestContext } from "brisa";
 
 export default function Layout(
@@ -76,7 +78,9 @@ All the components of Brisa (pages and layouts included), apart from the props, 
 
 ### Example of multi-layouts
 
-```tsx filename="src/layout/index.js"
+**src/layout/index.tsx**
+
+```tsx
 import { type RequestContext } from "brisa";
 import UserLayout from './user-layout'
 import GlobalLayout from './global-layout'
@@ -95,7 +99,9 @@ export default function Layout({ children }: { children: JSX.Element }, { route 
 
 Inside your layout, you can fetch data directly with `fetch`, in the same way that you can do it in pages:
 
-```jsx filename="src/layout/index.js"
+**src/layout/index.tsx**
+
+```tsx
 import { RequestContext } from "brisa";
 
 export default async function Layout(
@@ -209,7 +215,9 @@ export default function AboutUsPage() {
 
 You can share data between different parts of the application using the [`request context`](/api-reference/components/request-context).
 
-```tsx filename="layout/index.tsx" switcher
+**src/layout/index.tsx**
+
+```tsx
 import { type RequestContext } from "brisa";
 
 export default async function Layout({}, request: RequestContext) {
@@ -229,7 +237,9 @@ export default async function Layout({}, request: RequestContext) {
 }
 ```
 
-```tsx filename="components/some-component.tsx" switcher
+**src/components/some-component.tsx**
+
+```tsx
 import { type RequestContext } from "brisa";
 
 type Props = {
