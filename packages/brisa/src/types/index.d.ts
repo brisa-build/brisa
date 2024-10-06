@@ -1683,7 +1683,8 @@ declare global {
     }
 
     export type WebComponentAttributes<
-      T extends (...args: unknown[]) => unknown,
+      // biome-ignore lint/suspicious/noExplicitAny: Parameters definitions are with any, not liking it, but let's write it like this until find a better solution.
+      T extends (...args: any[]) => JSX.Element,
     > = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
