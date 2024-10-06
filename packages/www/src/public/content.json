@@ -2135,7 +2135,7 @@
   {
     "id": "/building-your-application/building/web-component-compiler#example",
     "title": "Example",
-    "text": "You can use this example library to create your own web components with Brisa: Simple Counter as Web Component Example If you use the Brisa compiler to create your own web components, add this badge:  <a href=\"https://brisa.build\" target=\"_blank\" rel=\"noopener noreferrer\">\n  <img\n    width=\"150\"\n    height=\"42\"\n    src=\"https://brisa.build/assets/brisa_badge.svg\"\n    alt=\"Made with Brisa\"\n  />\n</a> Into your project's README file, let us know, and we will share your library on the Brisa website.",
+    "text": "You can use this example library to create your own web components with Brisa: Simple Counter as Web Component Example If you use the Brisa compiler to create your own web components, add this badge:  <a href=\"https://brisa.build\" target=\"_blank\" rel=\"noopener noreferrer\">\n  <img\n    width=\"150\"\n    height=\"42\"\n    src=\"https://brisa.build/images/brisa_badge.svg\"\n    alt=\"Made with Brisa\"\n  />\n</a> Into your project's README file, let us know, and we will share your library on the Brisa website.",
     "titles": [
       "Brisa as Web Component Compiler"
     ]
