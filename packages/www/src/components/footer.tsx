@@ -87,6 +87,16 @@ export default function Footer() {
                 GitHub
               </a>
             </li>
+            <li>
+              <a
+                title="Media (YouTube)"
+                href="/media"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                YouTube
+              </a>
+            </li>
           </ul>
         </div>
         <div>
