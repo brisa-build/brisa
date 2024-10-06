@@ -11,6 +11,10 @@
     {
       "source": "/github",
       "destination": "https://github.com/brisa-build/brisa"
+    },
+    {
+      "source": "/media",
+      "destination": "https://www.youtube.com/@brisa-build/playlists"
     }
   ]
 }
