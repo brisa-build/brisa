@@ -10,7 +10,6 @@ function CustomCounter(props: { start: number }, { state, css }: WebContext) {
       border-radius: 50%;
       width: fit-content;
       margin-top: 20px;
-      transform: rotate(2deg);
       background-color: light-dark(white, black);
       padding: 80px 20px;
       margin: 10px auto 50px auto;
