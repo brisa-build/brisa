@@ -1,8 +1,8 @@
 ---
-description: Use brisa.config.js file to configure Brisa.
+description: Use brisa.config.ts file to configure Brisa.
 ---
 
-# `brisa.config.js` options
+# `brisa.config.ts` options
 
 The `brisa.config.(js|ts|jsx|tsx)` file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the `Configuration` type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them.
 

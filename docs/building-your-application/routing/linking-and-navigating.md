@@ -28,9 +28,9 @@ export default function Home() {
 
 The example above uses multiple `a` tags. Each one maps a path (`href`) to a known page:
 
-- `/` → `src/pages/index.js`
-- `/about` → `src/pages/about.js`
-- `/blog/hello-world` → `src/pages/blog/[slug].js`
+- `/` → `src/pages/index.tsx`
+- `/about` → `src/pages/about.tsx`
+- `/blog/hello-world` → `src/pages/blog/[slug].tsx`
 
 By default, without the [`renderMode`](/api-reference/extended-props/renderMode) attribute, it acts with the `reactivity` mode. This means that it does a diff of the DOM between the new document and the current one, thus maintaining the states of the web components that are still visible (either because they are in the layout or because we are navigating to the same page in another language) and the store signal between pages.
 
@@ -183,11 +183,11 @@ export default function Home() {
 
 In English:
 
-- `/about` → `/en/about` → `src/pages/about.js`
+- `/about` → `/en/about` → `src/pages/about.tsx`
 
 In Spanish:
 
-- `/about` → `/es/sobre-nosotros` → `src/pages/about.js`
+- `/about` → `/es/sobre-nosotros` → `src/pages/about.tsx`
 
 > [!IMPORTANT]
 >

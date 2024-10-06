@@ -16,6 +16,8 @@ Today I’m excited to publicly share Brisa: A full-stack framework that allows 
 - **Unified tooling**: Apart from Brisa, you need Bun to manage all the tooling. We don't like that you have the package.json with many libraries. Brisa enriches Bun testing by adding matchers and you don't need Webpack, Vite, because we do it with Bun too. Although we like Bun and also recommend it as runtime, you can use Node.js as runtime if you want. A Perfect Stack is the 3B Stack: Brisa + Bun + Biome.
 - **HTML Streaming over the wire**: The current frameworks need to interact with the server actions that the request returns JS or JSON and make workarounds to manage the streaming. When HTTP is invented to transfer HTML. In Brisa, we transfer HTML in streaming and the Web Components react to changes in their attributes or new ideas like “Action Signals”, where from the server action you can make the Web Components react without needing a re-render in the server.
 
+> **Check** [**Brisa 0.1 Release Notes**](https://github.com/brisa-build/brisa/releases/tag/0.1.0)
+
 To build a very fast website, there is a simple secret; bring as little JS code as possible to the client. Using the Web Platform as much as possible avoids having to bring unnecessary things to the client. However, to get the most out of it, we need to know how to differentiate user interactions. There are interactions where the server is involved, and there are those that are not. For example, in an ecommerce, many of the actions are server-side, like adding an item in the cart, so we need to add client code for a list of products? We answer quickly: no.
 
 One goal of Brisa is to end up coupling as much as possible to the Web Platform, but only when necessary. Because the other goal is that you can create an SPA without needing any Web Component and JS code on the client, thanks to server actions and ideas from HTMX where you can debounce and pending states without adding code to the client. The Web platform is so powerful that we bring it to the server, where all the events of DOM elements can be captured by a server action, and propagated on the server.
@@ -85,6 +87,7 @@ We care deeply about building a more sustainable future for open-source software
 
 ## More
 
+- [Brisa 0.1 Release Notes](https://github.com/brisa-build/brisa/releases/tag/0.1.0)
 - [Routemap 0.1](https://github.com/brisa-build/brisa/issues/1)
 - [Next Routemap v1.0 (WIP)](https://github.com/brisa-build/brisa/issues/197)
 - [Brisa Documentation](https://brisa.build/getting-started/quick-start)
