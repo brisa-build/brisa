@@ -88,7 +88,7 @@ export default function Footer() {
               </a>
             </li>
             <li>
-            <a
+              <a
                 title="Media (YouTube)"
                 href="/media"
                 target="_blank"
