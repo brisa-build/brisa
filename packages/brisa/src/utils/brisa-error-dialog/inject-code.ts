@@ -1,6 +1,7 @@
 import path from 'node:path';
 import clientBuildPlugin from '@/utils/client-build-plugin';
-import { logBuildError } from '@/utils/log/log-build';
+import { logBuildError, logWarning } from '@/utils/log/log-build';
+import { getConstants } from '@/constants';
 
 // Should be used via macro
 export async function injectBrisaDialogErrorCode() {
@@ -15,9 +16,12 @@ export async function injectBrisaDialogErrorCode() {
     entrypoints: [pathname],
     target: 'browser',
     external: ['brisa'],
+    define: {
+      __FILTER_DEV_RUNTIME_ERRORS__: getFilterDevRuntimeErrors(),
+    },
     plugins: [
       {
-        name: 'context-provider-transformer',
+        name: 'dev-error-dialog-plugin',
         setup(build) {
           build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
             contents: clientBuildPlugin(
@@ -38,4 +42,22 @@ export async function injectBrisaDialogErrorCode() {
   }
 
   return (await outputs?.[0]?.text?.()) ?? '';
+}
+
+export function getFilterDevRuntimeErrors() {
+  const { CONFIG } = getConstants();
+  const filterType = typeof CONFIG.filterRuntimeDevErrors;
+
+  if (filterType === 'function') {
+    return CONFIG.filterRuntimeDevErrors!.toString();
+  }
+
+  if (filterType !== 'undefined') {
+    logWarning(
+      ['CONFIG.filterRuntimeDevErrors should be a function'],
+      'Docs: https://brisa.build/building-your-application/configuring/filter-runtime-dev-errors',
+    );
+  }
+
+  return '() => true';
 }

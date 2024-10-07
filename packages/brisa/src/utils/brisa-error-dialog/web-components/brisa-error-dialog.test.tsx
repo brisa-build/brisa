@@ -41,6 +41,7 @@ describe('utils', () => {
     GlobalRegistrator.unregister();
     globalThis.mockConstants = undefined;
     jest.restoreAllMocks();
+    globalThis.__FILTER_DEV_RUNTIME_ERRORS__ = '() => true';
   });
   describe('brisa-error-dialog web component', () => {
     it('should render the component', async () => {
@@ -208,6 +209,51 @@ describe('utils', () => {
           title: 'Uncaught Error',
           details: ['An error occurred'],
           stack: expect.stringContaining('Error: An error occurred'),
+        },
+      ]);
+    });
+
+    it('should __FILTER_DEV_RUNTIME_ERRORS__ filter the window.addEventListener("error") errors', async () => {
+      globalThis.__FILTER_DEV_RUNTIME_ERRORS__ = '() => false';
+      const { store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+
+      expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
+
+      window.dispatchEvent(
+        new ErrorEvent('error', new Error('An error occurred')),
+      );
+
+      expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
+    });
+
+    it('should __FILTER_DEV_RUNTIME_ERRORS__ filter with some condition the window.addEventListener("error") errors', async () => {
+      globalThis.__FILTER_DEV_RUNTIME_ERRORS__ =
+        '(e) => e.error.message !== "An error occurred"';
+      const { store } = await render(
+        // @ts-ignore
+        <brisa-error-dialog></brisa-error-dialog>,
+      );
+
+      expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
+
+      window.dispatchEvent(
+        new ErrorEvent('error', new Error('An error occurred')),
+      );
+
+      expect(store.get(ERROR_STORE_KEY)).toBeEmpty();
+
+      window.dispatchEvent(
+        new ErrorEvent('error', new Error('Another error occurred')),
+      );
+
+      expect(store.get(ERROR_STORE_KEY)).toEqual([
+        {
+          title: 'Uncaught Error',
+          details: ['Another error occurred'],
+          stack: expect.stringContaining('Error: Another error occurred'),
         },
       ]);
     });
