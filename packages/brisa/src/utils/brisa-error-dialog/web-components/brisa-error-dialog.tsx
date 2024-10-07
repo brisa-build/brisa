@@ -22,7 +22,7 @@ export default function ErrorDialog(
   const errors = derived(() => store.get<Error[]>(ERROR_STORE_KEY) ?? []);
   const numErrors = derived(() => errors.value?.length ?? 0);
   const currentIndex = state(0);
-  const filterDevRuntimeErrors = new Function(
+  const filterRuntimeDevErrors = new Function(
     'e',
     `const cb = ${__FILTER_DEV_RUNTIME_ERRORS__}; return cb(e);`,
   );
@@ -80,7 +80,7 @@ export default function ErrorDialog(
 
   effect(() => {
     window.addEventListener('error', (e) => {
-      if (!filterDevRuntimeErrors(e) || isNavigateThrowable(e.error)) return;
+      if (!filterRuntimeDevErrors(e) || isNavigateThrowable(e.error)) return;
 
       displayDialog.value = true;
       store.set(ERROR_STORE_KEY, [

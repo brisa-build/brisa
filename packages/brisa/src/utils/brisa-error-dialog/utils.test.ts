@@ -1,6 +1,6 @@
 import { getConstants } from '@/constants';
 import { describe, it, expect, afterEach, spyOn } from 'bun:test';
-import { getFilterDevRuntimeErrors } from './inject-code';
+import { getFilterDevRuntimeErrors } from './utils';
 
 const mockLog = spyOn(console, 'log');
 
