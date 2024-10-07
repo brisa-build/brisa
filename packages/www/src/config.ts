@@ -218,6 +218,10 @@ export default {
               link: '/building-your-application/configuring/clustering',
             },
             {
+              text: 'Filter runtime dev errors',
+              link: '/building-your-application/configuring/filter-runtime-dev-errors',
+            },
+            {
               text: 'Content Security Policy',
               link: '/building-your-application/configuring/content-security-policy',
             },
