@@ -9,7 +9,7 @@ import getImportableFilepath from '@/utils/get-importable-filepath';
 import { boldLog } from '@/utils/log/log-color';
 
 const defaultPandaCSSConfig = `import type { Configuration } from "brisa";
-import PandaCSS from 'brisa-PandaCSS';
+import PandaCSS from 'brisa-pandacss';
 
 export default {
   integrations: [PandaCSS()],

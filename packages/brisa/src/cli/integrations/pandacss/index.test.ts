@@ -62,7 +62,7 @@ describe('integratePandaCSS', () => {
 
     expect(mockWriteFileSync.mock.calls[0][0]).toContain('brisa.config.ts');
     expect(mockWriteFileSync.mock.calls[0][1]).toContain(
-      'import type { Configuration } from "brisa";\nimport PandaCSS from \'brisa-PandaCSS\';\n\nexport default {\n  integrations: [PandaCSS()],\n} as Configuration;\n\n',
+      'import type { Configuration } from "brisa";\nimport PandaCSS from \'brisa-pandacss\';\n\nexport default {\n  integrations: [PandaCSS()],\n} as Configuration;\n\n',
     );
     expect(mockLog).toHaveBeenCalledWith(
       LOG_PREFIX.INFO,
