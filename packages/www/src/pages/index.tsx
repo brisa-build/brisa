@@ -340,7 +340,10 @@ export default function Homepage() {
             <h2>📚 Documentation</h2>
             <p>
               Learn more about Brisa by reading the{' '}
-              <a href="/getting-started/quick-start">Documentation</a>.
+              <a href="/getting-started/quick-start" title="Documetantion">
+                Documentation
+              </a>
+              .
             </p>
           </div>
           <div class="code" style={{ flex: 1, maxWidth: '450px' }}>
@@ -351,6 +354,7 @@ export default function Homepage() {
                 <a
                   target="_blank"
                   rel="noreferrer"
+                  title="Open Collective"
                   href="https://opencollective.com/brisa_build"
                 >
                   Open Collective
