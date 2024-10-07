@@ -13,11 +13,10 @@
  * - [Docs](https://brisa.build/building-your-application/integrations/panda-css#integrating-panda-css)
  */
 export default function pandaCSS(): {
-    name: string;
-    transpileCSS(pathname: string, content: string): Promise<string>;
-    defaultCSS: {
-      content: string;
-      applyDefaultWhenEvery: (content: string) => boolean;
-    };
+  name: string;
+  transpileCSS(pathname: string, content: string): Promise<string>;
+  defaultCSS: {
+    content: string;
+    applyDefaultWhenEvery: (content: string) => boolean;
   };
-  
+};

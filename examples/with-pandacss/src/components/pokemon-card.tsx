@@ -1,6 +1,6 @@
-import type { Pokemon } from "@/data";
-import { css } from "../../styled-system/css";
-import { baseCard, content, image } from "@/styles/styles";
+import type { Pokemon } from '@/data';
+import { css } from '../../styled-system/css';
+import { baseCard, content, image } from '@/styles/styles';
 
 export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   return (

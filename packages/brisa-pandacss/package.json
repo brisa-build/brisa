@@ -1,36 +1,35 @@
 {
-    "name": "brisa-pandacss",
-    "version": "0.1.0",
-    "license": "MIT",
-    "type": "module",
-    "main": "./index.ts",
-    "module": "./index.ts",
-    "types": "./index.d.ts",
-    "author": {
-      "name": "Brisa Team",
-      "email": "contact@brisa.build.com"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/brisa-build/brisa.git",
-      "directory": "packages/brisa-pandacss"
-    },
-    "files": ["index.ts", "index.d.ts"],
-    "dependencies": {
-      "@pandacss/dev": "0.46.1",
-      "postcss": "8.4.47"
-    },
-    "packageManager": "bun@1.1.29",
-    "engines": {
-      "bun": ">= 1.1.29",
-      "npm": "please-use-bun",
-      "yarn": "please-use-bun",
-      "pnpm": "please-use-bun"
-    },
-    "description": "A Brisa integration with Panda CSS.",
-    "bugs": {
-      "url": "https://github.com/brisa-build/brisa/issues"
-    },
-    "homepage": "https://github.com/brisa-build/brisa#readme"
-  }
-  
+  "name": "brisa-pandacss",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.ts",
+  "module": "./index.ts",
+  "types": "./index.d.ts",
+  "author": {
+    "name": "Brisa Team",
+    "email": "contact@brisa.build.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brisa-build/brisa.git",
+    "directory": "packages/brisa-pandacss"
+  },
+  "files": ["index.ts", "index.d.ts"],
+  "dependencies": {
+    "@pandacss/dev": "0.46.1",
+    "postcss": "8.4.47"
+  },
+  "packageManager": "bun@1.1.29",
+  "engines": {
+    "bun": ">= 1.1.29",
+    "npm": "please-use-bun",
+    "yarn": "please-use-bun",
+    "pnpm": "please-use-bun"
+  },
+  "description": "A Brisa integration with Panda CSS.",
+  "bugs": {
+    "url": "https://github.com/brisa-build/brisa/issues"
+  },
+  "homepage": "https://github.com/brisa-build/brisa#readme"
+}

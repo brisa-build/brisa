@@ -41,11 +41,7 @@ const TAILWINDCSS_PATH = path.join(
   'tailwindcss',
   'index.js',
 );
-const PANDACSS_PATH = path.join(
-  INTEGRATIONS_PATH,
-  'pandacss',
-  'index.js',
-);
+const PANDACSS_PATH = path.join(INTEGRATIONS_PATH, 'pandacss', 'index.js');
 const BUILD_PATH = path.join(import.meta.dir, 'out', 'cli', 'build.js');
 const SERVE_PATH = path.join(
   import.meta.dir,
@@ -1356,7 +1352,6 @@ describe('Brisa CLI', () => {
       devOptions,
     ]);
   });
-
 
   it('should "brisa add --help" command provide help', async () => {
     process.argv = ['bun', 'brisa', 'add', '--help'];

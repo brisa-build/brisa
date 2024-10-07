@@ -1,9 +1,9 @@
-import Attacks from "@/components/attacks";
-import PokemonCard from "@/components/pokemon-card";
-import { pokemons, type Pokemon } from "@/data";
-import { dangerHTML, type RequestContext } from "brisa";
-import { base, header, image } from "@/styles/styles";
-import { css } from "../../../styled-system/css";
+import Attacks from '@/components/attacks';
+import PokemonCard from '@/components/pokemon-card';
+import { pokemons, type Pokemon } from '@/data';
+import { dangerHTML, type RequestContext } from 'brisa';
+import { base, header, image } from '@/styles/styles';
+import { css } from '../../../styled-system/css';
 
 export default function PokemonPage({}, { route }: RequestContext) {
   const slug = route.params!.slug;
@@ -12,7 +12,7 @@ export default function PokemonPage({}, { route }: RequestContext) {
   return (
     <div class={base}>
       <div class={header}>
-        <a class={""} href="/">
+        <a class={''} href="/">
           Poke
         </a>
         <span class={css({ margin: 3 })}>{pokemon.category}</span>
@@ -23,7 +23,7 @@ export default function PokemonPage({}, { route }: RequestContext) {
           <img src={pokemon.cover} alt={pokemon.name} class="" />
         </div>
         <article class={base}>
-          <div class={css({ width: "3/5", margin: "4" })}>
+          <div class={css({ width: '3/5', margin: '4' })}>
             <h1 class="">{pokemon.name}</h1>
             <p class="">{pokemon.description}</p>
           </div>

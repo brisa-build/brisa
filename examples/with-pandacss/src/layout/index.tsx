@@ -11,9 +11,7 @@ export default function Layout({ children }: { children: JSX.Element }) {
         <title>Brisa - Tailwind CSS</title>
       </head>
       <body class="">
-        <main class="">
-          {children}
-        </main>
+        <main class="">{children}</main>
       </body>
     </html>
   );

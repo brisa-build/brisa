@@ -15,5 +15,5 @@ export async function getBrisaPandaCSSDependencies() {
   return import(brisaPandaCSSPackageJSONPath).then((module) => ({
     [module.name]: module.version,
     ...module.dependencies,
-  })); 
+  }));
 }

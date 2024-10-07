@@ -14,6 +14,8 @@ describe('brisa-pandacss', () => {
 
   it('should return default CSS content', () => {
     const integration = brisaPandacss();
-    expect(integration.defaultCSS.content).toContain('@layer reset, base, tokens, recipes, utilities;');
+    expect(integration.defaultCSS.content).toContain(
+      '@layer reset, base, tokens, recipes, utilities;',
+    );
   });
 });

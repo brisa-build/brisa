@@ -19,46 +19,46 @@ export default {
 
 export default async function integratePandaCSS() {
   const { ROOT_DIR, LOG_PREFIX } = getConstants();
-  const brisaConfig = getImportableFilepath("brisa.config", ROOT_DIR);
+  const brisaConfig = getImportableFilepath('brisa.config', ROOT_DIR);
   const dependencies = Object.entries(getBrisaPandaCSSDependencies());
-  console.log(LOG_PREFIX.WAIT, "Adding PandaCSS dependencies...");
+  console.log(LOG_PREFIX.WAIT, 'Adding PandaCSS dependencies...');
   cp.spawnSync(
-    "bun",
-    ["add", ...dependencies.map(([name, version]) => `${name}@${version}`)],
+    'bun',
+    ['add', ...dependencies.map(([name, version]) => `${name}@${version}`)],
     {
-      stdio: "inherit",
+      stdio: 'inherit',
     },
   );
 
-  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, "PandaCSS dependencies added!");
+  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, 'PandaCSS dependencies added!');
 
-  cp.spawnSync("bun", ["panda", "init", "-p"]);
-  cp.spawnSync("bun", ["pkg", "set", "scripts.prepare=\"panda codegen\""])
+  cp.spawnSync('bun', ['panda', 'init', '-p']);
+  cp.spawnSync('bun', ['pkg', 'set', 'scripts.prepare="panda codegen"']);
 
-  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, "PandaCSS initialized!"); 
+  console.log(LOG_PREFIX.INFO, LOG_PREFIX.TICK, 'PandaCSS initialized!');
 
   if (!brisaConfig) {
     fs.writeFileSync(
-      path.join(ROOT_DIR, "brisa.config.ts"),
+      path.join(ROOT_DIR, 'brisa.config.ts'),
       defaultPandaCSSConfig,
     );
     console.log(
       LOG_PREFIX.INFO,
       LOG_PREFIX.TICK,
-      "PandaCSS configuration added!",
+      'PandaCSS configuration added!',
     );
   } else {
     console.log(
       LOG_PREFIX.WARN,
-      `Almost there! We detected an existing ${boldLog("brisa.config.ts")} file.`,
+      `Almost there! We detected an existing ${boldLog('brisa.config.ts')} file.`,
     );
     console.log(
       LOG_PREFIX.WARN,
-      "Please add the following configuration to integrate PandaCSS:",
+      'Please add the following configuration to integrate PandaCSS:',
     );
     console.log(LOG_PREFIX.WARN);
     defaultPandaCSSConfig
-      .split("\n")
+      .split('\n')
       .forEach((line) => console.log(LOG_PREFIX.WARN, boldLog(line)));
   }
 }
