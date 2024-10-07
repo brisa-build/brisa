@@ -17,6 +17,7 @@ Usage: brisa add <integration>
 Integrations:
  mdx          Add mdx integration
  tailwindcss  Add tailwindcss integration
+ pandacss     Add pandacss integration
 Options:
  --help       Show help
 ```
@@ -44,3 +45,15 @@ brisa add tailwindcss
 > [!NOTE]
 >
 > Take a look at the [Tailwind CSS integration documentation](/building-your-application/integrations/tailwind-css) to learn more about the Tailwind CSS integration.
+
+## Panda CSS integration
+
+The Panda CSS integration allows you to use Panda CSS in your project. To add the Panda CSS integration to your project, run the following command inside your project directory:
+
+```sh
+brisa add pandacss 
+```
+
+> [!NOTE]
+>
+> Take a look at the [Panda CSS integration documentation](/building-your-application/integrations/panda-css) to learn more about the Panda CSS integration.

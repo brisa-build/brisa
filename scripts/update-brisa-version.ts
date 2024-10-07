@@ -6,6 +6,7 @@ import createBrisaPackageJSON from '../packages/create-brisa/package.json';
 import wwwPackageJSON from '../packages/www/package.json';
 import adapterVercelPackageJSON from '../packages/adapter-vercel/package.json';
 import brisaTailwindCSSPackageJSON from '../packages/brisa-tailwindcss/package.json';
+import brisaPandaCSSPackageJSON from '../packages/brisa-pandacss/package.json';
 
 function updatePackageJSONOfExamplesToLatestVersion(version: string) {
   const EXAMPLES_FOLDER = join(import.meta.dir, '..', 'examples');
@@ -23,6 +24,10 @@ function updatePackageJSONOfExamplesToLatestVersion(version: string) {
       examplePackageJSON.dependencies.brisa = version;
       if (examplePackageJSON.dependencies['brisa-tailwindcss']) {
         examplePackageJSON.dependencies['brisa-tailwindcss'] = version;
+      }
+
+      if (examplePackageJSON.dependencies['brisa-pandacss']) {
+        examplePackageJSON.dependencies['brisa-pandacss'] = version;
       }
 
       fs.writeFileSync(
@@ -91,6 +96,13 @@ brisaTailwindCSSPackageJSON.version = version;
 fs.writeFileSync(
   join(import.meta.dir, '..', 'packages', 'brisa-tailwindcss', 'package.json'),
   JSON.stringify(brisaTailwindCSSPackageJSON, null, 2),
+);
+
+// brisa-pandacss package.json
+brisaPandaCSSPackageJSON.version = version;
+fs.writeFileSync(
+  join(import.meta.dir, '..', 'packages', 'brisa-pandacss', 'package.json'),
+  JSON.stringify(brisaPandaCSSPackageJSON, null, 2),
 );
 
 // Update Brisa CLI version
