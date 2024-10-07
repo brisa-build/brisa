@@ -347,11 +347,15 @@ export default function Homepage() {
             <h2>💝 Sponsors</h2>
             <p>
               <i>
-                We are going to open Open-Collective soon.{' '}
-                <a href="javascript:document.querySelector('#MERGE0').focus()">
-                  Subscribe
+                Take a look at our{' '}
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href="https://opencollective.com/brisa_build"
+                >
+                  Open Collective
                 </a>{' '}
-                to the newsletter to keep tunned.
+                that we have just opened.{' '}
               </i>
             </p>
           </div>
