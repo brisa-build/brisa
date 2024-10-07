@@ -1682,9 +1682,13 @@ declare global {
       children?: JSX.Element;
     }
 
+    type NestedRecord = Record<
+      string | number | symbol,
+      unknown | NestedRecord
+    >;
+
     export type WebComponentAttributes<
-      // biome-ignore lint/suspicious/noExplicitAny: Parameters definitions are with any, not liking it, but let's write it like this until find a better solution.
-      T extends (...args: any[]) => JSX.Element,
+      T extends (...args: NestedRecord[]) => JSX.Element,
     > = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
