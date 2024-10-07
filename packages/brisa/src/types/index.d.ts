@@ -1682,8 +1682,13 @@ declare global {
       children?: JSX.Element;
     }
 
+    type NestedRecord = Record<
+      string | number | symbol,
+      unknown | NestedRecord
+    >;
+
     export type WebComponentAttributes<
-      T extends (...args: unknown[]) => unknown,
+      T extends (...args: NestedRecord[]) => JSX.Element,
     > = {
       [K in keyof Parameters<T>[0]]: Parameters<T>[0][K];
     } & {
