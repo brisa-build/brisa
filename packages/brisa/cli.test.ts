@@ -1365,7 +1365,7 @@ describe('Brisa CLI', () => {
       ['Integrations:'],
       [' mdx          Add mdx integration'],
       [' tailwindcss  Add tailwindcss integration'],
-      [' pandacss  Add pandacss integration'],
+      [' pandacss     Add pandacss integration'],
       ['Options:'],
       [' --help       Show help'],
     ]);
