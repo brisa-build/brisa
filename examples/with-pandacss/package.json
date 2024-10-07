@@ -1,0 +1,19 @@
+{
+  "name": "with-pandacss",
+  "module": "src/pages/index.tsx",
+  "type": "module",
+  "scripts": {
+    "dev": "brisa dev",
+    "dev:debug": "brisa dev --debug",
+    "prepare": "panda codegen",
+    "build": "brisa build",
+    "start": "brisa start"
+  },
+  "dependencies": {
+    "brisa": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}

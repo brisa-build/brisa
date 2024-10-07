@@ -28,7 +28,7 @@ Commands:
  dev           Start development server
  build         Build for production
  start         Start production server
- add           Add integrations (e.g., mdx, tailwindcss)
+ add           Add integrations (e.g., mdx, tailwindcss, pandacss)
  ```
 
 # Commands

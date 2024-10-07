@@ -33,3 +33,7 @@ tsconfig.tsbuildinfo
 # Deployment
 .vercel*
 .vercel
+
+## Panda
+styled-system
+styled-system-studio

@@ -41,6 +41,11 @@ const TAILWINDCSS_PATH = path.join(
   'tailwindcss',
   'index.js',
 );
+const PANDACSS_PATH = path.join(
+  INTEGRATIONS_PATH,
+  'pandacss',
+  'index.js',
+);
 const BUILD_PATH = path.join(import.meta.dir, 'out', 'cli', 'build.js');
 const SERVE_PATH = path.join(
   import.meta.dir,
@@ -141,7 +146,7 @@ describe('Brisa CLI', () => {
       [' dev           Start development server'],
       [' build         Build for production'],
       [' start         Start production server'],
-      [' add           Add integrations (e.g., mdx, tailwindcss)'],
+      [' add           Add integrations (e.g., mdx, tailwindcss, pandacss)'],
     ]);
     expect(mockExit).toHaveBeenCalledWith(0);
   });
@@ -161,7 +166,7 @@ describe('Brisa CLI', () => {
       [' dev           Start development server'],
       [' build         Build for production'],
       [' start         Start production server'],
-      [' add           Add integrations (e.g., mdx, tailwindcss)'],
+      [' add           Add integrations (e.g., mdx, tailwindcss, pandacss)'],
     ]);
     expect(mockExit).toHaveBeenCalledWith(0);
   });
@@ -1334,6 +1339,25 @@ describe('Brisa CLI', () => {
     ]);
   });
 
+  it('should "brisa add pandacss" command integrate PandaCSS', async () => {
+    process.argv = ['bun', 'brisa', 'add', 'pandacss'];
+
+    await cli.main(options);
+
+    expect(mockSpawnSync).toHaveBeenCalledTimes(2);
+    expect(mockSpawnSync.mock.calls[0]).toEqual([
+      'bun',
+      ['--version'],
+      { stdio: 'ignore' },
+    ]);
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'bun',
+      [PANDACSS_PATH],
+      devOptions,
+    ]);
+  });
+
+
   it('should "brisa add --help" command provide help', async () => {
     process.argv = ['bun', 'brisa', 'add', '--help'];
 
@@ -1346,6 +1370,7 @@ describe('Brisa CLI', () => {
       ['Integrations:'],
       [' mdx          Add mdx integration'],
       [' tailwindcss  Add tailwindcss integration'],
+      [' pandacss  Add pandacss integration'],
       ['Options:'],
       [' --help       Show help'],
     ]);

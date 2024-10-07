@@ -26,6 +26,13 @@ const tailwindCSSIntegrationPath = path.join(
   'tailwindcss',
   'index.js',
 );
+const pandaCSSIntegrationPath = path.join(
+  outPath,
+  'cli',
+  'integrations',
+  'pandacss',
+  'index.js',
+);
 
 const buildFilepath = path.join(outPath, 'cli', 'build.js');
 const buildStandaloneFilePath = path.join(
@@ -331,12 +338,15 @@ async function main({
         cp.spawnSync(BUN_EXEC, [mdxIntegrationPath], devOptions);
       } else if (integration === 'tailwindcss') {
         cp.spawnSync(BUN_EXEC, [tailwindCSSIntegrationPath], devOptions);
+      } else if (integration === 'pandacss') {
+        cp.spawnSync(BUN_EXEC, [pandaCSSIntegrationPath], devOptions);
       } else {
         console.log('Integration not found');
         console.log('Usage: brisa add <integration>');
         console.log('Integrations:');
         console.log(' mdx          Add mdx integration');
         console.log(' tailwindcss  Add tailwindcss integration');
+        console.log(' pandacss     Add pandacss integration');
         console.log('Options:');
         console.log(' --help       Show help');
         return process.exit(0);
@@ -353,7 +363,7 @@ async function main({
       console.log(' dev           Start development server');
       console.log(' build         Build for production');
       console.log(' start         Start production server');
-      console.log(' add           Add integrations (e.g., mdx, tailwindcss)');
+      console.log(' add           Add integrations (e.g., mdx, tailwindcss, pandacss)');
       return process.exit(0);
     }
   } catch (error: any) {
