@@ -17,6 +17,7 @@ import { injectClientContextProviderCode } from '@/utils/context-provider/inject
 import { injectBrisaDialogErrorCode } from '@/utils/brisa-error-dialog/inject-code' with {
   type: 'macro',
 };
+import { getFilterDevRuntimeErrors } from '@/utils/brisa-error-dialog/utils';
 import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import snakeToCamelCase from '@/utils/snake-to-camelcase';
@@ -205,8 +206,10 @@ export async function transformToWebComponents({
 
   // IS_DEVELOPMENT to avoid PROD and TEST environments
   if (IS_DEVELOPMENT) {
-    const brisaDialogErrorCode =
-      injectBrisaDialogErrorCode() as unknown as string;
+    const brisaDialogErrorCode = (await injectBrisaDialogErrorCode()).replace(
+      '__FILTER_DEV_RUNTIME_ERRORS__',
+      getFilterDevRuntimeErrors(),
+    );
     code += brisaDialogErrorCode;
   }
 

@@ -7,6 +7,5 @@ export type Item = {
 };
 
 export type Config = {
-  dir: string;
   sidebar: Item[];
 };

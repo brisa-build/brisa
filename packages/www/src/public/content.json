@@ -2937,7 +2937,7 @@
   {
     "id": "/building-your-application/configuring/brisa-config-js#brisaconfigts-options",
     "title": "brisa.config.ts options",
-    "text": "The brisa.config.(js|ts|jsx|tsx) file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the Configuration type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them. import brisaTailwindCSS from \"brisa-tailwindcss\";\nimport type { Configuration } from \"brisa\";\n\nconst config: Configuration = {\n  /**\n   * `trailingSlash` configuration\n   * Default: undefined (trailing slash is not modified)\n   */\n  trailingSlash: true, // Adds trailing slash to URLs\n\n  /**\n   * `assetPrefix` configuration\n   * Default: undefined (no prefix added to assets)\n   */\n  assetPrefix: \"https://cdn.example.com\", // Prefix for assets\n\n  /**\n   * `extendPlugins` configuration\n   * Default: undefined (no additional plugins added)\n   */\n  extendPlugins: (plugins, { dev, isServer }) => [\n    ...plugins,\n    {\n      name: \"my-plugin\",\n      setup(build) {\n        build.onLoad({ filter: /\\.txt$/ }, async (args) => {\n          return {\n            contents: \"export default \" + JSON.stringify(args.path) + \";\",\n            loader: \"js\",\n          };\n        });\n      },\n    },\n  ],\n\n  /**\n   * `basePath` configuration\n   * Default: undefined (no base path added)\n   */\n  basePath: \"/my-app\", // Base path for the application\n\n  /**\n   * `tls` configuration\n   * Default: undefined (HTTPS is not enabled)\n   */\n  tls: {\n    cert: Bun.file(\"cert.pem\"),\n    key: Bun.file(\"key.pem\"),\n  }, // Enable HTTPS\n\n  /**\n   * `output` configuration\n   * Default: 'bun'\n   */\n  output: \"static\", // Output type of the application\n\n  /**\n   * `external` configuration\n   * Default: undefined (no external dependencies)\n   */\n  external: [\"lightningcss\"],\n\n  /**\n   * `integrations` configuration\n   * Default: undefined (no integrations added)\n   */\n  integrations: [brisaTailwindCSS()],\n};\n\n// Export the configuration as the default export\nexport default config satisfies Configuration;",
+    "text": "The brisa.config.(js|ts|jsx|tsx) file is the main configuration file for an application using the Brisa framework. This file should export by default an object that satisfies the Configuration type structure. Below is a detailed explanation of how to define this configuration file and a unified example with comments on default values and how to configure them. import brisaTailwindCSS from \"brisa-tailwindcss\";\nimport type { Configuration } from \"brisa\";\n\nconst config: Configuration = {\n  /**\n   * `trailingSlash` configuration\n   * Default: undefined (trailing slash is not modified)\n   */\n  trailingSlash: true, // Adds trailing slash to URLs\n\n  /**\n   * `assetPrefix` configuration\n   * Default: undefined (no prefix added to assets)\n   */\n  assetPrefix: \"https://cdn.example.com\", // Prefix for assets\n\n  /**\n   * `extendPlugins` configuration\n   * Default: undefined (no additional plugins added)\n   */\n  extendPlugins: (plugins, { dev, isServer }) => [\n    ...plugins,\n    {\n      name: \"my-plugin\",\n      setup(build) {\n        build.onLoad({ filter: /\\.txt$/ }, async (args) => {\n          return {\n            contents: \"export default \" + JSON.stringify(args.path) + \";\",\n            loader: \"js\",\n          };\n        });\n      },\n    },\n  ],\n\n  /**\n   * `basePath` configuration\n   * Default: undefined (no base path added)\n   */\n  basePath: \"/my-app\", // Base path for the application\n\n  /**\n   * `tls` configuration\n   * Default: undefined (HTTPS is not enabled)\n   */\n  tls: {\n    cert: Bun.file(\"cert.pem\"),\n    key: Bun.file(\"key.pem\"),\n  }, // Enable HTTPS\n\n  /**\n   * `output` configuration\n   * Default: 'bun'\n   */\n  output: \"static\", // Output type of the application\n\n  /**\n   * `external` configuration\n   * Default: undefined (no external dependencies)\n   */\n  external: [\"lightningcss\"],\n\n  /**\n   * `integrations` configuration\n   * Default: undefined (no integrations added)\n   */\n  integrations: [brisaTailwindCSS()],\n\n  /**\n   * `filterRuntimeDevErrors` configuration\n   * Default: () => true (no errors are filtered)\n   */\n  filterRuntimeDevErrors?(error: ErrorEvent): boolean;\n};\n\n// Export the configuration as the default export\nexport default config satisfies Configuration;",
     "titles": []
   },
   {
@@ -3000,6 +3000,14 @@
     "id": "/building-your-application/configuring/brisa-config-js#integrationsbuilding-your-applicationconfiguringintegrations",
     "title": "integrations",
     "text": "The integrations option allows you to integrate third-party libraries with the Brisa internals. This is useful when you want to automatically handle the integration of libraries like TailwindCSS.",
+    "titles": [
+      "brisa.config.ts options"
+    ]
+  },
+  {
+    "id": "/building-your-application/configuring/brisa-config-js#filterruntimedeverrorsbuilding-your-applicationconfiguringfilter-runtime-dev-errors",
+    "title": "filterRuntimeDevErrors",
+    "text": "The filterRuntimeDevErrors option allows you to filter runtime development errors. This is useful for filtering out errors that are not relevant to your application.",
     "titles": [
       "brisa.config.ts options"
     ]
@@ -3232,6 +3240,28 @@
     "text": "export type Configuration = {\n  // ...\n  external?: string[];\n};",
     "titles": [
       "External Dependencies"
+    ]
+  },
+  {
+    "id": "/building-your-application/configuring/filter-runtime-dev-errors#filter-runtime-development-errors",
+    "title": "Filter Runtime Development Errors",
+    "text": "The filterRuntimeDevErrors configuration property in brisa.config.ts allows you to filter runtime development errors. This is useful for filtering out errors that are not relevant to your application.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/configuring/filter-runtime-dev-errors#example",
+    "title": "Example",
+    "text": "In the next example, we are filtering out the TypeError error. This means that the error will not be logged to the console. import type { Configuration } from \"brisa\";\n\nexport default {\n  filterRuntimeDevErrors(error: ErrorEvent) {\n    return !(error.error instanceof TypeError);\n  },\n} satisfies Configuration; This config property is stringified and passed to the client code only during development, so it should not have any side effects.",
+    "titles": [
+      "Filter Runtime Development Errors"
+    ]
+  },
+  {
+    "id": "/building-your-application/configuring/filter-runtime-dev-errors#types",
+    "title": "Types",
+    "text": "export type Configuration = {\n  // ...\n  filterRuntimeDevErrors?(error: ErrorEvent): boolean;\n};",
+    "titles": [
+      "Filter Runtime Development Errors"
     ]
   },
   {

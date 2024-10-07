@@ -195,6 +195,7 @@ declare global {
   var __USE_LOCALE__: boolean;
   var __IS_STATIC__: boolean;
   var __USE_PAGE_TRANSLATION__: boolean;
+  var __FILTER_DEV_RUNTIME_ERRORS__: string;
 }
 
 export default constants;

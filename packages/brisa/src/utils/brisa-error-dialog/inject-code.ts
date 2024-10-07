@@ -15,9 +15,12 @@ export async function injectBrisaDialogErrorCode() {
     entrypoints: [pathname],
     target: 'browser',
     external: ['brisa'],
+    define: {
+      __FILTER_DEV_RUNTIME_ERRORS__: '__FILTER_DEV_RUNTIME_ERRORS__',
+    },
     plugins: [
       {
-        name: 'context-provider-transformer',
+        name: 'dev-error-dialog-plugin',
         setup(build) {
           build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
             contents: clientBuildPlugin(

@@ -22,6 +22,10 @@ export default function ErrorDialog(
   const errors = derived(() => store.get<Error[]>(ERROR_STORE_KEY) ?? []);
   const numErrors = derived(() => errors.value?.length ?? 0);
   const currentIndex = state(0);
+  const filterRuntimeDevErrors = new Function(
+    'e',
+    `const cb = ${__FILTER_DEV_RUNTIME_ERRORS__}; return cb(e);`,
+  );
 
   effect(() => {
     self!.shadowRoot!.adoptedStyleSheets = [];
@@ -76,10 +80,11 @@ export default function ErrorDialog(
 
   effect(() => {
     window.addEventListener('error', (e) => {
-      if (isNavigateThrowable(e.error)) return;
+      if (!filterRuntimeDevErrors(e) || isNavigateThrowable(e.error)) return;
+
       displayDialog.value = true;
-      store.set('__BRISA_ERRORS__', [
-        ...(store.get<Error[]>('__BRISA_ERRORS__') ?? []),
+      store.set(ERROR_STORE_KEY, [
+        ...(store.get<Error[]>(ERROR_STORE_KEY) ?? []),
         {
           title: 'Uncaught Error',
           details: [e.error?.message ?? e.message ?? 'Unknown error'],

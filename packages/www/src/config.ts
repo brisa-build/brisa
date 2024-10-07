@@ -5,7 +5,7 @@ export default {
     {
       text: '🚀 Getting started',
       id: '/getting-started',
-      collapse: false,
+      collapsed: false,
       items: [
         {
           text: 'What is Brisa?',
@@ -24,11 +24,11 @@ export default {
     {
       text: '🛠️ Building your application',
       id: '/building-your-application',
-      collapse: false,
+      collapsed: false,
       items: [
         {
           text: '🛣️ Routing',
-          collapse: false,
+          collapsed: false,
           id: '/building-your-application/routing',
           items: [
             {
@@ -216,6 +216,10 @@ export default {
             {
               text: 'Clustering',
               link: '/building-your-application/configuring/clustering',
+            },
+            {
+              text: 'Filter runtime dev errors',
+              link: '/building-your-application/configuring/filter-runtime-dev-errors',
             },
             {
               text: 'Content Security Policy',

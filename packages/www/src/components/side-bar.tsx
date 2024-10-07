@@ -47,7 +47,7 @@ function generateList(name: string | undefined, pathname: string) {
 
 function isSummaryOpened(item: Item, pathname: string) {
   return (
-    (pathname.startsWith('/getting-started') && item.collapse === false) ||
+    (pathname.startsWith('/getting-started') && item.collapsed === false) ||
     Boolean(pathname?.startsWith?.(item.id ?? item.link ?? '-'))
   );
 }
