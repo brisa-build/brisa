@@ -74,6 +74,12 @@ const config: Configuration = {
    * Default: undefined (no integrations added)
    */
   integrations: [brisaTailwindCSS()],
+
+  /**
+   * `filterRuntimeDevErrors` configuration
+   * Default: () => true (no errors are filtered)
+   */
+  filterRuntimeDevErrors?(error: ErrorEvent): boolean;
 };
 
 // Export the configuration as the default export
@@ -136,3 +142,6 @@ The `external` option allows you to define external dependencies that should not
 
 The `integrations` option allows you to integrate third-party libraries with the Brisa internals. This is useful when you want to automatically handle the integration of libraries like TailwindCSS.
 
+## [`filterRuntimeDevErrors`](/building-your-application/configuring/filter-runtime-dev-errors)
+
+The `filterRuntimeDevErrors` option allows you to filter runtime development errors. This is useful for filtering out errors that are not relevant to your application.

@@ -1244,6 +1244,33 @@ export type Configuration = {
    *
    */
   integrations?: Integration[];
+
+  /**
+   * Description:
+   *
+   * The `filterRuntimeDevErrors` config property is used to filter the runtime errors in development.
+   * There are some cases where you want to ignore some errors, for example, when you are using
+   * a third-party library that throws an error that you know is not a problem.
+   *
+   * The default value is `true`.
+   *
+   * Example:
+   *
+   * ```ts
+   * filterRuntimeDevErrors: (error) => error.message !== 'Some error message'
+   * ```
+   *
+   * To ignore all errors, you can use the following code:
+   *
+   * ```ts
+   * filterRuntimeDevErrors: () => false
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `filterRuntimeDevErrors`](https://brisa.build/building-your-application/configuring/filter-runtime-dev-errors)
+   */
+  filterRuntimeDevErrors?(error: ErrorEvent): boolean;
 };
 
 export type Integration = {
