@@ -144,6 +144,10 @@ export default {
               link: '/building-your-application/styling/tailwind-css',
             },
             {
+              text: 'Panda CSS',
+              link: '/building-your-application/styling/panda-css',
+            },
+            {
               text: 'Styling Web Components',
               link: '/building-your-application/styling/web-components',
             },
@@ -287,6 +291,10 @@ export default {
             {
               text: 'Tailwind CSS',
               link: '/building-your-application/integrations/tailwind-css',
+            },
+            {
+              text: 'Panda CSS',
+              link: '/building-your-application/integrations/panda-css',
             },
           ],
         },
