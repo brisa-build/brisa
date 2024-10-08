@@ -92,17 +92,17 @@ export default function Homepage() {
             />
             <h1>The Web Platform Framework</h1>
             <p>
-              <b>Build</b> web applications with <b>speed</b> and{' '}
+              Build web applications with <b>speed</b> and{" "}
               <b>simplicity</b>
             </p>
           </hgroup>
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              flexWrap: "wrap",
+              justifyContent: "center",
             }}
           >
             <a href="/getting-started/quick-start" class="cta">
@@ -117,8 +117,7 @@ export default function Homepage() {
           <div class="info sticky">
             <h2>Build fast apps fast</h2>
             <p>
-              Brisa pages are dynamically server-rendered JSX components, so
-              there's <b>zero JavaScript</b> shipped to the browser{' '}
+              Brisa pages are dynamically server-rendered JSX components, with <b>zero JavaScript</b> shipped to the browser{" "}
               <b>by default</b>.
             </p>
             <p>Simple to write; fast to run.</p>
@@ -135,10 +134,10 @@ export default function Homepage() {
           <div class="info sticky">
             <h2>Web Component island-based</h2>
             <p>
-              In Brisa everything by default runs only on the server, except the{' '}
-              <code>src/web-components</code> folder, which always run on the
-              client. Web components are rendered on the server (<b>SSR</b>) and
-              hydrated on the client using native Web APIs, where they are
+              In Brisa everything runs only on the server by default, except
+              the <code>src/web-components</code> folder, which always run on
+              the client. Web components are rendered on the server (<b>SSR</b>)
+              and hydrated on the client using native Web APIs, where they are
               transformed into Web Components with <b>Signals</b>.
             </p>
             <custom-counter start={5} />
@@ -185,7 +184,7 @@ export default function Homepage() {
           <div class="info sticky">
             <h2>Full i18n support</h2>
             <p>
-              Brisa has built-in internationalization support that allows you to{' '}
+              Brisa has built-in internationalization support that allows you to{" "}
               <b>translate</b> your pages and <b>routes</b>, while downloading
               only the used translations.
             </p>
@@ -234,13 +233,13 @@ export default function Homepage() {
             <h2>What does Web Platform Framework mean?</h2>
             <p>
               Brisa's mission is to unify server and client using the Web
-              Platform. <b>Web Components</b> can easily be used, using{' '}
+              Platform. <b>Web Components</b> can easily be used, using{" "}
               <b>Declarative Shadow DOM</b> and <b>signals</b> to enhance your
               workflow in conjunction with <b>Server Actions</b>.
             </p>
 
             <p>
-              We bring concepts from the web to the server. You can{' '}
+              We bring concepts from the web to the server. You can{" "}
               <b>capture browser events on the server</b>, such as forms, click
               events, Web Components events and others. They are progapated
               through to your server components.
@@ -256,7 +255,7 @@ export default function Homepage() {
 
             <p>
               With that said, it should be clarified that although we support
-              Web Components, you can create a MPA like a{' '}
+              Web Components, you can create a MPA like a{" "}
               <b>SPA without using any Web Component</b>, the trick is that you
               only add a Web Component when you need to touch the Web Platform
               or when a user interaction doesn't require the server.
@@ -266,7 +265,7 @@ export default function Homepage() {
               Brisa's vision is to become the standard for modern web
               development, offering developers a <b>unified platform</b> that
               simplifies the creation of high-performance applications from
-              server to client. We focus on maximizing efficiency by{' '}
+              server to client. We focus on maximizing efficiency by{" "}
               <b>minimizing the client-side footprint</b> and enabling
               developers to build scalable, cross-platform applications that
               fully leverage the web's native capabilities. We aim to empower
@@ -276,9 +275,9 @@ export default function Homepage() {
               for <b>future</b> development.
             </p>
           </div>
-          <div class="code sticky" style={{ padding: '0 30px' }}>
+          <div class="code sticky" style={{ padding: "0 30px" }}>
             <a
-              style={{ float: 'right' }}
+              style={{ float: "right" }}
               class="launch-video"
               href="https://www.youtube.com/watch?v=dhHbSAsApsk"
               target="_blank"
@@ -315,18 +314,18 @@ export default function Homepage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <GitHubIcon style={{ marginRight: '5px' }} />
+              <GitHubIcon style={{ marginRight: "5px" }} />
               GitHub
             </a>
           </div>
-          <div class="code" style={{ padding: '0 80px' }}>
+          <div class="code" style={{ padding: "0 80px" }}>
             <img
               width="300"
               height="325"
               src="/images/t-shirt-gift.webp"
               alt="Brisa T-shirt gift"
               loading="lazy"
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
             />
           </div>
         </div>
@@ -337,18 +336,18 @@ export default function Homepage() {
           <div class="info" style={{ flex: 1 }}>
             <h2>Documentation</h2>
             <p>
-              Learn more about Brisa by reading the{' '}
+              Learn more about Brisa by reading the{" "}
               <a href="/getting-started/quick-start" title="Documetantion">
                 Documentation
               </a>
               .
             </p>
           </div>
-          <div class="code" style={{ flex: 1, maxWidth: '450px' }}>
+          <div class="code" style={{ flex: 1, maxWidth: "450px" }}>
             <h2>Sponsors</h2>
             <p>
               <i>
-                Take a look at our{' '}
+                Take a look at our{" "}
                 <a
                   target="_blank"
                   rel="noreferrer"
@@ -356,13 +355,13 @@ export default function Homepage() {
                   href="https://opencollective.com/brisa_build"
                 >
                   Open Collective
-                </a>{' '}
-                that we have just opened.{' '}
+                </a>{" "}
+                that we have just opened.{" "}
               </i>
             </p>
           </div>
         </div>
-        <i style={{ fontSize: '0.8rem' }}>Enjoy Brisa</i>
+        <i style={{ fontSize: "0.8rem" }}>Enjoy Brisa</i>
       </section>
     </main>
   );
