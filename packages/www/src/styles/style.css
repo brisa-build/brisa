@@ -328,6 +328,7 @@ main {
     font-size: 2.2rem;
     display: flex;
     font-weight: 600;
+    align-items: center;
   }
 }
 
