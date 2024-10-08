@@ -1,6 +1,8 @@
 {
   "name": "with-pandacss",
   "module": "src/pages/index.tsx",
+  "webTitle": "Panda CSS",
+  "example-category": "integrations",
   "type": "module",
   "scripts": {
     "dev": "brisa dev",
@@ -13,9 +15,9 @@
     "brisa": "0.1.1"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.46.1",
+    "@pandacss/dev": "0.46.1",
     "@types/bun": "latest",
-    "postcss": "^8.4.47",
+    "postcss": "8.4.47",
     "typescript": "latest"
   }
 }
