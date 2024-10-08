@@ -1,6 +1,6 @@
 {
-  "name": "brisa-tailwindcss",
-  "version": "0.1.1-canary.2",
+  "name": "brisa-pandacss",
+  "version": "0.1.0",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
@@ -13,13 +13,12 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brisa-build/brisa.git",
-    "directory": "packages/brisa-tailwindcss"
+    "directory": "packages/brisa-pandacss"
   },
   "files": ["index.ts", "index.d.ts"],
   "dependencies": {
-    "@tailwindcss/postcss": "4.0.0-alpha.25",
-    "postcss": "8.4.47",
-    "tailwindcss": "4.0.0-alpha.25"
+    "@pandacss/dev": "0.46.1",
+    "postcss": "8.4.47"
   },
   "packageManager": "bun@1.1.29",
   "engines": {
@@ -28,7 +27,7 @@
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
   },
-  "description": "A Brisa integration with Tailwind CSS.",
+  "description": "A Brisa integration with Panda CSS.",
   "bugs": {
     "url": "https://github.com/brisa-build/brisa/issues"
   },

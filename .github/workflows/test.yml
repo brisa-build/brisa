@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [main]
+    branches: [canary]
   pull_request:
-    branches: [main]
+    branches: [canary]
 
 jobs:
   bun-tests:

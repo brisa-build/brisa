@@ -48,7 +48,7 @@
   {
     "id": "/api-reference/brisa-cli#brisa-cli",
     "title": "Brisa CLI",
-    "text": "The Brisa CLI allows you to develop, build, start your application, and more. To get a list of the available CLI commands, run the following command inside your project directory: brisa --help The output should look like this: Usage: brisa [options] <command>\nOptions:\n --help        Show help\nCommands:\n dev           Start development server\n build         Build for production\n start         Start production server\n add           Add integrations (e.g., mdx, tailwindcss)",
+    "text": "The Brisa CLI allows you to develop, build, start your application, and more. To get a list of the available CLI commands, run the following command inside your project directory: brisa --help The output should look like this: Usage: brisa [options] <command>\nOptions:\n --help        Show help\nCommands:\n dev           Start development server\n build         Build for production\n start         Start production server\n add           Add integrations (e.g., mdx, tailwindcss, pandacss)",
     "titles": []
   },
   {
@@ -60,7 +60,7 @@
   {
     "id": "/api-reference/brisa-cli/brisa-add#adding-integrations-brisa-add",
     "title": "Adding integrations (brisa add)",
-    "text": "brisa add allows you to add integrations to your project. To get a list of the available options with brisa add, run the following command inside your project directory: brisa add --help The output should look like this: Usage: brisa add <integration>\nIntegrations:\n mdx          Add mdx integration\n tailwindcss  Add tailwindcss integration\nOptions:\n --help       Show help",
+    "text": "brisa add allows you to add integrations to your project. To get a list of the available options with brisa add, run the following command inside your project directory: brisa add --help The output should look like this: Usage: brisa add <integration>\nIntegrations:\n mdx          Add mdx integration\n tailwindcss  Add tailwindcss integration\n pandacss     Add pandacss integration\nOptions:\n --help       Show help",
     "titles": []
   },
   {
@@ -75,6 +75,14 @@
     "id": "/api-reference/brisa-cli/brisa-add#tailwind-css-integration",
     "title": "Tailwind CSS integration",
     "text": "The Tailwind CSS integration allows you to use Tailwind CSS in your project. To add the Tailwind CSS integration to your project, run the following command inside your project directory: brisa add tailwindcss Take a look at the Tailwind CSS integration documentation to learn more about the Tailwind CSS integration.",
+    "titles": [
+      "Adding integrations (brisa add)"
+    ]
+  },
+  {
+    "id": "/api-reference/brisa-cli/brisa-add#panda-css-integration",
+    "title": "Panda CSS integration",
+    "text": "The Panda CSS integration allows you to use Panda CSS in your project. To add the Panda CSS integration to your project, run the following command inside your project directory: brisa add pandacss Take a look at the Panda CSS integration documentation to learn more about the Panda CSS integration.",
     "titles": [
       "Adding integrations (brisa add)"
     ]
@@ -3251,7 +3259,7 @@
   {
     "id": "/building-your-application/configuring/filter-runtime-dev-errors#example",
     "title": "Example",
-    "text": "In the next example, we are filtering out the TypeError error. This means that the error will not be logged to the console. import type { Configuration } from \"brisa\";\n\nexport default {\n  filterRuntimeDevErrors(error: ErrorEvent) {\n    return !(error.error instanceof TypeError);\n  },\n} satisfies Configuration; This config property is stringified and passed to the client code only during development, so it should not have any side effects.",
+    "text": "In the next example, we are filtering out the TypeError error. This means that the error will not be logged to the console. brisa.config.ts: import type { Configuration } from \"brisa\";\n\nexport default {\n  filterRuntimeDevErrors(error: ErrorEvent) {\n    return !(error.error instanceof TypeError);\n  },\n} satisfies Configuration; This config property is stringified and passed to the client code only during development, so it should not have any side effects.",
     "titles": [
       "Filter Runtime Development Errors"
     ]
@@ -4109,6 +4117,36 @@
     "text": "After you have integrated MDX into your Brisa project, you can start using it in your Markdown files. For example, you can create a src/pages/example.mdx file with the following content: import { Button } from \"@/components/Button\";\n\n# Example\n\nThis is an example of using MDX in Brisa.\n\n<Button>Click me</Button>\n<button-web-component>Click me</button-web-component> In this example, the Button component is imported from the @/components/Button module, and the button-web-component is a web component that is integrated into the project.",
     "titles": [
       "Integrating MDX"
+    ]
+  },
+  {
+    "id": "/building-your-application/integrations/panda-css#integrating-panda-css",
+    "title": "Integrating Panda CSS",
+    "text": "Brisa, offers versatile integration with third-party libraries like PandaCSS to be automatically handled for the Brisa internals. PandaCSS lets you create atomic compiled styles like tailwind. You might find it easier to write and maintain your styles using this.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/integrations/panda-css#installation",
+    "title": "Installation",
+    "text": "Run this command to integrate PandaCSS in your Brisa project: brisa add pandacss And you are ready to use PandaCSS in your Brisa project.",
+    "titles": [
+      "Integrating Panda CSS"
+    ]
+  },
+  {
+    "id": "/building-your-application/integrations/panda-css#manual-installation",
+    "title": "Manual Installation",
+    "text": "If you want to install PandaCSS manually, you can do it by running: bun add -D @pandacss/dev postcss\nbun panda init -p And then, you can add the integration in your brisa.config.ts file: brisa.config.ts import brisaPandaCSS from \"brisa-pandacss\";\n\nexport default {\n  integrations: [brisaPandaCSS()],\n} satisfies Configuration; And then, in your package.json add the following to the scripts section: {\n  \"scripts\": {\n    \"prepare\": \"panda codegen\",\n  }\n} And then, create a .css file and add the following code: @layer reset, base, tokens, recipes, utilities; Then import the file in layout.tsx file\nAnd you are ready to use PandaCSS in your Brisa project. Installing the dependencies manually, take care to use a PandaCSS version v0.46.x.",
+    "titles": [
+      "Integrating Panda CSS"
+    ]
+  },
+  {
+    "id": "/building-your-application/integrations/panda-css#usage",
+    "title": "Usage",
+    "text": "You can use PandaCSS classes in your Brisa project as you would in a regular TSX file: import { css } from './styled-system/css'\n \nexport function App() {\n  return <div className={css({ bg: 'red.400' })} />\n}",
+    "titles": [
+      "Integrating Panda CSS"
     ]
   },
   {
@@ -5214,7 +5252,7 @@
   {
     "id": "/building-your-application/styling#styling",
     "title": "Styling",
-    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS\nCSS Modules (coming soon) In addition, you can also style your web components and server components: Styling web components",
+    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS\nPanda CSS\nCSS Modules (coming soon) In addition, you can also style your web components and server components: Styling web components",
     "titles": []
   },
   {
@@ -5260,6 +5298,12 @@
     ]
   },
   {
+    "id": "/building-your-application/styling/panda-css#panda-css",
+    "title": "Panda CSS",
+    "text": "One option in Brisa is to integrate your app with Panda CSS, a CSS framework that lets you create atomic compiled styles like tailwind. You might find it easier to write and maintain your styles using this. Then you can use in your .tsx: import { css } from './styled-system/css'\n \nexport function App() {\n  return <div className={css({ bg: 'red.400' })} />\n} To integrate Panda CSS into your Brisa project, take a look at the integration with Panda CSS in the integrations section.",
+    "titles": []
+  },
+  {
     "id": "/building-your-application/styling/tailwind-css#tailwind-css",
     "title": "Tailwind CSS",
     "text": "One option in Brisa is to integrate your app with Tailwind CSS, a CSS framework that lets you use utility classes instead of writing CSS. These utility classes are mostly one-to-one with a certain CSS property setting: for example, adding the text-lg to an element is equivalent to setting font-size: 1.125rem in CSS. You might find it easier to write and maintain your styles using these predefined utility classes! Then you can use in your .tsx: export default function Home() {\n  return (\n    <div className=\"text-lg\">Hello, world!</div>\n  );\n} To integrate Tailwind CSS into your Brisa project, take a look at the integration with Tailwind CSS in the integrations section.",
@@ -5268,7 +5312,7 @@
   {
     "id": "/building-your-application/styling/web-components#styling-web-components",
     "title": "Styling Web Components",
-    "text": "Brisa provides a different ways to style your web components, including: Global Styles in Web Components: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.\nCSS Template String: A powerful way to create reactive styles to signals within web components.\nCSS inlined in JSX: You can use the style attribute to apply styles directly to the HTML element.\nTailwind CSS: A CSS framework that lets you use utility classes instead of writing CSS.",
+    "text": "Brisa provides a different ways to style your web components, including: Global Styles in Web Components: By default, Brisa adopts the global style sheets to the shadow DOM, so you don't need to worry about this.\nCSS Template String: A powerful way to create reactive styles to signals within web components.\nCSS inlined in JSX: You can use the style attribute to apply styles directly to the HTML element.\nTailwind CSS: A CSS framework that lets you use utility classes instead of writing CSS.\nPanda CSS: Another CSS framework that lets you use utility classes instead of writing CSS.",
     "titles": []
   },
   {
@@ -5291,6 +5335,14 @@
     "id": "/building-your-application/styling/web-components#tailwind-css",
     "title": "Tailwind CSS",
     "text": "The shadow DOM is adapted to be possible to use Tailwind CSS classes in your elements. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent() {\n  return <div className=\"bg-gray-100\">Hello World</div>;\n} Read more about how to integrate Tailwind CSS in your Brisa project in the Tailwind CSS page.",
+    "titles": [
+      "Styling Web Components"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/web-components#panda-css",
+    "title": "Panda CSS",
+    "text": "The shadow DOM is adapted to be possible to use Panda CSS in your elements. import type { WebContext } from \"brisa\";\nimport { css } from './styled-system/css'\n \nexport default function MyWebComponent() {\n  return <div className={css({ bg: 'red.400' })} />\n} Read more about how to integrate Panda CSS in your Brisa project in the Panda CSS page.",
     "titles": [
       "Styling Web Components"
     ]
