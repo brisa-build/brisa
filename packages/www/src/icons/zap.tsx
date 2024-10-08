@@ -1,4 +1,4 @@
-export default function Zap({ size = 24 }: { size: number}) {
+export default function Zap({ size = 24 }: { size: number }) {
   return (
     <svg
       width={size}

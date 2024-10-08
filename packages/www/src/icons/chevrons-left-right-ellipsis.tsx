@@ -1,4 +1,6 @@
-export default function ChevronsLeftRightEllipsis({ size = 24 }: { size: number }) {
+export default function ChevronsLeftRightEllipsis({
+  size = 24,
+}: { size: number }) {
   return (
     <svg
       width={size}
