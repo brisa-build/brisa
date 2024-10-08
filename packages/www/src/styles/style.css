@@ -257,6 +257,7 @@ main {
 .brisa-section:has(.code-example) {
   padding: 2rem 1rem;
   max-width: none;
+  line-height: 34px;
   font-size: 18px;
   color: var(--color-primary);
 
@@ -326,8 +327,6 @@ main {
 
   h2 {
     font-size: 2.2rem;
-    display: flex;
-    font-weight: 600;
   }
 }
 
@@ -351,7 +350,7 @@ main {
     p {
       color: var(--color-secondary);
       font-size: 1.2rem;
-      font-weight: 400;
+      font-weight: 500;
     }
   }
 }

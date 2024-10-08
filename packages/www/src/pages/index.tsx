@@ -1,12 +1,7 @@
 import CopyBox from '@/components/copy-box';
 import { RenderCode } from '@/helpers/markdown-loader';
-import Zap from '@/icons/zap';
 import GitHubIcon from '@/icons/github-icon';
 import VideoIcon from '@/icons/video-icon';
-import TreePalm from '@/icons/tree-palm';
-import Languages from '@/icons/languages';
-import MonitorSmartphone from '@/icons/monitor-smartphone';
-import ChevronsLeftRightEllipsis from '@/icons/chevrons-left-right-ellipsis';
 
 const fastAppsCode = `
 // src/pages/index.tsx
@@ -119,10 +114,7 @@ export default function Homepage() {
       <section class="brisa-section fast-apps odd-section">
         <div class="code-example">
           <div class="info sticky">
-            <h2>
-              <Zap size={32} />
-              &nbsp;Build fast apps fast
-            </h2>
+            <h2>Build fast apps fast</h2>
             <p>
               Brisa pages are dynamically server-rendered JSX components, with{' '}
               <b>zero JavaScript</b> shipped to the browser <b>by default</b>.
@@ -139,10 +131,7 @@ export default function Homepage() {
       <section class="brisa-section wc">
         <div class="code-example">
           <div class="info sticky">
-            <h2>
-              <TreePalm size={32} />
-              &nbsp;Web Component island-based
-            </h2>
+            <h2>Web Component island-based</h2>
             <p>
               In Brisa everything runs only on the server by default, except the{' '}
               <code>src/web-components</code> folder, which always run on the
@@ -163,10 +152,7 @@ export default function Homepage() {
       <section class="brisa-section actions odd-section">
         <div class="code-example">
           <div class="info sticky">
-            <h2>
-              <ChevronsLeftRightEllipsis size={32} />
-              &nbsp;Browser-events on the server
-            </h2>
+            <h2>Browser-events on the server</h2>
             <p>
               Brisa mixes ideas from React's "<b>Server Actions</b>" and HTMX
               concepts. With Brisa, you can handle all browser events on the
@@ -195,14 +181,11 @@ export default function Homepage() {
       <section class="brisa-section i18n">
         <div class="code-example">
           <div class="info sticky">
-            <h2>
-              <Languages size={32} />
-              &nbsp;Full i18n support
-            </h2>
+            <h2>Full i18n support</h2>
             <p>
               Brisa has built-in internationalization support that allows you to{' '}
-              translate your pages and <b>routes</b>, while downloading only the
-              used translations.
+              <b>translate</b> your pages and <b>routes</b>, while downloading
+              only the used translations.
             </p>
             <a
               class="cta"
@@ -222,10 +205,7 @@ export default function Homepage() {
       <section class="brisa-section multi-platform odd-section inverted">
         <div class="code-example">
           <div class="info">
-            <h2>
-              <MonitorSmartphone size={32} />
-              &nbsp;Multi-platform
-            </h2>
+            <h2>Multi-platform</h2>
             <p>
               Brisa can also be used with Tauri, which allows you to build web
               applications that can be easily converted to native applications
