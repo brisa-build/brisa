@@ -303,7 +303,7 @@ export default function Homepage() {
           <div class="info">
             <h2>Gift to contributors</h2>
             <p>
-              Brisa is an open-source projec, and is backed by contributions
+              Brisa is an open-source project, and is backed by contributions
               from the community. We will send a <b>T-shirt gift</b> to the
               first contributors who help us improve the framework.
             </p>
