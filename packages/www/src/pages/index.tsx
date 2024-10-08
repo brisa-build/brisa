@@ -115,7 +115,7 @@ export default function Homepage() {
       <section class="brisa-section fast-apps odd-section">
         <div class="code-example">
           <div class="info sticky">
-            <h2>🚀 Build fast apps fast</h2>
+            <h2>Build fast apps fast</h2>
             <p>
               Brisa pages are dynamically server-rendered JSX components, so
               there's <b>zero JavaScript</b> shipped to the browser{' '}
@@ -133,12 +133,12 @@ export default function Homepage() {
       <section class="brisa-section wc">
         <div class="code-example">
           <div class="info sticky">
-            <h2>🏝️ Web Component island-based</h2>
+            <h2>Web Component island-based</h2>
             <p>
               In Brisa everything by default runs only on the server, except the{' '}
-              <code>src/web-components</code> folder that also runs on the
+              <code>src/web-components</code> folder, which always run on the
               client. Web components are rendered on the server (<b>SSR</b>) and
-              hydrated on the client using native Web APIs, as they are
+              hydrated on the client using native Web APIs, where they are
               transformed into Web Components with <b>Signals</b>.
             </p>
             <custom-counter start={5} />
@@ -154,7 +154,7 @@ export default function Homepage() {
       <section class="brisa-section actions odd-section">
         <div class="code-example">
           <div class="info sticky">
-            <h2>📲 Browser-events on Server </h2>
+            <h2>Browser-events on Server </h2>
             <p>
               Brisa mixes ideas from React's "<b>Server Actions</b>" and HTMX
               concepts. With Brisa, you can handle all browser events on the
@@ -183,11 +183,11 @@ export default function Homepage() {
       <section class="brisa-section i18n">
         <div class="code-example">
           <div class="info sticky">
-            <h2>🌐 Full i18n support</h2>
+            <h2>Full i18n support</h2>
             <p>
               Brisa has built-in internationalization support that allows you to{' '}
-              <b>translate</b> your pages and <b>routes</b>, loading only the
-              translations you consume.
+              <b>translate</b> your pages and <b>routes</b>, while downloading
+              only the used translations.
             </p>
             <a
               class="cta"
@@ -207,7 +207,7 @@ export default function Homepage() {
       <section class="brisa-section multi-platform odd-section inverted">
         <div class="code-example">
           <div class="info">
-            <h2>📱 Multi-platform</h2>
+            <h2>Multi-platform</h2>
             <p>
               Brisa can also be used with Tauri, which allows you to build web
               applications that can be easily converted to native applications
@@ -231,7 +231,7 @@ export default function Homepage() {
       <section class="brisa-section goal">
         <div class="code-example">
           <div class="info">
-            <h2>🤔 Web Platform Framework?</h2>
+            <h2>What does Web Platform Framework mean?</h2>
             <p>
               Brisa's mission is to unify server and client using the Web
               Platform. <b>Web Components</b> can easily be used, using{' '}
@@ -303,7 +303,7 @@ export default function Homepage() {
       <section class="brisa-section odd-section">
         <div class="code-example">
           <div class="info">
-            <h2>🎁 Gift to contributors</h2>
+            <h2>Gift to contributors</h2>
             <p>
               Brisa is an open-source projec, and is backed by contributions
               from the community. We will send a <b>T-shirt gift</b> to the
@@ -335,7 +335,7 @@ export default function Homepage() {
       <section class="brisa-section goal">
         <div class="code-example">
           <div class="info" style={{ flex: 1 }}>
-            <h2>📚 Documentation</h2>
+            <h2>Documentation</h2>
             <p>
               Learn more about Brisa by reading the{' '}
               <a href="/getting-started/quick-start" title="Documetantion">
@@ -345,7 +345,7 @@ export default function Homepage() {
             </p>
           </div>
           <div class="code" style={{ flex: 1, maxWidth: '450px' }}>
-            <h2>💝 Sponsors</h2>
+            <h2>Sponsors</h2>
             <p>
               <i>
                 Take a look at our{' '}
