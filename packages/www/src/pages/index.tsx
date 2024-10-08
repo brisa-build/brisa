@@ -120,7 +120,7 @@ export default function Homepage() {
         <div class="code-example">
           <div class="info sticky">
             <h2>
-              <Zap size={28} />
+              <Zap size={32} />
               &nbsp;Build fast apps fast
             </h2>
             <p>
@@ -140,7 +140,7 @@ export default function Homepage() {
         <div class="code-example">
           <div class="info sticky">
             <h2>
-              <TreePalm size={28} />
+              <TreePalm size={32} />
               &nbsp;Web Component island-based
             </h2>
             <p>
@@ -164,7 +164,7 @@ export default function Homepage() {
         <div class="code-example">
           <div class="info sticky">
             <h2>
-              <ChevronsLeftRightEllipsis size={28} />
+              <ChevronsLeftRightEllipsis size={32} />
               &nbsp;Browser-events on the server
             </h2>
             <p>
@@ -196,7 +196,7 @@ export default function Homepage() {
         <div class="code-example">
           <div class="info sticky">
             <h2>
-              <Languages size={28} />
+              <Languages size={32} />
               &nbsp;Full i18n support
             </h2>
             <p>
@@ -223,7 +223,7 @@ export default function Homepage() {
         <div class="code-example">
           <div class="info">
             <h2>
-              <MonitorSmartphone size={28} />
+              <MonitorSmartphone size={32} />
               &nbsp;Multi-platform
             </h2>
             <p>
