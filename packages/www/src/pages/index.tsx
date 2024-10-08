@@ -158,14 +158,13 @@ export default function Homepage() {
             <p>
               Brisa mixes ideas from React's "<b>Server Actions</b>" and HTMX
               concepts. With Brisa, you can handle all browser events on the
-              server, such as forms, click events, etc. In addition, we offer
-              some extra <b>HTML attributes</b> to manage debounces, optimistic
-              updates, etc.
+              server, such as forms, click events and more. In addition, we
+              offer extra <b>HTML attributes</b> to manage debounces, optimistic
+              updates, among other things.
             </p>
             <p>
-              The idea is that if you want you can create a SPA without Web
-              Components, only with the weight of the Brisa RPC to make the
-              connection with the server.
+              You can create a SPA without Web Components, with just the payload
+              of the Brisa RPC to make the connection with the server.
             </p>
             <a
               class="cta"
@@ -186,9 +185,9 @@ export default function Homepage() {
           <div class="info sticky">
             <h2>🌐 Full i18n support</h2>
             <p>
-              Brisa has a built-in internationalization (i18n) support that
-              allows you to <b>translate</b> your pages and <b>routing</b>,
-              carrying only the translations you consume.
+              Brisa has built-in internationalization support that allows you to{' '}
+              <b>translate</b> your pages and <b>routes</b>, loading only the
+              translations you consume.
             </p>
             <a
               class="cta"
@@ -210,9 +209,9 @@ export default function Homepage() {
           <div class="info">
             <h2>📱 Multi-platform</h2>
             <p>
-              Brisa allows you to build web applications that can be easily
-              converted to native applications for <b>Android</b>, <b>iOS</b>,
-              and <b>desktop</b>. It's full integrated with Tauri.
+              Brisa can also be used with Tauri, which allows you to build web
+              applications that can be easily converted to native applications
+              for <b>Android</b>, <b>iOS</b>, and <b>desktop</b>.
             </p>
             <img
               width="500"
@@ -234,32 +233,31 @@ export default function Homepage() {
           <div class="info">
             <h2>🤔 Web Platform Framework?</h2>
             <p>
-              Brisa's mission is to unify the both worlds (server and client)
-              using the Web Platform. One key feature is the ease with which{' '}
-              <b>Web Components</b> can be used, utilizing{' '}
+              Brisa's mission is to unify server and client using the Web
+              Platform. <b>Web Components</b> can easily be used, using{' '}
               <b>Declarative Shadow DOM</b> and <b>signals</b> to enhance your
               workflow in conjunction with <b>Server Actions</b>.
             </p>
 
             <p>
-              We bring ideas from the Web to the server. You can{' '}
+              We bring concepts from the web to the server. You can{' '}
               <b>capture browser events on the server</b>, such as forms, click
-              events, Web Components events, etc. And you can propagate them
-              through your server components.
+              events, Web Components events and others. They are progapated
+              through to your server components.
             </p>
 
             <p>
-              It also <b>streams Hypermedia</b> over the wire during navigation
-              and Server Actions, utilizing HTTP in the way it was originally
-              intended. This is closely connected with Web Components because
-              they are part of the DOM, their attributes are updated, and
-              signals react to these changes.
+              Brisa also <b>streams Hypermedia</b> over the wire during
+              navigation and Server Actions, utilizing HTTP in the way it was
+              originally intended. This is closely connected with Web
+              Components, because they are part of the DOM, their attributes are
+              updated, and signals react to these changes.
             </p>
 
             <p>
-              That said, it should be clarified that although we support Web
-              Components, you can create a MPA like a{' '}
-              <b>SPA without using any Web Component</b>, the grace is that you
+              With that said, it should be clarified that although we support
+              Web Components, you can create a MPA like a{' '}
+              <b>SPA without using any Web Component</b>, the trick is that you
               only add a Web Component when you need to touch the Web Platform
               or when a user interaction doesn't require the server.
             </p>
@@ -274,7 +272,7 @@ export default function Homepage() {
               fully leverage the web's native capabilities. We aim to empower
               developers, regardless of their stack or environment, to use Brisa
               to create advanced interactive experiences with less friction,
-              driving the adoption of the <b>web platform</b> as the foundation
+              driving the adoption of the <b>Web Platform</b> as the foundation
               for <b>future</b> development.
             </p>
           </div>
@@ -307,9 +305,9 @@ export default function Homepage() {
           <div class="info">
             <h2>🎁 Gift to contributors</h2>
             <p>
-              Brisa is an open-source project, and we welcome contributions from
-              the community. We have a <b>T-shirt gift</b> for the first
-              contributors who help us improve the framework.
+              Brisa is an open-source projec, and is backed by contributions
+              from the community. We will send a <b>T-shirt gift</b> to the
+              first contributors who help us improve the framework.
             </p>
             <a
               class="cta"
@@ -364,7 +362,7 @@ export default function Homepage() {
             </p>
           </div>
         </div>
-        <i style={{ fontSize: '0.8rem' }}>Enjoy using it</i>
+        <i style={{ fontSize: '0.8rem' }}>Enjoy Brisa</i>
       </section>
     </main>
   );
