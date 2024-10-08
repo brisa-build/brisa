@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bun run build.ts",
     "release": "bun run build && npm publish",
-    "release:alpha": "bun run build && npm publish --tag next"
+    "release:canary": "bun run build && npm publish --tag next"
   },
   "author": {
     "name": "Brisa Team",
@@ -21,9 +21,9 @@
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   },
-  "packageManager": "bun@1.1.29",
+  "packageManager": "bun@1.1.30",
   "engines": {
-    "bun": ">= 1.1.29",
+    "bun": ">= 1.1.30",
     "npm": "please-use-bun",
     "yarn": "please-use-bun",
     "pnpm": "please-use-bun"
