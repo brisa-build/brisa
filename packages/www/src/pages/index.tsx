@@ -133,7 +133,7 @@ export default function Homepage() {
           <div class="info sticky">
             <h2>🏝️ Web Component island-based</h2>
             <p>
-              In Brisa everything runs only on the server by default, except the{" "}
+              In Brisa everything runs on the server by default, except the{" "}
               <code>src/web-components</code> folder, which always run on the
               client. Web components are rendered on the server (<b>SSR</b>) and
               hydrated on the client using native Web APIs, where they are
