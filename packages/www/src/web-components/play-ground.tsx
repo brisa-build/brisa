@@ -1,17 +1,18 @@
-import type { WebContext } from 'brisa';
+import "@spectrum-web-components/split-view/sp-split-view.js";
+import type { WebContext } from "brisa";
 
 export default async function PlayGround(
   { defaultValue }: { defaultValue: string },
   { state, css, cleanup, onMount, self }: WebContext,
 ) {
-  const code = state<string>('');
-  const preview: HTMLIFrameElement = self.querySelector('#preview-iframe')!;
-  const activeTab = state<string>('tab-wc');
+  const code = state<string>("");
+  const preview: HTMLIFrameElement = self.querySelector("#preview-iframe")!;
+  const activeTab = state<string>("tab-wc");
 
   function onReceiveCompiledCode(e: MessageEvent) {
-    if (e.data.source !== 'brisa-playground-preview') return;
+    if (e.data.source !== "brisa-playground-preview") return;
     if (e.data.ready) sendDefaultCode();
-    if (typeof e.data.code === 'string') {
+    if (typeof e.data.code === "string") {
       code.value = e.data.code;
     }
   }
@@ -21,15 +22,16 @@ export default async function PlayGround(
   }
 
   onMount(() => {
-    window.addEventListener('message', onReceiveCompiledCode);
+    window.addEventListener("message", onReceiveCompiledCode);
   });
 
   cleanup(() => {
-    window.removeEventListener('message', onReceiveCompiledCode);
+    window.removeEventListener("message", onReceiveCompiledCode);
   });
 
   css`
     .playground {
+      width: 100%;
       display: flex;
       flex-direction: row;
       gap: 0.5rem;
@@ -39,12 +41,10 @@ export default async function PlayGround(
     }
 
     .original-code {
-      width: 50%;
       height: 100%;
     }
 
     .output {
-      width: 50%;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -105,11 +105,15 @@ export default async function PlayGround(
       .output {
         width: 100%;
       }
-     }
+    }
   `;
 
   return (
-    <section class="playground">
+    <sp-split-view
+      class="playground"
+      resizable
+      label="Resize the horizontal panels"
+    >
       <div class="original-code">
         <slot name="code-editor" />
       </div>
@@ -121,8 +125,8 @@ export default async function PlayGround(
             role="tab"
             title="Web Component"
             aria-label="Web Component"
-            aria-selected={activeTab.value === 'tab-wc'}
-            onClick={() => (activeTab.value = 'tab-wc')}
+            aria-selected={activeTab.value === "tab-wc"}
+            onClick={() => (activeTab.value = "tab-wc")}
           >
             Web Component
           </button>
@@ -132,8 +136,8 @@ export default async function PlayGround(
             role="tab"
             title="Compiled Code"
             aria-label="Compiled Code"
-            aria-selected={activeTab.value === 'tab-compiled'}
-            onClick={() => (activeTab.value = 'tab-compiled')}
+            aria-selected={activeTab.value === "tab-compiled"}
+            onClick={() => (activeTab.value = "tab-compiled")}
           >
             Compiled Code
           </button>
@@ -141,18 +145,18 @@ export default async function PlayGround(
 
         <div
           id="tab-wc"
-          class={`tab-content ${activeTab.value === 'tab-wc' ? 'active' : ''}`}
+          class={`tab-content ${activeTab.value === "tab-wc" ? "active" : ""}`}
         >
           <slot name="preview-iframe" />
         </div>
 
         <div
           id="tab-compiled"
-          class={`tab-content ${activeTab.value === 'tab-compiled' ? 'active' : ''}`}
+          class={`tab-content ${activeTab.value === "tab-compiled" ? "active" : ""}`}
         >
           <textarea disabled>{code.value}</textarea>
         </div>
       </div>
-    </section>
+    </sp-split-view>
   );
 }
