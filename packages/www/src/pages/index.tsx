@@ -184,7 +184,7 @@ export default function Homepage() {
             <h2>🌐 Full i18n support</h2>
             <p>
               Brisa has built-in internationalization support that allows you to{' '}
-              <b>translate</b> your pages and <b>routes</b>, while downloading
+              <b>translate</b> your pages and <b>routes</b>, while loading
               only the used translations.
             </p>
             <a
