@@ -126,6 +126,8 @@ export default function brisaElement(
       ? stylePropsToString(value as unknown as JSX.CSSProperties)
       : serialize(value);
 
+    if (serializedValue === undefined) return;
+
     const isWithNamespace =
       el.namespaceURI === SVG_NAMESPACE &&
       (key.startsWith('xlink:') || key === 'href');
