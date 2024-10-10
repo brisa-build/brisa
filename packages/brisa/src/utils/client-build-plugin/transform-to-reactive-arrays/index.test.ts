@@ -709,6 +709,7 @@ describe('utils', () => {
             )
           }`);
 
+        const logMock = spyOn(console, 'log');
         const outputAst = transformToReactiveArrays(input);
         const output = toOutputCode(outputAst);
         const expected = normalizeHTML(`
@@ -716,7 +717,37 @@ describe('utils', () => {
           return [null, {}, [[null, {}, "Test"], [null, {}, () => error.value ? [null, {}, [[null, {}, () => \`Error: \${error.value.message}\`], [null, {}, " "], ["pre", {}, () => error.value.stack]]] : ""]]];
         }
         `);
+        expect(logMock).not.toBeCalled();
         expect(output).toBe(expected);
+        logMock.mockRestore();
+      });
+
+      it('should not log _Fragment', () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return (
+              <_Fragment>
+                <div>foo</div>
+                <span>bar</span>
+              </_Fragment>
+            )
+          }
+        `);
+
+        const logMock = spyOn(console, 'log');
+        logMock.mockImplementation(() => {});
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeHTML(`
+          export default function MyComponent() {
+            return [null, {}, [['div', {}, 'foo'], ['span', {}, 'bar']]];
+          }
+        `);
+        const logs = logMock.mock.calls.slice(0);
+
+        logMock.mockRestore();
+        expect(output).toBe(expected);
+        expect(logs).toEqual([]);
       });
 
       it('should keep the "key" attribute', () => {
