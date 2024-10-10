@@ -6,6 +6,7 @@ import { logError, logWarning } from '@/utils/log/log-build';
 import { JSX_NAME } from '@/utils/ast/constants';
 import { BOOLEANS_IN_HTML } from '@/public-constants';
 
+const fragmentNames = new Set(['Fragment', '_Fragment']);
 export const logsPerFile = new Set<string | undefined>();
 
 export default function transformToReactiveArrays(
@@ -42,7 +43,7 @@ export default function transformToReactiveArrays(
 
     if (
       value.arguments[0].type === 'Identifier' &&
-      value.arguments[0].name !== 'Fragment'
+      !fragmentNames.has(value.arguments[0].name)
     ) {
       const errorMessages = [
         `You can't use "${value.arguments[0].name}" variable as a tag name.`,
