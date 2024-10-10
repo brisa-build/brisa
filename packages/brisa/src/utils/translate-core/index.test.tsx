@@ -1,6 +1,7 @@
 import { describe, expect, it, afterAll } from 'bun:test';
 import translateCore from '.';
 import type { I18nConfig } from '@/types';
+import renderToString from '../render-to-string';
 
 type NestedKeysType = {
   key_1: {
@@ -224,7 +225,7 @@ describe('utils', () => {
       expect(t<string>('key_1', { name: 'test' })).toBe('hello TEST');
     });
 
-    it('should work with html inside the translation', () => {
+    it('should work with html inside the translation', async () => {
       const config = {
         locales: ['en', 'ru'],
         defaultLocale: 'en',
@@ -236,11 +237,10 @@ describe('utils', () => {
       } as I18nConfig;
       const t = translateCore('en', config);
       const output = t('key_1', { name: 'test' }, { elements: [<strong />] });
-      const element = output[1] as any;
 
-      expect(output[0]).toBe('hello ');
-      expect(element[0]).toBe('strong');
-      expect(element[2]).toBe('test');
+      expect(await renderToString(output as any)).toBe(
+        'hello <strong>test</strong>',
+      );
     });
 
     it('should _messages override _defaultMessages', () => {

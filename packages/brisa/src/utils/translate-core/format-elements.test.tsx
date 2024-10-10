@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import formatElements, { tagParsingRegex } from './format-elements';
+import renderToString from '../render-to-string';
+import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
 describe('utils', () => {
   describe('tagParsingRegex', () => {
@@ -54,25 +56,26 @@ describe('utils', () => {
     });
   });
   describe('formatElements', () => {
-    it('should return a string wrapped with a fragment if no elements are passed', () => {
+    it('should return a string wrapped with a fragment if no elements are passed (SSR)', async () => {
       const output = formatElements('this is a <0>test</0>');
-      const element = output[1] as any;
 
-      expect(output[0]).toBe('this is a ');
-      expect(element[0].toString()).toBe('function S(r){return i(null,r)}');
-      expect(element[2]).toBe('test');
+      expect(await renderToString(output as any)).toBe('this is a test');
     });
 
-    it('should return a string wrapped with a string tag', () => {
+    it('should return a string wrapped with a fragment if no elements are passed (CLIENT)', async () => {
+      const output = formatElements('this is a <0>test</0>');
+
+      await testClientRender(output, 'this is a test');
+    });
+
+    it('should return a string wrapped with a string tag', async () => {
       const output = formatElements('this is a <0>test</0>', [<strong />]);
-      const element = output[1] as any;
-
-      expect(output[0]).toBe('this is a ');
-      expect(element[0]).toBe('strong');
-      expect(element[2]).toBe('test');
+      expect(await renderToString(output as any)).toBe(
+        'this is a <strong>test</strong>',
+      );
     });
 
-    it('should return a string wrapped multiple tags and defined as object', () => {
+    it('should return a string wrapped multiple tags and defined as object (SSR)', async () => {
       const elements = {
         a: <strong />,
         b: <em />,
@@ -83,17 +86,75 @@ describe('utils', () => {
         '<a>this is a <b>test</b></a><c>!</c>',
         elements,
       );
-      const elementA = output[0] as any;
-      const elementB = elementA[2] as any;
-      const elementC = output[1] as any;
 
-      expect(elementA[0]).toBe('strong');
-      expect(Array.isArray(elementB)).toBe(true);
-      expect(elementB[0]).toBe('this is a ');
-      expect(elementB[1][0]?.toString()).toBe('em');
-      expect(elementB[1][2]).toBe('test');
-      expect(elementC[0]?.toString()).toBe('span');
-      expect(elementC[2]).toBe('!');
+      expect(await renderToString(output as any)).toBe(
+        '<strong>this is a <em>test</em></strong><span>!</span>',
+      );
+    });
+
+    it('should return a string wrapped multiple tags and defined as object (Client)', async () => {
+      const elements = {
+        a: <strong />,
+        b: <em />,
+        c: <span />,
+      };
+
+      const output = formatElements(
+        '<a>this is a <b>test</b></a><c>!</c>',
+        elements,
+      );
+
+      await testClientRender(
+        output,
+        '<strong>this is a <em>test</em></strong><span>!</span>',
+      );
+    });
+
+    it('should return a string wrapped multiple tags and defined as array (SSR)', async () => {
+      const elements = [<strong />, <em />, <span />];
+
+      const output = formatElements(
+        '<0>this is a <1>test</1></0><2>!</2>',
+        elements,
+      );
+
+      expect(await renderToString(output as any)).toBe(
+        '<strong>this is a <em>test</em></strong><span>!</span>',
+      );
+    });
+
+    it('should return a string wrapped multiple tags and defined as array (Client)', async () => {
+      const elements = [<strong />, <em />, <span />];
+
+      const output = formatElements(
+        '<0>this is a <1>test</1></0><2>!</2>',
+        elements,
+      );
+
+      await testClientRender(
+        output,
+        '<strong>this is a <em>test</em></strong><span>!</span>',
+      );
     });
   });
 });
+
+async function testClientRender(output: any, expected: string) {
+  GlobalRegistrator.register();
+  window.__WEB_CONTEXT_PLUGINS__ = false;
+  window.__BASE_PATH__ = '';
+  window.__TRAILING_SLASH__ = false;
+  window.__USE_LOCALE__ = false;
+  window.__USE_PAGE_TRANSLATION__ = false;
+  window.__ASSET_PREFIX__ = '';
+  window.fPath = undefined;
+  const brisaElement = (await import('@/utils/brisa-element')).default;
+  customElements.define(
+    'brisa-element',
+    brisaElement(() => output),
+  );
+  document.body.innerHTML = '<brisa-element></brisa-element>';
+  const brisaElementInstance = document.querySelector('brisa-element');
+  expect(brisaElementInstance?.shadowRoot?.innerHTML).toBe(expected);
+  GlobalRegistrator.unregister();
+}
