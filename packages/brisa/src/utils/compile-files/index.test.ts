@@ -723,7 +723,7 @@ describe('utils', () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 444 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 973 B     |
+    ${info}Δ /layout       | 1 kB      |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
