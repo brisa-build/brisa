@@ -56,5 +56,9 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.2",
     "husky": "9.1.6"
+  },
+  "dependencies": {
+    "@spectrum-web-components/shared": "^0.48.1",
+    "@spectrum-web-components/split-view": "^0.48.1"
   }
 }
