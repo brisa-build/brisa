@@ -4054,5 +4054,19 @@ describe('utils', () => {
         '1234-543-4234-5425-1231111-222-333-444-555',
       );
     });
+
+    it('should not add attribute as undefined', () => {
+      const Component = () => {
+        return ['div', { id: undefined }, ''];
+      };
+
+      customElements.define('id-component', brisaElement(Component));
+
+      document.body.innerHTML = '<id-component />';
+
+      const idComponent = document.querySelector('id-component') as HTMLElement;
+
+      expect(idComponent?.shadowRoot?.innerHTML).toBe('<div></div>');
+    });
   });
 });
