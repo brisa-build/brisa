@@ -161,8 +161,9 @@ export default function Homepage() {
               updates, among other things.
             </p>
             <p>
-              You can create a lightweight SPA <b>without Web Components</b>, where the only payload
-              will be that of the Brisa RPC to make the connection with the server.
+              You can create a lightweight SPA <b>without Web Components</b>,
+              where the only payload will be that of the Brisa RPC to make the
+              connection with the server.
             </p>
             <a
               class="cta"
