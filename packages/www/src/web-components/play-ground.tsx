@@ -8,6 +8,11 @@ export default async function PlayGround(
   const code = state<string>('');
   const preview: HTMLIFrameElement = self.querySelector('#preview-iframe')!;
   const activeTab = state<string>('tab-wc');
+  const isMobileLayout = state<boolean>(false);
+
+  function updateSplitViewOrientation() {
+    isMobileLayout.value = window.innerWidth <= 968;
+  }
 
   function onReceiveCompiledCode(e: MessageEvent) {
     if (e.data.source !== 'brisa-playground-preview') return;
@@ -22,11 +27,16 @@ export default async function PlayGround(
   }
 
   onMount(() => {
+    // Set initial layout based on screen size
+    updateSplitViewOrientation();
+
     window.addEventListener('message', onReceiveCompiledCode);
+    window.addEventListener('resize', updateSplitViewOrientation);
   });
 
   cleanup(() => {
     window.removeEventListener('message', onReceiveCompiledCode);
+    window.removeEventListener('resize', updateSplitViewOrientation);
   });
 
   css`
@@ -108,11 +118,66 @@ export default async function PlayGround(
     }
   `;
 
+  if (isMobileLayout.value) {
+    return (
+      <sp-split-view
+        vertical
+        class="playground"
+        resizable
+        label="Resize the code sections vertically"
+      >
+        <div class="original-code">
+          <slot name="code-editor" />
+        </div>
+        <div class="output">
+          <div role="tablist" class="tab-list">
+            <button
+              id="tab-wc"
+              type="button"
+              role="tab"
+              title="Web Component"
+              aria-label="Web Component"
+              aria-selected={activeTab.value === 'tab-wc'}
+              onClick={() => (activeTab.value = 'tab-wc')}
+            >
+              Web Component
+            </button>
+            <button
+              id="tab-compiled"
+              type="button"
+              role="tab"
+              title="Compiled Code"
+              aria-label="Compiled Code"
+              aria-selected={activeTab.value === 'tab-compiled'}
+              onClick={() => (activeTab.value = 'tab-compiled')}
+            >
+              Compiled Code
+            </button>
+          </div>
+
+          <div
+            id="tab-wc"
+            class={`tab-content ${activeTab.value === 'tab-wc' ? 'active' : ''}`}
+          >
+            <slot name="preview-iframe" />
+          </div>
+
+          <div
+            id="tab-compiled"
+            class={`tab-content ${activeTab.value === 'tab-compiled' ? 'active' : ''}`}
+          >
+            <textarea disabled>{code.value}</textarea>
+          </div>
+        </div>
+      </sp-split-view>
+    );
+  }
+
   return (
     <sp-split-view
       class="playground"
       resizable
-      label="Resize the horizontal panels"
+      label="Resize the code sections horizontally"
     >
       <div class="original-code">
         <slot name="code-editor" />
