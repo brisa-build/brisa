@@ -681,6 +681,26 @@ Returns:
 - In English: `The number is 33.5`
 - In Spanish: `El número es 33,5`
 
+> [!CAUTION]
+>
+> The `format` function is serialized to the client using `.toString()`. This means it cannot reference any external variables or functions outside of `format` itself. If you want to avoid sending unnecessary formatters that are only used on the server to the client, follow this approach:
+>
+> Example:
+>
+> ```ts
+> function format(value: number, format: string, lang: string) {
+>   if (typeof window !== 'undefined') {
+>     if (format === "uppercase") return value.toUpperCase();
+>     return value;
+>   }
+>   
+>   // Only runs on the server
+>   return serverFormat(value, format, lang);
+> }
+> ```
+>
+> By using the external identifier `serverFormat`, the code for `serverFormat` will not be included in the client-side bundle.
+
 ### Nested messages
 
 It's possible to use nested messages in the JSONs:
