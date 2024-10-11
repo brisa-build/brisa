@@ -436,6 +436,48 @@ describe('utils', () => {
           },
         });
       });
+
+      it('should add interpolation.format function on the client-side', () => {
+        mock.module('@/constants', () => ({
+          default: {
+            I18N_CONFIG: {
+              ...I18N_CONFIG,
+              interpolation: {
+                format: (value, formatName, lang) => {
+                  if (formatName === 'uppercase') {
+                    return (value as string).toUpperCase();
+                  }
+                  if (formatName === 'lang') return lang;
+                  return value;
+                },
+              },
+            } as I18nConfig,
+          },
+        }));
+
+        const ast = addI18nBridge(emptyAst, {
+          usei18nKeysLogic: true,
+          i18nAdded: false,
+          isTranslateCoreAdded: false,
+        });
+
+        const output = generateCodeFromAST(ast);
+        expect(normalizeHTML(output)).toContain(
+          normalizeHTML(`return translateCore(this.locale, {
+        ...i18nConfig,
+          messages: this.messages,
+            interpolation: {
+              ...i18nConfig.interpolation,
+                format: (value, formatName, lang) => {
+                  if (formatName === "uppercase") return value.toUpperCase();
+                      if (formatName === "lang") return lang;
+                      return value;
+                  }      
+                }    
+            }
+        );`),
+        );
+      });
     });
   });
 });

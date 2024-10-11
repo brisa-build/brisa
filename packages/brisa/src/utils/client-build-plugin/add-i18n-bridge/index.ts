@@ -12,9 +12,15 @@ type I18nBridgeConfig = {
   i18nAdded: boolean;
 };
 
-const i18nKeysLogic = (configText = 'i18nConfig') => `
+const i18nKeysLogic = (configText = 'i18nConfig') => {
+  const formatters =
+    typeof constants.I18N_CONFIG?.interpolation?.format === 'function'
+      ? `interpolation: {...i18nConfig.interpolation, format:${constants.I18N_CONFIG.interpolation?.format.toString()}},`
+      : '';
+
+  return `
   get t() {
-    return translateCore(this.locale, { ...${configText}, messages: this.messages })
+    return translateCore(this.locale, { ...${configText}, messages: this.messages, ${formatters} });
   },
   get messages() { return {[this.locale]: window.i18nMessages } },
   overrideMessages(callback) {
@@ -23,6 +29,7 @@ const i18nKeysLogic = (configText = 'i18nConfig') => `
     return p.then?.(a) ?? a(p);
   }
 `;
+};
 
 export default function addI18nBridge(
   ast: ESTree.Program,
