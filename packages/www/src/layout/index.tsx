@@ -43,7 +43,7 @@ export default function Layout(
     return <PreviewLayout>{children}</PreviewLayout>;
   }
 
-  const image = '/' + Bun.hash(route.pathname) + '.svg';
+  const image = 'https://brisa.build/' + Bun.hash(route.pathname) + '.svg';
 
   return (
     <html lang="en">
