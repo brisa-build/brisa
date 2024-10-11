@@ -14,7 +14,7 @@ type I18nBridgeConfig = {
 
 const i18nKeysLogic = (configText = 'i18nConfig') => {
   const formatters =
-    typeof constants.I18N_CONFIG.interpolation?.format === 'function'
+    typeof constants.I18N_CONFIG?.interpolation?.format === 'function'
       ? `interpolation: {...i18nConfig.interpolation, format:${constants.I18N_CONFIG.interpolation?.format.toString()}},`
       : '';
 
