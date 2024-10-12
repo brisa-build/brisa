@@ -8,7 +8,10 @@ import {
   type Mock,
 } from 'bun:test';
 import path from 'node:path';
-import getWebComponentsList, { getWebComponentListFromFilePaths } from '.';
+import getWebComponentsList, {
+  formatWCSelector,
+  getWebComponentListFromFilePaths,
+} from '.';
 import { getConstants } from '@/constants';
 import { boldLog } from '@/utils/log/log-color';
 
@@ -295,6 +298,43 @@ describe('utils', () => {
         LOG_PREFIX.ERROR,
         '--------------------------',
       ]);
+    });
+  });
+
+  describe('formatWCSelector', () => {
+    it('should return a kebab-case string (Mac/Linux)', () => {
+      const result = formatWCSelector('/custom-counter');
+      expect(result).toEqual('custom-counter');
+    });
+
+    it('should return a kebab-case string (Windows)', () => {
+      const result = formatWCSelector('\\custom-counter');
+      expect(result).toEqual('custom-counter');
+    });
+
+    it('should return a kebab-case string with folder separators (Mac/Linux)', () => {
+      const result = formatWCSelector('/custom/counter');
+      expect(result).toEqual('custom-counter');
+    });
+
+    it('should return a kebab-case string with folder separators (Windows)', () => {
+      const result = formatWCSelector('\\custom\\counter');
+      expect(result).toEqual('custom-counter');
+    });
+
+    it('should return a kebab-case string with folder separators (Mac/Linux)', () => {
+      const result = formatWCSelector('//custom//counter');
+      expect(result).toEqual('custom-counter');
+    });
+
+    it('should return a kebab-case string with repeated folder separators (Windows)', () => {
+      const result = formatWCSelector('\\\\custom\\\\counter');
+      expect(result).toEqual('custom-counter');
+    });
+
+    it('should return a kebab-case string with mixing folder separators', () => {
+      const result = formatWCSelector('\\\\//custom\\\\//counter');
+      expect(result).toEqual('custom-counter');
     });
   });
 
