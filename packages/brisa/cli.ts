@@ -64,8 +64,8 @@ async function main({
   if (!Bun.semver.satisfies(currentBunVersion, '>=' + SUPPORTED_BUN_VERSION)) {
     const isWindows = process.platform === 'win32';
     const command = isWindows
-      ? `iex "& {$(irm https://bun.sh/install.ps1)} -Version ${currentBunVersion}"`
-      : `curl -fsSL https://bun.sh/install | bash -s "bun-v${currentBunVersion}"`;
+      ? `iex "& {$(irm https://bun.sh/install.ps1)} -Version ${SUPPORTED_BUN_VERSION}"`
+      : `curl -fsSL https://bun.sh/install | bash -s "bun-v${SUPPORTED_BUN_VERSION}"`;
 
     console.log(
       yellowLog(
