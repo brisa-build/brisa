@@ -188,6 +188,17 @@ describe('utils', () => {
       ]);
     });
 
+    it('should work with composed fileExtension', () => {
+      const router = fileSystemRouter({
+        dir,
+        fileExtensions: ['-us.tsx'],
+      });
+
+      expect(router.routes).toEqual([
+        ['/about', path.join(dir, 'about-us.tsx')],
+      ]);
+    })
+
     it('should resolve only the tsx files', () => {
       const router = fileSystemRouter({
         dir,
