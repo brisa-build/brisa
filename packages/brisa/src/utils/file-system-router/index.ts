@@ -140,9 +140,9 @@ function resolveRoutes({
   for (const file of files) {
     if (file.isDirectory() || isTestFile(file.name, true)) continue;
 
-    const ext = path.extname(file.name);
+    const ext = fileExtensions.find((ext) => file.name.endsWith(ext));
 
-    if (!fileExtensions.includes(ext)) continue;
+    if (!ext) continue;
 
     const filePath = path.resolve(file.parentPath, file.name);
     let route = filePath
