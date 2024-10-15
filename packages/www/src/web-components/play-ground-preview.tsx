@@ -58,6 +58,9 @@ export default async function PlayGroundPreview(
     });
     const codeUrl = URL.createObjectURL(codeBlob);
     const el = (await import(codeUrl)).default;
+
+    if (typeof el !== 'function') return;
+
     const newSelector = `playground-result-${++count}`;
     customElements.define(newSelector, el);
     selector.value = newSelector;

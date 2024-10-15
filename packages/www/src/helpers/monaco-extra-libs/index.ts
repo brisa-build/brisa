@@ -24,14 +24,14 @@ export default function getMonacoEditorExtraLibs() {
     const route = brisaDep.match(pathname);
     const filePath = route.filePath.replace(root, '');
     const fileRaw = fs.readFileSync(route.filePath, 'utf-8');
-    extraLibs += `monaco.languages.typescript.typescriptDefaults.addExtraLib(\`${fileRaw}\`, 'file://${filePath}');`;
+    extraLibs += `monaco.languages.typescript.typescriptDefaults.addExtraLib(${JSON.stringify(fileRaw)}, 'file://${filePath}');`;
   }
 
   for (const [pathname] of cssType.routes) {
     const route = cssType.match(pathname);
     const filePath = route.filePath.replace(root, '');
     const fileRaw = fs.readFileSync(route.filePath, 'utf-8');
-    extraLibs += `monaco.languages.typescript.typescriptDefaults.addExtraLib(\`${fileRaw}\`, 'file://${filePath}');`;
+    extraLibs += `monaco.languages.typescript.typescriptDefaults.addExtraLib(${JSON.stringify(fileRaw)}, 'file://${filePath}');`;
   }
 
   return extraLibs;

@@ -197,7 +197,7 @@ describe('utils', () => {
       expect(router.routes).toEqual([
         ['/about', path.join(dir, 'about-us.tsx')],
       ]);
-    })
+    });
 
     it('should resolve only the tsx files', () => {
       const router = fileSystemRouter({
