@@ -26,6 +26,7 @@ import { RenderInitiator } from '@/public-constants';
 import get404ClientScript from '@/utils/not-found/client-script';
 import escapeHTML from '@/utils/escape-html';
 import { isArrawOfJSXContent } from '@/jsx-runtime';
+import isInPathList from '@/utils/is-in-path-list';
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -657,19 +658,6 @@ function getValueOfComponent(
       }
       return componentFn.error({ error, ...props }, request);
     });
-}
-
-async function isInPathList(pathname: string, request: RequestContext) {
-  const { BUILD_DIR } = getConstants();
-  const listText = fs.existsSync(pathname)
-    ? fs.readFileSync(pathname, 'utf-8')
-    : '';
-
-  if (!listText) return false;
-
-  const route = (request.route?.filePath ?? '').replace(BUILD_DIR, '');
-
-  return new Set(listText.split('\n')).has(route);
 }
 
 function enqueueCSSFiles(controller: Controller, suspenseId?: number) {
