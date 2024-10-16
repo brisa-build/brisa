@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "4.0.0-alpha.25",
-    "brisa": "0.1.2-canary.1",
-    "brisa-tailwindcss": "0.1.2-canary.1",
+    "brisa": "0.1.2-canary.2",
+    "brisa-tailwindcss": "0.1.2-canary.2",
     "postcss": "8.4.47",
     "tailwindcss": "4.0.0-alpha.25"
   },
