@@ -11,8 +11,9 @@ import resolveImportSync from '@/utils/resolve-import-sync';
 import type { WebComponentIntegrations } from '@/types';
 
 const CONTEXT_PROVIDER = 'context-provider';
-const separator = path.sep === '\\' ? '\\\\' : '/';
-const ALLOWED_SEPARATORS_REGEX = new RegExp(`^${separator}(_)?`, 'g');
+const SEPS = '\\\\|/';
+const SEPS_REGEX = new RegExp(`(${SEPS})+`, 'g');
+const PREFIX_REGEX = new RegExp(`^(${SEPS})+(_)?`, 'g');
 const EXTENSION_REGEX = /\.[^/.]+$/;
 
 export default async function getWebComponentsList(
@@ -101,9 +102,7 @@ export function routesEntriesToWebComponents(
           key.includes(NATIVE_FOLDER),
       )
       .map(([key, path]) => {
-        const selector = key
-          .replace(ALLOWED_SEPARATORS_REGEX, '')
-          .replaceAll('/', '-');
+        const selector = formatWCSelector(key);
 
         if (selector === CONTEXT_PROVIDER) {
           logError({
@@ -142,4 +141,8 @@ export function routesEntriesToWebComponents(
         return [selector, path];
       }),
   );
+}
+
+export function formatWCSelector(key: string): string {
+  return key.replace(PREFIX_REGEX, '').replace(SEPS_REGEX, '-').toLowerCase();
 }

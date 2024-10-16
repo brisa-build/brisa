@@ -278,7 +278,7 @@ describe('utils', () => {
     ${info}
     ${info}Route                            | JS server | JS client (gz)  
     ${info}----------------------------------------------------------------
-    ${info}ƒ /middleware                    | 828 B     |
+    ${info}ƒ /middleware                    | 818 B     |
     ${info}Δ /layout                        | 604 B     |
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
@@ -290,7 +290,7 @@ describe('utils', () => {
     ${info}λ /pages/user/[username]         | 437 B     | ${greenLog('0 B')}
     ${info}λ /pages/_404                    | 822 B     | ${greenLog('5 kB')}
     ${info}λ /pages/_500                    | 828 B     | ${greenLog('5 kB')}
-    ${info}λ /api/example                   | 283 B     |
+    ${info}λ /api/example                   | 281 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout
@@ -536,7 +536,7 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 444 B     | ${greenLog('187 B')}  
+    ${info}λ /pages/index  | 444 B     | ${greenLog('186 B')}  
     ${info}Δ /layout       | 790 B     |
     ${info}
     ${info}λ Server entry-points
