@@ -16,7 +16,7 @@ type ServerComponentPluginOptions = {
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const JSX_NAME = new Set(['jsx', 'jsxDEV', 'jsxs']);
 const SERVER_OUPUTS = new Set(['bun', 'node']);
-const WEB_COMPONENT_REGEX = /.*\/web-components\/.*/;
+const WEB_COMPONENT_REGEX = /.*[\/\\]web-components[\/\\].*/;
 const FN_EXPRESSIONS = new Set([
   'ArrowFunctionExpression',
   'FunctionExpression',
