@@ -61,6 +61,26 @@ describe('utils', () => {
       expect(out.dependencies).toBeEmpty();
     });
 
+    it('should not add the action if is a web-component with Window separator', () => {
+      const wcPath = `${FIXTURES}\\web-components\\web-component.tsx`;
+      const code = `
+        export default function WebComponent() {
+          return <button onClick={() => console.log('clicked')}>click</button>;
+        }
+      `;
+      const allWebComponents = {
+        'web-component': wcPath,
+      };
+
+      const out = serverComponentPlugin(code, {
+        allWebComponents,
+        fileID: 'a1',
+        path: wcPath,
+      });
+      expect(out.hasActions).toBeFalse();
+      expect(out.dependencies).toBeEmpty();
+    });
+
     it('should wrap the web-component to SSR wrapper when selectorToWrapDeclarativeShadowDom is true', () => {
       const code = `
         export default function WebComponent() {
