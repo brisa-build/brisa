@@ -185,8 +185,8 @@ export default function Homepage() {
             <h2>🌐 Full i18n support</h2>
             <p>
               Brisa has built-in internationalization support that allows you to{' '}
-              <b>translate</b> your pages and <b>routes</b>, while loading
-              only the used translations.
+              <b>translate</b> your pages and <b>routes</b>, while loading only
+              the used translations.
             </p>
             <a
               class="cta"
@@ -208,9 +208,10 @@ export default function Homepage() {
           <div class="info">
             <h2>📱 Multi-platform</h2>
             <p>
-              Brisa is fully integrated with Tauri. This means that with a small config change,
-              you can build web applications that can be easily converted to native applications
-              for <b>Android</b>, <b>iOS</b>, and <b>desktop</b>.
+              Brisa is fully integrated with Tauri. This means that with a small
+              config change, you can build web applications that can be easily
+              converted to native applications for <b>Android</b>, <b>iOS</b>,
+              and <b>desktop</b>.
             </p>
             <img
               width="500"

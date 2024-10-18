@@ -31,7 +31,7 @@ export default function renderAttributes({
   componentID,
 }: {
   elementProps: Props;
-  request: RequestContext;
+  request: RequestContext & { _actionIndex?: number };
   type: string;
   componentProps?: Props;
   componentID?: string;
@@ -50,7 +50,7 @@ export default function renderAttributes({
     if (keys.has(key)) continue;
 
     // Add the key to the set to avoid duplicates
-    keys.add(key);
+    if (value !== undefined) keys.add(key);
 
     if (
       PROPS_TO_IGNORE.has(prop) ||
@@ -167,9 +167,17 @@ export default function renderAttributes({
 
   const hasActionRegistered = keys.has('data-action');
 
-  // Add component ID (cid) to the element if it has an action
+  // Add component ID (cid) and "key" to the element if it has an action
   if (hasActionRegistered && componentID) {
+    if (!request._actionIndex) request._actionIndex = 0;
     attributes += ` data-cid="${componentID}"`;
+
+    // This is necessary to unregister actions + register new ones
+    // after navigation diffing (the componentID change in every render)
+    // https://github.com/brisa-build/brisa/issues/558
+    if (!keys.has('key')) {
+      attributes += ` key="${componentID}:${++request._actionIndex}"`;
+    }
   }
 
   // Add external action ids into data-actions attribute.
