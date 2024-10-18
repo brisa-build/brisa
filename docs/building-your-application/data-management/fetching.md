@@ -67,6 +67,33 @@ return <List />;
 
 And the HTML is resolved via streaming.
 
+Async generators can make sense if used in conjunction with database queries and streaming the results, example with SQLite:
+
+```tsx
+import { Database } from "bun:sqlite";
+
+const db = new Database("db.sqlite");
+
+export default function MovieList() {
+  return (
+    <ul>
+      <MovieItems />
+    </ul>
+  );
+}
+
+// Streaming HTML from SQLite query
+async function* MovieItems() {
+  for (const movie of db.query("SELECT title, year FROM movies")) {
+    yield (
+      <li>
+        {movie.title} ({movie.year})
+      </li>
+    );
+  }
+}
+```
+
 ## Share server-server data between components
 
 To share data across all parts of the server ([`middleware`](/building-your-application/routing/middleware), [`layout`](/building-your-application/routing/pages-and-layouts#layout), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages), [`Head`](/building-your-application/routing/pages-and-layouts#head), [`suspense` phase](/building-your-application/routing/suspense-and-streaming), etc) there are two ways:
