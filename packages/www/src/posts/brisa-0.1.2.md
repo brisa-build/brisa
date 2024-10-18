@@ -1,6 +1,6 @@
 ---
 title: "Brisa 0.1.2"
-created: 18/08/2024
+created: 10/18/2024
 description: "Brisa release notes for version 0.1.2"
 author: Aral Roca
 author_site: https://x.com/aralroca
