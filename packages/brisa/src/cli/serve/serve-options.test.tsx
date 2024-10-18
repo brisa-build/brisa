@@ -16,6 +16,7 @@ import type { ServerWebSocket } from 'bun';
 import type { RequestContext } from '@/types';
 import { RenderInitiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
+import { getServeOptions } from './serve-options';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -56,6 +57,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
       CONFIG: {
         basePath,
+        idleTimeout: 30,
       },
     };
   });
@@ -1806,5 +1808,10 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
       ),
     ).toBeTrue();
+  });
+
+  it('should return idleTimeout as 30 ', async () => {
+    const serverOptions = await getServeOptions();
+    expect(serverOptions!.idleTimeout).toBe(30);
   });
 });

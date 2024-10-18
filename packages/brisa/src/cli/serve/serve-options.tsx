@@ -81,6 +81,7 @@ export async function getServeOptions() {
   return {
     port: PORT,
     development: !IS_PRODUCTION,
+    idleTimeout: CONFIG.idleTimeout,
     async fetch(req: Request, server) {
       const requestId = crypto.randomUUID();
       const attachedData = wsModule?.attach

@@ -1271,6 +1271,27 @@ export type Configuration = {
    * - [How to use `filterRuntimeDevErrors`](https://brisa.build/building-your-application/configuring/filter-runtime-dev-errors)
    */
   filterRuntimeDevErrors?(error: ErrorEvent): boolean;
+
+  /**
+   * Description:
+   *
+   * The `idleTimeout` config property is used to set the timeout in seconds for the idle server.
+   *
+   * Example:
+   *
+   * ```ts
+   * idleTimeout: 10 // 10 seconds
+   * ```
+   *
+   * A connection is idling if there is no data sent or received.
+   *
+   * The default value is 30 seconds.
+   *
+   * Docs:
+   *
+   * - [How to use `idleTimeout`](https://brisa.build/building-your-application/configuring/idle-timeout)
+   */
+  idleTimeout?: number;
 };
 
 export type Integration = {
