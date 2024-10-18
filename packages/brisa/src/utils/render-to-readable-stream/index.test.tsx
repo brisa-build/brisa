@@ -3353,7 +3353,7 @@ describe('utils', () => {
           `<!--o:0-->
             <!--o:1-->
               <!--o:2-->
-                <button data-action-onclick="a1_1" data-action data-cid="2" data-actions='[[["onClickAction","a1_1","0"]]]'>
+                <button data-action-onclick="a1_1" data-action data-cid="2" key="2:1" data-actions='[[["onClickAction","a1_1","0"]]]'>
                 TEST
                </button>
               <!--c:2-->
@@ -3569,7 +3569,7 @@ describe('utils', () => {
       const result = await Bun.readableStreamToText(stream);
 
       expect(result).toBe(
-        `<!--o:0--><div data-action data-cid="0">test</div><!--c:0-->`,
+        `<!--o:0--><div data-action data-cid="0" key="0:1">test</div><!--c:0-->`,
       );
     });
 
@@ -3616,15 +3616,15 @@ describe('utils', () => {
         normalizeHTML(
           `
             <!--o:0-->
-              <div data-action data-cid="0">bar</div>
+              <div data-action data-cid="0" key="0:1">bar</div>
             <!--c:0-->
             
             <!--o:1-->
-              <div data-action data-cid="1">baz</div>
+              <div data-action data-cid="1" key="1:2">baz</div>
             <!--c:1-->
 
             <!--o:2-->
-              <div data-action data-cid="2">foo</div>
+              <div data-action data-cid="2" key="2:3">foo</div>
             <!--c:2-->`,
         ),
       );
@@ -3684,7 +3684,11 @@ describe('utils', () => {
       const WebComponent = () => <div>test</div>;
 
       function ServerComponent({}, { css }: RequestContext) {
-        css`body{background-color:red;}`;
+        css`
+          body {
+            background-color: red;
+          }
+        `;
         return <div>Server component</div>;
       }
 
@@ -3705,11 +3709,11 @@ describe('utils', () => {
             <head>
             </head>
             <body>
-              <style>body{background-color:red;}</style>
+              <style>body {background-color: red;}</style>
               <div>Server component</div>
               <test>
                 <template shadowrootmode="open">
-                  <style>body{background-color:red;}</style>
+                  <style>body {background-color: red;}</style>
                   <div>test</div>
                 </template>
               </test>

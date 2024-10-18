@@ -1491,7 +1491,9 @@ describe('utils', () => {
       expect(attributes).toBe(' basepath="/base"');
     });
 
-    it('should add data-cid when the data-action is present as attribute and data-cid as props', () => {
+    // Actions elements should always have a key to unregister / register new actions when navigating in SPA
+    // https://github.com/brisa-build/brisa/issues/558
+    it('should add "data-cid" and "key" when the data-action is present as attribute and data-cid as props', () => {
       const request = extendRequestContext({
         originalRequest: new Request('https://example.com'),
       });
@@ -1503,7 +1505,22 @@ describe('utils', () => {
         componentID: '123',
       });
 
-      expect(attributes).toBe(` data-action data-cid="123"`);
+      expect(attributes).toBe(` data-action data-cid="123" key="123:1"`);
+    });
+
+    it('should keep the existing "key" when the data-action is present as attribute and data-cid as props', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request('https://example.com'),
+      });
+
+      const attributes = renderAttributes({
+        elementProps: { 'data-action': true, key: 'some-key' },
+        request,
+        type: 'div',
+        componentID: '123',
+      });
+
+      expect(attributes).toBe(` data-action key="some-key" data-cid="123"`);
     });
 
     it('should NOT add data-cid when the data-action is NOT present as attribute', () => {
