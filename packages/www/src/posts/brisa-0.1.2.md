@@ -30,6 +30,37 @@ export default {
 
 [Learn more about the `idleTimeout` property](/building-your-application/configuring/idle-timeout).
 
+## Stream SQLite queries
+
+Async generators can now be used in conjunction with SQLite queries to stream HTML content. This is useful when you want to render a large amount of data without blocking the main thread and the user can start seeing the content as it is being fetched.
+
+```tsx
+import { Database } from "bun:sqlite";
+
+const db = new Database("db.sqlite");
+
+export default function MovieList() {
+  return (
+    <ul>
+      <MovieItems />
+    </ul>
+  );
+}
+
+// Streaming HTML from SQLite query
+async function* MovieItems() {
+  for (const movie of db.query("SELECT title, year FROM movies")) {
+    yield (
+      <li>
+        {movie.title} ({movie.year})
+      </li>
+    );
+  }
+}
+```
+
+- [Learn more about async component generators](/building-your-application/data-management/fetching#async-generators).
+
 ## `i18n` fixes and improvements
 
 In this version, it is possible to use formatters through `format` inside Web Components. This property captures the interpolations to format them as you like, for example:
