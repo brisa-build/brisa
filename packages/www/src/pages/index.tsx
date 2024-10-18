@@ -208,8 +208,8 @@ export default function Homepage() {
           <div class="info">
             <h2>📱 Multi-platform</h2>
             <p>
-              Brisa can also be used with Tauri, which allows you to build web
-              applications that can be easily converted to native applications
+              Brisa is fully integrated with Tauri. This means that with a small config change,
+              you can build web applications that can be easily converted to native applications
               for <b>Android</b>, <b>iOS</b>, and <b>desktop</b>.
             </p>
             <img
