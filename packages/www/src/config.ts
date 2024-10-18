@@ -214,6 +214,10 @@ export default {
               link: '/building-your-application/configuring/external',
             },
             {
+              text: 'Idle timeout',
+              link: '/building-your-application/configuring/idle-timeout',
+            },
+            {
               text: 'Static pages',
               link: '/building-your-application/configuring/static-pages',
             },

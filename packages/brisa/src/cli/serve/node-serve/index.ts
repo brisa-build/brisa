@@ -8,7 +8,8 @@ import { logError } from '@/utils/log/log-build';
 export default async function serve(
   { port = constants.PORT } = { port: constants.PORT },
 ) {
-  const tlsOptions = getConstants().CONFIG?.tls as NodeTLSOptions;
+  const config = getConstants().CONFIG;
+  const tlsOptions = config?.tls as NodeTLSOptions;
   const server = tlsOptions
     ? https.createServer(tlsOptions, handler)
     : http.createServer(handler);
@@ -19,6 +20,7 @@ export default async function serve(
     });
   }
 
+  server.timeout = config?.idleTimeout || 30;
   server.listen(port);
   server.on('error', (error) => {
     const protocol = tlsOptions ? 'https' : 'http';

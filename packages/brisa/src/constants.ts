@@ -68,6 +68,7 @@ const defaultConfig = {
   output: 'bun',
   clustering: IS_PRODUCTION && OS_CAN_LOAD_BALANCE,
   integrations: [],
+  idleTimeout: 30,
 };
 
 let constants = {

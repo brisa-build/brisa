@@ -80,6 +80,12 @@ const config: Configuration = {
    * Default: () => true (no errors are filtered)
    */
   filterRuntimeDevErrors?(error: ErrorEvent): boolean;
+
+  /**
+   * `idleTimeout` configuration
+   * Default: 30 (idle timeout is set to 30 seconds)
+   */
+  idleTimeout: 30,
 };
 
 // Export the configuration as the default export
@@ -145,3 +151,7 @@ The `integrations` option allows you to integrate third-party libraries with the
 ## [`filterRuntimeDevErrors`](/building-your-application/configuring/filter-runtime-dev-errors)
 
 The `filterRuntimeDevErrors` option allows you to filter runtime development errors. This is useful for filtering out errors that are not relevant to your application.
+
+## [`idleTimeout`](/building-your-application/configuring/idle-timeout)
+
+The `idleTimeout` option allows you to set the maximum amount of time a connection is allowed to be idle before the server closes it. This is useful for managing idle connections and preventing resource leaks.
