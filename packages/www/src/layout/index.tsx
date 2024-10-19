@@ -1,36 +1,36 @@
-import Nav from '@/components/navigation';
-import Footer from '@/components/footer';
-import { dangerHTML, type RequestContext } from 'brisa';
+import Nav from "@/components/navigation";
+import Footer from "@/components/footer";
+import { dangerHTML, type RequestContext } from "brisa";
 
-import '@/styles/style.css';
-import '@/styles/nav.css';
-import '@/styles/content.css';
-import '@/styles/footer.css';
+import "@/styles/style.css";
+import "@/styles/nav.css";
+import "@/styles/content.css";
+import "@/styles/footer.css";
 
 const meta = {
-  title: 'Brisa - The Web Platform Framework',
+  title: "Brisa - The Web Platform Framework",
   description:
-    'Brisa is a web platform framework that provides a refreshing development experience.',
+    "Brisa is a web platform framework that provides a refreshing development experience.",
   keywords:
-    'web, framework, brisa, web platform, web development, static site generator, signals, jsx, typescript, server side rendering, ssr, web components',
-  url: 'https://brisa.build/',
+    "web, framework, brisa, web platform, web development, static site generator, signals, jsx, typescript, server side rendering, ssr, web components",
+  url: "https://brisa.build/",
 };
 
 const ldjson = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Brisa',
-  url: 'https://brisa.build/',
-  logo: 'https://brisa.build/brisa.svg',
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Brisa",
+  url: "https://brisa.build/",
+  logo: "https://brisa.build/brisa.svg",
 };
 
 const speculationrules = {
   prerender: [
     {
       where: {
-        href_matches: '/*',
+        href_matches: "/*",
       },
-      eagerness: 'moderate',
+      eagerness: "moderate",
     },
   ],
 };
@@ -39,11 +39,11 @@ export default function Layout(
   { children }: { children: JSX.Element },
   { route }: RequestContext,
 ) {
-  if (route.pathname === '/playground/preview') {
+  if (route.pathname === "/playground/preview") {
     return <PreviewLayout>{children}</PreviewLayout>;
   }
 
-  const image = 'https://brisa.build/' + Bun.hash(route.pathname) + '.svg';
+  const image = "https://brisa.build/" + Bun.hash(route.pathname) + ".png";
 
   return (
     <html lang="en">
@@ -110,7 +110,7 @@ export default function Layout(
           <Nav />
         </header>
         {children}
-        {route.pathname !== '/playground' && <Footer />}
+        {route.pathname !== "/playground" && <Footer />}
       </body>
     </html>
   );
@@ -130,7 +130,7 @@ function PreviewLayout({ children }: { children: JSX.Element }) {
         `)}
         </script>
       </head>
-      <body style={{ backgroundColor: 'white' }}>{children}</body>
+      <body style={{ backgroundColor: "white" }}>{children}</body>
     </html>
   );
 }
@@ -138,14 +138,14 @@ function PreviewLayout({ children }: { children: JSX.Element }) {
 function initTheme() {
   if (document.body.classList.length) return;
 
-  const theme = localStorage.getItem('theme');
+  const theme = localStorage.getItem("theme");
 
   if (theme) {
     document.body.classList.add(theme);
     return;
   }
 
-  if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.body.classList.add('dark');
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    document.body.classList.add("dark");
   }
 }
