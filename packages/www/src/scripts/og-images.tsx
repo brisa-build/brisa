@@ -2,6 +2,7 @@ import { fileSystemRouter, renderToString } from 'brisa/server';
 import path from 'node:path';
 import fs from 'node:fs';
 import jsdom from 'jsdom';
+import sharp from 'sharp';
 
 const dir = path.join(
   import.meta.dirname,
@@ -68,13 +69,20 @@ for (const [route, filePath] of routes) {
     </svg>,
   );
 
-  fs.writeFileSync(path.join(dir, `${hash}.svg`), svgHTML);
+  const svgBuffer = Buffer.from(svgHTML);
+
+  await sharp(svgBuffer)
+    .png()
+    .toFile(path.join(dir, `${hash}.png`));
 }
 
 function splitTitleToLines({
   title,
   maxLineLength,
-}: { title: string; maxLineLength: number }) {
+}: {
+  title: string;
+  maxLineLength: number;
+}) {
   const words = title.split(' ');
   const lines = [];
   let currentLine = '';
