@@ -74,6 +74,9 @@ export function Head({}, { route, store }: RequestContext) {
   const title = `${post.data.title} - Brisa Blog`;
   const description = post.data.description;
   const keywords = post.data.keywords;
+  const image = post.data.cover_image
+    ? 'https://brisa.build' + post.data.cover_image
+    : undefined;
 
   store.set('post', post);
 
@@ -85,12 +88,12 @@ export function Head({}, { route, store }: RequestContext) {
       <meta id="twitter:title" property="twitter:title" content={title} />
       {keywords && <meta id="keywords" name="keywords" content={keywords} />}
       <meta id="meta:description" name="description" content={description} />
-      <meta id="og:image" property="og:image" content={post.data.cover_image} />
-      <meta
-        id="twitter:image"
-        property="twitter:image"
-        content={post.data.cover_image}
-      />
+      {image && (
+        <>
+          <meta id="og:image" property="og:image" content={image} />
+          <meta id="twitter:image" property="twitter:image" content={image} />
+        </>
+      )}
       <meta
         id="og:description"
         property="og:description"
