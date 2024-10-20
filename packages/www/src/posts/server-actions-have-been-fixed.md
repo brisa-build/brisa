@@ -5,7 +5,7 @@ description: "Server Actions emerged as an idea to reduce client code and simpli
 author: Aral Roca
 author_site: https://x.com/aralroca
 tags: javascript, experimental, brisa
-cover_image: /images/blog-images/cover_image.webp
+cover_image: /images/blog-images/cover_image.jpeg
 cover_color: "#1D3D71"
 ---
 
