@@ -1,9 +1,10 @@
 ---
-title: 'Introducing Brisa: Full-stack Web Platform Framework'
+title: "Introducing Brisa: Full-stack Web Platform Framework"
 created: 10/05/2024
-description: 'Brisa is a full-stack framework that allows you to mix Server Components + Server Actions with Web Components + Signals, both wrote in JSX.'
+description: "Brisa is a full-stack framework that allows you to mix Server Components + Server Actions with Web Components + Signals, both wrote in JSX."
 author: Aral Roca
 author_site: https://x.com/aralroca
+cover_image: /images/blog-images/new_framework.png
 ---
 
 Today I’m excited to publicly share Brisa: A full-stack framework that allows you to mix [Server Components](https://brisa.build/building-your-application/components-details/server-components) + [Server Actions](https://brisa.build/building-your-application/data-management/server-actions) with [Web Components](https://brisa.build/building-your-application/components-details/web-components) + [Signals](https://brisa.build/building-your-application/components-details/reactivity), both written in JSX. Including:
@@ -24,36 +25,67 @@ One goal of Brisa is to end up coupling as much as possible to the Web Platform,
 
 These days in X (formelly Twitter), there has been a lot of discussion that Web Components take more code and worse performance than frameworks, let's believe that in Brisa we have broken this barrier. If you decide to use Web Components in Brisa, it comes with the Brisa wrapper which is 3 KB including signals (Preact is 3kb, but if you need signals you have to add more packages). And in Brisa instead of JSX-runtime for web components we use JSX-buildtime, to make optimizations to make your Web Components very small.
 
-
 Example of a Counter Web Component in Brisa:
 
 ```tsx
-import type { WebContext } from 'brisa';
+import type { WebContext } from "brisa";
 
-export default function Counter({ name }: { name: string }, { state }: WebContext) {
+export default function Counter(
+  { name }: { name: string },
+  { state }: WebContext,
+) {
   const count = state(0);
 
   return (
     <p>
       <button onClick={() => count.value++}>+</button>
-      <span> {name} {count.value} </span>
+      <span>
+        {" "}
+        {name} {count.value}{" "}
+      </span>
       <button onClick={() => count.value--}>-</button>
     </p>
-  )
+  );
 }
 ```
 
 And this is the compiled code **without minify**:
 
 ```ts
-import {brisaElement} from "brisa/client";
-function Counter({name}, {state}) {
+import { brisaElement } from "brisa/client";
+function Counter({ name }, { state }) {
   const count = state(0);
-  return ["p", {}, [["button", {
-    onClick: () => count.value++
-  }, "+"], ["span", {}, [[null, {}, " "], [null, {}, () => name.value], [null, {}, " "], [null, {}, () => count.value], [null, {}, " "]]], ["button", {
-    onClick: () => count.value--
-  }, "-"]]];
+  return [
+    "p",
+    {},
+    [
+      [
+        "button",
+        {
+          onClick: () => count.value++,
+        },
+        "+",
+      ],
+      [
+        "span",
+        {},
+        [
+          [null, {}, " "],
+          [null, {}, () => name.value],
+          [null, {}, " "],
+          [null, {}, () => count.value],
+          [null, {}, " "],
+        ],
+      ],
+      [
+        "button",
+        {
+          onClick: () => count.value--,
+        },
+        "-",
+      ],
+    ],
+  ];
 }
 export default brisaElement(Counter, ["name"]);
 ```
@@ -77,7 +109,6 @@ Brisa is a community-driven project. We are committed to building a diverse and 
 The first months after 0.1 we will be fixing issues and collecting suggestions and feature ideas to finish building the 1.0 route-map together with the community. For now we have some clear ideas: more runtime-agnostic (Deno), more optimizations, CSS Modules. But we prefer to listen to the community and evolve well.
 
 To help you contribute, we will be giving away free Brisa T-shirts to contributors. Until when? Until the current stock runs out. Take advantage of October to get 2 t-shirts by contributing to Brisa, the Hacktoberfest one and the Brisa one.
-
 
 ## Long-Term Sustainability
 

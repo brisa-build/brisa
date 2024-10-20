@@ -7,10 +7,24 @@ import { formatDate } from '@/helpers/date';
 
 export default function BlogContent({}, { store }: RequestContext) {
   const post = store.get('post');
-  const { title, created, author, author_site } = post?.data ?? {};
+  const { title, created, author, author_site, cover_image, cover_color } =
+    post?.data ?? {};
 
   return (
     <main class="markdown-content" style={{ margin: '0 auto' }}>
+      {cover_image && (
+        <div
+          key={cover_image}
+          style={{ '--cover-color': cover_color }}
+          class="cover-image"
+        >
+          <img
+            loading="eager"
+            src={cover_image}
+            style={{ aspectRatio: '960/432' }}
+          />
+        </div>
+      )}
       <hgroup>
         <h1
           style={{
@@ -71,6 +85,12 @@ export function Head({}, { route, store }: RequestContext) {
       <meta id="twitter:title" property="twitter:title" content={title} />
       {keywords && <meta id="keywords" name="keywords" content={keywords} />}
       <meta id="meta:description" name="description" content={description} />
+      <meta id="og:image" property="og:image" content={post.data.cover_image} />
+      <meta
+        id="twitter:image"
+        property="twitter:image"
+        content={post.data.cover_image}
+      />
       <meta
         id="og:description"
         property="og:description"
