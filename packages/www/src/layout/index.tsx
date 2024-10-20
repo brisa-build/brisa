@@ -49,7 +49,9 @@ export default function Layout(
     <html lang="en">
       <head>
         <title id="title">{meta.title}</title>
-        <link rel="icon" href="/brisa.svg" />
+        <link rel="icon" href="/brisa.ico" sizes="32x32" />
+        <link rel="icon" href="/brisa.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/brisa.png"></link>
         <link rel="manifest" href="/manifest.json" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#ccfbf1" />
