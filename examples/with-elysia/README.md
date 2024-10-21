@@ -1,7 +1,7 @@
-# with-sqlite-with-server-action
+# with-elysia
 
-Example with SQLite + Server Action in Brisa.
+Example of API Routes with Elysia.js
 
 ```bash
-bun create brisa --example with-sqlite-with-server-action
+bun create brisa --example with-elysia
 ```
