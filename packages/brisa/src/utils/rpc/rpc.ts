@@ -100,7 +100,11 @@ async function rpc(
 function spaNavigation(event: any) {
   const renderMode =
     $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
-  const sameURL = event.destination.url === location.href;
+
+  if (event.destination.url === location.href) {
+    $window.scrollTo(0, 0);
+    event.preventDefault();
+  }
 
   // Clean render mode from imperative navigate API
   $window._xm = null;
@@ -110,17 +114,10 @@ function spaNavigation(event: any) {
     !event.hashChange &&
     event.downloadRequest === null &&
     event.canIntercept &&
-    event.navigationType !== 'replace' &&
-    !sameURL
+    event.navigationType !== 'replace'
   ) {
     event.intercept({
       async handler() {
-        // Prevent navigation if the destination URL is the same as the current location
-        if (sameURL) {
-          $window.scrollTo(0, 0);
-          return;
-        }
-
         // We do not validate res.ok because we also want to render 404 or 500 pages.
         const res = await fetch(
           event.destination.url,
