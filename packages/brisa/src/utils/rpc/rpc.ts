@@ -100,6 +100,7 @@ async function rpc(
 function spaNavigation(event: any) {
   const renderMode =
     $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
+  const sameURL = event.destination.url === location.href
 
   // Clean render mode from imperative navigate API
   $window._xm = null;
@@ -109,12 +110,13 @@ function spaNavigation(event: any) {
     !event.hashChange &&
     event.downloadRequest === null &&
     event.canIntercept &&
-    event.navigationType !== 'replace'
+    event.navigationType !== 'replace' &&
+    !sameURL
   ) {
     event.intercept({
       async handler() {
         // Prevent navigation if the destination URL is the same as the current location
-        if (event.destination.url === location.href) {
+        if (sameURL) {
           $window.scrollTo(0, 0);
           return;
         }
