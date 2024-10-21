@@ -398,6 +398,7 @@ describe('utils', () => {
     ) {
       if (location.href === url) {
         mockPreventDefault();
+        return;
       }
       const origin = `http://localhost`;
       const canIntercept = new URL(url).origin === origin;
@@ -445,6 +446,7 @@ describe('utils', () => {
       location.href = 'http://localhost/some-page';
       await simulateSPANavigation('http://localhost/some-page');
       expect(mockPreventDefault).toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it('should not work SPA navigation with different origin', async () => {
