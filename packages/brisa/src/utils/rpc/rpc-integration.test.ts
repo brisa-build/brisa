@@ -437,6 +437,11 @@ describe('utils', () => {
       window._xm = null;
     });
 
+    it('should not full reload when the destination URL is the same as the current location', async () => {
+      await simulateSPANavigation('http://localhost');
+      expect(mockNavigationIntercept).toHaveBeenCalled();
+    });
+
     it('should not work SPA navigation with different origin', async () => {
       await simulateSPANavigation('http://test.com/some-page');
       expect(mockNavigationIntercept).not.toHaveBeenCalled();

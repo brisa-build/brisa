@@ -104,12 +104,6 @@ function spaNavigation(event: any) {
   // Clean render mode from imperative navigate API
   $window._xm = null;
 
-  // Prevent navigation if the destination URL is the same as the current location
-  if (event.destination.url === location.href) {
-    $window.scrollTo(0, 0);
-    return;
-  }
-
   if (
     renderMode !== 'native' &&
     !event.hashChange &&
@@ -119,6 +113,12 @@ function spaNavigation(event: any) {
   ) {
     event.intercept({
       async handler() {
+        // Prevent navigation if the destination URL is the same as the current location
+        if (event.destination.url === location.href) {
+          $window.scrollTo(0, 0);
+          return;
+        }
+
         // We do not validate res.ok because we also want to render 404 or 500 pages.
         const res = await fetch(
           event.destination.url,
