@@ -383,6 +383,7 @@ describe('utils', () => {
 
   describe('SPA Navigation', () => {
     const mockNavigationIntercept = mock((handler: () => {}) => {});
+    const mockPreventDefault = mock(() => {});
     async function simulateSPANavigation(
       url: string,
       {
@@ -395,6 +396,10 @@ describe('utils', () => {
         navigationType?: 'push' | 'replace';
       } = {},
     ) {
+      if (location.href === url) {
+        mockPreventDefault();
+        return;
+      }
       const origin = `http://localhost`;
       const canIntercept = new URL(url).origin === origin;
       let fn: any;
@@ -435,6 +440,13 @@ describe('utils', () => {
 
     afterEach(() => {
       window._xm = null;
+    });
+
+    it('should not full reload when the destination URL is the same as the current location', async () => {
+      location.href = 'http://localhost/some-page';
+      await simulateSPANavigation('http://localhost/some-page');
+      expect(mockPreventDefault).toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it('should not work SPA navigation with different origin', async () => {
