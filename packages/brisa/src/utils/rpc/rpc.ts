@@ -104,6 +104,12 @@ function spaNavigation(event: any) {
   // Clean render mode from imperative navigate API
   $window._xm = null;
 
+  // Prevent navigation if the destination URL is the same as the current location
+  if (event.destination.url === location.href) {
+    $window.scrollTo(0, 0);
+    return;
+  }
+
   if (
     renderMode !== 'native' &&
     !event.hashChange &&
