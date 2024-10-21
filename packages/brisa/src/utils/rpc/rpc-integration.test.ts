@@ -398,7 +398,7 @@ describe('utils', () => {
     ) {
       if (location.href === url) {
         mockPreventDefault();
-      };
+      }
       const origin = `http://localhost`;
       const canIntercept = new URL(url).origin === origin;
       let fn: any;
