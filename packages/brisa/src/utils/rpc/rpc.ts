@@ -100,7 +100,7 @@ async function rpc(
 function spaNavigation(event: any) {
   const renderMode =
     $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
-  const sameURL = event.destination.url === location.href
+  const sameURL = event.destination.url === location.href;
 
   // Clean render mode from imperative navigate API
   $window._xm = null;
