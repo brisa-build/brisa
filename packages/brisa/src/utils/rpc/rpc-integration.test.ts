@@ -390,7 +390,7 @@ describe('utils', () => {
         downloadRequest = null,
         hashChange = false,
         navigationType = 'push',
-        locationHref = null
+        locationHref = null,
       }: {
         downloadRequest?: string | null;
         hashChange?: boolean;
