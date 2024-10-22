@@ -101,6 +101,12 @@ function spaNavigation(event: any) {
   const renderMode =
     $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
 
+  // Prevent navigation if the destination URL is the same as the current location
+  if (event.destination.url === location.href) {
+    $window.scrollTo(0, 0);
+    event.preventDefault();
+  }
+
   // Clean render mode from imperative navigate API
   $window._xm = null;
 
