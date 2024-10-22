@@ -882,6 +882,64 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(json).toEqual({ hello: 'world' });
   });
 
+  it('should be possible to fetch an api route GET from root', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: undefined,
+    };
+
+    const response = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/api`),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json).toEqual({ hello: 'world' });
+  });
+
+  it('should be possible to fetch an api route POST from root', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: true,
+      I18N_CONFIG: undefined,
+    };
+
+    const response = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/api`, {
+        method: 'POST',
+        body: JSON.stringify({ hello: 'world' }),
+      }),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json).toEqual({ hello: 'world' });
+  });
+
+  it('should be possible to fetch an api route GET from root (with i18n)', async () => {
+    const response = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/es/api`),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json).toEqual({ hello: 'world' });
+  });
+
+  it('should be possible to fetch an api route POST from root (with i18n)', async () => {
+    const response = await testRequest(
+      new Request(`http:///localhost:1234${basePath}/es/api`, {
+        method: 'POST',
+        body: JSON.stringify({ hello: 'world' }),
+      }),
+    );
+    const json = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(json).toEqual({ hello: 'world' });
+  });
+
   it('should not be possible to fetch an api route GET without the correct basePath', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,

@@ -246,9 +246,9 @@ export async function getServeOptions() {
   ) {
     const locale = req.i18n.locale;
     const url = new URL(req.finalURL);
-    const pathname = url.pathname;
+    const firstPathnamePart = url.pathname.split('/')[locale ? 2 : 1];
     const { route, isReservedPathname } = pagesRouter.match(req);
-    const isApi = pathname.startsWith(locale ? `/${locale}/api/` : '/api/');
+    const isApi = firstPathnamePart === 'api';
     const api = isApi ? rootRouter.match(req) : null;
 
     req.route = (isApi ? api?.route : route) as MatchedBrisaRoute;
