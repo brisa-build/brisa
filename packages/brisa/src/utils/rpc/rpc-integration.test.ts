@@ -383,29 +383,27 @@ describe('utils', () => {
 
   describe('SPA Navigation', () => {
     const mockNavigationIntercept = mock((handler: () => {}) => {});
-    const mockPreventDefault = mock(() => {});
+    const preventDefault = mock(() => {});
     async function simulateSPANavigation(
       url: string,
       {
         downloadRequest = null,
         hashChange = false,
         navigationType = 'push',
+        locationHref = null
       }: {
         downloadRequest?: string | null;
         hashChange?: boolean;
         navigationType?: 'push' | 'replace';
+        locationHref?: string | null;
       } = {},
     ) {
-      if (location.href === url) {
-        mockPreventDefault();
-        return;
-      }
       const origin = `http://localhost`;
       const canIntercept = new URL(url).origin === origin;
       let fn: any;
 
       // Initial page (with same origin)
-      location.href = origin;
+      location.href = locationHref ?? origin;
       window.navigation = {
         addEventListener: (eventName: string, callback: any) => {
           if (eventName === 'navigate') fn = callback;
@@ -418,6 +416,7 @@ describe('utils', () => {
 
       // Simulate the event
       fn({
+        preventDefault,
         destination: { url },
         scroll: () => {},
         hashChange,
@@ -443,10 +442,9 @@ describe('utils', () => {
     });
 
     it('should not full reload when the destination URL is the same as the current location', async () => {
-      location.href = 'http://localhost/some-page';
-      await simulateSPANavigation('http://localhost/some-page');
-      expect(mockPreventDefault).toHaveBeenCalled();
-      expect(mockNavigationIntercept).not.toHaveBeenCalled();
+      const page = 'http://localhost/some-page';
+      await simulateSPANavigation(page, { locationHref: page });
+      expect(preventDefault).toHaveBeenCalled();
     });
 
     it('should not work SPA navigation with different origin', async () => {
