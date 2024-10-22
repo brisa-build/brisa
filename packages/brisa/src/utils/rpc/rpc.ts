@@ -100,9 +100,10 @@ async function rpc(
 function spaNavigation(event: any) {
   const renderMode =
     $window._xm ?? getAttribute(getActiveElement(), 'rendermode');
+  const isSPA = renderMode !== 'native';
 
   // Prevent navigation if the destination URL is the same as the current location
-  if (event.destination.url === location.href) {
+  if (isSPA && event.destination.url === location.href) {
     $window.scrollTo(0, 0);
     event.preventDefault();
   }
@@ -111,7 +112,7 @@ function spaNavigation(event: any) {
   $window._xm = null;
 
   if (
-    renderMode !== 'native' &&
+    isSPA &&
     !event.hashChange &&
     event.downloadRequest === null &&
     event.canIntercept &&

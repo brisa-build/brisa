@@ -418,7 +418,6 @@ describe('utils', () => {
       fn({
         preventDefault,
         destination: { url },
-        scroll: () => {},
         hashChange,
         downloadRequest,
         canIntercept,
@@ -435,16 +434,32 @@ describe('utils', () => {
 
     beforeEach(() => {
       mockNavigationIntercept.mockClear();
+      preventDefault.mockClear();
     });
 
     afterEach(() => {
       window._xm = null;
     });
 
-    it('should not full reload when the destination URL is the same as the current location', async () => {
+    it('should NOT full reload when the destination URL is the same as the current location #560', async () => {
       const page = 'http://localhost/some-page';
-      await simulateSPANavigation(page, { locationHref: page });
+      await simulateSPANavigation(page, {
+        locationHref: page,
+        navigationType: 'replace',
+      });
       expect(preventDefault).toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
+    });
+
+    it('should full reload when window._xm = "native" and the destination URL is the same as the current location #560', async () => {
+      window._xm = 'native';
+      const page = 'http://localhost/some-page';
+      await simulateSPANavigation(page, {
+        locationHref: page,
+        navigationType: 'replace',
+      });
+      expect(preventDefault).not.toHaveBeenCalled();
+      expect(mockNavigationIntercept).not.toHaveBeenCalled();
     });
 
     it('should not work SPA navigation with different origin', async () => {
