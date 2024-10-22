@@ -7,3 +7,4 @@ export { getServeOptions } from '@/cli/serve/serve-options';
 export { RenderInitiator } from '@/public-constants';
 export { fileSystemRouter } from '@/utils/file-system-router';
 export { default as serve } from '@/cli/serve/bun-serve';
+export const getServer = () => globalThis.brisaServer;

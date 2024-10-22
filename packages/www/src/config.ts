@@ -498,6 +498,10 @@ export default {
               link: '/api-reference/server-apis/SSRWebComponent',
             },
             {
+              text: 'getServer',
+              link: '/api-reference/server-apis/getServer',
+            },
+            {
               text: 'Node.js APIs',
               items: [
                 {

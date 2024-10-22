@@ -192,3 +192,22 @@ export function SSRWebComponent<T>(
     children?: JSX.Element;
   },
 ): JSX.Element;
+
+/**
+ * `getServer`
+ *
+ * This method is used to get the server instance.
+ *
+ * Example:
+ *
+ * ```ts
+ * import { getServer } from 'brisa/server';
+ *
+ * const { port, hostname, server, subscriberCount } = getServer();
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `getServer`](https://brisa.build/api-reference/server-apis/getServer)
+ */
+export function getServer(): ReturnType<typeof Bun.serve>;
