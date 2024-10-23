@@ -750,6 +750,36 @@ describe('utils', () => {
         expect(logs).toEqual([]);
       });
 
+      // This hash is deterministic based on "Fragment"
+      // Bun PR ref: https://github.com/oven-sh/bun/pull/14343
+      it('should not log Fragment_8vg9x3sq', () => {
+        const input = parseCodeToAST(`
+          export default function MyComponent() {
+            return (
+              <Fragment_8vg9x3sq>
+                <div>foo</div>
+                <span>bar</span>
+              </Fragment_8vg9x3sq>
+            )
+          }
+        `);
+
+        const logMock = spyOn(console, 'log');
+        logMock.mockImplementation(() => {});
+        const outputAst = transformToReactiveArrays(input);
+        const output = toOutputCode(outputAst);
+        const expected = normalizeHTML(`
+          export default function MyComponent() {
+            return [null, {}, [['div', {}, 'foo'], ['span', {}, 'bar']]];
+          }
+        `);
+        const logs = logMock.mock.calls.slice(0);
+
+        logMock.mockRestore();
+        expect(output).toBe(expected);
+        expect(logs).toEqual([]);
+      });
+
       it('should keep the "key" attribute', () => {
         const input = parseCodeToAST(`
           export default function MyComponent() {

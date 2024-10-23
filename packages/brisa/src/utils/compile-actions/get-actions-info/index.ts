@@ -1,5 +1,5 @@
 import AST from '@/utils/ast';
-import { JSX_NAME } from '@/utils/ast/constants';
+import isJSXIdentifier from '@/utils/is-jsx-indentifier';
 import type { ESTree } from 'meriyah';
 
 export type ActionInfo = {
@@ -26,7 +26,7 @@ const FN = new Set([
 ]);
 
 function isJSXDeclaration(declaration: any) {
-  return JSX_NAME.has(declaration?.init?.callee?.name);
+  return isJSXIdentifier(declaration?.init?.callee?.name);
 }
 
 export default function getActionsInfo(ast: ESTree.Program): ActionInfo[] {

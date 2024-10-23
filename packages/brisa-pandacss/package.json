@@ -15,10 +15,7 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/brisa-pandacss"
   },
-  "files": [
-    "index.ts",
-    "index.d.ts"
-  ],
+  "files": ["index.ts", "index.d.ts"],
   "dependencies": {
     "@pandacss/dev": "0.46.1",
     "postcss": "8.4.47"

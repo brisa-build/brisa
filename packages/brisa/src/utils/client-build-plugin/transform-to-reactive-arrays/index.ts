@@ -3,10 +3,10 @@ import { getConstants } from '@/constants';
 import { NO_REACTIVE_CHILDREN_EXPRESSION } from '@/utils/client-build-plugin/constants';
 import wrapWithArrowFn from '@/utils/client-build-plugin/wrap-with-arrow-fn';
 import { logError, logWarning } from '@/utils/log/log-build';
-import { JSX_NAME } from '@/utils/ast/constants';
 import { BOOLEANS_IN_HTML } from '@/public-constants';
+import isJSXIdentifier from '@/utils/is-jsx-indentifier';
 
-const fragmentNames = new Set(['Fragment', '_Fragment']);
+const fragmentNames = new Set(['Fragment', '_Fragment', 'Fragment_8vg9x3sq']);
 export const logsPerFile = new Set<string | undefined>();
 
 export default function transformToReactiveArrays(
@@ -36,7 +36,7 @@ export default function transformToReactiveArrays(
     // JSX -> ArrayExpression
     if (
       value?.type !== 'CallExpression' ||
-      !JSX_NAME.has(value?.callee?.name ?? '')
+      !isJSXIdentifier(value?.callee?.name ?? '')
     ) {
       return value;
     }
@@ -157,7 +157,7 @@ export default function transformToReactiveArrays(
     // to: ["div", {}, [['span', {}, ''], [null, {}, () => someVar.value ? ["b", {}, ""] : ["i", {}, ""]]]
     if (children.type === 'ArrayExpression') {
       children.elements = children.elements.map((el: any) => {
-        if (JSX_NAME.has(el.callee?.name)) return el;
+        if (isJSXIdentifier(el.callee?.name)) return el;
         return {
           type: 'ArrayExpression',
           elements: [
@@ -177,7 +177,7 @@ export default function transformToReactiveArrays(
 
     const isChildrenJSX =
       children?.type === 'CallExpression' &&
-      JSX_NAME.has(children?.callee?.name ?? '');
+      isJSXIdentifier(children?.callee?.name ?? '');
 
     // <div>{someVar.value}</div> -> ["div", {}, () => someVar.value]
     if (hasNodeASignal(children, !isChildrenJSX))
@@ -229,7 +229,7 @@ function hasNodeASignal(node: ESTree.Node, allowProperties = false) {
     // It's a markup generator function, store.get, store.has, etc
     hasSignal ||=
       value?.type === 'CallExpression' &&
-      !JSX_NAME.has(value?.callee?.name ?? '');
+      !isJSXIdentifier(value?.callee?.name ?? '');
 
     return value;
   });

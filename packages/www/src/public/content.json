@@ -1452,6 +1452,46 @@
     ]
   },
   {
+    "id": "/api-reference/server-apis/getServer#getserver",
+    "title": "getServer",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/server-apis/getServer#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": [
+      "getServer"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/getServer#getserver-server",
+    "title": "getServer(): Server",
+    "text": "The getServer function is used to get the server instance of Brisa. It is useful to access the server instance in the server components.",
+    "titles": [
+      "getServer",
+      "Reference"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/getServer#example-usage",
+    "title": "Example usage:",
+    "text": "import { getServer } from \"brisa/server\";\n\n// ...\nconst server = getServer();\n/* \n{\n  address: {\n    address: \"::\",\n    family: \"IPv6\",\n    port: 63621,\n  },\n  development: true,\n  fetch: [Function: fetch],\n  hostname: \"localhost\",\n  id: \"\",\n  pendingRequests: 3,\n  pendingWebSockets: 1,\n  port: 63621,\n  protocol: \"http\",\n  publish: [Function: publish],\n  ref: [Function: ref],\n  reload: [Function: reload],\n  requestIP: [Function: requestIP],\n  stop: [Function: stop],\n  subscriberCount: [Function: subscriberCount],\n  timeout: [Function: timeout],\n  unref: [Function: unref],\n  upgrade: [Function: upgrade],\n  url: URL {\n    href: \"http://localhost:63621/\",\n    origin: \"http://localhost:63621\",\n    protocol: \"http:\",\n    username: \"\",\n    password: \"\",\n    host: \"localhost:63621\",\n    hostname: \"localhost\",\n    port: \"63621\",\n    pathname: \"/\",\n    hash: \"\",\n    search: \"\",\n    searchParams: URLSearchParams {},\n    toJSON: [Function: toJSON],\n    toString: [Function: toString],\n  },\n  [Symbol(Symbol.dispose)]: [Function: dispose],\n}\n*/",
+    "titles": [
+      "getServer"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/getServer#types",
+    "title": "Types",
+    "text": "export function getServer(): Server; And Server is Bun.js Server Type after Bun.serve: interface Server {\n  fetch(request: Request | string): Response | Promise<Response>;\n  publish(\n    compress?: boolean,\n    data: string | ArrayBufferView | ArrayBuffer | SharedArrayBuffer,\n    topic: string,\n  ): ServerWebSocketSendStatus;\n  ref(): void;\n  reload(options: Serve): void;\n  requestIP(request: Request): SocketAddress | null;\n  stop(closeActiveConnections?: boolean): void;\n  unref(): void;\n  upgrade<T = undefined>(\n    options?: {\n      data?: T;\n      headers?: Bun.HeadersInit;\n    },\n    request: Request,\n  ): boolean;\n  subscriberCount: (topic: string) => number;\n  timeout: (ms: number) => void;\n\n  readonly development: boolean;\n  readonly hostname: string;\n  readonly id: string;\n  readonly pendingRequests: number;\n  readonly pendingWebSockets: number;\n  readonly port: number;\n  readonly url: URL;\n  readonly protocol: string;\n  readonly address: AddressInfo;\n  readonly [Symbol.dispose]: () => void;\n}",
+    "titles": [
+      "getServer",
+      "Example usage:"
+    ]
+  },
+  {
     "id": "/api-reference/server-apis/node/handler#handler",
     "title": "handler",
     "text": "",
@@ -3975,7 +4015,7 @@
   {
     "id": "/building-your-application/deploying/docker#containerize-with-docker",
     "title": "Containerize with Docker",
-    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.1.31\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
+    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.1.32\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
     "titles": [
       "Docker"
     ]
