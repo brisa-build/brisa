@@ -17,16 +17,20 @@
     "url": "https://github.com/brisa-build/brisa.git",
     "directory": "packages/create-brisa"
   },
-  "files": ["create-brisa.cjs", "basic-template", "examples"],
+  "files": [
+    "create-brisa.cjs",
+    "basic-template",
+    "examples"
+  ],
   "bin": {
     "create-brisa": "./create-brisa.cjs"
   },
-  "packageManager": "bun@1.1.31",
+  "packageManager": "bun@1.1.32",
   "engines": {
-    "bun": ">= 1.1.31",
-    "npm": "please-use-bun",
-    "yarn": "please-use-bun",
-    "pnpm": "please-use-bun"
+    "bun": ">= 1.1.32",
+    "npm": ">= 10.0.0",
+    "yarn": ">= 3.0.0",
+    "pnpm": ">= 9.8.0"
   },
   "devDependencies": {
     "brisa": "latest"

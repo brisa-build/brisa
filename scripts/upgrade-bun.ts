@@ -31,15 +31,15 @@ packageJSON.engines =
   brisaTailwindCSSPackageJSON.engines =
     {
       bun: `>= ${version}`,
-      npm: 'please-use-bun',
-      yarn: 'please-use-bun',
-      pnpm: 'please-use-bun',
+      npm: ">= 10.0.0",
+      yarn: ">= 3.0.0",
+      pnpm: ">= 9.8.0"
     };
 brisaPandaCSSPackageJSON.engines = {
   bun: `>= ${version}`,
-  npm: 'please-use-bun',
-  yarn: 'please-use-bun',
-  pnpm: 'please-use-bun',
+  npm: ">= 10.0.0",
+  yarn: ">= 3.0.0",
+  pnpm: ">= 9.8.0"
 };
 // Update all the package.json files
 fs.writeFileSync(
