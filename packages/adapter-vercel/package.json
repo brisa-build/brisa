@@ -18,15 +18,13 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/adapter-vercel"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "brisa": "workspace:*"
   },
-  "packageManager": "bun@1.1.32",
+  "packageManager": "bun@1.1.33",
   "engines": {
-    "bun": ">= 1.1.32",
+    "bun": ">= 1.1.33",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"

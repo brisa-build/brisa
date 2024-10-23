@@ -1,5 +1,5 @@
 import type { ESTree } from 'meriyah';
-import { JSX_NAME } from '@/utils/ast/constants';
+import isJSXIdentifier from '../is-jsx-indentifier';
 
 type ImportsMapType = Map<
   string,
@@ -226,7 +226,7 @@ function differentThanRenderOnBuildTime(p: any) {
 function getRenderOnValue(jsxCall: ESTree.CallExpression) {
   if (
     jsxCall?.type === 'CallExpression' &&
-    JSX_NAME.has(jsxCall.callee?.name) &&
+    isJSXIdentifier(jsxCall.callee?.name) &&
     jsxCall.arguments[1]?.type === 'ObjectExpression'
   ) {
     for (const prop of jsxCall.arguments[1].properties as any) {

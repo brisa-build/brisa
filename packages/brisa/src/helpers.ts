@@ -4,4 +4,6 @@ export const normalizeHTML = (s: string) =>
     .replaceAll("'", '"')
     .replaceAll('&quot;', '"')
     .replaceAll('&lt;', '<')
-    .replaceAll('&gt;', '>');
+    .replaceAll('&gt;', '>')
+    .replaceAll('jsxDEV_7x81h0kn', 'jsxDEV')
+    .replaceAll('Fragment_8vg9x3sq', 'Fragment');
