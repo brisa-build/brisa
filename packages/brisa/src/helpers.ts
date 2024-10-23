@@ -1,3 +1,5 @@
+import { jsxDEV, jsx, Fragment } from './utils/ast/constants';
+
 export const toInline = (s: string) => s.replace(/\s*\n\s*/g, '');
 export const normalizeHTML = (s: string) =>
   toInline(s)
@@ -5,5 +7,6 @@ export const normalizeHTML = (s: string) =>
     .replaceAll('&quot;', '"')
     .replaceAll('&lt;', '<')
     .replaceAll('&gt;', '>')
-    .replaceAll('jsxDEV_7x81h0kn', 'jsxDEV')
-    .replaceAll('Fragment_8vg9x3sq', 'Fragment');
+    .replaceAll(jsxDEV, 'jsxDEV')
+    .replaceAll(jsx, 'jsx')
+    .replaceAll(Fragment, 'Fragment');

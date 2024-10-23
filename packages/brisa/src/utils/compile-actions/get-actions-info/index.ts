@@ -1,5 +1,5 @@
 import AST from '@/utils/ast';
-import isJSXIdentifier from '@/utils/is-jsx-indentifier';
+import { isJSXIdentifier } from '@/utils/ast/jsx-helpers';
 import type { ESTree } from 'meriyah';
 
 export type ActionInfo = {

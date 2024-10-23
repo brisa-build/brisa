@@ -1,5 +1,5 @@
 import type { ESTree } from 'meriyah';
-import isJSXIdentifier from '../is-jsx-indentifier';
+import { isJSXIdentifier } from '@/utils/ast/jsx-helpers';
 
 type ImportsMapType = Map<
   string,

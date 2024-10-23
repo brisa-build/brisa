@@ -5,7 +5,7 @@ import { logWarning } from '@/utils/log/log-build';
 import getDependenciesList from '@/utils/ast/get-dependencies-list';
 import wrapDefaultExportWithSSRWebComponent from './wrap-default-export-with-ssr-web-component';
 import getPrerenderUtil from '../prerender-util';
-import isJSXIdentifier from '../is-jsx-indentifier';
+import { isJSXIdentifier } from '@/utils/ast/jsx-helpers';
 
 type ServerComponentPluginOptions = {
   allWebComponents: Record<string, string>;
@@ -29,7 +29,10 @@ const FN_DECLARATIONS = new Set([
 // TODO: Remove this workaround when this issue will be fixed:
 // https://github.com/oven-sh/bun/issues/7499
 // These hashes are based on the identifier name, PR of ref: https://github.com/oven-sh/bun/pull/14343
-export const workaroundText = `import { jsx as jsx_w77yafs4, jsxs as jsxs_eh6c78nj, jsxDEV as jsxDEV_7x81h0kn, Fragment as Fragment_8vg9x3sq } from 'brisa/jsx-runtime';\n`;
+export const workaroundText = Bun.semver.satisfies(Bun.version, '>= 1.1.33')
+  ? `import { jsx as jsx_w77yafs4, jsxs as jsxs_eh6c78nj, jsxDEV as jsxDEV_7x81h0kn, Fragment as Fragment_8vg9x3sq } from 'brisa/jsx-runtime';\n`
+  : `import { jsx, jsxs, jsxDEV, Fragment } from 'brisa/jsx-runtime';\n`;
+
 // TODO: We need to refactor this function, is hard to understand and mantain
 export default function serverComponentPlugin(
   code: string,
