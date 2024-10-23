@@ -1,8 +1,8 @@
 {
-  "name": "with-sqlite-with-server-action",
+  "name": "with-elysia",
   "module": "src/pages/index.tsx",
   "type": "module",
-  "webTitle": "SQLite with Server Action",
+  "webTitle": "API Routes with Elysia.js",
   "example-category": "integrations",
   "scripts": {
     "dev": "brisa dev",
@@ -11,7 +11,8 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "0.1.3-canary.2"
+    "brisa": "0.1.3-canary.2",
+    "elysia": "latest"
   },
   "devDependencies": {
     "@types/bun": "latest",
