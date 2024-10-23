@@ -4,9 +4,10 @@ import { NO_REACTIVE_CHILDREN_EXPRESSION } from '@/utils/client-build-plugin/con
 import wrapWithArrowFn from '@/utils/client-build-plugin/wrap-with-arrow-fn';
 import { logError, logWarning } from '@/utils/log/log-build';
 import { BOOLEANS_IN_HTML } from '@/public-constants';
-import isJSXIdentifier from '@/utils/is-jsx-indentifier';
+import { isJSXIdentifier } from '@/utils/ast/jsx-helpers';
+import { Fragment } from '@/utils/ast/constants';
 
-const fragmentNames = new Set(['Fragment', '_Fragment', 'Fragment_8vg9x3sq']);
+const fragmentNames = new Set(['Fragment', '_Fragment', Fragment]);
 export const logsPerFile = new Set<string | undefined>();
 
 export default function transformToReactiveArrays(

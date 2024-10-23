@@ -8,6 +8,7 @@ import type { ActionInfo } from './get-actions-info';
 import getActionsInfo from './get-actions-info';
 import { getPurgedBody } from './get-purged-body';
 import { logBuildError } from '@/utils/log/log-build';
+import { jsx, jsxDEV } from '../ast/constants';
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
@@ -588,7 +589,7 @@ function wrapWithTypeCatch({
                               type: 'CallExpression',
                               callee: {
                                 type: 'Identifier',
-                                name: IS_PRODUCTION ? 'jsx' : 'jsxDEV',
+                                name: IS_PRODUCTION ? jsx : jsxDEV,
                               },
                               arguments: [
                                 {
