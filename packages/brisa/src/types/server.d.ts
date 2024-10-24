@@ -135,13 +135,14 @@ export function rerenderInAction<PropsType>(
  */
 export function getServeOptions(): Promise<ServeOptions>;
 
-export interface RenderInitiatorType {
+export interface InitiatorType {
   readonly INITIAL_REQUEST: 'INITIAL_REQUEST';
   readonly SPA_NAVIGATION: 'SPA_NAVIGATION';
   readonly SERVER_ACTION: 'SERVER_ACTION';
+  readonly API_REQUEST: 'API_REQUEST';
 }
 
-export const RenderInitiator: RenderInitiatorType;
+export const Initiator: InitiatorType;
 
 /**
  * This serve function is used to start a Bun.js server.

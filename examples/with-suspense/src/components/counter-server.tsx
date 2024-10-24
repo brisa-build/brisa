@@ -1,5 +1,5 @@
 import type { RequestContext } from 'brisa';
-import { RenderInitiator, rerenderInAction } from 'brisa/server';
+import { Initiator, rerenderInAction } from 'brisa/server';
 
 function SuspenseState() {
   return (
@@ -13,10 +13,10 @@ function SuspenseState() {
 
 export default async function CounterServer(
   { initialValue = 0 }: { initialValue: number },
-  { store, renderInitiator }: RequestContext,
+  { store, initiator }: RequestContext,
 ) {
   // Fake loading data on the initial request
-  if (renderInitiator === RenderInitiator.INITIAL_REQUEST) {
+  if (initiator === Initiator.INITIAL_REQUEST) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 

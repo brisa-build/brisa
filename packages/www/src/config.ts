@@ -486,8 +486,8 @@ export default {
               link: '/api-reference/server-apis/fileSystemRouter',
             },
             {
-              text: 'RenderInitiator',
-              link: '/api-reference/server-apis/RenderInitiator',
+              text: 'Initiator',
+              link: '/api-reference/server-apis/Initiator',
             },
             {
               text: 'serve',

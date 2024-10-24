@@ -11,6 +11,6 @@ export async function POST(request: RequestContext) {
   const name = formData.get('name');
   const email = formData.get('email');
   return new Response(JSON.stringify({ name, email }), {
-    headers: { 'x-renderInitiator': request.renderInitiator },
+    headers: { 'x-initiator': request.initiator },
   });
 }

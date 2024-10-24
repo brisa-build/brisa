@@ -1,4 +1,4 @@
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import type { ComponentType, RequestContext } from '@/types';
 import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
 
@@ -109,8 +109,8 @@ export default function extendStreamController({
 
       const serializedStore = JSON.stringify([...store]);
       const isFromRPC =
-        request.renderInitiator === RenderInitiator.SPA_NAVIGATION ||
-        request.renderInitiator === RenderInitiator.SERVER_ACTION;
+        request.initiator === Initiator.SPA_NAVIGATION ||
+        request.initiator === Initiator.SERVER_ACTION;
       let script;
 
       if (isFromRPC) {

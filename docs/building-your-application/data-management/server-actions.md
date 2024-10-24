@@ -457,7 +457,7 @@ You should treat Server Actions as you would public-facing API endpoints, and en
 ```tsx
 import { Database } from "bun:sqlite";
 import type { RequestContext } from "brisa";
-import { rerenderInAction} from "brisa/server";
+import { rerenderInAction } from "brisa/server";
 import validateToken from "@/auth/validate-token";
 
 const db = new Database("mydb.sqlite");
@@ -548,15 +548,12 @@ For these cases, you can use the [**action signals**](#action-signals) through t
 
 ```tsx filename="src/pages/index.tsx"
 import type { RequestContext } from "brisa";
-import { RenderInitiator, rerenderInAction } from "brisa/server";
+import { Initiator, rerenderInAction } from "brisa/server";
 
-export default function Page(
-  {},
-  { store, method, renderInitiator }: RequestContext,
-) {
+export default function Page({}, { store, method, initiator }: RequestContext) {
   // set communication render-value during the initial request
   // (not in the rerender of the server action or during SPA navigation)
-  if (renderInitiator === RenderInitiator.INITIAL_REQUEST) {
+  if (Initiator === Initiator.INITIAL_REQUEST) {
     store.set("foo", Math.random());
     store.transferToClient(["foo"]);
   }
@@ -568,7 +565,7 @@ export default function Page(
     // set communication action-client:
     store.set("foo", Math.random());
     // rerender this component:
-    rerenderInAction(); 
+    rerenderInAction();
   }
 
   return (

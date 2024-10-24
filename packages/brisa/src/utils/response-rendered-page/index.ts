@@ -3,7 +3,7 @@ import path from 'node:path';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 import { getConstants } from '@/constants';
 import transferStoreService from '@/utils/transfer-store-service';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
 import getReadableStreamFromPath from '../get-readable-stream-from-path';
 
@@ -33,7 +33,7 @@ export default async function responseRenderedPage({
     });
 
   // Avoid to transfer again if comes from a rerender from an action
-  if (req.renderInitiator !== RenderInitiator.SERVER_ACTION) {
+  if (req.initiator !== Initiator.SERVER_ACTION) {
     transferClientStoreToServer();
   }
 

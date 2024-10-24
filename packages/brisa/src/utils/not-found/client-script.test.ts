@@ -1,4 +1,4 @@
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import extendRequestContext from '@/utils/extend-request-context';
 import get404ClientScript from '@/utils/not-found/client-script';
 import { expect, it, describe } from 'bun:test';
@@ -10,7 +10,7 @@ describe('utils', () => {
         const request = extendRequestContext({
           originalRequest: new Request('http://localhost:3000'),
         });
-        request.renderInitiator = RenderInitiator.SERVER_ACTION;
+        request.initiator = Initiator.SERVER_ACTION;
         const script = get404ClientScript(request);
         expect(script).toEqual(
           `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.assign(u.toString())})()</script>`,
@@ -21,7 +21,7 @@ describe('utils', () => {
         const request = extendRequestContext({
           originalRequest: new Request('http://localhost:3000'),
         });
-        request.renderInitiator = RenderInitiator.INITIAL_REQUEST;
+        request.initiator = Initiator.INITIAL_REQUEST;
         const script = get404ClientScript(request);
         expect(script).toEqual(
           `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`,
@@ -32,7 +32,7 @@ describe('utils', () => {
         const request = extendRequestContext({
           originalRequest: new Request('http://localhost:3000'),
         });
-        request.renderInitiator = RenderInitiator.INITIAL_REQUEST;
+        request.initiator = Initiator.INITIAL_REQUEST;
         const script = get404ClientScript(request);
         expect(script).toEqual(
           `<script>(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.replace(u.toString())})()</script>`,

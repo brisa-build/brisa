@@ -32,8 +32,8 @@ export default function ServerComponent(props, requestContext: RequestContext) {
     // Request id
     id,
 
-    // The initiator of the render ("SERVER_ACTION", "SPA_NAVIGATION", "INITIAL_REQUEST")
-    renderInitiator,
+    // The initiator of the request ("SERVER_ACTION", "SPA_NAVIGATION", "INITIAL_REQUEST", "API_REQUEST")
+    initiator,
 
     // Add styles
     css,
@@ -268,27 +268,28 @@ Example:
 console.log(id); // 1edfa3c2-e101-40e3-af57-8890795dacd4
 ```
 
-## `renderInitiator`
+## `initiator`
 
-The `renderInitiator` is a string that represents the initiator of the render. It can be:
+The `initiator` is a string that represents the initiator of the render. It can be:
 
-- `RenderInitiator.SERVER_ACTION` - When is the rerender by a server action.
-- `RenderInitiator.SPA_NAVIGATION` - When the render is initiated by a SPA navigation.
-- `RenderInitiator.INITIAL_REQUEST` - When the render is initiated by the initial request.
+- `Initiator.SERVER_ACTION` - When is the rerender by a server action.
+- `Initiator.SPA_NAVIGATION` - When the render is initiated by a SPA navigation.
+- `Initiator.INITIAL_REQUEST` - When the render is initiated by the initial request.
+- `Initiator.API_REQUEST` - When the render is initiated by an API request.
 
-The default value is `RenderInitiator.INITIAL_REQUEST`.
+The default value is `Initiator.INITIAL_REQUEST`.
 
 > [!NOTE]
 >
-> This is useful to know how the render was initiated and to make decisions based on it, for example initializing the [store](#store) only in the `RenderInitiator.INITIAL_REQUEST`. For API routes, the `renderInitiator` is always `RenderInitiator.INITIAL_REQUEST`.
+> This is useful to know how the render was initiated and to make decisions based on it, for example initializing the [store](#store) only in the `Initiator.INITIAL_REQUEST`. For API routes, the `initiator` is always `Initiator.INITIAL_REQUEST`.
 
 Example:
 
 ```tsx
-import { RenderInitiator } from "brisa/server";
+import { Initiator } from "brisa/server";
 
 export default function ServerComponent(props, requestContext) {
-  if (requestContext.renderInitiator === RenderInitiator.INITIAL_REQUEST) {
+  if (requestContext.initiator === Initiator.INITIAL_REQUEST) {
     requestContext.store.set("count", 0);
   }
 

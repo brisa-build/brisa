@@ -22,7 +22,7 @@ import type { Options } from '@/types/server';
 import { toInline } from '@/helpers';
 import { logError } from '@/utils/log/log-build';
 import { getNavigateMode, isNavigateThrowable } from '@/utils/navigate/utils';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import get404ClientScript from '@/utils/not-found/client-script';
 import escapeHTML from '@/utils/escape-html';
 import { isArrawOfJSXContent } from '@/jsx-runtime';
@@ -93,9 +93,7 @@ export default function renderToReadableStream(
             extendedController.enqueue(get404ClientScript(req));
           } else if (isNavigateThrowable(e)) {
             const action =
-              req.renderInitiator === RenderInitiator.SERVER_ACTION
-                ? 'assign'
-                : 'replace';
+              req.initiator === Initiator.SERVER_ACTION ? 'assign' : 'replace';
 
             extendedController.transferStoreToClient();
             extendedController.enqueue(
