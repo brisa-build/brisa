@@ -117,6 +117,66 @@ export default async function middleware(request) {
 
 However, this is not the best way to serve assets. You can put the static files directly inside the `public` folder. More information [here](/building-your-application/routing/static-assets).
 
+## Redirect
+
+You can redirect the user to another page by returning a `Response` object with a `302` status code and a `Location` header.
+
+```ts
+export default async function middleware(request) {
+  if (request.url.pathname === "/old") {
+    return new Response("", {
+      status: 302,
+      headers: {
+        Location: "/new",
+      },
+    });
+  }
+}
+```
+
+When the user visits `/old`, they will be redirected to `/new`.
+
+## Rewrite
+
+You can rewrite the request by modifying the `finalURL` of the `Request` object.
+
+```ts
+export default async function middleware(request) {
+  if (request.url.pathname === "/old") {
+    // Rewrite: /old -> /new
+    request.finalURL = new URL("/new", request.finalURL).toString();
+    // Continue processing the request
+    return;
+  }
+}
+```
+
+When the user visits `/old`, the request will be rewritten to `/new`.
+
+> [!CAUTION]
+>
+> Using a redirect to another page, the **server action** will be executed in the redirected pathname, in order to work properly, **you need to rewrite them**:
+>
+> ```ts
+> import { Initiator } from "brisa/server";
+>
+> export default async function middleware(request) {
+>   // Skip redirects and rewrites
+>   if(request.url.pathname !== "/old") return;
+>
+>   const location = new URL('/new', req.url).toString();
+>   const isAnAction = req.initiator === Initiator.SERVER_ACTION;
+>
+>  // Rewrite Server Actions to /new
+>  if(isAnAction) {
+>    req.finalURL = location;
+>    return
+>  }
+>
+>  // Redirect the page to /new
+>  return new Response('', { status: 302, headers: { location } });
+> ```
+
 ## Cookies & Headers
 
 ### On Request
