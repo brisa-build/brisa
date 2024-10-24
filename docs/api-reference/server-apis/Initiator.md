@@ -19,7 +19,7 @@ In the next example, we use `Initiator` to determine if the render was initiated
 import { Initiator } from "brisa";
 
 export default function MyComponent(props, { initiator }) {
-  const isAnAction = renderInitiator === Initiator.SERVER_ACTION;
+  const isAnAction = initiator === Initiator.SERVER_ACTION;
   return (
     <div>
       {isAnAction
