@@ -153,30 +153,6 @@ export default async function middleware(request) {
 
 When the user visits `/old`, the request will be rewritten to `/new`.
 
-> [!CAUTION]
->
-> Using a redirect to another page, the **server action** will be executed in the redirected pathname, in order to work properly, **you need to rewrite them**:
->
-> ```ts
-> import { Initiator } from "brisa/server";
->
-> export default async function middleware(request) {
->   // Skip redirects and rewrites
->   if(request.url.pathname !== "/old") return;
->
->   const location = new URL('/new', req.url).toString();
->   const isAnAction = req.initiator === Initiator.SERVER_ACTION;
->
->  // Rewrite Server Actions to /new
->  if(isAnAction) {
->    req.finalURL = location;
->    return
->  }
->
->  // Redirect the page to /new
->  return new Response('', { status: 302, headers: { location } });
-> ```
-
 ## Cookies & Headers
 
 ### On Request
