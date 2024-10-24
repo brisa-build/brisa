@@ -7,11 +7,11 @@ import { logError } from '@/utils/log/log-build';
 import { getNavigateMode, isNavigateThrowable } from '@/utils/navigate/utils';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
-import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
 import { isNotFoundError } from '@/utils/not-found';
 import { isRerenderThrowable } from '@/utils/rerender-in-action/is-rerender-throwable';
 import handleI18n from '../handle-i18n';
 import redirectTrailingSlash from '../redirect-trailing-slash';
+import hardToSoftRedirect from '../hard-to-soft-redirect';
 
 type ResolveActionParams = {
   req: RequestContext;
@@ -39,13 +39,10 @@ export default async function resolveAction({
 
   // Navigate to another page
   if (isNavigateThrowable(error)) {
-    return new Response(resolveStore(req), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Navigate': formatNavigateDestination(error.message, req),
-        'X-Mode': getNavigateMode(error),
-      },
+    return hardToSoftRedirect({
+      req,
+      location: formatNavigateDestination(error.message, req),
+      mode: getNavigateMode(error),
     });
   }
 
@@ -53,12 +50,9 @@ export default async function resolveAction({
   if (isNotFoundError(error)) {
     url.searchParams.set('_not-found', '1');
 
-    return new Response(resolveStore(req), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Navigate': url.toString(),
-      },
+    return hardToSoftRedirect({
+      req,
+      location: url.toString(),
     });
   }
 
@@ -144,10 +138,6 @@ export default async function resolveAction({
     status: 200,
     headers: pageHeaders,
   });
-}
-
-export function resolveStore(req: RequestContext) {
-  return JSON.stringify([...getTransferedServerStoreToClient(req)]);
 }
 
 function extractComponentId(dependencies: Dependencies, actionId: string) {

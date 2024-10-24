@@ -1,3 +1,5 @@
+import type { RenderMode } from '@/types';
+
 const NAVIGATE_PREFIX = 'navigate:';
 
 export function isNavigateThrowable(error: unknown) {
@@ -5,5 +7,5 @@ export function isNavigateThrowable(error: unknown) {
 }
 
 export function getNavigateMode(error: Error) {
-  return error.name.replace(NAVIGATE_PREFIX, '');
+  return error.name.replace(NAVIGATE_PREFIX, '') as RenderMode;
 }

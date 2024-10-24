@@ -1824,6 +1824,118 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     ).toBeFalse();
   });
 
+  it('should return a soft redirect from an action', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    const res = await testRequest(
+      new Request(
+        `http://localhost:1234${basePath}/somepage?_aid=2&redirect=/`,
+        {
+          method: 'POST',
+          headers: {
+            'x-action': 'a1_1',
+          },
+        },
+      ),
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('x-navigate')).toBe('/');
+  });
+
+  it('should return a soft redirect from an action with i18n resolving the correct locale', async () => {
+    const res = await testRequest(
+      new Request(
+        `http://localhost:1234${basePath}/en/somepage?_aid=2&redirect=/`,
+        {
+          method: 'POST',
+          headers: {
+            'x-action': 'a1_1',
+          },
+        },
+      ),
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('x-navigate')).toBe('/en');
+  });
+
+  it('should return a soft redirect from an SPA navigation', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage?redirect=/`, {
+        method: 'POST',
+      }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('x-navigate')).toBe('/');
+  });
+
+  it('should return a soft redirect from an SPA Navigation with i18n resolving the correct locale', async () => {
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/en/somepage?redirect=/`, {
+        method: 'POST',
+      }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('x-navigate')).toBe('/en');
+  });
+
+  it('should return a HARD redirect from an API endpoint', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/api/example?redirect=/`),
+    );
+
+    expect(res.status).toBe(301);
+    expect(res.headers.get('location')).toBe('/');
+  });
+
+  it('should return a HARD redirect from an API endpoint with i18n resolving the correct locale', async () => {
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/en/api/example?redirect=/`),
+    );
+
+    expect(res.status).toBe(301);
+    expect(res.headers.get('location')).toBe('/en');
+  });
+
+  it('should return a HARD redirect from an initial render', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      I18N_CONFIG: undefined,
+    };
+
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/somepage?redirect=/`),
+    );
+
+    expect(res.status).toBe(301);
+    expect(res.headers.get('location')).toBe('/');
+  });
+
+  it('should return a HARD redirect from an initial render with i18n resolving the correct locale', async () => {
+    const res = await testRequest(
+      new Request(`http://localhost:1234${basePath}/en/somepage?redirect=/`),
+    );
+
+    expect(res.status).toBe(301);
+    expect(res.headers.get('location')).toBe('/en');
+  });
+
   it('should avoid declarative shadow DOM on server actions', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 

@@ -148,10 +148,23 @@ export default async function middleware(request) {
     // Continue processing the request
     return;
   }
+
+  // ... Manage other routes
 }
 ```
 
 When the user visits `/old`, the request will be rewritten to `/new`.
+
+> [!CAUTION]
+>
+> If after the rewrite you return a `Response` object, the rewrite will be ignored. So, if you want to rewrite properly, you should ensure to continue processing the request by returning nothing.
+>
+> ```ts
+> // ❌ Rewrite is ignored
+> request.finalURL = new URL("/new", request.finalURL).toString();
+> // ✅ Response is processed
+> return new Response("Hello World!");
+> ```
 
 ## Cookies & Headers
 

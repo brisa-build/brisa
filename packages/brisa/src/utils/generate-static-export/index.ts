@@ -79,7 +79,7 @@ export default async function generateStaticExport(): Promise<
         fakeServer,
       );
 
-      const html = await response.text();
+      const html = await response!.text();
       const relativePath = (route?.filePath ?? '').replace(BUILD_DIR, '');
       let htmlPath: string;
 
