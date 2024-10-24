@@ -99,7 +99,7 @@ const serveOptions = await getServeOptions();
 if (!serveOptions) process.exit(1);
 
 if (!process.env.USE_HANDLER) {
-  init(serveOptions);
+  init(serveOptions as ServeOptions);
 }
 
 // This is necesary for some adapters after build this

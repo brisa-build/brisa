@@ -3,7 +3,7 @@ import { getConstants } from '@/constants';
 import type { RequestContext } from '@/types';
 import { deserialize } from '@/utils/serialization';
 import transferStoreService from '@/utils/transfer-store-service';
-import { resolveStore } from '@/utils/resolve-action';
+import { resolveStore } from '@/utils/transfer-store-service';
 import { logError } from '@/utils/log/log-build';
 import { pathToFileURLWhenNeeded } from '../get-importable-filepath';
 

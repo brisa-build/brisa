@@ -23,7 +23,7 @@ export default async function handler(
     bunServer,
   );
 
-  await setResponse(res, response);
+  await setResponse(res, response!);
 }
 
 /*

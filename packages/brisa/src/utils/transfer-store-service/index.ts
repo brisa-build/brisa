@@ -75,3 +75,7 @@ export function getTransferedServerStoreToClient(request: RequestContext) {
 
   return store;
 }
+
+export function resolveStore(req: RequestContext) {
+  return JSON.stringify([...getTransferedServerStoreToClient(req)]);
+}

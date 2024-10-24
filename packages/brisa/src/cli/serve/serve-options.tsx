@@ -26,6 +26,7 @@ import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
 import getInitiator from '@/utils/get-initiator';
+import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
 
 export async function getServeOptions() {
   setUpEnvVars();
@@ -181,38 +182,42 @@ export async function getServeOptions() {
 
       request.getIP = () => server.requestIP(req);
 
-      return handleRequest(request, { assetPath }).catch((error) => {
-        // 404 page
-        if (isNotFoundError(error)) return error404(request);
+      const response = await handleRequest(request, { assetPath }).catch(
+        (error) => {
+          // 404 page
+          if (isNotFoundError(error)) return error404(request);
 
-        // "navigate" function call
-        if (isNavigateThrowable(error)) {
-          // Here doesn't matter the render mode, because the navigate it's always
-          // using a hard redirect
-          return redirectFromUnnormalizedURL(
-            new URL(error.message, url.origin),
-            request,
-          );
-        }
+          // "navigate" function call
+          if (isNavigateThrowable(error)) {
+            // Here doesn't matter the render mode, because the navigate it's always
+            // using a hard redirect
+            return redirectFromUnnormalizedURL(
+              new URL(error.message, url.origin),
+              request,
+            );
+          }
 
-        // Log some feedback in the terminal depending on the error
-        // in development and production
-        feedbackError(error, request);
+          // Log some feedback in the terminal depending on the error
+          // in development and production
+          feedbackError(error, request);
 
-        // 500 page
-        const route500 = pagesRouter.reservedRoutes[PAGE_500];
+          // 500 page
+          const route500 = pagesRouter.reservedRoutes[PAGE_500];
 
-        if (!route500) throw error;
+          if (!route500) throw error;
 
-        request.route = route500;
+          request.route = route500;
 
-        return responseRenderedPage({
-          req: request,
-          route: route500,
-          status: 500,
-          error,
-        });
-      });
+          return responseRenderedPage({
+            req: request,
+            route: route500,
+            status: 500,
+            error,
+          });
+        },
+      );
+
+      return handleSPARedirects(request, response);
     },
     tls,
     websocket: {
