@@ -5,7 +5,7 @@ import type { MatchedBrisaRoute, Translate } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import responseRenderedPage from '.';
 import { getConstants } from '@/constants';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -258,7 +258,7 @@ describe('utils', () => {
           }),
         }),
       });
-      req.renderInitiator = RenderInitiator.SERVER_ACTION;
+      req.initiator = Initiator.SERVER_ACTION;
       const response = await responseRenderedPage({
         req,
         route: {

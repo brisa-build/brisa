@@ -8,7 +8,7 @@ import {
 } from 'bun:test';
 import extendStreamController from '.';
 import extendRequestContext from '@/utils/extend-request-context';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 
 const request = extendRequestContext({
   originalRequest: new Request('http://localhost'),
@@ -349,7 +349,7 @@ describe('extendStreamController', () => {
       originalRequest: new Request('http://localhost'),
     });
 
-    req.renderInitiator = RenderInitiator.SPA_NAVIGATION;
+    req.initiator = Initiator.SPA_NAVIGATION;
 
     req.store.set('test', 'test');
     req.store.transferToClient(['test']);
@@ -370,7 +370,7 @@ describe('extendStreamController', () => {
       originalRequest: new Request('http://localhost'),
     });
 
-    req.renderInitiator = RenderInitiator.SERVER_ACTION;
+    req.initiator = Initiator.SERVER_ACTION;
 
     req.store.set('test', 'test');
     req.store.transferToClient(['test']);

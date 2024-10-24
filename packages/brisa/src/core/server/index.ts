@@ -4,7 +4,7 @@ export { default as renderToReadableStream } from '@/utils/render-to-readable-st
 export { default as renderToString } from '@/utils/render-to-string';
 export { default as rerenderInAction } from '@/utils/rerender-in-action';
 export { getServeOptions } from '@/cli/serve/serve-options';
-export { RenderInitiator } from '@/public-constants';
+export { Initiator } from '@/public-constants';
 export { fileSystemRouter } from '@/utils/file-system-router';
 export { default as serve } from '@/cli/serve/bun-serve';
 export const getServer = () => globalThis.brisaServer;

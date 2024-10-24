@@ -305,26 +305,31 @@ export interface RequestContext extends Request {
   /**
    * Description:
    *
-   * The `renderInitiator` is the way that the page request was initiated.
+   * The `initiator` is the way that the page request was initiated.
    *
    * There are three possible values:
    *
-   * - `RenderInitiator.INITIAL_REQUEST`: The page was loaded for the first time (for API endpoints, it is always this value)
-   * - `RenderInitiator.SPA_NAVIGATION`: The page was navigated using the SPA navigation.
-   * - `RenderInitiator.SERVER_ACTION`: The page was rerendered using a server action.
+   * - `Initiator.INITIAL_REQUEST`: The page was loaded for the first time (for API endpoints, it is always this value)
+   * - `Initiator.SPA_NAVIGATION`: The page was navigated using the SPA navigation.
+   * - `Initiator.SERVER_ACTION`: The page was rerendered using a server action.
+   * - `Initiator.API_REQUEST`: The page was loaded using an API request.
    *
    * Example:
    *
    * ```ts
-   * console.log(renderInitiator); // 'INITIAL_REQUEST'
+   * console.log(initiator); // 'INITIAL_REQUEST'
    * ```
    *
    * Docs:
    *
-   * - [How to use `renderInitiator`](https://brisa.build/api-reference/components/request-context#render-initiator)
+   * - [How to use `initiator`](https://brisa.build/api-reference/components/request-context#render-initiator)
    *
    */
-  renderInitiator: 'INITIAL_REQUEST' | 'SPA_NAVIGATION' | 'SERVER_ACTION';
+  initiator:
+    | 'INITIAL_REQUEST'
+    | 'SPA_NAVIGATION'
+    | 'SERVER_ACTION'
+    | 'API_REQUEST';
 
   /**
    * Description:

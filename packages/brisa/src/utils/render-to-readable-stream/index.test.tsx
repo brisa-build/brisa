@@ -28,7 +28,7 @@ import extendRequestContext from '@/utils/extend-request-context';
 import notFound from '@/utils/not-found';
 import SSRWebComponent from '@/utils/ssr-web-component';
 import handleI18n from '@/utils/handle-i18n';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
 const emptyI18n = {
@@ -3062,7 +3062,7 @@ describe('utils', () => {
       const request = extendRequestContext({
         originalRequest: new Request('http://localhost/'),
       });
-      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.initiator = Initiator.SERVER_ACTION;
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const script404 = `(()=>{let u=new URL(location.href);u.searchParams.set("_not-found","1"),location.assign(u.toString())})()`;
@@ -3097,7 +3097,7 @@ describe('utils', () => {
       const request = extendRequestContext({
         originalRequest: new Request('http://localhost/'),
       });
-      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.initiator = Initiator.SERVER_ACTION;
       request.store.set('server-foo', 'server-bar');
       request.store.set('foo', 'bar');
       request.store.transferToClient(['foo']);
@@ -3198,7 +3198,7 @@ describe('utils', () => {
       const request = extendRequestContext({
         originalRequest: new Request('http://localhost/'),
       });
-      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.initiator = Initiator.SERVER_ACTION;
       const stream = renderToReadableStream(<Component />, { request });
       const result = await Bun.readableStreamToText(stream);
       const scriptNavigate = `window._xm="reactivity";location.assign("http://localhost/foo")`;
@@ -3227,7 +3227,7 @@ describe('utils', () => {
       const request = extendRequestContext({
         originalRequest: new Request('http://localhost/'),
       });
-      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.initiator = Initiator.SERVER_ACTION;
       request.store.set('foo', 'bar');
       request.store.set('foo-client', 'bar-client');
       request.store.transferToClient(['foo-client']);

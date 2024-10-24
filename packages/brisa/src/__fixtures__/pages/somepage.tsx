@@ -17,6 +17,6 @@ export default async function SomePage() {
 export function responseHeaders(request: RequestContext) {
   return {
     'x-test': 'test',
-    'x-renderInitiator': request.renderInitiator,
+    'x-initiator': request.initiator,
   };
 }

@@ -7,8 +7,17 @@ import { contextProvider } from '@/utils/context-provider/server';
 import type { RequestContext } from '@/types';
 import { ENCRYPT_NONTEXT_PREFIX, ENCRYPT_PREFIX } from '@/utils/crypto';
 import { toInline } from '@/helpers';
-import { RenderInitiator } from '@/core/server';
+import { Initiator } from '@/core/server';
 import { getTransferedServerStoreToClient } from '@/utils/transfer-store-service';
+
+const i18n = {
+  pages: {},
+  locale: 'es',
+  defaultLocale: 'en',
+  locales: ['en', 'es'],
+  t: (v: string) => v,
+  overrideMessages: () => {},
+} as any;
 
 describe('brisa core', () => {
   afterEach(() => {
@@ -123,14 +132,7 @@ describe('brisa core', () => {
       const requestContext = extendRequestContext({
         originalRequest: request,
         route,
-        i18n: {
-          pages: {},
-          locale: 'es',
-          defaultLocale: 'en',
-          locales: ['en', 'es'],
-          t: mockT,
-          overrideMessages: () => {},
-        } as any,
+        i18n: { ...i18n, t: mockT } as any,
       });
 
       expect(requestContext.i18n.locale).toBe('es');
@@ -347,8 +349,7 @@ describe('brisa core', () => {
         `),
       );
     });
-
-    it('should have renderInitiator as "INITIAL_REQUEST" by default', () => {
+    it('should have initiator as "INITIAL_REQUEST" by default', () => {
       const request = new Request('https://example.com');
       const route = {
         path: '/',
@@ -357,15 +358,13 @@ describe('brisa core', () => {
         originalRequest: request,
         route,
       });
-      expect(requestContext.renderInitiator).toBe(
-        RenderInitiator.INITIAL_REQUEST,
-      );
+      expect(requestContext.initiator).toBe(Initiator.INITIAL_REQUEST);
     });
 
-    it('should keep the renderInitiator of the originalRequest', () => {
+    it('should keep the initiator of the originalRequest', () => {
       const request = new Request('https://example.com');
       // @ts-ignore
-      request.renderInitiator = RenderInitiator.SERVER_ACTION;
+      request.initiator = Initiator.SERVER_ACTION;
       const route = {
         path: '/',
       } as any;
@@ -373,9 +372,7 @@ describe('brisa core', () => {
         originalRequest: request,
         route,
       });
-      expect(requestContext.renderInitiator).toBe(
-        RenderInitiator.SERVER_ACTION,
-      );
+      expect(requestContext.initiator).toBe(Initiator.SERVER_ACTION);
     });
   });
 });

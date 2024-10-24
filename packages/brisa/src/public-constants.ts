@@ -1,10 +1,11 @@
-import type { RenderInitiatorType } from '@/types/server';
+import type { InitiatorType } from '@/types/server';
 
-export const RenderInitiator = {
+export const Initiator = {
   INITIAL_REQUEST: 'INITIAL_REQUEST',
   SPA_NAVIGATION: 'SPA_NAVIGATION',
   SERVER_ACTION: 'SERVER_ACTION',
-} satisfies RenderInitiatorType;
+  API_REQUEST: 'API_REQUEST',
+} satisfies InitiatorType;
 
 export const BOOLEANS_IN_HTML = new Set([
   'allowfullscreen',

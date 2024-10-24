@@ -14,7 +14,7 @@ import path from 'node:path';
 import { getConstants } from '@/constants';
 import type { ServerWebSocket } from 'bun';
 import type { RequestContext } from '@/types';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import { getServeOptions } from './serve-options';
 
@@ -1435,7 +1435,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(mockLog).toHaveBeenCalledWith('message', 'hello test');
   });
 
-  it('should have req.renderInitiator with "SERVER_ACTION" when is POST method and has x-action header', async () => {
+  it('should have req.initiator with "SERVER_ACTION" when is POST method and has x-action header', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     globalThis.mockConstants = {
@@ -1456,12 +1456,12 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(
-      RenderInitiator.SERVER_ACTION,
+    expect(mockResponseAction.mock.calls[0][0].initiator).toBe(
+      Initiator.SERVER_ACTION,
     );
   });
 
-  it('should have req.renderInitiator with "SERVER_ACTION" when is POST method and has x-action header and i18n', async () => {
+  it('should have req.initiator with "SERVER_ACTION" when is POST method and has x-action header and i18n', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     mock.module('@/utils/response-action', () => ({
@@ -1477,12 +1477,12 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    expect(mockResponseAction.mock.calls[0][0].renderInitiator).toBe(
-      RenderInitiator.SERVER_ACTION,
+    expect(mockResponseAction.mock.calls[0][0].initiator).toBe(
+      Initiator.SERVER_ACTION,
     );
   });
 
-  it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header', async () => {
+  it('should have req.initiator with "SPA_NAVIGATION" when the Page is POST method without x-action header', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
@@ -1495,13 +1495,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.SPA_NAVIGATION,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.SPA_NAVIGATION);
   });
 
-  it('should have req.renderInitiator with "SPA_NAVIGATION" when the Page is POST method without x-action header and i18n', async () => {
+  it('should have req.initiator with "SPA_NAVIGATION" when the Page is POST method without x-action header and i18n', async () => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
         method: 'POST',
@@ -1509,13 +1507,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.SPA_NAVIGATION,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.SPA_NAVIGATION);
   });
 
-  it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method', async () => {
+  it('should have req.initiator with "INITIAL_REQUEST" when the Page is GET method', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
@@ -1527,26 +1523,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.INITIAL_REQUEST,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.INITIAL_REQUEST);
   });
 
-  it('should have req.renderInitiator with "INITIAL_REQUEST" when the Page is GET method and i18n', async () => {
+  it('should have req.initiator with "INITIAL_REQUEST" when the Page is GET method and i18n', async () => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
         method: 'GET',
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.INITIAL_REQUEST,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.INITIAL_REQUEST);
   });
 
-  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint', async () => {
+  it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
@@ -1563,13 +1555,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.INITIAL_REQUEST,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
   });
 
-  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint and i18n', async () => {
+  it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint and i18n', async () => {
     const body = new FormData();
 
     body.append('name', 'Brisa');
@@ -1582,13 +1572,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.INITIAL_REQUEST,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
   });
 
-  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header', async () => {
+  it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint with x-action header', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
@@ -1608,13 +1596,11 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.INITIAL_REQUEST,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
   });
 
-  it('should have req.renderInitiator with "INITIAL_REQUEST" when is POST method and is an API endpoint with x-action header and i18n', async () => {
+  it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint with x-action header and i18n', async () => {
     const body = new FormData();
 
     body.append('name', 'Brisa');
@@ -1630,10 +1616,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       }),
     );
 
-    // Response x-renderInitiator is the same as the requestContext.renderInitiator (modified in the fixture)
-    expect(res.headers.get('x-renderInitiator')).toBe(
-      RenderInitiator.INITIAL_REQUEST,
-    );
+    // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
+    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
   });
 
   it('should NOT call responseAction method with GET and return 200 with the page', async () => {

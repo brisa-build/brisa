@@ -21,10 +21,11 @@ import { redirectFromUnnormalizedURL } from '@/utils/redirect';
 import responseRenderedPage from '@/utils/response-rendered-page';
 import { removeBasePathFromStringURL } from '@/utils/base-path';
 import { isNavigateThrowable } from '@/utils/navigate/utils';
-import { RenderInitiator } from '@/public-constants';
+import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
+import getInitiator from '@/utils/get-initiator';
 
 export async function getServeOptions() {
   setUpEnvVars();
@@ -244,13 +245,12 @@ export async function getServeOptions() {
     req: RequestContext,
     { assetPath }: { assetPath: string | null },
   ) {
-    const locale = req.i18n.locale;
-    const url = new URL(req.finalURL);
-    const firstPathnamePart = url.pathname.split('/')[locale ? 2 : 1];
+    const initiator = getInitiator(req);
     const { route, isReservedPathname } = pagesRouter.match(req);
-    const isApi = firstPathnamePart === 'api';
+    const isApi = initiator === Initiator.API_REQUEST;
     const api = isApi ? rootRouter.match(req) : null;
 
+    req.initiator = initiator;
     req.route = (isApi ? api?.route : route) as MatchedBrisaRoute;
 
     // Middleware
@@ -270,18 +270,18 @@ export async function getServeOptions() {
       const isPOST = req.method === 'POST';
 
       if (isPOST) {
-        const isFormCallWithoutRPC = url.searchParams.has('_aid');
+        const isFormCallWithoutRPC = new URL(req.finalURL).searchParams.has(
+          '_aid',
+        );
 
         if (!isFormCallWithoutRPC) {
           req.store.set(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL, true);
         }
 
         // Actions
-        if (req.headers.has('x-action')) {
-          req.renderInitiator = RenderInitiator.SERVER_ACTION;
+        if (initiator === Initiator.SERVER_ACTION) {
           return responseAction(req);
         }
-        req.renderInitiator = RenderInitiator.SPA_NAVIGATION;
       }
 
       return responseRenderedPage({ req, route });

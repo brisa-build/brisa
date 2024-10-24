@@ -9,7 +9,7 @@ import {
   CURRENT_PROVIDER_ID,
   CONTEXT_STORE_ID,
 } from '@/utils/context-provider/server';
-import { RenderInitiator } from '@/core/server';
+import { Initiator } from '@/core/server';
 
 type ExtendRequestContext = {
   originalRequest: Request;
@@ -108,8 +108,8 @@ export default function extendRequestContext({
     originalRequest._globalStyle += rawCSS;
   };
 
-  // Default value of renderInitiator (can change the value outside of this function)
-  originalRequest.renderInitiator ??= RenderInitiator.INITIAL_REQUEST;
+  // Default value of initiator (can change the value outside of this function)
+  originalRequest.initiator ??= Initiator.INITIAL_REQUEST;
 
   return originalRequest as RequestContext;
 }
