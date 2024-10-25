@@ -20,7 +20,7 @@ navigate("/some-page");
 The `navigate` function can be used both on the client and on the server. Although there are some differences to be taken into account:
 
 - If the navigation is done **before** sending the **response** (in the [middleware](/building-your-application/routing/middleware), [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages) or an [API endpoint](/building-your-application/routing/api-routes) for example), instead of modifying the navigation history it does a [**301 redirect**](https://en.wikipedia.org/wiki/HTTP_301).
-- If it is done **during rendering**, a [**soft redirect**](https://en.wikipedia.org/wiki/Wikipedia:Soft_redirect) is made.
+- If it is done **during rendering**, **SPA navigation** or **Server Action** a [**soft redirect**](https://en.wikipedia.org/wiki/Wikipedia:Soft_redirect) is made.
 - If used inside a **client-event** or a **server-event** ([action](/building-your-application/data-management/server-actions)) a new page is always generated in the **navigation history**.
 
 > [!NOTE]
