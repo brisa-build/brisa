@@ -6140,6 +6140,52 @@ describe('integration', () => {
       expect(webComponent.shadowRoot?.innerHTML).toBe('<div>Hello World</div>');
     });
 
+    it('should work updating a signal from an effect external function call from another external function', async () => {
+      const code = `
+        export default function WebComponent({}, { state, effect }) {
+          const signal = state(0);
+
+          function update() {
+            if(signal.value > 10) {
+              signal.value = 0;
+            }
+          }
+          
+          async function effectUpdate() {
+            await update();
+          }
+
+          effect(effectUpdate);
+
+          return <div onClick={() =>{ signal.value += 1}}>{signal.value}</div>;
+        }
+      `;
+
+      document.body.innerHTML = `<web-component />`;
+
+      defineBrisaWebComponent(code, 'src/web-components/web-component.tsx');
+
+      const webComponent = document.querySelector(
+        'web-component',
+      ) as HTMLElement;
+
+      const div = webComponent.shadowRoot?.querySelector(
+        'div',
+      ) as HTMLDivElement;
+
+      expect(div.textContent).toBe('0');
+      div.click();
+      await Bun.sleep(0);
+      expect(div.textContent).toBe('1');
+
+      for (let i = 0; i < 10; i++) {
+        div.click();
+        await Bun.sleep(0);
+      }
+
+      expect(div.textContent).toBe('0');
+    });
+
     // TODO: This test should work after this happydom feat about ElementInternals
     // https://github.com/capricorn86/happy-dom/issues/1419
     it.todo('it should work associating a form to the custom element', () => {
