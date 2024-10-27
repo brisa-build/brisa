@@ -93,6 +93,13 @@ export default function Playground() {
 
               window._xm = "native";
               window.changeTheme = monaco.editor.setTheme.bind(monaco.editor);
+              function nav(e) {
+                window._xm = "native";
+                window.location.reload();
+                e.preventDefault();
+                window.navigation?.removeEventListener("navigatesuccess", nav);
+              }
+              window.navigation?.addEventListener("navigatesuccess", nav);
             `)}
           </script>
         </div>

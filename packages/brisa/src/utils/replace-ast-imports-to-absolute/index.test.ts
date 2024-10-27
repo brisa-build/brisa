@@ -134,7 +134,7 @@ describe('utils', () => {
         'Error resolving import path:',
       );
       expect(mockLogError.mock.calls.toString()).toContain(
-        `Cannot find module "@/foo/unknown" from "file://${utilsDir}/replace-ast-imports-to-absolute`,
+        `Cannot find module '@/foo/unknown' from 'file://${utilsDir}/replace-ast-imports-to-absolute`,
       );
       expect(result).toEqual(expected);
       mockLogError.mockRestore();
