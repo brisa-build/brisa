@@ -4,7 +4,7 @@ import type { MatchedBrisaRoute } from '@/types';
 import type { FileSystemRouterOptions } from '@/types/server';
 import isTestFile from '@/utils/is-test-file';
 
-const ENDS_WITH_SLASH_INDEX_REGEX = new RegExp(`${path.sep}index$`);
+const ENDS_WITH_SLASH_INDEX_REGEX = /[\\|/]+index$/;
 const DEFAULT_EXTENSIONS = ['.tsx', '.jsx', '.ts', '.mjs', '.cjs', '.js'];
 const MULTI_SLASH_REGEX = /(?<!:)\/{2,}/g;
 const TRAILING_SLASH_REGEX = /\/$/;
@@ -98,6 +98,14 @@ export function fileSystemRouter(options: FileSystemRouterOptions) {
   return { routes, match };
 }
 
+export function normalizeRoute(filePath: string, dir: string, ext: string) {
+  return filePath
+    .replace(ext, '')
+    .replace(dir, '')
+    .replace(ENDS_WITH_SLASH_INDEX_REGEX, '')
+    .replace(WINDOWS_PATH_REGEX, '/');
+}
+
 function getRouteKind(route: string): MatchedBrisaRoute['kind'] {
   if (route.includes('[[...')) return 'optional-catch-all';
   if (route.includes('[...')) return 'catch-all';
@@ -145,11 +153,7 @@ function resolveRoutes({
     if (!ext) continue;
 
     const filePath = path.resolve(file.parentPath, file.name);
-    let route = filePath
-      .replace(ext, '')
-      .replace(dir, '')
-      .replace(ENDS_WITH_SLASH_INDEX_REGEX, '')
-      .replace(WINDOWS_PATH_REGEX, '/');
+    let route = normalizeRoute(filePath, dir, ext);
 
     if (route === '') route = '/';
 

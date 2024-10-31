@@ -1,5 +1,5 @@
 import type { MatchedBrisaRoute } from '@/types';
-import { fileSystemRouter } from '@/utils/file-system-router';
+import { fileSystemRouter, normalizeRoute } from '@/utils/file-system-router';
 import { describe, it, expect } from 'bun:test';
 import path from 'node:path';
 
@@ -813,6 +813,58 @@ describe('utils', () => {
         const output = router.match(filePath);
 
         expect(output).toEqual(expected);
+      },
+    );
+  });
+
+  describe('fileSystemRouter > normalizeRoute', () => {
+    const BATTERY_OF_TESTS = [
+      [
+        'C:\\Users\\Test\\my-app\\src\\about\\index.js',
+        { dir: 'C:\\Users\\Test\\my-app\\src', ext: '.js', result: '/about' },
+      ],
+      [
+        '/Users/Test/my-app/src/about/index.js',
+        { dir: '/Users/Test/my-app/src', ext: '.js', result: '/about' },
+      ],
+      [
+        'C:\\Users\\Test\\my-app\\src\\about\\/\\/\\/\\\\/index.js',
+        { dir: 'C:\\Users\\Test\\my-app\\src', ext: '.js', result: '/about' },
+      ],
+      [
+        '/Users/Test/my-app/src/about//\\//\\//\\\\//index.js',
+        { dir: '/Users/Test/my-app/src', ext: '.js', result: '/about' },
+      ],
+      [
+        '///Users///Test///my-app///src/about///index.tsx',
+        {
+          dir: '///Users///Test///my-app///src',
+          ext: '.tsx',
+          result: '/about',
+        },
+      ],
+      [
+        '/\\Users/\\Test/\\my-app/\\src/about/\\index.tsx',
+        {
+          dir: '/\\Users/\\Test/\\my-app/\\src',
+          ext: '.tsx',
+          result: '/about',
+        },
+      ],
+      [
+        '//\\Users//\\Test//\\my-app//\\src/about//\\index.js',
+        {
+          dir: '//\\Users//\\Test//\\my-app//\\src',
+          ext: '.js',
+          result: '/about',
+        },
+      ],
+    ] as [string, { dir: string; ext: string; result: string }][];
+
+    it.each(BATTERY_OF_TESTS)(
+      'should normalize the route %s',
+      (filePath, { dir, ext, result }) => {
+        expect(normalizeRoute(filePath, dir, ext)).toBe(result);
       },
     );
   });
