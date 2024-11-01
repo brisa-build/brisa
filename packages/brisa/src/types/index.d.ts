@@ -36,7 +36,6 @@ export type BrisaConstants = {
   PAGE_404: string;
   PAGE_500: string;
   VERSION: string;
-  VERSION_HASH: ReturnType<typeof Bun.hash>;
   WEB_CONTEXT_PLUGINS: string[];
   RESERVED_PAGES: string[];
   IS_PRODUCTION: boolean;

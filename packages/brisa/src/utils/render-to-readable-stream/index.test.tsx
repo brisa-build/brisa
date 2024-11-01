@@ -738,10 +738,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/_brisa/pages/_rpc-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
     });
 
@@ -771,10 +771,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
     });
 
@@ -801,10 +801,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/_brisa/pages/_rpc-${constants.VERSION_HASH}.js" async></script>`,
+        `<script src="/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>`,
       );
     });
 
@@ -834,10 +834,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION_HASH}.js"></script>`,
+        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION_HASH}.js" async></script>`,
+        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>`,
       );
     });
 

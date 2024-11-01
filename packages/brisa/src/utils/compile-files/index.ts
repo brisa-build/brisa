@@ -460,8 +460,8 @@ function addExtraChunk(
     writes: Promise<any>[];
   },
 ) {
-  const { BUILD_DIR, VERSION_HASH, IS_PRODUCTION } = getConstants();
-  const jsFilename = `${filename}-${VERSION_HASH}.js`;
+  const { BUILD_DIR, VERSION, IS_PRODUCTION } = getConstants();
+  const jsFilename = `${filename}-${VERSION}.js`;
 
   if (!code) return 0;
 

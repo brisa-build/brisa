@@ -145,7 +145,7 @@ async function enqueueDuringRendering(
     elements = [elements];
   }
 
-  const { BUILD_DIR, VERSION_HASH, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } =
+  const { BUILD_DIR, VERSION, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } =
     getConstants();
   const basePath = CONFIG.basePath || '';
   const compiledPagesPath = basePath + '/_brisa/pages';
@@ -385,13 +385,13 @@ async function enqueueDuringRendering(
       // Script to unsuspense all suspense components
       if (controller.hasUnsuspense) {
         controller.enqueue(
-          `<script src="${compiledPagesPath}/_unsuspense-${VERSION_HASH}.js"></script>`,
+          `<script src="${compiledPagesPath}/_unsuspense-${VERSION}.js"></script>`,
           suspenseId,
         );
       }
       if (controller.hasActionRPC) {
         controller.enqueue(
-          `<script src="${compiledPagesPath}/_rpc-${VERSION_HASH}.js" async></script>`,
+          `<script src="${compiledPagesPath}/_rpc-${VERSION}.js" async></script>`,
           suspenseId,
         );
       }

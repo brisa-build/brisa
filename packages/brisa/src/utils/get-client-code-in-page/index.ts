@@ -142,15 +142,14 @@ export async function transformToWebComponents({
     BUILD_DIR,
     CONFIG,
     I18N_CONFIG,
-    LOG_PREFIX,
     IS_DEVELOPMENT,
     IS_PRODUCTION,
-    VERSION_HASH,
+    VERSION,
   } = getConstants();
 
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const internalDir = join(BUILD_DIR, '_brisa');
-  const webEntrypoint = join(internalDir, `temp-${VERSION_HASH}.ts`);
+  const webEntrypoint = join(internalDir, `temp-${VERSION}.ts`);
   let useI18n = false;
   let i18nKeys = new Set<string>();
   const webComponentsPath = Object.values(webComponentsList);

@@ -23,7 +23,7 @@ async function buildRPC(file: string, isStatic = false) {
     target: 'browser',
     minify: true,
     define: {
-      __RPC_LAZY_FILE__: `'/_brisa/pages/_rpc-lazy-${constants.VERSION_HASH}.js'`,
+      __RPC_LAZY_FILE__: `'/_brisa/pages/_rpc-lazy-${constants.VERSION}.js'`,
       __IS_STATIC__: isStatic.toString(),
     },
   });

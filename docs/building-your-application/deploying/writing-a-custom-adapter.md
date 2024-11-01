@@ -15,17 +15,17 @@ If an adapter for your preferred environment doesn't yet exist, you can build yo
 Adapter packages implement the following API, which creates an `Adapter`:
 
 ```ts
-import type { Adapter } from 'brisa';
+import type { Adapter } from "brisa";
 
 export default function yourAdapter(options) {
-	const adapter = {
-		name: 'adapter-package-name',
-		async adapt({ BUILD_DIR, ROOT_DIR, CONFIG }, prerenderedRoutes) {
-			// adapter implementation
-		},
-	} satisfies Adapter;
+  const adapter = {
+    name: "adapter-package-name",
+    async adapt({ BUILD_DIR, ROOT_DIR, CONFIG }, prerenderedRoutes) {
+      // adapter implementation
+    },
+  } satisfies Adapter;
 
-	return adapter;
+  return adapter;
 }
 ```
 
@@ -64,9 +64,8 @@ The `adapt` receives the following parameters:
 - The `brisaConstants` parameter is an object that contains all the constants used by Brisa and the output adapter. It contains information about the build, the environment, the configuration, and more.
 - The `prerenderedRoutes` parameter is a map of routes to prerendered HTML files. In the case of a static export, this map will contain all the prerendered routes. In the case of a server output, this map will be filled with the prerendered routes, saved in the `BUILD_DIR` directory, under the `prerendered-pages` folder.
 
-
 And `BrisaConstants` type is:
-  
+
 ```ts
 /**
  * Internal types used by Brisa and output adapters.
@@ -75,7 +74,6 @@ export type BrisaConstants = {
   PAGE_404: string;
   PAGE_500: string;
   VERSION: string;
-  VERSION_HASH: ReturnType<typeof Bun.hash>;
   WEB_CONTEXT_PLUGINS: string[];
   RESERVED_PAGES: string[];
   IS_PRODUCTION: boolean;

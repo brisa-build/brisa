@@ -3,7 +3,6 @@ import type { BunPlugin } from 'bun';
 import { version } from '../package.json';
 import type { BrisaConstants, I18nConfig } from './types';
 import importFileIfExists from './utils/import-file-if-exists';
-import { hash } from '@/utils/wyhash';
 import {
   blueLog,
   cyanLog,
@@ -76,7 +75,6 @@ let constants = {
   PAGE_404,
   PAGE_500,
   VERSION: version,
-  VERSION_HASH: hash(version),
   RESERVED_PAGES: [PAGE_404, PAGE_500],
   IS_PRODUCTION,
   IS_DEVELOPMENT:

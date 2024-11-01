@@ -225,16 +225,16 @@ describe('utils', () => {
         `_500-${HASH}.js.br`,
         `_500-${HASH}.js.gz`,
         `_500.txt`,
-        `_rpc-${constants.VERSION_HASH}.js`,
-        `_rpc-${constants.VERSION_HASH}.js.br`,
-        `_rpc-${constants.VERSION_HASH}.js.gz`,
-        `_rpc-lazy-${constants.VERSION_HASH}.js`,
-        `_rpc-lazy-${constants.VERSION_HASH}.js.br`,
-        `_rpc-lazy-${constants.VERSION_HASH}.js.gz`,
+        `_rpc-${constants.VERSION}.js`,
+        `_rpc-${constants.VERSION}.js.br`,
+        `_rpc-${constants.VERSION}.js.gz`,
+        `_rpc-lazy-${constants.VERSION}.js`,
+        `_rpc-lazy-${constants.VERSION}.js.br`,
+        `_rpc-lazy-${constants.VERSION}.js.gz`,
         `_rpc.txt`,
-        `_unsuspense-${constants.VERSION_HASH}.js`,
-        `_unsuspense-${constants.VERSION_HASH}.js.br`,
-        `_unsuspense-${constants.VERSION_HASH}.js.gz`,
+        `_unsuspense-${constants.VERSION}.js`,
+        `_unsuspense-${constants.VERSION}.js.br`,
+        `_unsuspense-${constants.VERSION}.js.gz`,
         `_unsuspense.txt`,
         `page-with-web-component-${HASH}-en.js`,
         `page-with-web-component-${HASH}-en.js.br`,
@@ -441,12 +441,12 @@ describe('utils', () => {
         .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
-        `_rpc-${constants.VERSION_HASH}.js`,
-        `_rpc-${constants.VERSION_HASH}.js.br`,
-        `_rpc-${constants.VERSION_HASH}.js.gz`,
-        `_rpc-lazy-${constants.VERSION_HASH}.js`,
-        `_rpc-lazy-${constants.VERSION_HASH}.js.br`,
-        `_rpc-lazy-${constants.VERSION_HASH}.js.gz`,
+        `_rpc-${constants.VERSION}.js`,
+        `_rpc-${constants.VERSION}.js.br`,
+        `_rpc-${constants.VERSION}.js.gz`,
+        `_rpc-lazy-${constants.VERSION}.js`,
+        `_rpc-lazy-${constants.VERSION}.js.br`,
+        `_rpc-lazy-${constants.VERSION}.js.gz`,
         `_rpc.txt`,
       ]);
 
@@ -517,9 +517,9 @@ describe('utils', () => {
         .toSorted((a, b) => a.localeCompare(b));
 
       expect(pagesClient).toEqual([
-        `_unsuspense-${constants.VERSION_HASH}.js`,
-        `_unsuspense-${constants.VERSION_HASH}.js.br`,
-        `_unsuspense-${constants.VERSION_HASH}.js.gz`,
+        `_unsuspense-${constants.VERSION}.js`,
+        `_unsuspense-${constants.VERSION}.js.br`,
+        `_unsuspense-${constants.VERSION}.js.gz`,
         `_unsuspense.txt`,
       ]);
 
