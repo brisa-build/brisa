@@ -2,18 +2,7 @@ import { describe, it, expect } from 'bun:test';
 
 import { Initiator } from '@/public-constants';
 import type { RequestContext } from '@/types';
-
-export default function getInitiator(req: RequestContext) {
-  const firstPathnamePart = new URL(req.finalURL).pathname.split('/')[
-    req.i18n?.locale ? 2 : 1
-  ];
-
-  if (firstPathnamePart === 'api') return Initiator.API_REQUEST;
-  if (req.method !== 'POST') return Initiator.INITIAL_REQUEST;
-  if (req.headers.has('x-action')) return Initiator.SERVER_ACTION;
-
-  return Initiator.SPA_NAVIGATION;
-}
+import getInitiator from '.';
 
 describe('utils / getInitiator', () => {
   it('should return API_REQUEST when the first pathname part is "api" with i18n + GET', () => {
@@ -73,6 +62,16 @@ describe('utils / getInitiator', () => {
       finalURL: 'https://example.com/foo/bar',
       method: 'POST',
       headers: new Headers([['x-action', 'foo']]),
+    } as RequestContext;
+
+    expect(getInitiator(req)).toBe(Initiator.SERVER_ACTION);
+  });
+
+  it('should return SERVER_ACTION when the ?_aid param in a POST method is present', () => {
+    const req = {
+      finalURL: 'https://example.com/foo/bar?_aid=a1_1',
+      method: 'POST',
+      headers: new Headers(),
     } as RequestContext;
 
     expect(getInitiator(req)).toBe(Initiator.SERVER_ACTION);
