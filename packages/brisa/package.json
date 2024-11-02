@@ -126,11 +126,11 @@
     "astring": "1.9.0",
     "csstype": "3.1.3",
     "diff-dom-streaming": "0.6.3",
-    "meriyah": "6.0.2"
+    "meriyah": "6.0.3"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "15.7.4",
-    "@types/bun": "1.1.11",
+    "@happy-dom/global-registrator": "15.8.0",
+    "@types/bun": "1.1.12",
     "brisa": "latest",
     "@types/mime-types": "2.1.4",
     "mime-types": "2.1.35",
@@ -138,9 +138,9 @@
     "brisa-tailwindcss": "workspace:*",
     "brisa-pandacss": "workspace:*"
   },
-  "packageManager": "bun@1.1.33",
+  "packageManager": "bun@1.1.34",
   "engines": {
-    "bun": ">= 1.1.33",
+    "bun": ">= 1.1.34",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"

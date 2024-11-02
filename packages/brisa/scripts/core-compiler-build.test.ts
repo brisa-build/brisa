@@ -19,7 +19,8 @@ describe('scripts/core-compiler-build', () => {
         return 'Hello World';
       }
      `;
-    const expectedCode = normalizeHTML(`import {brisaElement, _on, _off} from "brisa/client";
+    const expectedCode =
+      normalizeHTML(`import {brisaElement, _on, _off} from "brisa/client";
         function Hello() {
           return "Hello World";
         }

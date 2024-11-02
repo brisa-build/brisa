@@ -937,7 +937,8 @@ describe('utils', () => {
           clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent() {
             return ['dialog', {open: _on}, ''];
@@ -959,7 +960,8 @@ describe('utils', () => {
           clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent(props) {
             return ['dialog', {open: () => props.open.value ? _on : _off}, ''];
@@ -982,7 +984,8 @@ describe('utils', () => {
           clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent({}, {state}) {
             const open = state(true);
@@ -1006,7 +1009,8 @@ describe('utils', () => {
           clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function MyComponent() {
             const open = true;
@@ -1152,7 +1156,8 @@ describe('utils', () => {
           clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({}, {effect, cleanup, state}) {
             const someState = state(0);
@@ -1179,7 +1184,8 @@ describe('utils', () => {
           clientBuildPlugin(input, 'src/web-components/my-component.tsx').code,
         );
 
-        const expected = toInline(`import {brisaElement, _on, _off} from "brisa/client";
+        const expected =
+          toInline(`import {brisaElement, _on, _off} from "brisa/client";
 
           function Component({onFoo}) {
             return ['div', {onClick: onFoo}, 'foo'];

@@ -229,7 +229,8 @@ describe('utils', () => {
         const out = transformToReactiveProps(ast);
         const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeHTML(`export default function Component({}, {state}) {
+        const expectedCode =
+          normalizeHTML(`export default function Component({}, {state}) {
             const stateFoo = state('foo');
             const stateBar = state('bar');
             const stateBaz = state('baz');
@@ -269,7 +270,8 @@ describe('utils', () => {
         const out = transformToReactiveProps(ast);
         const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeHTML(`export default function Component({}, {state}) {
+        const expectedCode =
+          normalizeHTML(`export default function Component({}, {state}) {
           const stateFoo = state('foo');
           const stateBar = state('bar');
           const stateBaz = state('baz');
@@ -435,7 +437,8 @@ describe('utils', () => {
 
         const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeHTML(`export default function Foo(__b_props__, {derived}) {
+        const expectedCode =
+          normalizeHTML(`export default function Foo(__b_props__, {derived}) {
           const baz = derived(() => ((__b_props__.foo.value ?? ({})).bar ?? ({})).baz ?? "bar");
           const quux = derived(() => (__b_props__.foo.value ?? ({})).quux);
           return jsxDEV("div", {children: [quux.value, baz.value]}, undefined, true, undefined, this);
@@ -810,7 +813,8 @@ describe('utils', () => {
         const out = transformToReactiveProps(ast);
         const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
 
-        const expectedCode = normalizeHTML(`export default function MyComponent({foo, bar}) {
+        const expectedCode =
+          normalizeHTML(`export default function MyComponent({foo, bar}) {
           const baz = foo.value && bar.value;
           return jsxDEV("div", {children: baz ? 'TRUE' : 'FALSE'}, undefined, false, undefined, this);
         }`);
