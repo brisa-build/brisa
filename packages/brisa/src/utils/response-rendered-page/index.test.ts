@@ -7,19 +7,6 @@ import responseRenderedPage, { routeToPrerenderedPagePath } from '.';
 import { getConstants } from '@/constants';
 import { Initiator } from '@/public-constants';
 
-/*
-export function routeToPrerenderedPagePath(route: MatchedBrisaRoute) {
-  const { BUILD_DIR, CONFIG } = getConstants();
-  const { pathname } = new URL(route.pathname, 'http://localhost');
-  return path.join(
-    BUILD_DIR,
-    'prerendered-pages',
-    CONFIG.trailingSlash
-      ? `${pathname}${path.sep}index.html`
-      : `${pathname}.html`,
-  );
-  */
-
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
