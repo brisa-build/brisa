@@ -37,7 +37,9 @@ export default async function responseRenderedPage({
     transferClientStoreToServer();
   }
 
-  const fileStream = getPrerenderedPage(route);
+  const fileStream = getReadableStreamFromPath(
+    routeToPrerenderedPagePath(route),
+  );
   const htmlStream =
     fileStream ??
     renderToReadableStream(PageComponent(), {
@@ -53,16 +55,15 @@ export default async function responseRenderedPage({
   return new Response(htmlStream, responseOptions);
 }
 
-function getPrerenderedPage(route: MatchedBrisaRoute) {
+export function routeToPrerenderedPagePath(route: MatchedBrisaRoute) {
   const { BUILD_DIR, CONFIG } = getConstants();
   const { pathname } = new URL(route.pathname, 'http://localhost');
-  const filePath = path.join(
+  const isHome = pathname === '/';
+  return path.join(
     BUILD_DIR,
     'prerendered-pages',
     CONFIG.trailingSlash
       ? `${pathname}${path.sep}index.html`
-      : `${pathname}.html`,
+      : `${isHome ? 'index' : pathname}.html`,
   );
-
-  return getReadableStreamFromPath(filePath);
 }

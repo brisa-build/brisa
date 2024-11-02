@@ -3,35 +3,48 @@ import path from 'node:path';
 
 import type { MatchedBrisaRoute, Translate } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
-import responseRenderedPage from '.';
+import responseRenderedPage, { routeToPrerenderedPagePath } from '.';
 import { getConstants } from '@/constants';
 import { Initiator } from '@/public-constants';
+
+/*
+export function routeToPrerenderedPagePath(route: MatchedBrisaRoute) {
+  const { BUILD_DIR, CONFIG } = getConstants();
+  const { pathname } = new URL(route.pathname, 'http://localhost');
+  return path.join(
+    BUILD_DIR,
+    'prerendered-pages',
+    CONFIG.trailingSlash
+      ? `${pathname}${path.sep}index.html`
+      : `${pathname}.html`,
+  );
+  */
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 
 describe('utils', () => {
+  beforeEach(async () => {
+    globalThis.mockConstants = {
+      ...(getConstants() ?? {}),
+      PAGES_DIR,
+      BUILD_DIR,
+      SRC_DIR: BUILD_DIR,
+      ASSETS_DIR,
+      LOCALES_SET: new Set(['en', 'es']),
+      I18N_CONFIG: {
+        locales: ['en', 'es'],
+        defaultLocale: 'es',
+      },
+    };
+  });
+
+  afterEach(() => {
+    globalThis.mockConstants = undefined;
+  });
+
   describe('response-rendered-page', () => {
-    beforeEach(async () => {
-      globalThis.mockConstants = {
-        ...(getConstants() ?? {}),
-        PAGES_DIR,
-        BUILD_DIR,
-        SRC_DIR: BUILD_DIR,
-        ASSETS_DIR,
-        LOCALES_SET: new Set(['en', 'es']),
-        I18N_CONFIG: {
-          locales: ['en', 'es'],
-          defaultLocale: 'es',
-        },
-      };
-    });
-
-    afterEach(() => {
-      globalThis.mockConstants = undefined;
-    });
-
     it('should return 200 page with client page code', async () => {
       const req = extendRequestContext({
         originalRequest: new Request(
@@ -268,6 +281,64 @@ describe('utils', () => {
 
       expect(await response.text()).not.toContain(
         'window._S=[["key","value"]]',
+      );
+    });
+  });
+
+  describe('routeToPrerenderedPagePath', () => {
+    it('should work for the home', () => {
+      const route = {
+        pathname: '/',
+      } as MatchedBrisaRoute;
+      const pagePath = routeToPrerenderedPagePath(route);
+
+      expect(pagePath).toBe(
+        path.join(BUILD_DIR, 'prerendered-pages', 'index.html'),
+      );
+    });
+
+    it('should work for the home with trailingSlash', () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+      const route = {
+        pathname: '/',
+      } as MatchedBrisaRoute;
+      const pagePath = routeToPrerenderedPagePath(route);
+
+      expect(pagePath).toBe(
+        path.join(BUILD_DIR, 'prerendered-pages', 'index.html'),
+      );
+    });
+
+    it('should return the path to the prerendered page', () => {
+      const route = {
+        pathname: '/foo',
+      } as MatchedBrisaRoute;
+      const pagePath = routeToPrerenderedPagePath(route);
+
+      expect(pagePath).toBe(
+        path.join(BUILD_DIR, 'prerendered-pages', 'foo.html'),
+      );
+    });
+
+    it('should return the path to the prerendered page with trailingSlash', () => {
+      globalThis.mockConstants = {
+        ...globalThis.mockConstants,
+        CONFIG: {
+          trailingSlash: true,
+        },
+      };
+      const route = {
+        pathname: '/foo/',
+      } as MatchedBrisaRoute;
+      const pagePath = routeToPrerenderedPagePath(route);
+
+      expect(pagePath).toBe(
+        path.join(BUILD_DIR, 'prerendered-pages', 'foo', 'index.html'),
       );
     });
   });
