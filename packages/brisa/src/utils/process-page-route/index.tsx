@@ -7,10 +7,16 @@ import getImportableFilepath, {
   pathToFileURLWhenNeeded,
 } from '@/utils/get-importable-filepath';
 
+export const cache = new Map<string, any>();
+
 export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
+  if (cache.has(route.filePath)) {
+    return cache.get(route.filePath);
+  }
+
   const { BUILD_DIR } = getConstants();
   const module = (await import(
     pathToFileURLWhenNeeded(route.filePath)
@@ -28,7 +34,11 @@ export default async function processPageRoute(
     </>
   );
 
-  return { Page, module, layoutModule } as const;
+  const res = { Page, module, layoutModule } as const;
+
+  cache.set(route.filePath, res);
+
+  return res;
 }
 
 function PageLayout({

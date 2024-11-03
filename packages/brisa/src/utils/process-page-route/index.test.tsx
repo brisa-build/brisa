@@ -4,7 +4,7 @@ import path from 'node:path';
 import { getConstants } from '@/constants';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 import extendRequestContext from '@/utils/extend-request-context';
-import processPageRoute from '.';
+import processPageRoute, { cache } from '.';
 import { toInline } from '@/helpers';
 import translateCore from '@/utils/translate-core';
 import type { MatchedBrisaRoute, RequestContext } from '@/types';
@@ -33,6 +33,7 @@ const routeHomepage = { filePath: HOMEPAGE } as unknown as MatchedBrisaRoute;
 
 describe('utils', () => {
   beforeEach(() => {
+    cache.clear();
     globalThis.mockConstants = getConstants() ?? {};
   });
 

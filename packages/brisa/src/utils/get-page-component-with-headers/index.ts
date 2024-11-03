@@ -11,6 +11,9 @@ type Params = {
   headers?: Record<string, string>;
 };
 
+const { HEADERS, BUILD_DIR } = getConstants();
+const middlewareModule = await importFileIfExists('middleware', BUILD_DIR);
+
 export default async function getPageComponentWithHeaders({
   req,
   route,
@@ -18,8 +21,6 @@ export default async function getPageComponentWithHeaders({
   status = 200,
   headers,
 }: Params) {
-  const { HEADERS, BUILD_DIR } = getConstants();
-  const middlewareModule = await importFileIfExists('middleware', BUILD_DIR);
   const { Page, module, layoutModule } = await processPageRoute(route, error);
   const middlewareResponseHeaders =
     middlewareModule?.responseHeaders?.(req, status) ?? {};
