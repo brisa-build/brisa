@@ -1,11 +1,11 @@
-import { getConstants } from '@/constants';
-import dangerHTML from '@/utils/danger-html';
-import { LiveReloadScript } from '@/cli/dev-live-reload';
-import LoadLayout from '@/utils/load-layout';
-import type { MatchedBrisaRoute, PageModule } from '@/types';
+import { getConstants } from "@/constants";
+import dangerHTML from "@/utils/danger-html";
+import { LiveReloadScript } from "@/cli/dev-live-reload";
+import LoadLayout from "@/utils/load-layout";
+import type { MatchedBrisaRoute, PageModule } from "@/types";
 import getImportableFilepath, {
   pathToFileURLWhenNeeded,
-} from '@/utils/get-importable-filepath';
+} from "@/utils/get-importable-filepath";
 
 export const cache = new Map<string, any>();
 
@@ -13,6 +13,8 @@ export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
+  // This cache improves the req/sec 575%
+  // https://github.com/brisa-build/brisa/pull/604
   if (cache.has(route.filePath)) {
     return cache.get(route.filePath);
   }
@@ -21,13 +23,13 @@ export default async function processPageRoute(
   const module = (await import(
     pathToFileURLWhenNeeded(route.filePath)
   )) as PageModule;
-  const layoutPath = getImportableFilepath('layout', BUILD_DIR);
+  const layoutPath = getImportableFilepath("layout", BUILD_DIR);
   const layoutModule = layoutPath ? await import(layoutPath) : undefined;
   const PageComponent = module.default;
 
   const Page = () => (
     <>
-      {dangerHTML('<!DOCTYPE html>')}
+      {dangerHTML("<!DOCTYPE html>")}
       <PageLayout layoutModule={layoutModule}>
         <PageComponent error={error} />
       </PageLayout>
