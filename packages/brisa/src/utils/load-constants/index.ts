@@ -11,7 +11,7 @@ import {
 } from '../log/log-color';
 import { version } from '../../../package.json';
 
-const SEPARATORS_REGEX = /[\\|\/]/g;
+const WIN32_SEP_REGEX = /\\/g;
 const PAGE_404 = '/_404';
 const PAGE_500 = '/_500';
 const OS_CAN_LOAD_BALANCE =
@@ -25,10 +25,9 @@ const staticExportOutputOption = new Set([
 ]);
 
 export function internalConstants(): InternalConstants {
-  const currentScript = path.normalize(
-    (process.argv[1] ?? '').replace(SEPARATORS_REGEX, path.sep),
-  );
+  const currentScript = process.argv[1] ?? '';
   const { NODE_ENV } = process.env;
+  const CLI_DIR = path.join('brisa', 'out', 'cli');
   // Note: process.env.IS_PROD is to be defined in the build process
   const IS_PRODUCTION =
     Boolean(process.env.IS_PROD) ||
@@ -36,19 +35,21 @@ export function internalConstants(): InternalConstants {
     process.argv.some((t) => t === 'PROD');
   const IS_DEVELOPMENT =
     process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development';
-  const CLI_DIR = path.join('brisa', 'out', 'cli');
   const IS_SERVE_PROCESS =
     Boolean(process.env.IS_SERVE_PROCESS) ||
-    Boolean(currentScript?.endsWith?.(path.join(CLI_DIR, 'serve', 'index.js')));
+    Boolean(currentScript.endsWith(path.join(CLI_DIR, 'serve', 'index.js')));
 
   const isStandaloneServer = Boolean(process.env.IS_STANDALONE_SERVER);
   const ROOT_DIR = isStandaloneServer ? import.meta.dirname : process.cwd();
 
   const IS_BUILD_PROCESS = Boolean(
-    currentScript?.endsWith?.(path.join(CLI_DIR, 'build.js')),
+    currentScript.endsWith(path.join(CLI_DIR, 'build.js')),
   );
 
-  const BRISA_DIR = currentScript?.replace(new RegExp(`${CLI_DIR}.*`), 'brisa');
+  const BRISA_DIR = currentScript.replace(
+    new RegExp(`${CLI_DIR.replace(WIN32_SEP_REGEX, '\\\\')}.*`),
+    'brisa',
+  );
 
   const SRC_DIR: string = isStandaloneServer
     ? import.meta.dirname
