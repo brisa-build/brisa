@@ -28,29 +28,24 @@ declare module 'bun' {
   }
 }
 
-/**
- * Internal types used by Brisa and output adapters.
- */
-export type BrisaConstants = {
+export type InternalConstants = {
+  BRISA_DIR: string;
+  IS_BUILD_PROCESS: boolean;
+  IS_SERVE_PROCESS: boolean;
+  WORKSPACE: string;
+  SRC_DIR: string;
+  BUILD_DIR: string;
+  ROOT_DIR: string;
+  IS_PRODUCTION: boolean;
+  IS_DEVELOPMENT: boolean;
   JS_RUNTIME: 'bun' | 'node';
   PAGE_404: string;
   PAGE_500: string;
   VERSION: string;
-  WEB_CONTEXT_PLUGINS: string[];
   RESERVED_PAGES: string[];
-  IS_PRODUCTION: boolean;
-  IS_DEVELOPMENT: boolean;
-  IS_SERVE_PROCESS: boolean;
-  IS_BUILD_PROCESS: boolean;
   PORT: number;
-  BUILD_DIR: string;
-  BRISA_DIR?: string;
-  ROOT_DIR: string;
-  SRC_DIR: string;
   ASSETS_DIR: string;
   PAGES_DIR: string;
-  I18N_CONFIG: I18nConfig;
-  CSS_FILES: string[];
   LOG_PREFIX: {
     WAIT: string;
     READY: string;
@@ -59,14 +54,26 @@ export type BrisaConstants = {
     WARN: string;
     TICK: string;
   };
-  LOCALES_SET: Set<string>;
-  CONFIG: Configuration;
-  IS_STATIC_EXPORT: boolean;
   REGEX: Record<string, RegExp>;
   HEADERS: {
     CACHE_CONTROL: string;
   };
 };
+
+// Project constants need to be refresed on hot-reload (DEV)
+export type ProjectConstants = {
+  CSS_FILES: string[];
+  CONFIG: Configuration;
+  I18N_CONFIG: I18nConfig;
+  WEB_CONTEXT_PLUGINS: any[];
+  LOCALES_SET: Set<string>;
+  IS_STATIC_EXPORT: boolean;
+};
+
+/**
+ * Internal types used by Brisa and output adapters.
+ */
+export type BrisaConstants = InternalConstants & ProjectConstants;
 
 /**
  * Description:
@@ -1397,8 +1404,6 @@ export type WebComponentIntegrations = {
         types?: string;
       };
 };
-
-type ExtendedWebContext = typeof import('@/web-components/_integrations').ExtendedWebContext;
 
 type I18nKey = typeof import('@/i18n').default extends I18nConfig<infer T>
   ? Paths<T extends object ? T : I18nDictionary>
