@@ -6,7 +6,16 @@ const BRISA_ERRORS = '__BRISA_ERRORS__';
 
 export function logTable(data: { [key: string]: string }[]) {
   const { LOG_PREFIX } = getConstants();
-  const headers = Object.keys(data[0]);
+  const headersContent = data?.[0];
+
+  if (!headersContent) {
+    logError({
+      messages: ['An error trying to log a table with the generated files'],
+    });
+    return;
+  }
+
+  const headers = Object.keys(headersContent);
   const maxLengths = headers.map((header) =>
     data.reduce(
       (max, item) => Math.max(max, item[header].length),

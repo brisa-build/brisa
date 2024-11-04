@@ -10,6 +10,19 @@ describe('utils', () => {
       mock.restore();
     });
 
+    it('should log an error when table data is empty', () => {
+      const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
+
+      spyOn(console, 'log').mockImplementation((f, s) => mockLog(f, s));
+
+      logTable([]);
+
+      expect(mockLog.mock.results).toHaveLength(4);
+      expect(mockLog.mock.calls.join()).toContain(
+        'An error trying to log a table with the generated files',
+      );
+    });
+
     it('should log a table', () => {
       const mockLog = mock((f, s) => (s ? `${f} ${s}` : f));
 
