@@ -85,7 +85,8 @@ export default async function generateStaticExport(): Promise<
 
       if (CONFIG.trailingSlash) {
         htmlPath = path.join(routeName, 'index.html');
-      } else if (routeName === path.sep) {
+        // Note: in Windows the home routeName is also "/"
+      } else if (routeName === '/') {
         htmlPath = path.join(path.sep, 'index.html');
       } else {
         htmlPath = path.join(routeName.replace(/\/$/, '') + '.html');
