@@ -362,9 +362,9 @@ function detectAsset(url: URL, assetsDir: string) {
 
 export function setUpEnvVars(
   isCLI: boolean = Boolean(
-    process.argv[1].includes(
+    process.argv[1]?.includes(
       path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
-    ),
+    ) ?? false,
   ),
 ) {
   // This is necessary in case of Custom Server using the getServeOptions outside

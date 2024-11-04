@@ -68,7 +68,29 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     process.env.__CRYPTO_IV__ = undefined;
     process.env.BRISA_BUILD_FOLDER = '';
     globalThis.mockConstants = undefined;
+    process.argv[1] = '';
     jest.restoreAllMocks();
+  });
+
+  it('should set the env variables when they are not set for a custom server when no argument neither process.argv[1]', async () => {
+    await (await import('./serve-options')).setUpEnvVars();
+
+    expect(process.env.__CRYPTO_KEY__).toBeDefined();
+    expect(process.env.__CRYPTO_IV__).toBeDefined();
+    expect(process.env.BRISA_BUILD_FOLDER).toBe(
+      path.join(process.cwd(), 'build'),
+    );
+  });
+
+  it('should detect as isCLI false when process.argv[1] NOT include serve/index.js', async () => {
+    process.argv[1] = path.join('brisa', 'out', 'cli', 'build', 'index.js');
+    await (await import('./serve-options')).setUpEnvVars();
+
+    expect(process.env.__CRYPTO_KEY__).toBeDefined();
+    expect(process.env.__CRYPTO_IV__).toBeDefined();
+    expect(process.env.BRISA_BUILD_FOLDER).toBe(
+      path.join(process.cwd(), 'build'),
+    );
   });
 
   it('should set the env variables when they are not set for a custom server', async () => {
@@ -83,6 +105,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should BRISA_BUILD_FOLDER env variable be defined always (to use prebuild)', async () => {
     await (await import('./serve-options')).setUpEnvVars(true);
+
+    expect(process.env.__CRYPTO_KEY__).not.toBeDefined();
+    expect(process.env.__CRYPTO_IV__).not.toBeDefined();
+    expect(process.env.BRISA_BUILD_FOLDER).toBe(
+      path.join(process.cwd(), 'build'),
+    );
+  });
+
+  it('should detect as isCLI true when process.argv[1] include serve/index.js', async () => {
+    process.argv[1] = path.join('brisa', 'out', 'cli', 'serve', 'index.js');
+    await (await import('./serve-options')).setUpEnvVars();
 
     expect(process.env.__CRYPTO_KEY__).not.toBeDefined();
     expect(process.env.__CRYPTO_IV__).not.toBeDefined();
