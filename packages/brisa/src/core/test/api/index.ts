@@ -93,13 +93,12 @@ export function cleanup() {
  * Serve a route and return the response
  */
 export async function serveRoute(route: string) {
-  const serveOptions = await getServeOptions();
-
-  if (!serveOptions) {
+  const serveOptions = await getServeOptions().catch((e) => {
     throw new Error(
       "Error: Unable to execute 'serveRoute'. Prior execution of 'brisa build' is required to utilize the 'serveRoute' method.",
+      { cause: e },
     );
-  }
+  });
 
   const url = new URL(route, 'http://localhost:3000');
   const request = new Request(url);

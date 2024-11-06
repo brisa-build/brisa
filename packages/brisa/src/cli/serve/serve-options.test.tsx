@@ -124,73 +124,47 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
   });
 
-  it('should log an error and exit if there are no "build" directory in production', async () => {
+  it('should throw an error if there are no "build" directory in production', async () => {
     const constants = getConstants();
     globalThis.mockConstants = {
       ...constants,
       IS_PRODUCTION: true,
       BUILD_DIR: '/some-path',
     };
-    const mockLog = spyOn(console, 'log');
 
-    const serveOptions = await (
-      await import('./serve-options')
-    ).getServeOptions();
-
-    expect(mockLog).toHaveBeenCalledWith(
-      constants.LOG_PREFIX.ERROR,
-      'Not exist "build" yet. Please run "brisa build" first',
-    );
-
-    mockLog.mockRestore();
-
-    expect(serveOptions).toBeNull();
+    expect(
+      async () => await (await import('./serve-options')).getServeOptions(),
+    ).toThrowError('Not exist "build" yet. Please run "brisa build" first');
   });
 
-  it('should log an error and exit if there are no "pages" directory in production', async () => {
+  it('should throw an error if there are no "pages" directory in production', async () => {
     const constants = getConstants();
     globalThis.mockConstants = {
       ...constants,
       IS_PRODUCTION: true,
       PAGES_DIR: '/some-path',
     };
-    const mockLog = spyOn(console, 'log');
 
-    const serveOptions = await (
-      await import('./serve-options')
-    ).getServeOptions();
-
-    expect(mockLog).toHaveBeenCalledWith(
-      constants.LOG_PREFIX.ERROR,
+    expect(
+      async () => await (await import('./serve-options')).getServeOptions(),
+    ).toThrowError(
       `Not exist build/pages" directory. It's required to run "brisa start"`,
     );
-
-    mockLog.mockRestore();
-
-    expect(serveOptions).toBeNull();
   });
 
-  it('should log an error and exit if there are no "pages" directory in development', async () => {
+  it('should throw an error if there are no "pages" directory in development', async () => {
     const constants = getConstants();
     globalThis.mockConstants = {
       ...constants,
       IS_PRODUCTION: false,
       PAGES_DIR: '/some-path',
     };
-    const mockLog = spyOn(console, 'log');
 
-    const serveOptions = await (
-      await import('./serve-options')
-    ).getServeOptions();
-
-    expect(mockLog).toHaveBeenCalledWith(
-      constants.LOG_PREFIX.ERROR,
+    expect(
+      async () => await (await import('./serve-options')).getServeOptions(),
+    ).toThrowError(
       `Not exist src/pages" directory. It's required to run "brisa dev"`,
     );
-
-    mockLog.mockRestore();
-
-    expect(serveOptions).toBeNull();
   });
 
   it('should no fetch anything when server upgrades to websocket', async () => {

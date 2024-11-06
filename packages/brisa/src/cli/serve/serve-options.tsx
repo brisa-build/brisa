@@ -43,27 +43,20 @@ export async function getServeOptions() {
     ASSETS_DIR,
     CONFIG,
     JS_RUNTIME,
-    LOG_PREFIX,
     HEADERS: { CACHE_CONTROL },
   } = getConstants();
 
   if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
-    console.log(
-      LOG_PREFIX.ERROR,
-      'Not exist "build" yet. Please run "brisa build" first',
-    );
-    return null;
+    throw new Error('Not exist "build" yet. Please run "brisa build" first');
   }
 
   if (!fs.existsSync(PAGES_DIR)) {
     const path = IS_PRODUCTION ? 'build/pages' : 'src/pages';
     const cli = IS_PRODUCTION ? 'brisa start' : 'brisa dev';
 
-    console.log(
-      LOG_PREFIX.ERROR,
+    throw new Error(
       `Not exist ${path}" directory. It\'s required to run "${cli}"`,
     );
-    return null;
   }
 
   let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);

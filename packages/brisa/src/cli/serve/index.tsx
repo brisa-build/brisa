@@ -94,7 +94,9 @@ process.on(
   handleError('Uncaught Exception Monitor'),
 );
 
-const serveOptions = await getServeOptions();
+const serveOptions = await getServeOptions().catch((e) => {
+  console.log(LOG_PREFIX.ERROR, e.message);
+});
 
 if (!serveOptions) process.exit(1);
 
