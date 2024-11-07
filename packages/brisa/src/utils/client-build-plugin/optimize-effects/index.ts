@@ -116,22 +116,23 @@ export default function optimizeEffects(
         },
       });
 
-      if (this?.type === 'ExpressionStatement' && node.arguments[0]?.async) {
+      if (this?.type === 'ExpressionStatement') {
+        const awaitedNode = {
+          type: 'AwaitExpression',
+          argument: node
+        };
         logWarning(
           [
-            'The next effect function is async without an await:',
-            '',
+            'The next effect function has been automatically awaited:'
             ...current.split('\n'),
-            '',
-            "It's recommended to await the async effects to avoid registration conflicts:",
-            '',
-            ...recommended.split('\n'),
+            'The effect has been modified to:'
+            ...recommended.split('\n')
           ],
-          'Docs: https://brisa.build/building-your-application/components-details/web-components#effects-effect-method',
+          'Docs: https://brisa.build/building-your-application/components-details/web-components#effects-effect-method'
         );
+        return { ...this, expression: awaitedNode };
       }
-
-      needsToAwait ||= Boolean(node.arguments[0]?.async);
+      needsToAwait = true;
       assignRNameToNode(node, { parent: this });
     }
 
@@ -242,24 +243,20 @@ export default function optimizeEffects(
       modifiedEffect.arguments[0].params = [param];
     }
 
-    if (needsToAwait) {
-      const eff = wrapEffectWithDependencies(modifiedEffect, parent, true);
-      return {
-        type: 'AwaitExpression',
-        argument: {
-          ...eff,
-          arguments: [
-            {
-              ...eff.arguments[0],
-              async: true,
-            },
-          ],
-        },
-      };
-    }
-
-    return wrapEffectWithDependencies(modifiedEffect, parent);
-  }
+    // Always wrap the effect with an AwaitExpression
+    const eff = wrapEffectWithDependencies(modifiedEffect, parent, true);
+    return {
+      type: 'AwaitExpression',
+      argument: {
+        ...eff,
+        arguments: [
+          {
+            ...eff.arguments[0],
+            async: true,
+          },
+        ],
+      },
+    };
 
   // This function is called to set the effect name, cleanup name and identifier
   // from the webContext properties that have all web components as second parameter
