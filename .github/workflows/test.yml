@@ -9,6 +9,7 @@ on:
 jobs:
   bun-tests:
     runs-on: ${{ matrix.os }}
+    if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -17,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: "22"
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
@@ -31,6 +32,7 @@ jobs:
 
   node-tests:
     runs-on: ${{ matrix.os }}
+    if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -39,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: "22"
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
