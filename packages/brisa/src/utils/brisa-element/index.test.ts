@@ -3488,6 +3488,64 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>REAL:1</div>');
     });
 
+    it('should onMount work as expected with suspense', async () => {
+      const mockUnmountSuspense = mock((s: string) => {});
+      const mockOnMount = mock((s: string) => {});
+
+      const Component = async ({}, { onMount, self, state }: any) => {
+        const count = state(0);
+
+        onMount(() => {
+          self.setAttribute('tabindex', '0');
+          mockOnMount(self.shadowRoot.innerHTML);
+        });
+
+        await Bun.sleep(0);
+
+        return [
+          'div',
+          { onClick: () => count.value++ },
+          () => 'REAL:' + count.value,
+        ];
+      };
+
+      Component.suspense = ({}, { state, cleanup }: any) => {
+        const count = state(0);
+
+        cleanup(() => {
+          mockUnmountSuspense('cleanup');
+        });
+
+        return [
+          'div',
+          { onClick: () => count.value++ },
+          () => 'SUSPENSE:' + count.value,
+        ];
+      };
+
+      customElements.define('test-component', brisaElement(Component));
+
+      document.body.innerHTML = '<test-component />';
+
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>SUSPENSE:0</div>',
+      );
+
+      expect(mockOnMount).toHaveBeenCalledTimes(0);
+
+      await Bun.sleep(2);
+
+      expect(mockOnMount).toHaveBeenCalledTimes(1);
+      expect(mockOnMount).toBeCalledWith('<div>REAL:0</div>');
+      expect(testComponent.outerHTML).toBe(
+        '<test-component tabindex="0"></test-component>',
+      );
+    });
+
     it('should cleanup when thrown an error with error component', async () => {
       const mockCallback = mock((s: string) => {});
       const Component = async ({}, { cleanup }: any) => {

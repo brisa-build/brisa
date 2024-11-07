@@ -297,7 +297,7 @@ For more details, refer to the [i18n](/building-your-application/routing/interna
 
 `route: Route`
 
-The `route` object provides access to the current route's `name`, `pathname`, `params`, and `query`. 
+The `route` object provides access to the current route's `name`, `pathname`, `params`, and `query`.
 
 Example:
 
@@ -322,6 +322,15 @@ self.addEventListener("click", () => {
   console.log("Web component clicked!");
 });
 ```
+
+The `self` property has some cases that work during the **Server-Side Rendering** (SSR):
+
+- [`self.attachInternals()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/attachInternals) - You can use it at the top level that during the SSR ignores the method.
+- [`self.shadowRoot.adoptedStyleSheets`](/building-your-application/styling/web-components#global-styles-in-web-components) - You can use it to clean global styles in web components and it works during the SSR.
+- [`self.setAttribute()`](https://developer.mozilla.org/es/docs/Web/API/Element/getAttribute) - You can modify attributes of the web component during the SSR, for example to force a `tabindex` of an element without having to manually set it when consuming the web component.
+- [`self.getAttribute()`](https://developer.mozilla.org/es/docs/Web/API/Element/setAttribute) - You can get attributes of the web component during the SSR. Brisa reactivity does not work here, but you can use it to get attribute values passed to the web component.
+- [`self.addEventListener`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) - During the SSR, the execution will be ignored, but you can use it to register events at the top level of the web component where the subscription will be made on the client.
+- [`self.removeEventListener`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener): During the SSR, the execution will be ignored, but you can use it to clean events at the top level of the web component where the cleanup will be done on the client.
 
 > [!CAUTION]
 >
@@ -441,8 +450,8 @@ function paramsPlugin(ctx: WebContext) {
         };
 
         window.navigation?.addEventListener("navigate", navigate);
-        ctx.cleanup(
-          () => window.navigation?.removeEventListener("navigate", navigate),
+        ctx.cleanup(() =>
+          window.navigation?.removeEventListener("navigate", navigate),
         );
       });
 

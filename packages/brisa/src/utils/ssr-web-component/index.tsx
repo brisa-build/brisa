@@ -32,9 +32,24 @@ export default async function SSRWebComponent(
     selector = props.selector;
   }
 
+  function getAttribute(name: string) {
+    return props[name] ?? null;
+  }
+
+  function setAttribute(name: string, value: string) {
+    props[name] = value;
+  }
+
   const { WEB_CONTEXT_PLUGINS, CSS_FILES } = getConstants();
   const showContent = !store.has(AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL);
-  const self = { shadowRoot: {}, attachInternals: voidFn } as any;
+  const self = {
+    shadowRoot: {},
+    attachInternals: voidFn,
+    getAttribute,
+    setAttribute,
+    addEventListener: voidFn,
+    removeEventListener: voidFn,
+  } as any;
   let style = '';
   const Selector = selector;
   const ids = {} as Record<

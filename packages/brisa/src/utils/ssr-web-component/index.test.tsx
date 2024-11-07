@@ -1,4 +1,4 @@
-import { describe, expect, it, afterEach, spyOn } from 'bun:test';
+import { describe, expect, it, afterEach, spyOn, mock } from 'bun:test';
 import { join } from 'node:path';
 import SSRWebComponent, { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '.';
 import type {
@@ -913,6 +913,106 @@ describe('utils', () => {
         'data-id-2': 'd519f3a3-c53a-43fe-853a-50dd799194b3',
         key: undefined,
       });
+    });
+
+    it('should self.getAttribute return null on SSR when the prop does not exist', async () => {
+      const Component = ({}, { self }: WebContext) => {
+        return <div>{self.getAttribute('foo')}</div>;
+      };
+      const selector = 'web-component';
+
+      const output = (await SSRWebComponent(
+        {
+          'ssr-Component': Component,
+          'ssr-selector': selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(output[2][0][2][0][2]).toBe(null);
+    });
+
+    it('should self.getAttribute work on SSR', async () => {
+      const Component = ({}, { self }: WebContext) => {
+        return <div>{self.getAttribute('foo')}</div>;
+      };
+      const selector = 'web-component';
+
+      const output = (await SSRWebComponent(
+        {
+          foo: 'FOO!',
+          'ssr-Component': Component,
+          'ssr-selector': selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(output[2][0][2][0][2]).toBe('FOO!');
+    });
+
+    it('should self.setAttribute work on SSR', async () => {
+      const Component = ({}, { self }: WebContext) => {
+        self.setAttribute('foo', 'FOO!');
+        return <div>hello world</div>;
+      };
+      const selector = 'web-component';
+
+      const output = (await SSRWebComponent(
+        {
+          'ssr-Component': Component,
+          'ssr-selector': selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(output[1].foo).toBe('FOO!');
+    });
+
+    it('should ignore self.addEventListener in SSR', async () => {
+      const mockLog = mock((s: string) => {});
+      const Component = ({}, { self }: WebContext) => {
+        self.addEventListener('click', () => {
+          mockLog('clicked');
+        });
+        return <div>hello world</div>;
+      };
+      const selector = 'web-component';
+
+      const output = (await SSRWebComponent(
+        {
+          'ssr-Component': Component,
+          'ssr-selector': selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(mockLog).not.toHaveBeenCalled();
+    });
+
+    it('should ignore self.removeEventListener in SSR', async () => {
+      const mockLog = mock((s: string) => {});
+      const Component = ({}, { self }: WebContext) => {
+        self.removeEventListener('click', () => {
+          mockLog('clicked');
+        });
+        return <div>hello world</div>;
+      };
+      const selector = 'web-component';
+
+      const output = (await SSRWebComponent(
+        {
+          'ssr-Component': Component,
+          'ssr-selector': selector,
+        },
+        requestContext,
+      )) as any;
+
+      expect(output[0]).toBe(selector);
+      expect(mockLog).not.toHaveBeenCalled();
     });
   });
 });
