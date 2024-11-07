@@ -51,6 +51,10 @@
 - 📦 ・ **Tiny**: 0B by default, 2kB when you use server actions (RPC size), and 3kb when you need web components.
 - 📲 ・ **Change the output**: You can change your web from server to static, to desktop, android, or ios app with just one configuration command.
 
+> [!NOTE]
+>
+> Check our [roadmap](https://github.com/brisa-build/brisa/issues/197) for 1.0.
+
 ## Getting Started
 
 Simple one command:
