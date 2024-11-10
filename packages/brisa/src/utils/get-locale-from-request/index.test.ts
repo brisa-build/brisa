@@ -27,6 +27,16 @@ describe('utils', () => {
       expect(locale).toBe('ru');
     });
 
+    it('should return req.i18n.locale when exist', () => {
+      const request = extendRequestContext({
+        originalRequest: new Request('https://example.com/ru'),
+      });
+      request.i18n = { locale: 'en' } as any;
+      const locale = getLocaleFromRequest(request);
+
+      expect(locale).toBe('en');
+    });
+
     it('should return default locale if not locale', () => {
       const request = extendRequestContext({
         originalRequest: new Request('https://example.com'),
