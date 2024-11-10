@@ -39,25 +39,23 @@ export function internalConstants(): InternalConstants {
     Boolean(process.env.IS_SERVE_PROCESS) ||
     Boolean(currentScript.endsWith(path.join(CLI_DIR, 'serve', 'index.js')));
 
-  const isStandaloneServer = Boolean(process.env.IS_STANDALONE_SERVER);
-  const ROOT_DIR = isStandaloneServer ? import.meta.dirname : process.cwd();
+  const ROOT_DIR = process.env.BRISA_ROOT_DIR ?? process.cwd();
 
   const IS_BUILD_PROCESS = Boolean(
     currentScript.endsWith(path.join(CLI_DIR, 'build.js')),
   );
 
-  const BRISA_DIR = currentScript.replace(
-    new RegExp(`${CLI_DIR.replace(WIN32_SEP_REGEX, '\\\\')}.*`),
-    'brisa',
-  );
+  const BRISA_DIR =
+    process.env.BRISA_DIR ??
+    currentScript.replace(
+      new RegExp(`${CLI_DIR.replace(WIN32_SEP_REGEX, '\\\\')}.*`),
+      'brisa',
+    );
 
-  const SRC_DIR: string = isStandaloneServer
-    ? import.meta.dirname
-    : path.resolve(ROOT_DIR, 'src');
-
-  const BUILD_DIR: string = isStandaloneServer
-    ? import.meta.dirname
-    : (process.env.BRISA_BUILD_FOLDER ?? path.resolve(ROOT_DIR, 'build'));
+  const SRC_DIR: string =
+    process.env.BRISA_SRC_DIR ?? path.resolve(ROOT_DIR, 'src');
+  const BUILD_DIR: string =
+    process.env.BRISA_BUILD_FOLDER ?? path.resolve(ROOT_DIR, 'build');
 
   const WORKSPACE = IS_BUILD_PROCESS ? SRC_DIR : BUILD_DIR;
 

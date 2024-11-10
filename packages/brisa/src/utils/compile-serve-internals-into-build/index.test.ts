@@ -51,14 +51,21 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeFalse();
   });
 
-  it('should compile the server with defined IS_PRODUCTION, IS_SERVE_PROCESS and IS_STANDALONE_SERVER', async () => {
+  it('should compile the server with defined env vars', async () => {
     await compileBrisaInternalsToDoBuildPortable();
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
 
-    // doesn't exist in the code anymore, now is defined in the build process
-    expect(server).not.toContain('process.env.IS_STANDALONE_SERVER');
-    expect(server).not.toContain('process.env.IS_SERVE_PROCESS');
-    expect(server).not.toContain('process.env.IS_PROD');
+    expect(server).toContain('process.env.IS_SERVE_PROCESS ??= true;');
+    expect(server).toContain('process.env.IS_PROD ??= true;');
+    expect(server).toContain(
+      'process.env.BRISA_SRC_DIR ??= import.meta.dirname;',
+    );
+    expect(server).toContain(
+      'process.env.BRISA_BUILD_FOLDER ??= import.meta.dirname;',
+    );
+    expect(server).toContain(
+      'process.env.BRISA_ROOT_DIR ??= import.meta.dirname;',
+    );
     expect(mockLog.mock.calls.flat().join()).toContain(
       'Node.js Server compiled into build folder',
     );
@@ -69,10 +76,17 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     await compileBrisaInternalsToDoBuildPortable();
     const server = fs.readFileSync(path.join(BUILD_DIR, 'server.js'), 'utf-8');
 
-    // doesn't exist in the code anymore, now is defined in the build process
-    expect(server).not.toContain('process.env.IS_STANDALONE_SERVER');
-    expect(server).not.toContain('process.env.IS_SERVE_PROCESS');
-    expect(server).not.toContain('process.env.IS_PROD');
+    expect(server).toContain('process.env.IS_SERVE_PROCESS ??= true;');
+    expect(server).toContain('process.env.IS_PROD ??= true;');
+    expect(server).toContain(
+      'process.env.BRISA_SRC_DIR ??= import.meta.dirname;',
+    );
+    expect(server).toContain(
+      'process.env.BRISA_BUILD_FOLDER ??= import.meta.dirname;',
+    );
+    expect(server).toContain(
+      'process.env.BRISA_ROOT_DIR ??= import.meta.dirname;',
+    );
     expect(mockLog.mock.calls.flat().join()).toContain(
       'Bun.js Server compiled into build folder',
     );

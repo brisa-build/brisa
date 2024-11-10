@@ -68,11 +68,13 @@ export default async function compileServeInternalsIntoBuild() {
     },
     external: CONFIG.external,
     target: isNode ? 'node' : 'bun',
-    define: {
-      'process.env.IS_SERVE_PROCESS': 'true',
-      'process.env.IS_PROD': 'true',
-      'process.env.IS_STANDALONE_SERVER': 'true',
-    },
+    banner: [
+      'process.env.IS_SERVE_PROCESS ??= true;',
+      'process.env.IS_PROD ??= true;',
+      'process.env.BRISA_SRC_DIR ??= import.meta.dirname;',
+      'process.env.BRISA_BUILD_FOLDER ??= import.meta.dirname;',
+      'process.env.BRISA_ROOT_DIR ??= import.meta.dirname;',
+    ].join('\n'),
   });
 
   if (!output.success) {
