@@ -3212,6 +3212,52 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>test</div>');
     });
 
+    it.todo(
+      'should work a fragment with one div and also a signal with another div when is true',
+      () => {
+        const times = 10;
+        const Component = ({}, { store, derived }: WebContext) => {
+          let count = 0;
+          const show = derived(() => store.get('show'));
+
+          const foo = (num: number) => {
+            return [
+              null,
+              {},
+              [
+                [
+                  'div',
+                  {},
+                  [null, {}, () => (num < times ? foo(num + 1) : '')],
+                ],
+                [null, {}, () => show.value && 'show' + num],
+              ],
+            ];
+          };
+
+          return foo(++count);
+        };
+
+        customElements.define('test-component', brisaElement(Component));
+
+        document.body.innerHTML = '<test-component />';
+        const testComponent = document.querySelector(
+          'test-component',
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe(
+          '<div>'.repeat(times) + '</div>'.repeat(times),
+        );
+
+        // Update the store
+        window._s.set('show', true);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe(
+          `<div><div><div><div><div><div><div><div><div><div></div>show10</div>show9</div>show8</div>show7</div>show6</div>show5</div>show4</div>show3</div>show2</div>show1</div>show0</div>`,
+        );
+      },
+    );
+
     it('should be possible to execute different onMount callbacks', async () => {
       const mockFirstCallback = mock((s: string) => {});
       const mockSecondCallback = mock((s: string) => {});
