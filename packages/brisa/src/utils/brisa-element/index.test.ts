@@ -49,6 +49,7 @@ describe('utils', () => {
       window.__USE_LOCALE__ = false;
       window.__USE_PAGE_TRANSLATION__ = false;
       window.fPath = undefined;
+      window._s.Map.clear();
       GlobalRegistrator.unregister();
     });
     it('should work props and state with a counter', () => {
@@ -3212,7 +3213,7 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>test</div>');
     });
 
-    it.todo('should work reactivity in a nested way', () => {
+    it.todo('should work reactivity in a nested fragment', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3247,7 +3248,222 @@ describe('utils', () => {
       window._s.set('show', true);
 
       expect(testComponent?.shadowRoot?.innerHTML).toBe(
-        `<div><div><div><div><div><div><div><div><div><div></div>show10</div>show9</div>show8</div>show7</div>show6</div>show5</div>show4</div>show3</div>show2</div>show1</div>show0</div>`,
+        `<div><div><div><div><div><div><div><div><div><div></div>show10</div>show9</div>show8</div>show7</div>show6</div>show5</div>show4</div>show3</div>show2</div>show1`,
+      );
+    });
+
+    it.todo(
+      'should work reactivity in a nested ternary in a nested fragment',
+      () => {
+        const times = 10;
+        const Component = ({}, { store, derived }: WebContext) => {
+          let count = 0;
+          const show = derived(() => store.get('show'));
+
+          const foo = (num: number) => {
+            return [
+              null,
+              {},
+              [
+                [
+                  null,
+                  {},
+                  [
+                    null,
+                    {},
+                    () =>
+                      num < times
+                        ? foo(num + 1)
+                        : show.value && 'last number = ' + num,
+                  ],
+                ],
+              ],
+            ];
+          };
+
+          return foo(++count);
+        };
+
+        customElements.define('test-component', brisaElement(Component));
+
+        document.body.innerHTML = '<test-component />';
+        const testComponent = document.querySelector(
+          'test-component',
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+
+        // Update the store
+        window._s.set('show', true);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+      },
+    );
+
+    it('should work reactivity in a nested ternary in a div', () => {
+      const times = 10;
+      const Component = ({}, { store, derived }: WebContext) => {
+        let count = 0;
+        const show = derived(() => store.get('show'));
+
+        const foo = (num: number) => {
+          return [
+            null,
+            {},
+            [
+              [
+                'div',
+                {},
+                [
+                  null,
+                  {},
+                  () =>
+                    num < times
+                      ? foo(num + 1)
+                      : show.value && 'last number = ' + num,
+                ],
+              ],
+            ],
+          ];
+        };
+
+        return foo(++count);
+      };
+
+      customElements.define('test-component', brisaElement(Component));
+
+      document.body.innerHTML = '<test-component />';
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>'.repeat(times) + '</div>'.repeat(times),
+      );
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        `<div><div><div><div><div><div><div><div><div><div>last number = 10</div></div></div></div></div></div></div></div></div></div>`,
+      );
+    });
+
+    it('should work reactivity in a nested fragment with signal at fist level', () => {
+      const times = 10;
+      const Component = ({}, { store, derived }: WebContext) => {
+        let count = 0;
+        const show = derived(() => store.get('show'));
+
+        const foo = (num: number) => {
+          return [
+            null,
+            {},
+            [
+              ['div', {}, [null, {}, () => (num < times ? foo(num + 1) : '')]],
+              [null, {}, () => show.value && 'show' + num],
+              show.value && '🔥',
+            ],
+          ];
+        };
+
+        return foo(++count);
+      };
+
+      customElements.define('test-component', brisaElement(Component));
+
+      document.body.innerHTML = '<test-component />';
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>'.repeat(times) + '</div>'.repeat(times),
+      );
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        `<div><div><div><div><div><div><div><div><div><div></div>show10🔥</div>show9🔥</div>show8🔥</div>show7🔥</div>show6🔥</div>show5🔥</div>show4🔥</div>show3🔥</div>show2🔥</div>show1`,
+      );
+    });
+
+    it('should work reactivity in a nested div', () => {
+      const times = 10;
+      const Component = ({}, { store, derived }: WebContext) => {
+        let count = 0;
+        const show = derived(() => store.get('show'));
+
+        const foo = (num: number) => {
+          return [
+            'div',
+            {},
+            [
+              ['div', {}, [null, {}, () => (num < times ? foo(num + 1) : '')]],
+              [null, {}, () => show.value && 'show' + num],
+            ],
+          ];
+        };
+
+        return foo(++count);
+      };
+
+      customElements.define('test-component', brisaElement(Component));
+
+      document.body.innerHTML = '<test-component />';
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>'.repeat(times * 2) + '</div>'.repeat(times * 2),
+      );
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        `${'<div>'.repeat(times * 2)}</div>show10</div></div>show9</div></div>show8</div></div>show7</div></div>show6</div></div>show5</div></div>show4</div></div>show3</div></div>show2</div></div>show1</div>`,
+      );
+    });
+
+    it('should work reactivity in a nested inner div', () => {
+      const times = 10;
+      const Component = ({}, { store, derived }: WebContext) => {
+        let count = 0;
+        const show = derived(() => store.get('show'));
+
+        const foo = (num: number) => {
+          return [
+            null,
+            {},
+            [
+              ['div', {}, [null, {}, () => (num < times ? foo(num + 1) : '')]],
+              ['div', {}, () => show.value && 'show' + num],
+            ],
+          ];
+        };
+
+        return foo(++count);
+      };
+
+      customElements.define('test-component', brisaElement(Component));
+
+      document.body.innerHTML = '<test-component />';
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>'.repeat(times) + '</div><div></div>'.repeat(times) + '',
+      );
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        `${'<div>'.repeat(times)}</div><div>show10</div></div><div>show9</div></div><div>show8</div></div><div>show7</div></div><div>show6</div></div><div>show5</div></div><div>show4</div></div><div>show3</div></div><div>show2</div></div><div>show1</div>`,
       );
     });
 
