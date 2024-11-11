@@ -56,6 +56,7 @@ describe('integration', () => {
       window.createContext = createContext;
     });
     afterEach(async () => {
+      window._s.Map.clear();
       if (typeof window !== 'undefined') GlobalRegistrator.unregister();
     });
     it('should work returning a text node', () => {
@@ -6185,6 +6186,78 @@ describe('integration', () => {
 
       expect(div.textContent).toBe('0');
     });
+
+    it('should work reactivity in a nested ternary in first level', () => {
+      const code = `
+        const times = 10;
+
+        export default function Component ({}, { store, derived }) {
+          let count = 0;
+          const show = derived(() => store.get('show'));
+
+          const foo = (num: number) => {
+            return num < times ? foo(num + 1) : show.value && 'last number = ' + num
+          };
+
+          return <>{foo(++count)}</>;
+        }
+        `;
+
+      defineBrisaWebComponent(code, 'src/web-components/wc-ternary.tsx');
+
+      document.body.innerHTML = '<wc-ternary />';
+      const testComponent = document.querySelector('wc-ternary') as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('');
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+    });
+
+    it.todo(
+      'should work reactivity in a nested ternary in multi fragment levels',
+      () => {
+        const code = `
+        const times = 10;
+
+        export default function Component ({}, { store, derived }) {
+          let count = 0;
+          const show = derived(() => store.get('show'));
+
+          const foo = (num: number) => {
+            return (
+              <>
+                <>
+                  <>
+                    {num < times ? foo(num + 1) : show.value && 'last number = ' + num}
+                  </>
+                </>
+                <></>
+              </>
+              )
+          };
+
+          return <>{foo(++count)}</>;
+        }
+        `;
+
+        defineBrisaWebComponent(code, 'src/web-components/wc-ternary.tsx');
+
+        document.body.innerHTML = '<wc-ternary />';
+        const testComponent = document.querySelector(
+          'wc-ternary',
+        ) as HTMLElement;
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe('');
+
+        // Update the store
+        window._s.set('show', true);
+
+        expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+      },
+    );
 
     // TODO: This test should work after this happydom feat about ElementInternals
     // https://github.com/capricorn86/happy-dom/issues/1419

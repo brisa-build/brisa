@@ -3300,6 +3300,34 @@ describe('utils', () => {
       },
     );
 
+    it('should work reactivity in a nested ternary in first level (arrow fn component)', () => {
+      const times = 10;
+
+      const Component = ({}, { store, derived }: WebContext) => {
+        let count = 0;
+        const show = derived(() => store.get('show'));
+
+        const foo = (num: number): any =>
+          num < times ? foo(num + 1) : show.value && 'last number = ' + num;
+
+        return [null, {}, () => foo(++count)];
+      };
+
+      customElements.define('test-component', brisaElement(Component));
+
+      document.body.innerHTML = '<test-component />';
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+    });
+
     it('should work reactivity in a nested ternary in a div', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
