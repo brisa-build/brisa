@@ -17,14 +17,14 @@
   },
   "files": ["index.ts", "index.d.ts"],
   "devDependencies": {
-    "@tailwindcss/postcss": "4.0.0-alpha.32",
+    "@tailwindcss/postcss": "4.0.0-alpha.33",
     "postcss": "8.4.48",
-    "tailwindcss": "4.0.0-alpha.32"
+    "tailwindcss": "4.0.0-alpha.33"
   },
   "peerDependencies": {
-    "@tailwindcss/postcss": "4.0.0-alpha.32",
+    "@tailwindcss/postcss": "4.0.0-alpha.33",
     "postcss": "8.4.48",
-    "tailwindcss": "4.0.0-alpha.32"
+    "tailwindcss": "4.0.0-alpha.33"
   },
   "packageManager": "bun@1.1.35",
   "engines": {
