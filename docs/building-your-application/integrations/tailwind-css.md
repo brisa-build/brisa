@@ -1,8 +1,8 @@
 ---
-description: Understand how to integrate Tailwind CSS in your Brisa project
+description: Understand how to integrate Tailwind CSS v4 in your Brisa project
 ---
 
-# Integrating Tailwind CSS
+# Integrating Tailwind CSS v4
 
 Brisa, offers versatile integration with third-party libraries like [TailwindCSS](https://tailwindcss.com/) to be automatically handled for the Brisa internals.
 
@@ -23,7 +23,7 @@ And you are ready to use TailwindCSS in your Brisa project.
 If you want to install TailwindCSS manually, you can do it by running:
 
 ```bash
-npm install tailwindcss postcss brisa-tailwindcss
+bun install tailwindcss@next postcss brisa-tailwindcss
 ```
 
 And then, you can add the integration in your `brisa.config.ts` file:
@@ -49,11 +49,9 @@ And you are ready to use TailwindCSS in your Brisa project.
 If you don't have any `.css` file with `@tailwind` directive or `tailwindcss` import, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than [TailwindCSS CDN](https://tailwindcss.com/docs/installation/play-cdn):
 
 ```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import 'tailwindcss/preflight';
-@import 'tailwindcss/theme';
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
 ```
 
 In the case you want to override the default CSS file, you can create a `.css` file in your `src` with `@tailwind` directives or `@import 'tailwindcss/...` and Brisa will use it instead of the default one. This `.css` file you need to import it in your `src/layout.ts` file.

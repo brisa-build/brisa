@@ -1,47 +1,64 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import "tailwindcss/preflight";
-@import "tailwindcss/theme";
+@import "tailwindcss/theme" layer(theme);
+@import "tailwindcss/preflight" layer(base);
+@import "tailwindcss/utilities" layer(utilities);
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: theme("colors.gray.50");
-}
-
-.animate-in {
-  animation: animate-in 0.5s ease-in-out;
-}
-/* Firefox */
-* {
-  scrollbar-width: auto;
-  scrollbar-color: #c7c7c7 #ededed;
+@theme {
+  /* Clear all colors and we define the ones we will be using. */
+  /* Full template example: https://github.com/tailwindlabs/tailwindcss/blob/next/packages/tailwindcss/theme.css */
+  --color-*: initial;
+  --color-gray-50: oklch(0.985 0.002 247.839);
+  --color-gray-100: oklch(0.967 0.003 264.542);
+  --color-gray-200: oklch(0.928 0.006 264.531);
+  --color-gray-300: oklch(0.872 0.01 258.338);
+  --color-gray-400: oklch(0.707 0.022 261.325);
+  --color-gray-500: oklch(0.551 0.027 264.364);
+  --color-gray-600: oklch(0.446 0.03 256.802);
+  --color-gray-700: oklch(0.373 0.034 259.733);
+  --color-gray-800: oklch(0.278 0.033 256.848);
+  --color-gray-900: oklch(0.21 0.034 264.665);
+  --color-gray-950: oklch(0.13 0.028 261.692);
 }
 
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 15px;
-}
-
-*::-webkit-scrollbar-track {
-  background: #ededed;
-}
-
-*::-webkit-scrollbar-thumb {
-  background-color: #c7c7c7;
-  border-radius: 5px;
-  border: 2px solid #ffffff;
-}
-@keyframes animate-in {
-  0% {
-    opacity: 0;
-    transform: translateY(1rem);
+@layer base {
+  html {
+    @apply antialiased scroll-smooth break-words;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  
+  body {
+    background-color: theme("colors.gray.50");
+  }
+  
+  .animate-in {
+    animation: animate-in 0.5s ease-in-out;
+  }
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #c7c7c7 #ededed;
+  }
+  
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: #ededed;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #c7c7c7;
+    border-radius: 5px;
+    border: 2px solid #ffffff;
+  }
+  @keyframes animate-in {
+    0% {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

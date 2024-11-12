@@ -12,7 +12,8 @@
       "**/brisa/jsx-runtime/*",
       "**/brisa/jsx-dev-runtime/*",
       "**/www/src/public/*",
-      "**/www/.vercel/*"
+      "**/www/.vercel/*",
+      "**/examples/with-tailwindcss/src/layout/*.css"
     ]
   },
   "formatter": {
