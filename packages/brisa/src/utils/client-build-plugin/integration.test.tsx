@@ -6216,6 +6216,76 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
+    it('should work reactivity in a nested ternary in a div', () => {
+      const code = `
+        const times = 10;
+
+        export default function Component ({}, { store, derived }) {
+          let count = 0;
+          const show = derived(() => store.get('show'));
+
+          const foo = (num: number) => {
+            return (
+              <div>
+                {num < times ? foo(num + 1) : show.value && 'last number = ' + num}
+              </div>
+              )
+          };
+
+          return <>{foo(++count)}</>;
+        }
+        `;
+
+      defineBrisaWebComponent(code, 'src/web-components/wc-ternary.tsx');
+
+      document.body.innerHTML = '<wc-ternary />';
+      const testComponent = document.querySelector('wc-ternary') as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>'.repeat(10) + '</div>'.repeat(10),
+      );
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe(
+        '<div>'.repeat(10) + 'last number = 10' + '</div>'.repeat(10),
+      );
+    });
+
+    it.todo('should work reactivity in a nested ternary in a fragment', () => {
+      const code = `
+        const times = 10;
+
+        export default function Component ({}, { store, derived }) {
+          let count = 0;
+          const show = derived(() => store.get('show'));
+
+          const foo = (num: number) => {
+            return (
+              <>
+                {num < times ? foo(num + 1) : show.value && 'last number = ' + num}
+              </>
+              )
+          };
+
+          return <>{foo(++count)}</>;
+        }
+        `;
+
+      defineBrisaWebComponent(code, 'src/web-components/wc-ternary.tsx');
+
+      document.body.innerHTML = '<wc-ternary />';
+      const testComponent = document.querySelector('wc-ternary') as HTMLElement;
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('');
+
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+    });
+
     it.todo(
       'should work reactivity in a nested ternary in multi fragment levels',
       () => {
