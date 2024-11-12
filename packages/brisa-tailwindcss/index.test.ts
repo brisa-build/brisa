@@ -14,9 +14,15 @@ describe('brisa-tailwindcss', () => {
 
   it('should return default CSS content', () => {
     const integration = brisaTailwindcss();
-    expect(integration.defaultCSS.content).toContain('@import "tailwindcss/theme" layer(theme);');
-    expect(integration.defaultCSS.content).toContain('@import "tailwindcss/preflight" layer(base);');
-    expect(integration.defaultCSS.content).toContain('@import "tailwindcss/utilities" layer(utilities);');
+    expect(integration.defaultCSS.content).toContain(
+      '@import "tailwindcss/theme" layer(theme);',
+    );
+    expect(integration.defaultCSS.content).toContain(
+      '@import "tailwindcss/preflight" layer(base);',
+    );
+    expect(integration.defaultCSS.content).toContain(
+      '@import "tailwindcss/utilities" layer(utilities);',
+    );
   });
 
   it('should transpile CSS', async () => {
