@@ -33,7 +33,7 @@
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
   },
-  "description": "A Brisa integration with Tailwind CSS.",
+  "description": "A Brisa integration with Tailwind CSS v4.",
   "bugs": {
     "url": "https://github.com/brisa-build/brisa/issues"
   },
