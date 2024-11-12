@@ -322,11 +322,13 @@ export default function brisaElement(
         } else if (isFunction(children)) {
           let lastNodes: ChildNode[] | undefined;
 
-          const insertOrUpdate = (element: ChildNode | DocumentFragment) => {
+          const insertOrUpdate = (nodes: ChildNode[]) => {
             if (lastNodes && el.contains(lastNodes[0])) {
-              el.insertBefore(element, lastNodes[0]);
+              for (const node of nodes) el.insertBefore(node, lastNodes[0]);
               for (const node of lastNodes) node?.remove();
-            } else appendChild(el, element);
+            } else {
+              el.append(...nodes);
+            }
           };
 
           effect(
@@ -339,39 +341,37 @@ export default function brisaElement(
                 const isDangerHTML = (child as any)?.[0] === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
-                  const currentElNodes = arr(el.childNodes);
-                  const fragment = $document.createDocumentFragment();
+                  const tempContainer = createElement('p') as any;
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
-                    const p = createElement('p');
-                    (p as any)[INNER_HTML] += (child as any)[1].html as string;
-
-                    for (const node of arr(p.childNodes)) {
-                      appendChild(fragment, node);
-                    }
+                    tempContainer[INNER_HTML] += (child as any)[1]
+                      .html as string;
                   }
                   // Reactive child node
                   else if (isReactiveArray((child as Children[])[0])) {
                     for (const c of child as Children[]) {
-                      mount(NULL, {}, c, fragment, r(r2), effect);
+                      mount(NULL, {}, c, tempContainer, r(r2), effect);
                     }
                   } else if ((child as ReactiveArray).length) {
-                    mount(...(child as ReactiveArray), fragment, r(r2), effect);
+                    mount(
+                      ...(child as ReactiveArray),
+                      tempContainer,
+                      r(r2),
+                      effect,
+                    );
                   }
-                  insertOrUpdate(fragment);
 
-                  lastNodes = arr(el.childNodes).filter(
-                    (node) => !currentElNodes.includes(node),
-                  );
+                  const nodes = arr(tempContainer.childNodes) as ChildNode[];
+
+                  insertOrUpdate(nodes);
+                  lastNodes = nodes;
                 }
                 // Reactive text node
                 else {
-                  const textNode = createTextNode(child);
-
-                  insertOrUpdate(textNode);
-
-                  lastNodes = [textNode];
+                  const textNodes = [createTextNode(child)];
+                  insertOrUpdate(textNodes);
+                  lastNodes = textNodes;
                 }
               }
               if (childOrPromise instanceof Promise)
