@@ -16,7 +16,12 @@
     "directory": "packages/brisa-tailwindcss"
   },
   "files": ["index.ts", "index.d.ts"],
-  "dependencies": {
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.0.0-alpha.32",
+    "postcss": "8.4.48",
+    "tailwindcss": "4.0.0-alpha.32"
+  },
+  "peerDependencies": {
     "@tailwindcss/postcss": "4.0.0-alpha.32",
     "postcss": "8.4.48",
     "tailwindcss": "4.0.0-alpha.32"

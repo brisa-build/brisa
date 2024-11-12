@@ -14,16 +14,16 @@ describe('brisa-tailwindcss', () => {
 
   it('should return default CSS content', () => {
     const integration = brisaTailwindcss();
-    expect(integration.defaultCSS.content).toContain('@tailwind base;');
-    expect(integration.defaultCSS.content).toContain('@tailwind components;');
-    expect(integration.defaultCSS.content).toContain('@tailwind utilities;');
+    expect(integration.defaultCSS.content).toContain('@import "tailwindcss/theme" layer(theme);');
+    expect(integration.defaultCSS.content).toContain('@import "tailwindcss/preflight" layer(base);');
+    expect(integration.defaultCSS.content).toContain('@import "tailwindcss/utilities" layer(utilities);');
   });
 
   it('should transpile CSS', async () => {
     const cssCode = `
-        @tailwind base; 
-        @tailwind components; 
-        @tailwind utilities;
+        @import "tailwindcss/theme" layer(theme);
+        @import "tailwindcss/preflight" layer(base);
+        @import "tailwindcss/utilities" layer(utilities);
 
         :root {
           --color: red;
@@ -66,6 +66,7 @@ describe('brisa-tailwindcss', () => {
       'out/index.css',
       cssCode,
     );
+
     expect(transpiledCSS).not.toContain('@layer base');
   });
 });
