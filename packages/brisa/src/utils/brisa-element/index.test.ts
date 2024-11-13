@@ -3213,7 +3213,7 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>test</div>');
     });
 
-    it.todo('should work reactivity in a nested fragment', () => {
+    it('should work reactivity in a nested fragment', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3252,53 +3252,50 @@ describe('utils', () => {
       );
     });
 
-    it.todo(
-      'should work reactivity in a nested ternary in a nested fragment',
-      () => {
-        const times = 10;
-        const Component = ({}, { store, derived }: WebContext) => {
-          let count = 0;
-          const show = derived(() => store.get('show'));
+    it('should work reactivity in a nested ternary in a nested fragment', () => {
+      const times = 10;
+      const Component = ({}, { store, derived }: WebContext) => {
+        let count = 0;
+        const show = derived(() => store.get('show'));
 
-          const foo = (num: number) => {
-            return [
-              null,
-              {},
+        const foo = (num: number) => {
+          return [
+            null,
+            {},
+            [
               [
+                null,
+                {},
                 [
                   null,
                   {},
-                  [
-                    null,
-                    {},
-                    () =>
-                      num < times
-                        ? foo(num + 1)
-                        : show.value && 'last number = ' + num,
-                  ],
+                  () =>
+                    num < times
+                      ? foo(num + 1)
+                      : show.value && 'last number = ' + num,
                 ],
               ],
-            ];
-          };
-
-          return foo(++count);
+            ],
+          ];
         };
 
-        customElements.define('test-component', brisaElement(Component));
+        return foo(++count);
+      };
 
-        document.body.innerHTML = '<test-component />';
-        const testComponent = document.querySelector(
-          'test-component',
-        ) as HTMLElement;
+      customElements.define('test-component', brisaElement(Component));
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
+      document.body.innerHTML = '<test-component />';
+      const testComponent = document.querySelector(
+        'test-component',
+      ) as HTMLElement;
 
-        // Update the store
-        window._s.set('show', true);
+      expect(testComponent?.shadowRoot?.innerHTML).toBeEmpty();
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
-      },
-    );
+      // Update the store
+      window._s.set('show', true);
+
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+    });
 
     it('should work reactivity in a nested ternary in first level (arrow fn component)', () => {
       const times = 10;

@@ -323,11 +323,13 @@ export default function brisaElement(
           let lastNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            if (lastNodes && el.contains(lastNodes[0])) {
+            const element = lastNodes && !el.isConnected ? shadowRoot : el;
+
+            if (lastNodes && element.contains(lastNodes[0])) {
               lastNodes[0].before(...nodes);
               for (const node of lastNodes) node?.remove();
             } else {
-              el.append(...nodes);
+              element.append(...nodes);
             }
           };
 
@@ -341,7 +343,9 @@ export default function brisaElement(
                 const isDangerHTML = (child as any)?.[0] === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
-                  const tempContainer = createElement(CONTEXT) as any;
+                  const tempContainer = el.isConnected
+                    ? (createElement(CONTEXT) as any)
+                    : el;
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {

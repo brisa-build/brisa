@@ -6253,7 +6253,7 @@ describe('integration', () => {
       );
     });
 
-    it.todo('should work reactivity in a nested ternary in a fragment', () => {
+    it('should work reactivity in a nested ternary in a fragment', () => {
       const code = `
         const times = 10;
 
@@ -6286,10 +6286,8 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
-    it.todo(
-      'should work reactivity in a nested ternary in multi fragment levels',
-      () => {
-        const code = `
+    it('should work reactivity in a nested ternary in multi fragment levels', () => {
+      const code = `
         const times = 10;
 
         export default function Component ({}, { store, derived }) {
@@ -6313,21 +6311,18 @@ describe('integration', () => {
         }
         `;
 
-        defineBrisaWebComponent(code, 'src/web-components/wc-ternary.tsx');
+      defineBrisaWebComponent(code, 'src/web-components/wc-ternary.tsx');
 
-        document.body.innerHTML = '<wc-ternary />';
-        const testComponent = document.querySelector(
-          'wc-ternary',
-        ) as HTMLElement;
+      document.body.innerHTML = '<wc-ternary />';
+      const testComponent = document.querySelector('wc-ternary') as HTMLElement;
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe('');
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('');
 
-        // Update the store
-        window._s.set('show', true);
+      // Update the store
+      window._s.set('show', true);
 
-        expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
-      },
-    );
+      expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
+    });
 
     // TODO: This test should work after this happydom feat about ElementInternals
     // https://github.com/capricorn86/happy-dom/issues/1419
