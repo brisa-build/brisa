@@ -324,7 +324,7 @@ export default function brisaElement(
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
             if (lastNodes && el.contains(lastNodes[0])) {
-              for (const node of nodes) el.insertBefore(node, lastNodes[0]);
+              lastNodes[0].before(...nodes);
               for (const node of lastNodes) node?.remove();
             } else {
               el.append(...nodes);
@@ -341,7 +341,7 @@ export default function brisaElement(
                 const isDangerHTML = (child as any)?.[0] === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
-                  const tempContainer = createElement('p') as any;
+                  const tempContainer = createElement(CONTEXT) as any;
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {
