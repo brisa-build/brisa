@@ -6187,7 +6187,7 @@ describe('integration', () => {
       expect(div.textContent).toBe('0');
     });
 
-    it('should work reactivity in a nested ternary in first level', () => {
+    it('should work reactivity in a nested ternary in first level #618', () => {
       const code = `
         const times = 10;
 
@@ -6216,7 +6216,7 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
-    it('should work reactivity in a nested ternary in a div', () => {
+    it('should work reactivity in a nested ternary in a div #618', () => {
       const code = `
         const times = 10;
 
@@ -6253,7 +6253,7 @@ describe('integration', () => {
       );
     });
 
-    it('should work reactivity in a nested ternary in a fragment', () => {
+    it('should work reactivity in a nested ternary in a fragment #618', () => {
       const code = `
         const times = 10;
 
@@ -6286,7 +6286,7 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
-    it('should work reactivity in a nested ternary in multi fragment levels', () => {
+    it('should work reactivity in a nested ternary in multi fragment levels #618', () => {
       const code = `
         const times = 10;
 

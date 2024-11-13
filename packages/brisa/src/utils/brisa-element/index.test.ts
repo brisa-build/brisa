@@ -3213,7 +3213,7 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('<div>test</div>');
     });
 
-    it('should work reactivity in a nested fragment', () => {
+    it('should work reactivity in a nested fragment #618', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3252,7 +3252,7 @@ describe('utils', () => {
       );
     });
 
-    it('should work reactivity in a nested ternary in a nested fragment', () => {
+    it('should work reactivity in a nested ternary in a nested fragment #618', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3297,7 +3297,7 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
-    it('should work reactivity in a nested ternary in first level (arrow fn component)', () => {
+    it('should work reactivity in a nested ternary in first level (arrow fn component) #618', () => {
       const times = 10;
 
       const Component = ({}, { store, derived }: WebContext) => {
@@ -3325,7 +3325,7 @@ describe('utils', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
-    it('should work reactivity in a nested ternary in a div', () => {
+    it('should work reactivity in a nested ternary in a div #618', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3374,7 +3374,7 @@ describe('utils', () => {
       );
     });
 
-    it('should work reactivity in a nested fragment with signal at fist level', () => {
+    it('should work reactivity in a nested fragment with signal at fist level #618', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3414,7 +3414,7 @@ describe('utils', () => {
       );
     });
 
-    it('should work reactivity in a nested div', () => {
+    it('should work reactivity in a nested div #618', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
@@ -3453,7 +3453,7 @@ describe('utils', () => {
       );
     });
 
-    it('should work reactivity in a nested inner div', () => {
+    it('should work reactivity in a nested inner div #618', () => {
       const times = 10;
       const Component = ({}, { store, derived }: WebContext) => {
         let count = 0;
