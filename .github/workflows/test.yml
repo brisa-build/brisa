@@ -7,7 +7,7 @@ on:
     branches: [canary]
 
 jobs:
-  bun-tests:
+  setup:
     runs-on: ${{ matrix.os }}
     if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
     strategy:
@@ -15,6 +15,17 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.bun
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -22,15 +33,77 @@ jobs:
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.35
+          bun-version: 1.1.34
+
       - name: Install dependencies
         run: bun install
+
+  bun-tests:
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun.js
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.34
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.bun
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Build project
-        run: bun run build && bun run create-brisa:build
+        run: |
+          bun run build
+          bun run create-brisa:build
+
       - name: Run Bun tests
-        run: bun test
+        run: bun run test
+
+  e2e-tests:
+    needs: setup
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Bun.js
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.34
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.bun
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Build project
+        run: bunx playwright install
+      - run: bunx playwright install-deps
+      - run: bun run build
+
+      - name: Run e2e tests
+        run: bun run test:e2e
 
   node-tests:
+    needs: setup
     runs-on: ${{ matrix.os }}
     if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
     strategy:
@@ -38,17 +111,31 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "22"
+
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.35
-      - name: Install dependencies
-        run: bun install
+          bun-version: 1.1.34
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.bun
+            node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Build project
-        run: bun run build && bun run create-brisa:build
+        run: |
+          bun run build
+          bun run create-brisa:build
+
       - name: Run Node.js tests
         run: bun run test:node

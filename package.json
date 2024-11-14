@@ -34,8 +34,9 @@
     "release-brisa-pandacss:canary": "npm publish --workspace=packages/brisa-pandacss --tag next --access public",
     "release-adapter-vercel": "bun run --cwd packages/adapter-vercel build && npm publish --workspace=packages/adapter-vercel --access public",
     "release-adapter-vercel:canary": "bun run --cwd packages/adapter-vercel build && npm publish --workspace=packages/adapter-vercel --tag next --access public",
-    "test": "bun run --filter 'brisa' test",
-    "test:node": "node --test \"**/*.node-test.js\"",
+    "test": "bun test packages/*",
+    "test:e2e": "bun test --preload ./e2e/preload.ts ./e2e/examples.test.ts; bun run ./e2e/kill.ts",
+    "test:node": "find packages -name '*.node-test.js' -exec node --test {} +",
     "test:coverage": "bun run --cwd packages/brisa --coverage",
     "tsc:check": "bun run --cwd packages/brisa tsc:check",
     "update-version": "bun run scripts/update-brisa-version.ts",
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "husky": "9.1.6"
+    "husky": "9.1.6",
+    "playwright": "1.48.2"
   }
 }
