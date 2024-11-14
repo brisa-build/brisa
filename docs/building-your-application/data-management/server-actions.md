@@ -683,6 +683,52 @@ It depends on the type of communication you want. If you want:
 
 ![Action Signals and rerenderInAction](/assets/actionsignals.svg)
 
+## Transfer data
+
+Other frameworks automatically encrypt everything you use within the server action, in Brisa to give developers more control and only encrypt what is sensitive and avoid the blocking process of encryption that can greatly lower the req/sec, you have to specify what data you want to transfer.
+
+### Using data attributes
+
+You can use [`data-` attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) to transfer data from the client to the server. This is useful when you need to send data that is not in a form or in a link.
+
+```tsx
+<input
+  debounceInput={300}
+  onInput={(e) => {
+    // All this code runs only on the server
+    const value = e.target.value;
+
+    // Get the value in the server action
+    const id = e.target.dataset.id;
+  }}
+  data-id="123"
+/>
+```
+
+### Using the store
+
+You can use the store to transfer data from the client to the server. This is useful when you need to send data that is not in a form or in a link.
+
+```tsx
+export default function ServerComponent({}, { store }) {
+  store.set("foo", "bar");
+
+  // Transfer the value to the client
+  store.transferToClient(["foo"]);
+
+  return (
+    <button
+      onClick={() => {
+        // Get the value in the server action
+        const foo = store.get("foo");
+      }}
+    >
+      Click
+    </button>
+  );
+}
+```
+
 ## Transfer sensitive data
 
 If you want to transfer sensitive data from the render to use it later on the action you can use:
