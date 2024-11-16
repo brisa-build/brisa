@@ -1,4 +1,3 @@
-import type { BunPlugin } from 'bun';
 import type { ESTree } from 'meriyah';
 import fs from 'node:fs';
 import { join } from 'node:path';
@@ -43,7 +42,6 @@ export default async function compileActions({
     minify: IS_PRODUCTION,
     splitting: true,
     define,
-    plugins: [actionPlugin({ actionsEntrypoints })],
   });
 
   if (!res.success) {
@@ -55,31 +53,7 @@ export default async function compileActions({
   return res;
 }
 
-function actionPlugin({
-  actionsEntrypoints,
-}: {
-  actionsEntrypoints: string[];
-}) {
-  // These replaces are to fix the regex in Windows
-  const filter = new RegExp(
-    `(${actionsEntrypoints.join('|').replace(/\\/g, '\\\\')})$`.replace(
-      /\//g,
-      '[\\\\/]',
-    ),
-  );
-
-  return {
-    name: 'action-plugin',
-    setup(build) {
-      build.onLoad({ filter }, async ({ path, loader }) => {
-        const code = await Bun.file(path).text();
-        return { contents: transformToActionCode(code), loader };
-      });
-    },
-  } satisfies BunPlugin;
-}
-
-export function transformToActionCode(code: string) {
+export function transpileActions(code: string) {
   let ast = parseCodeToAST(code);
 
   ast = addResolveActionImport(ast);

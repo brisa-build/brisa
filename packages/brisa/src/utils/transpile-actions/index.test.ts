@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from 'bun:test';
 import path from 'node:path';
-import { transformToActionCode } from '.';
+import { transpileActions } from '.';
 import { normalizeHTML } from '@/helpers';
 import { getConstants } from '@/constants';
 import serverComponentPlugin, {
@@ -14,7 +14,7 @@ function compileActions(code: string) {
     path: '',
   }).code.replace(workaroundText, '');
 
-  return normalizeHTML(transformToActionCode(modifiedCode));
+  return normalizeHTML(transpileActions(modifiedCode));
 }
 
 const brisaServerFile = path
@@ -25,7 +25,7 @@ describe('utils', () => {
   afterEach(() => {
     globalThis.mockConstants = undefined;
   });
-  describe('transformToActionCode', () => {
+  describe('transpileActions', () => {
     it('should transform a simple component with 1 action', () => {
       const code = `
         export default function Component({text}) {
@@ -1205,7 +1205,7 @@ describe('utils', () => {
           return <div onClick={() => console.log('hello world')} data-action-onClick="a1_1" data-action>{text}</div>
         }
       `;
-      expect(normalizeHTML(transformToActionCode(code))).toContain(
+      expect(normalizeHTML(transpileActions(code))).toContain(
         normalizeHTML(
           'component: __props => jsx(Component, {text, ...__props})',
         ),

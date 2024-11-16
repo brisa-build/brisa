@@ -1,5 +1,5 @@
 import type { ESTree } from 'meriyah';
-import type { ActionInfo } from '@/utils/compile-actions/get-actions-info';
+import type { ActionInfo } from '@/utils/transpile-actions/get-actions-info';
 import removeAllReturns from '@/utils/ast/remove-all-returns';
 import containsIdentifiers from '@/utils/ast/contains-identifiers';
 import getAllIdentifiers from '@/utils/ast/get-all-identifiers';

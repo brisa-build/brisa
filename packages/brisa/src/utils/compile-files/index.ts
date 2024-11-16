@@ -13,7 +13,7 @@ import { logTable } from '@/utils/log/log-build';
 import serverComponentPlugin from '@/utils/server-component-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import getI18nClientMessages from '@/utils/get-i18n-client-messages';
-import compileActions from '@/utils/compile-actions';
+import compileActions, { transpileActions } from '@/utils/transpile-actions';
 import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
@@ -117,7 +117,10 @@ export default async function compileFiles() {
 
                     actionsEntrypoints.push(actionEntrypoint);
                     actionIdCount += 1;
-                    await Bun.write(actionEntrypoint, result.code);
+                    await Bun.write(
+                      actionEntrypoint,
+                      transpileActions(result.code),
+                    );
                   }
 
                   code = result.code;

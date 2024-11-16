@@ -2,7 +2,7 @@ import { normalizeHTML } from '@/helpers';
 import AST from '@/utils/ast';
 import { describe, it, expect } from 'bun:test';
 import { getPurgedBody } from '.';
-import getActionsInfo from '@/utils/compile-actions/get-actions-info';
+import getActionsInfo from '@/utils/transpile-actions/get-actions-info';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 
