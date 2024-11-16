@@ -253,9 +253,8 @@ export async function getServeOptions() {
 
     // Middleware
     if (customMiddleware) {
-      const middlewareResponse = await Promise.resolve().then(() =>
-        customMiddleware(req),
-      );
+      // @ts-ignore TODO: Remove this comment when TypeScript adds Promise.try
+      const middlewareResponse = await Promise.try(() => customMiddleware(req));
 
       if (middlewareResponse) return middlewareResponse;
     }
