@@ -86,7 +86,6 @@ async function activateHotReload() {
     if (!globalThis.brisaServer) return;
 
     await reinitConstants();
-    Object.keys(require.cache).forEach((key) => delete require.cache[key]);
     globalThis.brisaServer.publish('hot-reload', LIVE_RELOAD_COMMAND);
 
     if (waitFilename) {
