@@ -194,10 +194,10 @@ describe('utils', () => {
       ).text();
 
       expect(homePageContent).toContain(
-        `"data-action-onclick":"a1_1","data-action"`,
+        `"data-action-onclick":"a2n9c_1","data-action"`,
       );
       expect(homePageContent).toContain(
-        `"data-action-onclick":"a1_2","data-action"`,
+        `"data-action-onclick":"a2n9c_2","data-action"`,
       );
 
       const pagesClient = fs
@@ -283,7 +283,7 @@ describe('utils', () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 67 B      |
-    ${info}λ /pages/index                   | 821 B     | ${greenLog('3 kB')}
+    ${info}λ /pages/index                   | 827 B     | ${greenLog('3 kB')}
     ${info}λ /pages/page-with-web-component | 761 B     | ${greenLog('5 kB')}
     ${info}λ /pages/somepage                | 1 kB      | ${greenLog('0 B')}
     ${info}λ /pages/somepage-with-context   | 1 kB      | ${greenLog('0 B')}  
@@ -433,7 +433,7 @@ describe('utils', () => {
       ).text();
 
       expect(layoutContent).toContain(
-        `"data-action-onclick":"a1_1","data-action"`,
+        `"data-action-onclick":"a2n9c_1","data-action"`,
       );
 
       const pagesClient = fs
@@ -464,7 +464,7 @@ describe('utils', () => {
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
     ${info}λ /pages/index  | 444 B     | ${greenLog('3 kB')}  
-    ${info}Δ /layout       | 706 B     |
+    ${info}Δ /layout       | 709 B     |
     ${info}
     ${info}λ Server entry-points
     ${info}Δ Layout

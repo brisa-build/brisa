@@ -13,7 +13,7 @@ import { logTable } from '@/utils/log/log-build';
 import serverComponentPlugin from '@/utils/server-component-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import getI18nClientMessages from '@/utils/get-i18n-client-messages';
-import compileActions, { transpileActions } from '@/utils/transpile-actions';
+import { transpileActions, buildActions } from '@/utils/transpile-actions';
 import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
@@ -102,7 +102,7 @@ export default async function compileFiles() {
                 let code = await Bun.file(path).text();
 
                 try {
-                  const fileID = `a${actionIdCount}`;
+                  const fileID = `a${Bun.hash(path).toString(36)}`;
                   const result = serverComponentPlugin(code, {
                     path,
                     allWebComponents,
@@ -148,7 +148,7 @@ export default async function compileFiles() {
   if (!success) return { success, logs, pagesSize: {} };
 
   if (actionsEntrypoints.length) {
-    const actionResult = await compileActions({ actionsEntrypoints, define });
+    const actionResult = await buildActions({ actionsEntrypoints, define });
     if (!actionResult.success) logs.push(...actionResult.logs);
   }
 

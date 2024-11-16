@@ -1,26 +1,24 @@
-import { join } from 'node:path';
-import { getConstants } from '@/constants';
 import type { RequestContext } from '@/types';
 import { deserialize } from '@/utils/serialization';
 import transferStoreService from '@/utils/transfer-store-service';
 import { resolveStore } from '@/utils/transfer-store-service';
 import { logError } from '@/utils/log/log-build';
 import { pathToFileURLWhenNeeded } from '../get-importable-filepath';
+import importFileIfExists from '../import-file-if-exists';
+import { getConstants } from '@/constants';
 
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
 export default async function responseAction(req: RequestContext) {
+  const { BUILD_DIR } = getConstants();
+  const actionModule = await importFileIfExists('actions', BUILD_DIR);
+
   const { transferClientStoreToServer, formData, body } =
     await transferStoreService(req);
-  const { BUILD_DIR } = getConstants();
   const url = new URL(req.url);
   const action =
     req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
   const actionsHeaderValue = req.headers.get('x-actions') ?? '[]';
-  const actionFile = getActionFile(action);
-  const actionModule = await import(
-    pathToFileURLWhenNeeded(join(BUILD_DIR, 'actions', actionFile!))
-  );
   let resetForm = false;
 
   const target = {
@@ -90,19 +88,9 @@ export default async function responseAction(req: RequestContext) {
     for (const [eventName, actionId] of actions) {
       nextProps[eventName] = async (...params: unknown[]) => {
         const { promise, resolve, reject } = Promise.withResolvers();
+        const actionDependency = actionModule[actionId];
 
         actionCallPromises.push([actionId, promise]);
-
-        const file = actionId.split('_').at(0);
-        const actionDependency =
-          file === actionFile
-            ? actionModule[actionId]
-            : (
-                await import(
-                  pathToFileURLWhenNeeded(join(BUILD_DIR, 'actions', file!))
-                )
-              )[actionId];
-
         req.store.set(`__params:${actionId}`, params);
 
         try {
@@ -210,8 +198,4 @@ export default async function responseAction(req: RequestContext) {
   }
 
   return response;
-}
-
-export function getActionFile(action: string) {
-  return action.split('_').at(0) + '.js';
 }

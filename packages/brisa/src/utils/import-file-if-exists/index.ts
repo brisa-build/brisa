@@ -7,7 +7,8 @@ export default async function importFileIfExists(
     | 'i18n'
     | 'brisa.config'
     | '_integrations'
-    | 'css-files',
+    | 'css-files'
+    | 'actions',
   dir = path.join(process.cwd(), 'build'),
 ) {
   const importablePath = getImportableFilepath(filename, dir);

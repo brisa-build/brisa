@@ -1,3 +1,27 @@
+import type { RequestContext } from '@/types';
+
+export function a1_1(props: any) {
+  console.log('a1_1', props);
+}
+
+export function a1_2(props: any) {
+  return 'a1_2';
+}
+
+export function a1_3(props: any, req: any) {
+  const [event] = req.store.get('__params:a1_3');
+  event.target.reset(); // Simulate a form reset
+}
+
+export async function a2_1({ onAction }: any) {
+  return 'a2_1' + ((await onAction?.('foo')) ?? '');
+}
+
+export function a2_2({}, req: RequestContext) {
+  const foo = req.store.get('__params:a2_2')[0];
+  return '-a2_2-' + foo;
+}
+
 export async function a3_1({ onAction2 }: any, req: any) {
   const [withAwait] = req.store.get('__params:a3_1');
   console.log('a3_1 before calling nested action');
