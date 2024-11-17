@@ -13,13 +13,14 @@ export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
+  const { BUILD_DIR, IS_PRODUCTION } = getConstants();
+
   // This cache improves the req/sec 575%
   // https://github.com/brisa-build/brisa/pull/604
-  if (cache.has(route.filePath)) {
+  if (IS_PRODUCTION && cache.has(route.filePath)) {
     return cache.get(route.filePath);
   }
 
-  const { BUILD_DIR } = getConstants();
   const module = (await import(
     pathToFileURLWhenNeeded(route.filePath)
   )) as PageModule;
