@@ -4370,7 +4370,7 @@ describe('utils', () => {
       expect(idComponent?.shadowRoot?.innerHTML).toBe('1234-543-4234-5425-123');
     });
 
-    it.only('should not select the last option by default when using appendChild in a loop', async () => {
+    it('should not select the last option by default when using appendChild in a loop', async () => {
       const options = ['Option 1', 'Option 2', 'Option 3'];
 
       const Component = () => {
