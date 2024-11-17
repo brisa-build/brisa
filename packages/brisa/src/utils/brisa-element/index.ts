@@ -343,9 +343,7 @@ export default function brisaElement(
                 const isDangerHTML = (child as any)?.[0] === HTML;
 
                 if (isDangerHTML || isReactiveArray(child)) {
-                  const tempContainer = el.isConnected
-                    ? (createElement(CONTEXT) as any)
-                    : el;
+                  const tempContainer = createElement(CONTEXT) as any;
 
                   // Reactive injected danger HTML via dangerHTML() helper
                   if (isDangerHTML) {

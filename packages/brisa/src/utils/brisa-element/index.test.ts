@@ -4370,6 +4370,37 @@ describe('utils', () => {
       expect(idComponent?.shadowRoot?.innerHTML).toBe('1234-543-4234-5425-123');
     });
 
+    it.only('should not select the last option by default when using appendChild in a loop', async () => {
+      const options = ['Option 1', 'Option 2', 'Option 3'];
+
+      const Component = () => {
+        return [
+          'select',
+          {},
+          () => options.map((option) => ['option', { value: option }, option]),
+        ];
+      };
+
+      customElements.define('select-component', brisaElement(Component));
+      document.body.innerHTML = '<select-component />';
+
+      const selectComponent = document.querySelector(
+        'select-component',
+      ) as HTMLElement;
+      const select = selectComponent.shadowRoot?.querySelector(
+        'select',
+      ) as HTMLSelectElement;
+      const optionsElements = Array.from(select.options);
+
+      expect(optionsElements[0].textContent).toBe('Option 1');
+      expect(optionsElements[1].textContent).toBe('Option 2');
+      expect(optionsElements[2].textContent).toBe('Option 3');
+
+      expect(optionsElements[0].selected).toBeTrue();
+      expect(optionsElements[1].selected).toBeFalse();
+      expect(optionsElements[2].selected).toBeFalse();
+    });
+
     it('should be generate multi useId when data-id does not exists', () => {
       spyOn(crypto, 'randomUUID').mockImplementationOnce(
         () => '1234-543-4234-5425-123',
