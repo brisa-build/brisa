@@ -3359,7 +3359,7 @@
   {
     "id": "/building-your-application/configuring/integrations#types",
     "title": "Types",
-    "text": "export type Configuration = {\n  // ...\n  integrations?: Integration[];\n};\n\nexport type Integration = {\n  name: string;\n  transpileCSS?(pathname: string, content: string): Promise<string>;\n  defaultCSS?: {\n    content: string;\n    applyDefaultWhenEvery: (content: string) => boolean;\n  }}",
+    "text": "export type Configuration = {\n  // ...\n  integrations?: Integration[];\n};\n\nexport type Integration = {\n  name: string;\n  transpileCSS?(pathname: string, content: string): Promise<string>;\n  defaultCSS?: {\n    content: string;\n    applyDefaultWhenEvery: (content: string) => boolean;\n  }};\n  afterBuild?(brisaConstants: BrisaConstants): void | Promise<void>;",
     "titles": [
       "Integrations"
     ]

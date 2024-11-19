@@ -91,7 +91,7 @@ describe('brisa-tailwindcss', () => {
       return { quiet: async () => {}, toString: () => res };
     }
 
-    spyOn(Bun, '$').mockImplementation(shellContent as any);
+    const spyShell = spyOn(Bun, '$').mockImplementation(shellContent as any);
 
     await integration.afterBuild({
       BUILD_DIR: import.meta.dirname,
@@ -109,5 +109,7 @@ describe('brisa-tailwindcss', () => {
     expect(mockLog.mock.calls[2][0]).toBe('INFO');
     expect(mockLog.mock.calls[2][1]).toBe('TICK');
     expect(mockLog.mock.calls[2][2]).toContain('TailwindCSS embedded in');
+    mockLog.mockRestore();
+    spyShell.mockRestore();
   });
 });
