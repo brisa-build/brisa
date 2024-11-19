@@ -1,5 +1,8 @@
-import { describe, expect, it } from 'bun:test';
+import { describe, expect, it, spyOn, mock } from 'bun:test';
+import packageJSON from './package.json';
 import brisaTailwindcss from '.';
+
+const TAILWIND_VERSION = packageJSON.devDependencies.tailwindcss;
 
 describe('brisa-tailwindcss', () => {
   it('should return the correct name', () => {
@@ -74,5 +77,37 @@ describe('brisa-tailwindcss', () => {
     );
 
     expect(transpiledCSS).not.toContain('@layer base');
+  });
+
+  it('should call Bun.$ to install tailwindcss inside the build folder #637', async () => {
+    const integration = brisaTailwindcss();
+    const shellMock = mock();
+    const mockLog = spyOn(console, 'log');
+
+    function shellContent(strings: string[], dir: string, version: string) {
+      const res =
+        strings[0] + dir + strings[1] + version + strings[2] + version;
+      shellMock(res);
+      return { quiet: async () => {}, toString: () => res };
+    }
+
+    spyOn(Bun, '$').mockImplementation(shellContent as any);
+
+    await integration.afterBuild({
+      BUILD_DIR: import.meta.dirname,
+      LOG_PREFIX: { INFO: 'INFO', WAIT: 'WAIT', TICK: 'TICK' },
+    });
+
+    expect(mockLog.mock.calls[0][0]).toBe('INFO');
+    expect(mockLog.mock.calls[1]).toEqual([
+      'WAIT',
+      ' Embedding TailwindCSS in the build folder...',
+    ]);
+    expect(shellMock.mock.calls[0][0]).toBe(
+      `cd ${import.meta.dirname} && bun i tailwindcss@${TAILWIND_VERSION} @tailwindcss/postcss@${TAILWIND_VERSION}`,
+    );
+    expect(mockLog.mock.calls[2][0]).toBe('INFO');
+    expect(mockLog.mock.calls[2][1]).toBe('TICK');
+    expect(mockLog.mock.calls[2][2]).toContain('TailwindCSS embedded in');
   });
 });

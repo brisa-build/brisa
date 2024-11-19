@@ -1,4 +1,12 @@
-import { expect, it, describe, beforeEach, afterEach, spyOn } from 'bun:test';
+import {
+  expect,
+  it,
+  describe,
+  beforeEach,
+  afterEach,
+  spyOn,
+  mock,
+} from 'bun:test';
 import path from 'node:path';
 import fs from 'node:fs';
 import compileBrisaInternalsToDoBuildPortable from '.';
@@ -204,5 +212,20 @@ describe('utils/compileServeInternalsIntoBuild', () => {
         },
       },
     });
+  });
+
+  it('should call all afterBuild functions inside integrations', async () => {
+    const mockAfterBuild = mock(async () => {});
+    const mockAfterBuild2 = mock(() => {});
+
+    mockConstants.CONFIG.integrations = [
+      { afterBuild: mockAfterBuild },
+      { afterBuild: mockAfterBuild2 },
+    ];
+
+    await compileBrisaInternalsToDoBuildPortable();
+
+    expect(mockAfterBuild).toHaveBeenCalledWith(mockConstants);
+    expect(mockAfterBuild2).toHaveBeenCalledWith(mockConstants);
   });
 });

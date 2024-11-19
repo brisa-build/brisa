@@ -1312,6 +1312,7 @@ export type Integration = {
     content: string;
     applyDefaultWhenEvery: (content: string) => boolean;
   };
+  afterBuild?(brisaConstants: BrisaConstants): void | Promise<void>;
 };
 
 export interface I18nDictionary {

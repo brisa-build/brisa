@@ -35,5 +35,6 @@ export type Integration = {
   defaultCSS?: {
     content: string;
     applyDefaultWhenEvery: (content: string) => boolean;
-  }}
+  }};
+  afterBuild?(brisaConstants: BrisaConstants): void | Promise<void>;
 ```

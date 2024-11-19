@@ -27,8 +27,9 @@ const NO_SERVER_EXPORTS = new Set([
  *
  */
 export default async function compileServeInternalsIntoBuild() {
+  const constants = getConstants();
   const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION, BRISA_DIR } =
-    getConstants();
+    constants;
 
   if (!IS_PRODUCTION) return;
 
@@ -87,6 +88,14 @@ export default async function compileServeInternalsIntoBuild() {
 
   createBrisaModule(runtimeExec);
   addBrisaModule();
+
+  const afterBuildFunctions = (CONFIG.integrations ?? []).filter(
+    (i) => i.afterBuild,
+  );
+
+  if (afterBuildFunctions.length) {
+    await Promise.all(afterBuildFunctions.map((i) => i.afterBuild!(constants)));
+  }
 
   if (isServer) {
     const relativeServerFilePath = path.join(
