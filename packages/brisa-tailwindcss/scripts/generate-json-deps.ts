@@ -18,12 +18,22 @@ fs.writeFileSync(
 
 await Bun.$`cd ${tempDir} && bun i`.quiet();
 
-const libs = fs
-  .readdirSync(path.join(tempDir, 'node_modules'))
-  .filter((lib) => !lib.startsWith('.'));
+const nodeModules = path.join(tempDir, 'node_modules');
+const lightningcssPackage = JSON.parse(
+  fs.readFileSync(
+    path.join(nodeModules, 'lightningcss', 'package.json'),
+    'utf-8',
+  ),
+);
+const libs = new Set(Object.keys(lightningcssPackage.optionalDependencies));
+
+for (const lib of fs.readdirSync(nodeModules)) {
+  if (lib.startsWith('.')) continue;
+  libs.add(lib);
+}
 
 fs.writeFileSync(
   path.join(import.meta.dirname, '..', 'libs.json'),
-  JSON.stringify(libs),
+  JSON.stringify([...libs]),
 );
 fs.rmSync(tempDir, { recursive: true });
