@@ -1,8 +1,8 @@
 import tailwindcss from '@tailwindcss/postcss';
 import postcss from 'postcss';
-import packageJSON from './package.json';
-
-const TAILWIND_VERSION = packageJSON.devDependencies.tailwindcss;
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import libs from './libs.json';
 
 // Note: is not bundled here to avoid issues with lightningcss
 export default function brisaTailwindcss() {
@@ -31,12 +31,26 @@ export default function brisaTailwindcss() {
     // Issue: https://github.com/brisa-build/brisa/issues/637
     async afterBuild({ BUILD_DIR, LOG_PREFIX }) {
       const start = Date.now();
+      const destNodeModules = path.join(BUILD_DIR, 'node_modules');
+      const nodeModules = Bun.resolveSync('brisa', BUILD_DIR).split('brisa')[0];
+
       console.log(LOG_PREFIX.INFO, '');
       console.log(
         LOG_PREFIX.WAIT,
         ' Embedding TailwindCSS in the build folder...',
       );
-      await Bun.$`cd ${BUILD_DIR} && bun i tailwindcss@${TAILWIND_VERSION} @tailwindcss/postcss@${TAILWIND_VERSION}`.quiet();
+
+      await Promise.all(
+        libs.map(async (lib) => {
+          const from = path.join(nodeModules, lib);
+          const to = path.join(destNodeModules, lib);
+
+          if (await fs.exists(from)) {
+            return fs.cp(from, to, { recursive: true });
+          }
+        }),
+      );
+
       const milliseconds = Date.now() - start;
       console.log(
         LOG_PREFIX.INFO,

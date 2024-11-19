@@ -1,0 +1,16 @@
+[
+  "@alloc",
+  "tapable",
+  "jiti",
+  "lightningcss-darwin-arm64",
+  "detect-libc",
+  "nanoid",
+  "@tailwindcss",
+  "postcss",
+  "enhanced-resolve",
+  "picocolors",
+  "tailwindcss",
+  "graceful-fs",
+  "lightningcss",
+  "source-map-js"
+]

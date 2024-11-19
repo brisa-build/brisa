@@ -44,7 +44,7 @@
     "www:build": "bun run --cwd packages/www build",
     "www:dev": "bun run --cwd packages/www dev",
     "www:deploy": "bun run build && bun run www:build && vercel --prod",
-    "prepare": "husky"
+    "prepare": "husky && bun run packages/brisa-tailwindcss/scripts/generate-json-deps.ts"
   },
   "packageManager": "bun@1.1.34",
   "engines": {

@@ -10,12 +10,15 @@
     "name": "Brisa Team",
     "email": "contact@brisa.build.com"
   },
+  "scripts": {
+    "libs-json": "bun run scripts/generate-json-deps.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/brisa-tailwindcss"
   },
-  "files": ["index.ts", "index.d.ts"],
+  "files": ["index.ts", "index.d.ts", "libs.json"],
   "devDependencies": {
     "@tailwindcss/postcss": "4.0.0-alpha.33",
     "postcss": "8.4.49",
