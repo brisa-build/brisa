@@ -18,6 +18,7 @@ import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
+import getClientBuildDetails from '../get-client-build-details';
 
 const TS_REGEX = /\.tsx?$/;
 const BRISA_DEPS = ['brisa/server'];
@@ -305,33 +306,18 @@ async function compileClientCodePage(
       })
     : null;
 
-  for (const page of pages) {
-    const route = page.path.replace(BUILD_DIR, '');
-    const pagePath = page.path;
-    const isPage = route.startsWith(sep + 'pages' + sep);
+  const pagesData = await getClientBuildDetails(pages, {
+    webComponentsPerEntrypoint,
+    layoutWebComponents,
+    allWebComponents,
+    integrationsPath,
+  });
+
+  for (const data of pagesData) {
+    let { size, rpc, lazyRPC, code, unsuspense, useI18n, i18nKeys, pagePath } =
+      data;
     const clientPagePath = pagePath.replace('pages', 'pages-client');
-    let pageWebComponents = webComponentsPerEntrypoint[pagePath];
-
-    if (!isPage) continue;
-
-    // It is necessary to add the web components of the layout before
-    // having the code of the page because it will add the web components
-    // in the following fields: code, size.
-    if (layoutWebComponents) {
-      pageWebComponents = { ...layoutWebComponents, ...pageWebComponents };
-    }
-
-    const pageCode = await getClientCodeInPage({
-      pagePath,
-      allWebComponents,
-      pageWebComponents,
-      integrationsPath,
-      layoutHasContextProvider: layoutCode?.useContextProvider,
-    });
-
-    if (!pageCode) return null;
-
-    let { size, rpc, lazyRPC, code, unsuspense, useI18n, i18nKeys } = pageCode;
+    const route = pagePath.replace(BUILD_DIR, '');
 
     // If there are no actions in the page but there are actions in
     // the layout, then it is as if the page also has actions.
