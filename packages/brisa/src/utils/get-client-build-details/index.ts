@@ -1,5 +1,4 @@
-import { sep } from 'node:path';
-import { join } from 'node:path';
+import { sep, join } from 'node:path';
 import { writeFile, rm } from 'node:fs/promises';
 import { getConstants } from '@/constants';
 import type { BuildArtifact } from 'bun';
@@ -48,12 +47,21 @@ export default async function getClientBuildDetails(
   const { IS_PRODUCTION, SRC_DIR, CONFIG, I18N_CONFIG } = getConstants();
   let clientBuildDetails = (
     await Promise.all(pages.map((p) => prepareEntrypoint(p, options)))
-  ).filter((p) => p?.entrypoint) as EntryPointData[];
+  ).filter(Boolean) as EntryPointData[];
 
-  const entrypoints = clientBuildDetails.map((p) => p.entrypoint!);
+  const entrypointsData = clientBuildDetails.reduce((acc, curr, index) => {
+    if (curr.entrypoint) acc.push({ ...curr, index });
+    return acc;
+  }, [] as EntryPointData[]);
+
+  const entrypoints = entrypointsData.map((p) => p.entrypoint!);
   const envVar = getDefinedEnvVar();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const webComponentsPath = Object.values(options.allWebComponents);
+
+  if (entrypoints.length === 0) {
+    return clientBuildDetails;
+  }
 
   const { success, logs, outputs } = await Bun.build({
     entrypoints,
@@ -130,9 +138,10 @@ export default async function getClientBuildDetails(
   });
 
   // TODO: Adapt plugin to analyze per entrypoint
-  // TODO: Com resoldré els defines que son per entrypoint?
+  // TODO: Solve "define" for entrypoint
   //       ... _WEB_CONTEXT_PLUGIN_, _USE_PAGE_TRANSLATION_
   // TODO: Create build with all the temporal pages
+  // TODO: How to solve the layout web components?
   // TODO: Save outputs to correct paths
   // TODO: Write the new outputs to the disk and cleanup the temporal pages
   // TODO: Overwrite clientBuildDetails with code, size
@@ -148,8 +157,9 @@ export default async function getClientBuildDetails(
   }
 
   for (let i = 0; i < outputs.length; i++) {
-    clientBuildDetails[i].code = await outputs[i].text();
-    clientBuildDetails[i].size = outputs[i].size;
+    const index = entrypointsData[i].index!;
+    clientBuildDetails[index].code = await outputs[i].text();
+    clientBuildDetails[index].size = outputs[i].size;
   }
 
   return clientBuildDetails;
@@ -167,6 +177,7 @@ type EntryPointData = {
   entrypoint?: string;
   useWebContextPlugins?: boolean;
   pagePath: string;
+  index?: number;
 };
 
 async function prepareEntrypoint(
