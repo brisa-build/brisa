@@ -1,56 +1,54 @@
-import { watch, existsSync, statSync } from 'node:fs';
-import path from 'node:path';
-import process from 'node:process';
-import { spawnSync } from 'node:child_process';
-import constants, { reinitConstants } from '@/constants';
-import dangerHTML from '@/utils/danger-html';
-import { toInline } from '@/helpers';
-import { logError } from '@/utils/log/log-build';
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+import cp from "node:child_process";
+import constants, { reinitConstants } from "@/constants";
+import dangerHTML from "@/utils/danger-html";
+import { toInline } from "@/helpers";
+import { logError } from "@/utils/log/log-build";
 
 const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
-const LIVE_RELOAD_WEBSOCKET_PATH = '__brisa_live_reload__';
-const LIVE_RELOAD_COMMAND = 'reload';
+const LIVE_RELOAD_WEBSOCKET_PATH = "__brisa_live_reload__";
+const LIVE_RELOAD_COMMAND = "reload";
 
 // Similar than Bun.nanoseconds, but also working with Node.js
 function nanoseconds() {
   return Number(process.hrtime.bigint());
 }
 
-async function activateHotReload() {
-  let semaphore = false;
-  let waitFilename = '';
+export async function activateHotReload() {
+  let currentProcess: ReturnType<typeof cp.spawn> | null = null;
 
   async function watchSourceListener(event: any, filename: any) {
     try {
       // Compile assets only once (there are some issues with variable fonts)
       // - https://github.com/brisa-build/brisa/issues/227
       // - https://github.com/brisa-build/brisa/issues/228
-      if (filename.split(path.sep)[0] === 'public') return;
+      if (filename.split(path.sep)[0] === "public") return;
 
       const filePath = path.join(SRC_DIR, filename);
 
-      if (!existsSync(filePath)) return;
-      if (event !== 'change' && statSync(filePath).size !== 0) return;
+      if (!fs.existsSync(filePath)) return;
+      if (event !== "change" && fs.statSync(filePath).size !== 0) return;
 
       console.log(LOG_PREFIX.WAIT, `recompiling ${filename}...`);
-      if (semaphore) waitFilename = filename as string;
-      else recompile(filename as string);
+      recompile(filename as string);
     } catch (e: any) {
       logError({
         messages: [e.message, `Error while trying to recompile ${filename}`],
         stack: e.stack,
         docTitle: `Please, file a GitHub issue to Brisa's team`,
-        docLink: 'https://github.com/brisa-build/brisa/issues/new',
+        docLink: "https://github.com/brisa-build/brisa/issues/new",
       });
     }
   }
 
   async function recompile(filename: string) {
-    semaphore = true;
-
-    if (typeof Bun !== 'undefined') {
+    if (typeof Bun !== "undefined") {
       globalThis.Loader.registry.clear();
     }
+
+    currentProcess?.kill?.();
 
     const nsStart = nanoseconds();
 
@@ -59,55 +57,55 @@ async function activateHotReload() {
     // different runtimes, like Node.js or Bun, however, the build process is always
     // executed in Bun.
     // https://github.com/brisa-build/brisa/issues/404
-    const { error } = spawnSync(
+    currentProcess = cp.spawn(
       process.execPath,
-      [path.join(process.argv[1], '..', '..', 'build.js')],
+      [path.join(process.argv[1], "..", "..", "build.js")],
       {
-        env: Object.assign(process.env, { QUIET_MODE: 'true' }),
-        stdio: ['inherit', 'inherit', 'pipe'],
+        env: Object.assign(process.env, { QUIET_MODE: "true" }),
+        stdio: ["inherit", "inherit", "pipe"],
       },
     );
 
     const nsEnd = nanoseconds();
     const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
-    if (error) {
+    currentProcess.on("error", (error: any) => {
       console.log(
         LOG_PREFIX.ERROR,
         `failed to recompile ${filename}`,
         error.toString(),
       );
-      semaphore = false;
-      return;
-    }
+    });
 
-    console.log(LOG_PREFIX.READY, `hot reloaded successfully in ${ms}ms`);
+    currentProcess.on("exit", async (code: number) => {
+      if (code !== 0) return;
 
-    if (!globalThis.brisaServer) return;
+      console.log(LOG_PREFIX.READY, `recompiled ${filename} in ${ms}ms`);
+      if (!globalThis.brisaServer) return;
 
-    await reinitConstants();
-    globalThis.brisaServer.publish('hot-reload', LIVE_RELOAD_COMMAND);
-
-    if (waitFilename) {
-      const popFilename = waitFilename;
-      waitFilename = '';
-      await recompile(popFilename);
-    }
-    semaphore = false;
+      await reinitConstants();
+      globalThis.brisaServer.publish("hot-reload", LIVE_RELOAD_COMMAND);
+    });
   }
 
   if (globalThis.watcher) {
     globalThis.watcher.close();
   } else {
-    console.log(LOG_PREFIX.INFO, 'hot reloading enabled');
+    console.log(LOG_PREFIX.INFO, "hot reloading enabled");
   }
 
-  globalThis.watcher = watch(SRC_DIR, { recursive: true }, watchSourceListener);
+  globalThis.watcher = fs.watch(
+    SRC_DIR,
+    { recursive: true },
+    watchSourceListener,
+  );
 
-  process.on('SIGINT', () => {
+  process.on("SIGINT", () => {
     globalThis.watcher?.close();
     process.exit(0);
   });
+
+  return recompile;
 }
 
 // Checking IS_SERVE_PROCESS is totally necessary because this component is
