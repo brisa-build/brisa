@@ -122,7 +122,7 @@ export default function extendStreamController({
       } else if (storeTransfered && !areSignalsInjected) {
         script = `<script>for(let e of ${serializedStore}) _S.push(e)</script>`;
       } else {
-        script = `<script>window._S=${serializedStore}</script>`;
+        script = `<script id="init-S">window._S=${serializedStore}</script>`;
       }
 
       this.enqueue(script, suspenseId);

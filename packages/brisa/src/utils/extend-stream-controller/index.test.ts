@@ -296,7 +296,7 @@ describe('extendStreamController', () => {
     controller.transferStoreToClient();
 
     expect(mockController.enqueue.mock.calls).toEqual([
-      [`<script>window._S=[["test","test"]]</script>`],
+      [`<script id="init-S">window._S=[["test","test"]]</script>`],
     ]);
   });
 
@@ -317,7 +317,7 @@ describe('extendStreamController', () => {
     controller.transferStoreToClient();
 
     expect(mockController.enqueue.mock.calls).toEqual([
-      [`<script>window._S=[["test","test"]]</script>`],
+      [`<script id="init-S">window._S=[["test","test"]]</script>`],
     ]);
   });
 
@@ -406,7 +406,7 @@ describe('extendStreamController', () => {
     controller.transferStoreToClient();
 
     expect(mockController.enqueue.mock.calls).toEqual([
-      [`<script>window._S=[["some","foo"]]</script>`],
+      [`<script id="init-S">window._S=[["some","foo"]]</script>`],
       [`<script>for(let e of [["another","bar"]]) _S.push(e)</script>`],
     ]);
   });
@@ -432,7 +432,7 @@ describe('extendStreamController', () => {
     controller.transferStoreToClient();
 
     expect(mockController.enqueue.mock.calls).toEqual([
-      [`<script>window._S=[["some","foo"]]</script>`],
+      [`<script id="init-S">window._S=[["some","foo"]]</script>`],
       [
         `<script>for(let [k, v] of [["another","bar"]]){ _s?.set?.(k, v); _S.push([k, v])}</script>`,
       ],
