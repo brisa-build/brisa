@@ -29,27 +29,31 @@ export async function preEntrypointAnalysis(
   webComponents: WCs = {},
   layoutHasContextProvider?: boolean,
 ) {
-  const ast = await getAstFromPath(path);
-
-  // Perform the analysis
-  let { useSuspense, useContextProvider, useActions, useHyperlink } =
-    analyzeServerAst(ast, allWebComponents, layoutHasContextProvider);
-
-  // Analyze nested web components
-  const nestedComponents = await Promise.all(
-    Object.values(webComponents).map(async (componentPath) =>
-      analyzeServerAst(await getAstFromPath(componentPath), allWebComponents),
-    ),
+  const mainAnalysisPromise = getAstFromPath(path).then((ast) =>
+    analyzeServerAst(ast, allWebComponents, layoutHasContextProvider),
   );
 
-  // Aggregate results from nested components
-  const aggregatedWebComponents = { ...webComponents };
+  const nestedAnalysisPromises = Object.entries(webComponents).map(
+    async ([, componentPath]) =>
+      analyzeServerAst(await getAstFromPath(componentPath), allWebComponents),
+  );
 
-  for (const item of nestedComponents) {
-    useContextProvider ||= item.useContextProvider;
-    useSuspense ||= item.useSuspense;
-    useHyperlink ||= item.useHyperlink;
-    Object.assign(aggregatedWebComponents, item.webComponents);
+  // Wait for all analyses to complete
+  const [mainAnalysis, nestedResults] = await Promise.all([
+    mainAnalysisPromise,
+    Promise.all(nestedAnalysisPromises),
+  ]);
+
+  let { useSuspense, useContextProvider, useActions, useHyperlink } =
+    mainAnalysis;
+
+  // Aggregate results
+  const aggregatedWebComponents = { ...webComponents };
+  for (const analysis of nestedResults) {
+    useContextProvider ||= analysis.useContextProvider;
+    useSuspense ||= analysis.useSuspense;
+    useHyperlink ||= analysis.useHyperlink;
+    Object.assign(aggregatedWebComponents, analysis.webComponents);
   }
 
   return {
