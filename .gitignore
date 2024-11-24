@@ -8,6 +8,7 @@ _brisa
 **/out/*
 **/out-*/*
 **/dist/*
+**/.temp-test-files/*
 packages/brisa/index.js
 packages/brisa/out
 packages/brisa/jsx-runtime/
