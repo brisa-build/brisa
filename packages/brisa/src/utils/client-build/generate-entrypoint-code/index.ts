@@ -38,16 +38,16 @@ export async function generateEntryPointCode({
     integrationsPath,
   );
 
-  const pluginsGlobal = useWebContextPlugins
-    ? 'window._P=webContextPlugins;\n'
-    : '';
+  // Note: window._P should be in the first line, in this way, the imports
+  // can use this variable
+  let code = useWebContextPlugins
+    ? `window._P=webContextPlugins;\n${imports}`
+    : `${imports}\n`;
 
   const wcSelectors = getWebComponentSelectors(entries, {
     useContextProvider,
     isDevelopment: IS_DEVELOPMENT,
   });
-
-  let code = `${imports}\n`;
 
   if (useContextProvider) {
     code += injectClientContextProviderCode();
@@ -57,7 +57,7 @@ export async function generateEntryPointCode({
     code += await injectDevelopmentCode();
   }
 
-  code += `${pluginsGlobal}\n${defineElements(wcSelectors)}`;
+  code += defineElements(wcSelectors);
 
   return { code, useWebContextPlugins };
 }

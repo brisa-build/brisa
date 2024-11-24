@@ -20,7 +20,7 @@ const pageWebComponents = {
 
 const i18nCode = 2799;
 const brisaSize = 5720; // TODO: Reduce this size :/
-const webComponents = 1107;
+const webComponents = 1118;
 const unsuspenseSize = 213;
 const rpcSize = 2500; // TODO: Reduce this size
 const lazyRPCSize = 4105; // TODO: Reduce this size
@@ -163,7 +163,7 @@ describe('utils', () => {
     });
 
     it('should load lazyRPC in /somepage because it has an hyperlink', async () => {
-      const webComponentSize = 366;
+      const webComponentSize = 377;
       const output = await getClientCodeInPage({
         pagePath: path.join(pages, 'somepage.tsx'),
         allWebComponents,

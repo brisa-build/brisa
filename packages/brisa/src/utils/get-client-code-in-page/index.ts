@@ -1,21 +1,14 @@
-import { rm, writeFile } from 'node:fs/promises';
-import { join, sep } from 'node:path';
-
 import { getConstants } from '@/constants';
-import { injectClientContextProviderCode } from '@/utils/context-provider/inject-client' with {
-  type: 'macro',
-};
-import { injectBrisaDialogErrorCode } from '@/utils/brisa-error-dialog/inject-code' with {
-  type: 'macro',
-};
-import { getFilterDevRuntimeErrors } from '@/utils/brisa-error-dialog/utils';
 import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
-import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import { logBuildError, logError } from '@/utils/log/log-build';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import getDefinedEnvVar from '../get-defined-env-var';
 import { preEntrypointAnalysis } from '../client-build/pre-entrypoint-analysis';
+import {
+  removeTempEntrypoint,
+  writeTempEntrypoint,
+} from '../client-build/fs-temp-entrypoint-manager';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -77,98 +70,26 @@ export async function transformToWebComponents({
   integrationsPath,
   pagePath,
 }: TransformOptions) {
-  const {
-    SRC_DIR,
-    BUILD_DIR,
-    CONFIG,
-    I18N_CONFIG,
-    IS_DEVELOPMENT,
-    IS_PRODUCTION,
-    VERSION,
-  } = getConstants();
+  const { SRC_DIR, CONFIG, I18N_CONFIG, IS_PRODUCTION } = getConstants();
 
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
-  const internalDir = join(BUILD_DIR, '_brisa');
-  const webEntrypoint = join(internalDir, `temp-${VERSION}.ts`);
   let useI18n = false;
   let i18nKeys = new Set<string>();
   const webComponentsPath = Object.values(webComponentsList);
-  let useWebContextPlugins = false;
-  const entries = Object.entries(webComponentsList);
 
-  // Note: JS imports in Windows have / instead of \, so we need to replace it
-  // Note: Using "require" for component dependencies not move the execution
-  // on top avoiding missing global variables as window._P
-  let imports = entries
-    .map(([name, path]) =>
-      path[0] === '{'
-        ? `require("${normalizePath(path)}");`
-        : `import ${snakeToCamelCase(name)} from "${path.replaceAll(sep, '/')}";`,
-    )
-    .join('\n');
-
-  // Add web context plugins import only if there is a web context plugin
-  if (integrationsPath) {
-    const module = await import(integrationsPath);
-    if (module.webContextPlugins?.length > 0) {
-      useWebContextPlugins = true;
-      imports += `import {webContextPlugins} from "${integrationsPath}";`;
-    }
-  }
-
-  const defineElement =
-    'const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);';
-
-  const customElementKeys = entries
-    .filter(([_, path]) => path[0] !== '{')
-    .map(([k]) => k);
-
-  if (useContextProvider) {
-    customElementKeys.unshift('context-provider');
-  }
-
-  if (IS_DEVELOPMENT) {
-    customElementKeys.unshift('brisa-error-dialog');
-  }
-
-  const customElementsDefinitions = customElementKeys
-    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
-    .join('\n');
-
-  let code = '';
-
-  if (useContextProvider) {
-    const contextProviderCode =
-      injectClientContextProviderCode() as unknown as string;
-    code += contextProviderCode;
-  }
-
-  // IS_DEVELOPMENT to avoid PROD and TEST environments
-  if (IS_DEVELOPMENT) {
-    const brisaDialogErrorCode = (await injectBrisaDialogErrorCode()).replace(
-      '__FILTER_DEV_RUNTIME_ERRORS__',
-      getFilterDevRuntimeErrors(),
-    );
-    code += brisaDialogErrorCode;
-  }
-
-  // Inject web context plugins to window to be used inside web components
-  if (useWebContextPlugins) {
-    code += 'window._P=webContextPlugins;\n';
-  }
-
-  code += `${imports}\n`;
-  code += `${defineElement}\n${customElementsDefinitions};`;
-
-  await writeFile(webEntrypoint, code);
+  const { entrypoint, useWebContextPlugins } = await writeTempEntrypoint({
+    webComponentsList,
+    useContextProvider,
+    integrationsPath,
+    pagePath,
+  });
 
   const envVar = getDefinedEnvVar();
 
   const { success, logs, outputs } = await Bun.build({
-    entrypoints: [webEntrypoint],
+    entrypoints: [entrypoint],
     root: SRC_DIR,
-    // TODO: format: "iife" when Bun support it
-    // https://bun.sh/docs/bundler#format
+    format: 'iife',
     target: 'browser',
     minify: IS_PRODUCTION,
     external: CONFIG.external,
@@ -235,7 +156,7 @@ export async function transformToWebComponents({
     ),
   });
 
-  await rm(webEntrypoint);
+  await removeTempEntrypoint(entrypoint);
 
   if (!success) {
     logBuildError('Failed to compile web components', logs);
@@ -243,16 +164,9 @@ export async function transformToWebComponents({
   }
 
   return {
-    code: '(() => {' + (await outputs[0].text()) + '})();',
+    code: await outputs[0].text(),
     size: outputs[0].size,
     useI18n,
     i18nKeys,
   };
-}
-
-export function normalizePath(rawPathname: string, separator = sep) {
-  const pathname =
-    rawPathname[0] === '{' ? JSON.parse(rawPathname).client : rawPathname;
-
-  return pathname.replaceAll(separator, '/');
 }

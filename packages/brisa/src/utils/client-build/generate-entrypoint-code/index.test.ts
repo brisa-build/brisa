@@ -156,12 +156,11 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toBe(
       normalizeHTML(`
+      window._P=webContextPlugins;
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
       
-      window._P=webContextPlugins;
-
       const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
         
       defineElement("my-component", myComponent);
@@ -190,6 +189,8 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toStartWith(
       normalizeHTML(`
+      window._P=webContextPlugins;
+
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
@@ -200,8 +201,6 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toEndWith(
       normalizeHTML(`
-      window._P=webContextPlugins;
-
       const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
         
       defineElement("context-provider", contextProvider);
@@ -235,6 +234,7 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toStartWith(
       normalizeHTML(`
+      window._P=webContextPlugins;
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
@@ -243,8 +243,6 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toContain(
       normalizeHTML(`
-        window._P=webContextPlugins;
-
         const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
         
         defineElement("brisa-error-dialog", brisaErrorDialog);
@@ -283,6 +281,7 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toStartWith(
       normalizeHTML(`
+      window._P=webContextPlugins;
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
@@ -291,8 +290,6 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toContain(
       normalizeHTML(`
-      window._P=webContextPlugins;
-
       const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
       
       defineElement("brisa-error-dialog", brisaErrorDialog);
