@@ -11,11 +11,11 @@ import createContextPlugin from '@/utils/create-context/create-context-plugin';
 // TODO: Solve "define" for entrypoint
 //       ... _WEB_CONTEXT_PLUGIN_, _USE_PAGE_TRANSLATION_
 // TODO: Test and refactor all this
-export function runBuild(entrypoints: string[], allWebComponents: WCs) {
+export function runBuild(entrypoints: string[], webComponents: WCs) {
   const { IS_PRODUCTION, SRC_DIR, CONFIG, I18N_CONFIG } = getConstants();
   const envVar = getDefinedEnvVar();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
-  const webComponentsPath = Object.values(allWebComponents);
+  const webComponentsPath = Object.values(webComponents);
 
   return Bun.build({
     entrypoints,
