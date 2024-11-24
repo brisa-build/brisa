@@ -21,7 +21,7 @@ async function writeTempFiles(
   );
 }
 
-describe('utils', () => {
+describe('client build', () => {
   describe('preEntrypointAnalysis', () => {
     beforeAll(async () => {
       await mkdir(TEMP_DIR, { recursive: true });

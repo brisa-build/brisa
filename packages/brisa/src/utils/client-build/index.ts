@@ -1,5 +1,5 @@
 import { sep } from 'node:path';
-import { writeFile, rm } from 'node:fs/promises';
+import { rm } from 'node:fs/promises';
 import { getConstants } from '@/constants';
 import type { BuildArtifact } from 'bun';
 import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
@@ -15,9 +15,11 @@ import { shouldTransferTranslatedPagePaths } from '../transfer-translated-page-p
 import clientBuildPlugin from '../client-build-plugin';
 import { logBuildError, logError } from '../log/log-build';
 import createContextPlugin from '../create-context/create-context-plugin';
-import { getTempPageName } from './get-temp-page-name';
-import { generateEntryPointCode } from './generate-entrypoint-code';
 import { preEntrypointAnalysis } from './pre-entrypoint-analysis';
+import {
+  removeTempEntrypoints,
+  writeTempEntrypoint,
+} from './fs-temp-entrypoint-manager';
 
 type WCs = Record<string, string>;
 type WCsEntrypoints = Record<string, WCs>;
@@ -141,7 +143,7 @@ export default async function getClientBuildDetails(
   // TODO: Benchmarks old vs new
 
   // Remove all temp files
-  await Promise.all(entrypoints.map((e) => rm(e)));
+  await removeTempEntrypoints(entrypoints);
 
   if (!success) {
     logBuildError('Failed to compile web components', logs);
@@ -229,7 +231,7 @@ async function prepareEntrypoint(
   // No client build needed, TODO: We need to return the data?!
   if (!Object.keys(webComponents).length) return res;
 
-  const { entrypoint, useWebContextPlugins } = await writeEntrypoint({
+  const { entrypoint, useWebContextPlugins } = await writeTempEntrypoint({
     webComponentsList: webComponents,
     useContextProvider,
     integrationsPath,
@@ -244,29 +246,4 @@ function getRPCCode() {
   return (IS_STATIC_EXPORT && IS_PRODUCTION
     ? injectRPCCodeForStaticApp()
     : injectRPCCode()) as unknown as string;
-}
-
-type TransformOptions = {
-  webComponentsList: Record<string, string>;
-  useContextProvider: boolean;
-  integrationsPath?: string | null;
-  pagePath: string;
-};
-
-async function writeEntrypoint({
-  webComponentsList,
-  useContextProvider,
-  integrationsPath,
-  pagePath,
-}: TransformOptions) {
-  const webEntrypoint = getTempPageName(pagePath);
-  const { code, useWebContextPlugins } = await generateEntryPointCode({
-    webComponentsList,
-    useContextProvider,
-    integrationsPath,
-  });
-
-  await writeFile(webEntrypoint, code);
-
-  return { entrypoint: webEntrypoint, useWebContextPlugins };
 }
