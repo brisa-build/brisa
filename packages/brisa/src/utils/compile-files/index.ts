@@ -311,6 +311,7 @@ async function compileClientCodePage(
     layoutWebComponents,
     allWebComponents,
     integrationsPath,
+    layoutHasContextProvider: layoutCode?.useContextProvider,
   });
 
   for (const data of pagesData) {

@@ -20,6 +20,7 @@ type Options = {
   layoutWebComponents: WCs;
   allWebComponents: WCs;
   integrationsPath?: string | null;
+  layoutHasContextProvider?: boolean;
 };
 
 export default async function getClientBuildDetails(
@@ -169,6 +170,7 @@ async function prepareEntrypoint(
     webComponentsPerEntrypoint,
     layoutWebComponents,
     integrationsPath,
+    layoutHasContextProvider,
   }: Options,
 ): Promise<EntryPointData | undefined> {
   const { BUILD_DIR } = getConstants();
@@ -187,7 +189,7 @@ async function prepareEntrypoint(
     pagePath,
     allWebComponents,
     pageWebComponents,
-    false, // TODO: Remove layoutHasContextProvider as param and do it in a diferent way
+    layoutHasContextProvider,
   );
 
   if (!Object.keys(analysis.webComponents).length) return analysis;
