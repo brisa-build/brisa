@@ -1,7 +1,7 @@
 import { gzipSync, type BuildArtifact } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
 import fs from 'node:fs';
-import { join, sep } from 'node:path';
+import { join } from 'node:path';
 
 import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
@@ -18,7 +18,7 @@ import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
-import getClientBuildDetails from '../get-client-build-details';
+import getClientBuildDetails from '@/utils/client-build';
 
 const TS_REGEX = /\.tsx?$/;
 const BRISA_DEPS = ['brisa/server'];

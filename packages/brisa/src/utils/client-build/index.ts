@@ -1,11 +1,9 @@
-import { sep, join } from 'node:path';
+import { sep } from 'node:path';
 import { writeFile, rm } from 'node:fs/promises';
 import { getConstants } from '@/constants';
 import type { BuildArtifact } from 'bun';
 import AST from '../ast';
 import analyzeServerAst from '../analyze-server-ast';
-import { getFilterDevRuntimeErrors } from '@/utils/brisa-error-dialog/utils';
-import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
   type: 'macro',
 };
@@ -14,17 +12,13 @@ import {
   injectRPCCodeForStaticApp,
   injectRPCLazyCode,
 } from '@/utils/rpc' with { type: 'macro' };
-import { injectClientContextProviderCode } from '@/utils/context-provider/inject-client' with {
-  type: 'macro',
-};
-import { injectBrisaDialogErrorCode } from '@/utils/brisa-error-dialog/inject-code' with {
-  type: 'macro',
-};
 import getDefinedEnvVar from '../get-defined-env-var';
 import { shouldTransferTranslatedPagePaths } from '../transfer-translated-page-paths';
 import clientBuildPlugin from '../client-build-plugin';
 import { logBuildError, logError } from '../log/log-build';
 import createContextPlugin from '../create-context/create-context-plugin';
+import { getTempPageName } from './get-temp-page-name';
+import { generateEntryPointCode } from './generate-entrypoint-code';
 
 type WCs = Record<string, string>;
 type WCsEntrypoints = Record<string, WCs>;
@@ -278,93 +272,14 @@ async function writeEntrypoint({
   integrationsPath,
   pagePath,
 }: TransformOptions) {
-  const { IS_DEVELOPMENT } = getConstants();
-  const webEntrypoint = getTempFileName(pagePath);
-  let useWebContextPlugins = false;
-  const entries = Object.entries(webComponentsList);
-
-  // Note: JS imports in Windows have / instead of \, so we need to replace it
-  // Note: Using "require" for component dependencies not move the execution
-  // on top avoiding missing global variables as window._P
-  let imports = entries
-    .map(([name, path]) =>
-      path[0] === '{'
-        ? `require("${normalizePath(path)}");`
-        : `import ${snakeToCamelCase(name)} from "${path.replaceAll(sep, '/')}";`,
-    )
-    .join('\n');
-
-  // Add web context plugins import only if there is a web context plugin
-  if (integrationsPath) {
-    const module = await import(integrationsPath);
-    if (module.webContextPlugins?.length > 0) {
-      useWebContextPlugins = true;
-      imports += `import {webContextPlugins} from "${integrationsPath}";`;
-    }
-  }
-
-  const defineElement =
-    'const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);';
-
-  const customElementKeys = entries
-    .filter(([_, path]) => path[0] !== '{')
-    .map(([k]) => k);
-
-  if (useContextProvider) {
-    customElementKeys.unshift('context-provider');
-  }
-
-  if (IS_DEVELOPMENT) {
-    customElementKeys.unshift('brisa-error-dialog');
-  }
-
-  const customElementsDefinitions = customElementKeys
-    .map((k) => `defineElement("${k}", ${snakeToCamelCase(k)});`)
-    .join('\n');
-
-  let code = '';
-
-  if (useContextProvider) {
-    const contextProviderCode =
-      injectClientContextProviderCode() as unknown as string;
-    code += contextProviderCode;
-  }
-
-  // IS_DEVELOPMENT to avoid PROD and TEST environments
-  if (IS_DEVELOPMENT) {
-    const brisaDialogErrorCode = (await injectBrisaDialogErrorCode()).replace(
-      '__FILTER_DEV_RUNTIME_ERRORS__',
-      getFilterDevRuntimeErrors(),
-    );
-    code += brisaDialogErrorCode;
-  }
-
-  // Inject web context plugins to window to be used inside web components
-  if (useWebContextPlugins) {
-    code += 'window._P=webContextPlugins;\n';
-  }
-
-  code += `${imports}\n`;
-  code += `${defineElement}\n${customElementsDefinitions};`;
+  const webEntrypoint = getTempPageName(pagePath);
+  const { code, useWebContextPlugins } = await generateEntryPointCode({
+    webComponentsList,
+    useContextProvider,
+    integrationsPath,
+  });
 
   await writeFile(webEntrypoint, code);
 
   return { entrypoint: webEntrypoint, useWebContextPlugins };
-}
-
-function getTempFileName(pagePath: string) {
-  const { PAGES_DIR, BUILD_DIR } = getConstants();
-  const tempName = pagePath
-    .replace(PAGES_DIR, '')
-    .replaceAll(sep, '-')
-    .replace(/\.[a-z]+$/, '');
-
-  return join(BUILD_DIR, '_brisa', `temp-${tempName}.ts`);
-}
-
-export function normalizePath(rawPathname: string, separator = sep) {
-  const pathname =
-    rawPathname[0] === '{' ? JSON.parse(rawPathname).client : rawPathname;
-
-  return pathname.replaceAll(separator, '/');
 }
