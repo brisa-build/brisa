@@ -138,7 +138,7 @@ describe('utils', () => {
 
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
-      expect(mockExtendPlugins).toHaveBeenCalledTimes(4);
+      expect(mockExtendPlugins).toHaveBeenCalledTimes(2);
       expect(mockExtendPlugins.mock.calls[0][1]).toEqual({
         dev: false,
         isServer: true,
@@ -146,17 +146,6 @@ describe('utils', () => {
       expect(mockExtendPlugins.mock.calls[1][1]).toEqual({
         dev: false,
         isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', 'page-with-web-component.js'),
-      });
-      expect(mockExtendPlugins.mock.calls[2][1]).toEqual({
-        dev: false,
-        isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', '_404.js'),
-      });
-      expect(mockExtendPlugins.mock.calls[3][1]).toEqual({
-        dev: false,
-        isServer: false,
-        entrypoint: path.join(BUILD_DIR, 'pages', '_500.js'),
       });
 
       const files = fs
@@ -647,7 +636,7 @@ describe('utils', () => {
     ${info}
     ${info}Route           | JS server | JS client (gz)  
     ${info}----------------------------------------------
-    ${info}λ /pages/index  | 444 B     | ${greenLog('4 kB')}  
+    ${info}λ /pages/index  | 444 B     | ${greenLog('3 kB')}  
     ${info}Δ /layout       | 855 B     |
     ${info}Ω /i18n         | 221 B     |
     ${info}

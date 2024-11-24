@@ -19,7 +19,7 @@ function createTempFileSync(content: string, extension = 'tsx') {
   return { filePath, content };
 }
 
-// Write files synchronously to disk
+// Write files concurrently to disk
 async function writeTempFiles(
   files: Array<{ filePath: string; content: string }>,
 ) {
