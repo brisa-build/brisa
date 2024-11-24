@@ -2869,7 +2869,7 @@ describe('utils', () => {
           </head>
           <body>
             <div>TEST</div>
-            <script>window._S=[["test","test"]]</script>
+            <script id="init-S">window._S=[["test","test"]]</script>
           </body>
         </html>`),
       );
@@ -2911,7 +2911,7 @@ describe('utils', () => {
         </html>
         <template id="U:1"><div>TEST</div></template>
         <script id="R:1">u$('1')</script>
-        <script>window._S=[["test","test"]]</script>
+        <script id="init-S">window._S=[["test","test"]]</script>
         `),
       );
     });
@@ -2928,7 +2928,9 @@ describe('utils', () => {
       const result = Bun.readableStreamToText(stream);
 
       expect(result).resolves.toBe(
-        toInline(`<div>TEST</div><script>window._S=[["test","test"]]</script>`),
+        toInline(
+          `<div>TEST</div><script id="init-S">window._S=[["test","test"]]</script>`,
+        ),
       );
     });
 
@@ -2973,7 +2975,7 @@ describe('utils', () => {
           <body>
             <div>Without Suspense</div>
             <div id="S:1"><div>Loading...</div></div>
-            <script>window._S=[["no-suspense","bar"]]</script>
+            <script id="init-S">window._S=[["no-suspense","bar"]]</script>
           </body>
         </html>
         <template id="U:1"><div>Suspense</div></template>
@@ -3034,7 +3036,7 @@ describe('utils', () => {
       expect(result).toBe(
         toInline(`
           <meta name="robots" content="noindex" />
-          <script>window._S=[["foo","bar"]]</script>
+          <script id="init-S">window._S=[["foo","bar"]]</script>
           <script>${script404}</script>
         `),
       );
@@ -3172,7 +3174,7 @@ describe('utils', () => {
 
       expect(result).toBe(
         toInline(
-          `<script>${scriptStore}</script><script>${scriptNavigate}</script>`,
+          `<script id="init-S">${scriptStore}</script><script>${scriptNavigate}</script>`,
         ),
       );
 

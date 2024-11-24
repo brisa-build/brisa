@@ -432,7 +432,7 @@ describe('utils', () => {
         normalizeHTML(`<div>
           Test <some-web-component-to-transfer-store></some-web-component-to-transfer-store>
         </div>
-        <script>window._S=[["foo","bar"]]</script>`),
+        <script id="init-S">window._S=[["foo","bar"]]</script>`),
       );
     });
 
