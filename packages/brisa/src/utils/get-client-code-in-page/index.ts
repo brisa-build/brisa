@@ -152,7 +152,7 @@ export async function transformToWebComponents({
         },
         createContextPlugin(),
       ],
-      { dev: !IS_PRODUCTION, isServer: false, entrypoint: pagePath },
+      { dev: !IS_PRODUCTION, isServer: false },
     ),
   });
 

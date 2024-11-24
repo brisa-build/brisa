@@ -115,8 +115,7 @@ export default async function getClientBuildDetails(
       {
         dev: !IS_PRODUCTION,
         isServer: false,
-        /* entrypoint: pagePath (TODO: change docs about this) */
-      } as any, // TODO: Fix types
+      },
     ),
   });
 

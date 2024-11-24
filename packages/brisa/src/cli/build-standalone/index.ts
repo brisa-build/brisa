@@ -184,7 +184,7 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
         },
         createContextPlugin(),
       ],
-      { dev: !IS_PRODUCTION, isServer: false, entrypoint: '' },
+      { dev: !IS_PRODUCTION, isServer: false },
     ),
   });
 }

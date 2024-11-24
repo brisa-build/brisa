@@ -866,16 +866,10 @@ export type JSXComponent<
   error?: JSXComponent<T & { error: unknown }>;
 };
 
-export type ExtendPluginOptions =
-  | {
-      dev: boolean;
-      isServer: true;
-    }
-  | {
-      dev: boolean;
-      isServer: false;
-      entrypoint: string;
-    };
+export type ExtendPluginOptions = {
+  dev: boolean;
+  isServer: boolean;
+};
 
 export type ExtendPlugins = (
   plugins: BunPlugin[],
