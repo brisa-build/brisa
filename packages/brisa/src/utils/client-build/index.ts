@@ -2,8 +2,6 @@ import { sep } from 'node:path';
 import { writeFile, rm } from 'node:fs/promises';
 import { getConstants } from '@/constants';
 import type { BuildArtifact } from 'bun';
-import AST from '../ast';
-import analyzeServerAst from '../analyze-server-ast';
 import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
   type: 'macro',
 };
@@ -19,6 +17,7 @@ import { logBuildError, logError } from '../log/log-build';
 import createContextPlugin from '../create-context/create-context-plugin';
 import { getTempPageName } from './get-temp-page-name';
 import { generateEntryPointCode } from './generate-entrypoint-code';
+import { preEntrypointAnalysis } from './pre-entrypoint-analysis';
 
 type WCs = Record<string, string>;
 type WCsEntrypoints = Record<string, WCs>;
@@ -30,7 +29,6 @@ type Options = {
   integrationsPath?: string | null;
 };
 
-const ASTUtil = AST('tsx');
 const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
 const RPCLazyCode = injectRPCLazyCode() as unknown as string;
 
@@ -190,29 +188,24 @@ async function prepareEntrypoint(
 
   if (!isPage) return;
 
-  const webComponents = webComponentsPerEntrypoint[pagePath] ?? {};
-  const pageWebComponents = layoutWebComponents
-    ? { ...layoutWebComponents, ...webComponents }
-    : webComponents;
-  const ast = await getAstFromPath(pagePath);
   let size = 0;
-  let { useSuspense, useContextProvider, useActions, useHyperlink } =
-    // TODO: Remove layoutHasContextProvider as param and do it in a diferent way
-    analyzeServerAst(ast, allWebComponents);
+  const wcs = webComponentsPerEntrypoint[pagePath] ?? {};
+  const pageWebComponents = layoutWebComponents
+    ? { ...layoutWebComponents, ...wcs }
+    : wcs;
 
-  // Web components inside web components
-  const nestedComponents = await Promise.all(
-    Object.values(pageWebComponents).map(async (path) =>
-      analyzeServerAst(await getAstFromPath(path), allWebComponents),
-    ),
+  const {
+    useSuspense,
+    useContextProvider,
+    useActions,
+    useHyperlink,
+    webComponents,
+  } = await preEntrypointAnalysis(
+    pagePath,
+    allWebComponents,
+    pageWebComponents,
+    false, // TODO: Remove layoutHasContextProvider as param and do it in a diferent way
   );
-
-  for (const item of nestedComponents) {
-    useContextProvider ||= item.useContextProvider;
-    useSuspense ||= item.useSuspense;
-    useHyperlink ||= item.useHyperlink;
-    Object.assign(pageWebComponents, item.webComponents);
-  }
 
   const unsuspense = useSuspense ? unsuspenseScriptCode : '';
   const rpc = useActions || useHyperlink ? getRPCCode() : '';
@@ -234,22 +227,16 @@ async function prepareEntrypoint(
   };
 
   // No client build needed, TODO: We need to return the data?!
-  if (!Object.keys(pageWebComponents).length) return res;
+  if (!Object.keys(webComponents).length) return res;
 
   const { entrypoint, useWebContextPlugins } = await writeEntrypoint({
-    webComponentsList: pageWebComponents,
+    webComponentsList: webComponents,
     useContextProvider,
     integrationsPath,
     pagePath,
   });
 
   return { ...res, entrypoint, useWebContextPlugins };
-}
-
-async function getAstFromPath(path: string) {
-  return ASTUtil.parseCodeToAST(
-    path[0] === '{' ? '' : await Bun.file(path).text(),
-  );
 }
 
 function getRPCCode() {

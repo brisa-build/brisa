@@ -21,10 +21,10 @@ import { getFilterDevRuntimeErrors } from '@/utils/brisa-error-dialog/utils';
 import clientBuildPlugin from '@/utils/client-build-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import snakeToCamelCase from '@/utils/snake-to-camelcase';
-import analyzeServerAst from '@/utils/analyze-server-ast';
 import { logBuildError, logError } from '@/utils/log/log-build';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import getDefinedEnvVar from '../get-defined-env-var';
+import { preEntrypointAnalysis } from '../client-build/pre-entrypoint-analysis';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -68,24 +68,18 @@ export default async function getClientCodeInPage({
   let size = 0;
   let code = '';
 
-  const ast = await getAstFromPath(pagePath);
-
-  let { useSuspense, useContextProvider, useActions, useHyperlink } =
-    analyzeServerAst(ast, allWebComponents, layoutHasContextProvider);
-
-  // Web components inside web components
-  const nestedComponents = await Promise.all(
-    Object.values(pageWebComponents).map(async (path) =>
-      analyzeServerAst(await getAstFromPath(path), allWebComponents),
-    ),
+  const {
+    useSuspense,
+    useContextProvider,
+    useActions,
+    useHyperlink,
+    webComponents,
+  } = await preEntrypointAnalysis(
+    pagePath,
+    allWebComponents,
+    pageWebComponents,
+    layoutHasContextProvider,
   );
-
-  for (const item of nestedComponents) {
-    useContextProvider ||= item.useContextProvider;
-    useSuspense ||= item.useSuspense;
-    useHyperlink ||= item.useHyperlink;
-    Object.assign(pageWebComponents, item.webComponents);
-  }
 
   const unsuspense = useSuspense ? unsuspenseScriptCode : '';
   const rpc = useActions || useHyperlink ? getRPCCode() : '';
@@ -94,7 +88,7 @@ export default async function getClientCodeInPage({
   size += unsuspense.length;
   size += rpc.length;
 
-  if (!Object.keys(pageWebComponents).length) {
+  if (!Object.keys(webComponents).length) {
     return {
       code,
       unsuspense,
@@ -108,7 +102,7 @@ export default async function getClientCodeInPage({
   }
 
   const transformedCode = await transformToWebComponents({
-    webComponentsList: pageWebComponents,
+    webComponentsList: webComponents,
     useContextProvider,
     integrationsPath,
     pagePath,
