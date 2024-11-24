@@ -56,10 +56,12 @@ describe('utils', () => {
         rpc: '',
         lazyRPC: '',
         unsuspense: '',
+        pagePath: path.join(pages, 'somepage.tsx'),
         size: 0,
         useI18n: false,
         useContextProvider: false,
         i18nKeys: new Set<string>(),
+        webComponents: {},
       };
       expect(output).toEqual(expected);
     });

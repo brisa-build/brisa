@@ -1,9 +1,20 @@
+import { getConstants } from '@/constants';
 import analyzeServerAst from '@/utils/analyze-server-ast';
 import AST from '@/utils/ast';
+import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
+  type: 'macro',
+};
+import {
+  injectRPCCode,
+  injectRPCCodeForStaticApp,
+  injectRPCLazyCode,
+} from '@/utils/rpc' with { type: 'macro' };
 
 type WCs = Record<string, string>;
 
 const ASTUtil = AST('tsx');
+const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
+const RPCLazyCode = injectRPCLazyCode() as unknown as string;
 
 /**
  * Performs a comprehensive analysis of a given file path and its associated web components.
@@ -56,12 +67,28 @@ export async function preEntrypointAnalysis(
     Object.assign(aggregatedWebComponents, analysis.webComponents);
   }
 
+  let size = 0;
+  const unsuspense = useSuspense ? unsuspenseScriptCode : '';
+  const rpc = useActions || useHyperlink ? getRPCCode() : '';
+  const lazyRPC = useActions || useHyperlink ? RPCLazyCode : '';
+
+  size += unsuspense.length;
+  size += rpc.length;
+
   return {
-    useSuspense,
+    unsuspense,
+    rpc,
     useContextProvider,
-    useActions,
-    useHyperlink,
+    lazyRPC,
+    pagePath: path,
     webComponents: aggregatedWebComponents,
+
+    // Fields that need an extra analysis during/after build:
+    // TODO: Maybe useI18n and i18nKeys can be included to this previous analysis?
+    code: '',
+    size,
+    useI18n: false,
+    i18nKeys: new Set<string>(),
   };
 }
 
@@ -69,4 +96,11 @@ async function getAstFromPath(path: string) {
   return ASTUtil.parseCodeToAST(
     path[0] === '{' ? '' : await Bun.file(path).text(),
   );
+}
+
+function getRPCCode() {
+  const { IS_PRODUCTION, IS_STATIC_EXPORT } = getConstants();
+  return (IS_STATIC_EXPORT && IS_PRODUCTION
+    ? injectRPCCodeForStaticApp()
+    : injectRPCCode()) as unknown as string;
 }

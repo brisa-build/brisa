@@ -1,15 +1,6 @@
 import { sep } from 'node:path';
-import { rm } from 'node:fs/promises';
 import { getConstants } from '@/constants';
 import type { BuildArtifact } from 'bun';
-import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
-  type: 'macro',
-};
-import {
-  injectRPCCode,
-  injectRPCCodeForStaticApp,
-  injectRPCLazyCode,
-} from '@/utils/rpc' with { type: 'macro' };
 import getDefinedEnvVar from '../get-defined-env-var';
 import { shouldTransferTranslatedPagePaths } from '../transfer-translated-page-paths';
 import clientBuildPlugin from '../client-build-plugin';
@@ -30,9 +21,6 @@ type Options = {
   allWebComponents: WCs;
   integrationsPath?: string | null;
 };
-
-const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
-const RPCLazyCode = injectRPCLazyCode() as unknown as string;
 
 export default async function getClientBuildDetails(
   pages: BuildArtifact[],
@@ -190,60 +178,26 @@ async function prepareEntrypoint(
 
   if (!isPage) return;
 
-  let size = 0;
   const wcs = webComponentsPerEntrypoint[pagePath] ?? {};
   const pageWebComponents = layoutWebComponents
     ? { ...layoutWebComponents, ...wcs }
     : wcs;
 
-  const {
-    useSuspense,
-    useContextProvider,
-    useActions,
-    useHyperlink,
-    webComponents,
-  } = await preEntrypointAnalysis(
+  const analysis = await preEntrypointAnalysis(
     pagePath,
     allWebComponents,
     pageWebComponents,
     false, // TODO: Remove layoutHasContextProvider as param and do it in a diferent way
   );
 
-  const unsuspense = useSuspense ? unsuspenseScriptCode : '';
-  const rpc = useActions || useHyperlink ? getRPCCode() : '';
-  const lazyRPC = useActions || useHyperlink ? RPCLazyCode : '';
-
-  size += unsuspense.length;
-  size += rpc.length;
-
-  const res = {
-    unsuspense,
-    rpc,
-    useContextProvider,
-    lazyRPC,
-    size,
-    useI18n: false,
-    i18nKeys: new Set<string>(),
-    code: '',
-    pagePath,
-  };
-
-  // No client build needed, TODO: We need to return the data?!
-  if (!Object.keys(webComponents).length) return res;
+  if (!Object.keys(analysis.webComponents).length) return analysis;
 
   const { entrypoint, useWebContextPlugins } = await writeTempEntrypoint({
-    webComponentsList: webComponents,
-    useContextProvider,
+    webComponentsList: analysis.webComponents,
+    useContextProvider: analysis.useContextProvider,
     integrationsPath,
     pagePath,
   });
 
-  return { ...res, entrypoint, useWebContextPlugins };
-}
-
-function getRPCCode() {
-  const { IS_PRODUCTION, IS_STATIC_EXPORT } = getConstants();
-  return (IS_STATIC_EXPORT && IS_PRODUCTION
-    ? injectRPCCodeForStaticApp()
-    : injectRPCCode()) as unknown as string;
+  return { ...analysis, entrypoint, useWebContextPlugins };
 }

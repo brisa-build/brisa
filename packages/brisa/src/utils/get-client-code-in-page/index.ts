@@ -2,15 +2,6 @@ import { rm, writeFile } from 'node:fs/promises';
 import { join, sep } from 'node:path';
 
 import { getConstants } from '@/constants';
-import AST from '@/utils/ast';
-import {
-  injectRPCCode,
-  injectRPCCodeForStaticApp,
-  injectRPCLazyCode,
-} from '@/utils/rpc' with { type: 'macro' };
-import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
-  type: 'macro',
-};
 import { injectClientContextProviderCode } from '@/utils/context-provider/inject-client' with {
   type: 'macro',
 };
@@ -41,23 +32,6 @@ type ClientCodeInPageProps = {
   layoutHasContextProvider?: boolean;
 };
 
-const ASTUtil = AST('tsx');
-const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
-const RPCLazyCode = injectRPCLazyCode() as unknown as string;
-
-function getRPCCode() {
-  const { IS_PRODUCTION, IS_STATIC_EXPORT } = getConstants();
-  return (IS_STATIC_EXPORT && IS_PRODUCTION
-    ? injectRPCCodeForStaticApp()
-    : injectRPCCode()) as unknown as string;
-}
-
-async function getAstFromPath(path: string) {
-  return ASTUtil.parseCodeToAST(
-    path[0] === '{' ? '' : await Bun.file(path).text(),
-  );
-}
-
 export default async function getClientCodeInPage({
   pagePath,
   allWebComponents = {},
@@ -65,61 +39,33 @@ export default async function getClientCodeInPage({
   integrationsPath,
   layoutHasContextProvider,
 }: ClientCodeInPageProps) {
-  let size = 0;
-  let code = '';
-
-  const {
-    useSuspense,
-    useContextProvider,
-    useActions,
-    useHyperlink,
-    webComponents,
-  } = await preEntrypointAnalysis(
+  const analysis = await preEntrypointAnalysis(
     pagePath,
     allWebComponents,
     pageWebComponents,
     layoutHasContextProvider,
   );
 
-  const unsuspense = useSuspense ? unsuspenseScriptCode : '';
-  const rpc = useActions || useHyperlink ? getRPCCode() : '';
-  const lazyRPC = useActions || useHyperlink ? RPCLazyCode : '';
-
-  size += unsuspense.length;
-  size += rpc.length;
-
-  if (!Object.keys(webComponents).length) {
-    return {
-      code,
-      unsuspense,
-      rpc,
-      useContextProvider,
-      lazyRPC,
-      size,
-      useI18n: false,
-      i18nKeys: new Set<string>(),
-    };
+  if (!Object.keys(analysis.webComponents).length) {
+    return analysis;
   }
 
   const transformedCode = await transformToWebComponents({
-    webComponentsList: webComponents,
-    useContextProvider,
+    webComponentsList: analysis.webComponents,
+    useContextProvider: analysis.useContextProvider,
     integrationsPath,
     pagePath,
   });
 
   if (!transformedCode) return null;
 
-  code += transformedCode?.code;
-  size += transformedCode?.size ?? 0;
-
   return {
-    code,
-    unsuspense,
-    rpc,
-    useContextProvider,
-    lazyRPC,
-    size,
+    code: analysis.code + transformedCode?.code,
+    unsuspense: analysis.unsuspense,
+    rpc: analysis.rpc,
+    useContextProvider: analysis.useContextProvider,
+    lazyRPC: analysis.lazyRPC,
+    size: analysis.size + (transformedCode?.size ?? 0),
     useI18n: transformedCode.useI18n,
     i18nKeys: transformedCode.i18nKeys,
   };

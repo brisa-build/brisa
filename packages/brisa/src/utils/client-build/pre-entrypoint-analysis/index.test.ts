@@ -2,8 +2,22 @@ import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
 import { preEntrypointAnalysis } from '.';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
+  type: 'macro',
+};
+import {
+  injectRPCCode,
+  injectRPCCodeForStaticApp,
+  injectRPCLazyCode,
+} from '@/utils/rpc' with { type: 'macro' };
+import { getConstants } from '@/constants';
 
 const TEMP_DIR = path.join(import.meta.dirname, '.temp-test-files');
+
+const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
+const rpcCode = injectRPCCode() as unknown as string;
+const lazyRPCCOde = injectRPCLazyCode() as unknown as string;
+const rpcStatic = injectRPCCodeForStaticApp() as unknown as string;
 
 // Utility to create a unique file with Bun.hash
 function createTempFileSync(content: string, extension = 'tsx') {
@@ -29,6 +43,7 @@ describe('client build', () => {
 
     afterAll(async () => {
       await rm(TEMP_DIR, { recursive: true, force: true });
+      globalThis.mockConstants = undefined;
     });
 
     it('should analyze the main file and detect no features', async () => {
@@ -41,11 +56,16 @@ describe('client build', () => {
 
       const result = await preEntrypointAnalysis(mainFile.filePath, {}, {});
       expect(result).toEqual({
-        useSuspense: false,
-        useContextProvider: false,
-        useActions: false,
-        useHyperlink: false,
+        unsuspense: '',
+        rpc: '',
+        lazyRPC: '',
+        size: 0,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
         webComponents: {},
+        useContextProvider: false,
       });
     });
 
@@ -61,23 +81,28 @@ describe('client build', () => {
 
       const result = await preEntrypointAnalysis(mainFile.filePath, {}, {});
       expect(result).toEqual({
-        useSuspense: true,
-        useContextProvider: false,
-        useActions: false,
-        useHyperlink: false,
+        unsuspense: unsuspenseScriptCode,
+        rpc: '',
+        lazyRPC: '',
+        size: unsuspenseScriptCode.length,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
         webComponents: {},
+        useContextProvider: false,
       });
     });
 
     it('should detect web components in the main file and nested components', async () => {
       const mainFile = createTempFileSync(`
         export default function Component() {
-          return <nested-component><no-wc>hello</no-wc></nested-component>;
+          return <nested-component>hello</nested-component>;
         }
       `);
       const nestedFile = createTempFileSync(`
         export default function NestedComponent() {
-          return <nested-component>nested</nested-component>;
+          return <divnested</div>;
         }
       `);
 
@@ -99,32 +124,19 @@ describe('client build', () => {
       );
 
       expect(result).toEqual({
-        useSuspense: false,
+        unsuspense: '',
+        rpc: '',
+        lazyRPC: '',
+        size: 0,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
         useContextProvider: false,
-        useActions: false,
-        useHyperlink: false,
         webComponents: {
           'my-component': mainFile.filePath,
           'nested-component': nestedFile.filePath,
         },
-      });
-    });
-
-    it('should handle context provider and actions', async () => {
-      const mainFile = createTempFileSync(`
-        export default function Component() {
-          return <context-provider>hello</context-provider>;
-        }
-      `);
-      await writeTempFiles([mainFile]);
-
-      const result = await preEntrypointAnalysis(mainFile.filePath, {}, {});
-      expect(result).toEqual({
-        useSuspense: false,
-        useContextProvider: true,
-        useActions: false,
-        useHyperlink: false,
-        webComponents: {},
       });
     });
 
@@ -138,10 +150,71 @@ describe('client build', () => {
 
       const result = await preEntrypointAnalysis(mainFile.filePath, {}, {});
       expect(result).toEqual({
-        useSuspense: false,
+        unsuspense: '',
+        rpc: rpcCode,
+        lazyRPC: lazyRPCCOde,
+        size: rpcCode.length,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
         useContextProvider: false,
-        useActions: false,
-        useHyperlink: true,
+        webComponents: {},
+      });
+    });
+
+    it('should detect hyperlinks in the main file and load static rpc for static app in prod', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_STATIC_EXPORT: true,
+        IS_PRODUCTION: true,
+      };
+      const mainFile = createTempFileSync(`
+        export default function Component() {
+          return <a href="/relative">Relative Link</a>;
+        }
+      `);
+      await writeTempFiles([mainFile]);
+
+      const result = await preEntrypointAnalysis(mainFile.filePath, {}, {});
+      expect(result).toEqual({
+        unsuspense: '',
+        rpc: rpcStatic,
+        lazyRPC: lazyRPCCOde,
+        size: rpcStatic.length,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
+        useContextProvider: false,
+        webComponents: {},
+      });
+    });
+
+    it('should detect hyperlinks in the main file and load normal rpc for static app in dev', async () => {
+      globalThis.mockConstants = {
+        ...getConstants(),
+        IS_STATIC_EXPORT: true,
+        IS_PRODUCTION: false,
+      };
+      const mainFile = createTempFileSync(`
+        export default function Component() {
+          return <a href="/relative">Relative Link</a>;
+        }
+      `);
+      await writeTempFiles([mainFile]);
+
+      const result = await preEntrypointAnalysis(mainFile.filePath, {}, {});
+      expect(result).toEqual({
+        unsuspense: '',
+        rpc: rpcCode,
+        lazyRPC: lazyRPCCOde,
+        size: rpcCode.length,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
+        useContextProvider: false,
         webComponents: {},
       });
     });
@@ -183,10 +256,15 @@ describe('client build', () => {
       );
 
       expect(result).toEqual({
-        useSuspense: false,
+        unsuspense: '',
+        rpc: '',
+        lazyRPC: '',
+        size: 0,
+        code: '',
+        useI18n: false,
+        i18nKeys: new Set(),
+        pagePath: mainFile.filePath,
         useContextProvider: false,
-        useActions: false,
-        useHyperlink: false,
         webComponents: {
           'nested-component-1': nestedFile1.filePath,
           'nested-component-2': nestedFile2.filePath,
