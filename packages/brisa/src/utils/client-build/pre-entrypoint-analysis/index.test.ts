@@ -1,23 +1,16 @@
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
-import { preEntrypointAnalysis } from '.';
+import {
+  preEntrypointAnalysis,
+  rpcCode,
+  RPCLazyCode,
+  rpcStatic,
+  unsuspenseScriptCode,
+} from '.';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { injectUnsuspenseCode } from '@/utils/inject-unsuspense-code' with {
-  type: 'macro',
-};
-import {
-  injectRPCCode,
-  injectRPCCodeForStaticApp,
-  injectRPCLazyCode,
-} from '@/utils/rpc' with { type: 'macro' };
 import { getConstants } from '@/constants';
 
 const TEMP_DIR = path.join(import.meta.dirname, '.temp-test-files');
-
-const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
-const rpcCode = injectRPCCode() as unknown as string;
-const lazyRPCCOde = injectRPCLazyCode() as unknown as string;
-const rpcStatic = injectRPCCodeForStaticApp() as unknown as string;
 
 // Utility to create a unique file with Bun.hash
 function createTempFileSync(content: string, extension = 'tsx') {
@@ -152,7 +145,7 @@ describe('client build', () => {
       expect(result).toEqual({
         unsuspense: '',
         rpc: rpcCode,
-        lazyRPC: lazyRPCCOde,
+        lazyRPC: RPCLazyCode,
         size: rpcCode.length,
         code: '',
         useI18n: false,
@@ -180,7 +173,7 @@ describe('client build', () => {
       expect(result).toEqual({
         unsuspense: '',
         rpc: rpcStatic,
-        lazyRPC: lazyRPCCOde,
+        lazyRPC: RPCLazyCode,
         size: rpcStatic.length,
         code: '',
         useI18n: false,
@@ -208,7 +201,7 @@ describe('client build', () => {
       expect(result).toEqual({
         unsuspense: '',
         rpc: rpcCode,
-        lazyRPC: lazyRPCCOde,
+        lazyRPC: RPCLazyCode,
         size: rpcCode.length,
         code: '',
         useI18n: false,

@@ -13,8 +13,11 @@ import {
 type WCs = Record<string, string>;
 
 const ASTUtil = AST('tsx');
-const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
-const RPCLazyCode = injectRPCLazyCode() as unknown as string;
+
+export const unsuspenseScriptCode = injectUnsuspenseCode() as unknown as string;
+export const rpcCode = injectRPCCode() as unknown as string;
+export const RPCLazyCode = injectRPCLazyCode() as unknown as string;
+export const rpcStatic = injectRPCCodeForStaticApp() as unknown as string;
 
 /**
  * Performs a comprehensive analysis of a given file path and its associated web components.
@@ -101,6 +104,6 @@ async function getAstFromPath(path: string) {
 function getRPCCode() {
   const { IS_PRODUCTION, IS_STATIC_EXPORT } = getConstants();
   return (IS_STATIC_EXPORT && IS_PRODUCTION
-    ? injectRPCCodeForStaticApp()
-    : injectRPCCode()) as unknown as string;
+    ? rpcStatic
+    : rpcCode) as unknown as string;
 }
