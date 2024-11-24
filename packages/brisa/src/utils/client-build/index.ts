@@ -1,4 +1,3 @@
-import { sep } from 'node:path';
 import { getConstants } from '@/constants';
 import type { BuildArtifact } from 'bun';
 import getDefinedEnvVar from '../get-defined-env-var';
@@ -6,31 +5,16 @@ import { shouldTransferTranslatedPagePaths } from '../transfer-translated-page-p
 import clientBuildPlugin from '../client-build-plugin';
 import { logBuildError, logError } from '../log/log-build';
 import createContextPlugin from '../create-context/create-context-plugin';
-import { preEntrypointAnalysis } from './pre-entrypoint-analysis';
-import {
-  removeTempEntrypoints,
-  writeTempEntrypoint,
-} from './fs-temp-entrypoint-manager';
+import { removeTempEntrypoints } from './fs-temp-entrypoint-manager';
+import { getClientBuildDetails } from './get-client-build-details';
+import type { EntryPointData, Options } from './types';
 
-type WCs = Record<string, string>;
-type WCsEntrypoints = Record<string, WCs>;
-
-type Options = {
-  webComponentsPerEntrypoint: WCsEntrypoints;
-  layoutWebComponents: WCs;
-  allWebComponents: WCs;
-  integrationsPath?: string | null;
-  layoutHasContextProvider?: boolean;
-};
-
-export default async function getClientBuildDetails(
+export default async function buildMultiClientEntrypoints(
   pages: BuildArtifact[],
   options: Options,
 ) {
   const { IS_PRODUCTION, SRC_DIR, CONFIG, I18N_CONFIG } = getConstants();
-  let clientBuildDetails = (
-    await Promise.all(pages.map((p) => prepareEntrypoint(p, options)))
-  ).filter(Boolean) as EntryPointData[];
+  let clientBuildDetails = await getClientBuildDetails(pages, options);
 
   const entrypointsData = clientBuildDetails.reduce((acc, curr, index) => {
     if (curr.entrypoint) acc.push({ ...curr, index });
@@ -122,11 +106,6 @@ export default async function getClientBuildDetails(
   // TODO: Adapt plugin to analyze per entrypoint
   // TODO: Solve "define" for entrypoint
   //       ... _WEB_CONTEXT_PLUGIN_, _USE_PAGE_TRANSLATION_
-  // TODO: Create build with all the temporal pages
-  // TODO: How to solve the layout web components?
-  // TODO: Save outputs to correct paths
-  // TODO: Write the new outputs to the disk and cleanup the temporal pages
-  // TODO: Overwrite clientBuildDetails with code, size
   // TODO: Test and refactor all this
   // TODO: Benchmarks old vs new
 
@@ -145,60 +124,4 @@ export default async function getClientBuildDetails(
   }
 
   return clientBuildDetails;
-}
-
-type EntryPointData = {
-  unsuspense: string;
-  rpc: string;
-  useContextProvider: boolean;
-  lazyRPC: string;
-  size: number;
-  useI18n: boolean;
-  i18nKeys: Set<string>;
-  code: string;
-  entrypoint?: string;
-  useWebContextPlugins?: boolean;
-  pagePath: string;
-  index?: number;
-};
-
-async function prepareEntrypoint(
-  page: BuildArtifact,
-  {
-    allWebComponents,
-    webComponentsPerEntrypoint,
-    layoutWebComponents,
-    integrationsPath,
-    layoutHasContextProvider,
-  }: Options,
-): Promise<EntryPointData | undefined> {
-  const { BUILD_DIR } = getConstants();
-  const route = page.path.replace(BUILD_DIR, '');
-  const pagePath = page.path;
-  const isPage = route.startsWith(sep + 'pages' + sep);
-
-  if (!isPage) return;
-
-  const wcs = webComponentsPerEntrypoint[pagePath] ?? {};
-  const pageWebComponents = layoutWebComponents
-    ? { ...layoutWebComponents, ...wcs }
-    : wcs;
-
-  const analysis = await preEntrypointAnalysis(
-    pagePath,
-    allWebComponents,
-    pageWebComponents,
-    layoutHasContextProvider,
-  );
-
-  if (!Object.keys(analysis.webComponents).length) return analysis;
-
-  const { entrypoint, useWebContextPlugins } = await writeTempEntrypoint({
-    webComponentsList: analysis.webComponents,
-    useContextProvider: analysis.useContextProvider,
-    integrationsPath,
-    pagePath,
-  });
-
-  return { ...analysis, entrypoint, useWebContextPlugins };
 }
