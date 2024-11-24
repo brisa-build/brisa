@@ -16,6 +16,11 @@ type EntrypointOptions = {
   integrationsPath?: string | null;
 };
 
+/**
+ * Generates the complete entry point code for client-side rendering.
+ * This includes imports, Web Components registration, development-only
+ * debugging tools, and optional context provider support.
+ */
 export async function generateEntryPointCode({
   webComponentsList,
   useContextProvider,
@@ -57,6 +62,10 @@ export async function generateEntryPointCode({
   return { code, useWebContextPlugins };
 }
 
+/**
+ * Generates import statements for Web Components and optional integrations.
+ * Also determines if web context plugins are present in the integration module.
+ */
 async function getImports(
   entries: [string, string][],
   integrationsPath?: string | null,
@@ -69,6 +78,7 @@ async function getImports(
 
   if (integrationsPath) {
     const module = await import(integrationsPath);
+
     if (module.webContextPlugins?.length > 0) {
       imports.push(`import {webContextPlugins} from "${integrationsPath}";`);
       return { imports: imports.join('\n'), useWebContextPlugins: true };
@@ -78,6 +88,10 @@ async function getImports(
   return { imports: imports.join('\n'), useWebContextPlugins: false };
 }
 
+/**
+ * Generates the list of Web Component selectors to define.
+ * Includes internal components like context provider and error dialog.
+ */
 function getWebComponentSelectors(
   entries: [string, string][],
   {
@@ -99,6 +113,11 @@ function getWebComponentSelectors(
   return customElementKeys;
 }
 
+/**
+ * Generates the JavaScript code to define all Web Components.
+ * Uses the `defineElement` function to register each Web Component
+ * only if it is not already defined in the custom elements registry.
+ */
 function defineElements(selectors: string[]): string {
   const defineElementCode =
     'const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);';
@@ -109,6 +128,10 @@ function defineElements(selectors: string[]): string {
   return `${defineElementCode}\n${definitions}`;
 }
 
+/**
+ * Injects development-only debugging tools like the brisa-error-dialog.
+ * This code is only included when running in development mode.
+ */
 async function injectDevelopmentCode(): Promise<string> {
   return (await injectBrisaDialogErrorCode()).replace(
     '__FILTER_DEV_RUNTIME_ERRORS__',
