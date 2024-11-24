@@ -8,7 +8,7 @@ import {
   mock,
   type Mock,
 } from 'bun:test';
-import * as cli from './cli.ts';
+import * as cli from './index.ts';
 import cp from 'node:child_process';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -21,20 +21,16 @@ const options = {
   brisaPackageManager: 'bun@1.1.1',
 };
 
-declare module './cli.ts' {
+declare module './index.ts' {
   export function main({
     currentBunVersion,
     brisaPackageManager,
   }: typeof options): Promise<void>;
 }
 
-const FIXTURES = path.join(import.meta.dir, 'src', '__fixtures__');
-const INTEGRATIONS_PATH = path.join(
-  import.meta.dir,
-  'out',
-  'cli',
-  'integrations',
-);
+const OUT_PATH = path.join(import.meta.dir, 'out');
+const FIXTURES = path.join(import.meta.dir, '..', '__fixtures__');
+const INTEGRATIONS_PATH = path.join(OUT_PATH, 'cli', 'integrations');
 const MDX_PATH = path.join(INTEGRATIONS_PATH, 'mdx', 'index.js');
 const TAILWINDCSS_PATH = path.join(
   INTEGRATIONS_PATH,
@@ -42,14 +38,8 @@ const TAILWINDCSS_PATH = path.join(
   'index.js',
 );
 const PANDACSS_PATH = path.join(INTEGRATIONS_PATH, 'pandacss', 'index.js');
-const BUILD_PATH = path.join(import.meta.dir, 'out', 'cli', 'build.js');
-const SERVE_PATH = path.join(
-  import.meta.dir,
-  'out',
-  'cli',
-  'serve',
-  'index.js',
-);
+const BUILD_PATH = path.join(OUT_PATH, 'cli', 'build.js');
+const SERVE_PATH = path.join(OUT_PATH, 'cli', 'serve', 'index.js');
 
 let originalArgv: string[];
 let mockSpawnSync: Mock<typeof cp.spawnSync>;

@@ -6,7 +6,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const process = require('node:process');
-const { version, packageManager } = require('./package.json');
+const { version, packageManager } = require('@/../package.json');
 const outPath = path
   .join(import.meta.dir, 'out')
   // There are some cases where the CLI is executed from the node_modules/.bin folder

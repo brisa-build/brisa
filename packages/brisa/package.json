@@ -86,7 +86,7 @@
   "module": "./out/core/index.js",
   "types": "./out/core/index.d.ts",
   "bin": {
-    "brisa": "./cli.js"
+    "brisa": "./index.js"
   },
   "files": [
     "out",
@@ -98,20 +98,20 @@
     "macros",
     "compiler",
     "test",
-    "cli.js"
+    "index.js"
   ],
   "workspaces": ["packages/*"],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test && bun run build:core-compiler",
-    "build:cli": "bun build --minify --target=bun --outdir=./ cli.ts && bun run build:cli-utils",
+    "build:bin": "bun build --minify --target=bun --outdir=./ src/bin/index.ts && bun run build:cli-utils",
     "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts && bun build --minify --target=node --outdir=out/cli src/cli/serve/index.tsx src/cli/integrations/mdx/index.ts src/cli/integrations/tailwindcss/index.ts src/cli/integrations/pandacss/index.ts",
-    "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:cli && cp src/types/index.d.ts out/core/index.d.ts",
+    "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:bin && cp src/types/index.d.ts out/core/index.d.ts",
     "build:core-compiler": "cd scripts && bun run core-compiler-build.ts && cd .. && cp src/types/compiler.d.ts compiler/index.d.ts",
-    "build:core-macros": "bun build --minify --target=bun --outdir=macros src/core/macros/index.ts && bun run build:cli",
-    "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:core-client-simplified && bun run build:cli",
+    "build:core-macros": "bun build --minify --target=bun --outdir=macros src/core/macros/index.ts && bun run build:bin",
+    "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:core-client-simplified && bun run build:bin",
     "build:core-client-simplified": "bun build --minify --outdir=client-simplified src/core/client/index.ts --define '__TRAILING_SLASH__=false' --define '__WEB_CONTEXT_PLUGINS__=false' --define '__BASE_PATH__=\"\"' --define '__ASSET_PREFIX__=\"\"' --define '__USE_LOCALE__=false' --define '__USE_PAGE_TRANSLATION__=false'",
-    "build:core-server": "bun build --minify --target=node --outdir=server src/core/server/index.ts src/core/server/node.ts && bun run build:cli && cp src/types/server.d.ts server/index.d.ts && cp src/types/server.node.d.ts server/node.d.ts",
-    "build:core-test": "bun build --minify --target=bun --outdir=test src/core/test/index.ts && bun run build:cli && cp src/types/test.d.ts test/index.d.ts",
+    "build:core-server": "bun build --minify --target=node --outdir=server src/core/server/index.ts src/core/server/node.ts && bun run build:bin && cp src/types/server.d.ts server/index.d.ts && cp src/types/server.node.d.ts server/node.d.ts",
+    "build:core-test": "bun build --minify --target=bun --outdir=test src/core/test/index.ts && bun run build:bin && cp src/types/test.d.ts test/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
     "clean": "rm -rf out jsx-runtime jsx-dev-runtime cli client server cli.js",
