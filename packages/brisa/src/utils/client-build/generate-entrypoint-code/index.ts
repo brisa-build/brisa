@@ -1,14 +1,14 @@
 import { sep } from 'node:path';
 import { getFilterDevRuntimeErrors } from '@/utils/brisa-error-dialog/utils';
+import { getConstants } from '@/constants';
+import { normalizePath } from '../normalize-path';
+import snakeToCamelCase from '@/utils/snake-to-camelcase';
 import { injectClientContextProviderCode } from '@/utils/context-provider/inject-client' with {
   type: 'macro',
 };
 import { injectBrisaDialogErrorCode } from '@/utils/brisa-error-dialog/inject-code' with {
   type: 'macro',
 };
-import { getConstants } from '@/constants';
-import { normalizePath } from '../normalize-path';
-import snakeToCamelCase from '@/utils/snake-to-camelcase';
 
 type EntrypointOptions = {
   webComponentsList: Record<string, string>;
@@ -33,27 +33,26 @@ export async function generateEntryPointCode({
     integrationsPath,
   );
 
-  const customElementKeys = entries
-    .filter(([_, path]) => path[0] !== '{')
-    .map(([key]) => key);
+  const pluginsGlobal = useWebContextPlugins
+    ? 'window._P=webContextPlugins;\n'
+    : '';
 
-  addOptionalComponents(customElementKeys, useContextProvider, IS_DEVELOPMENT);
+  const wcSelectors = getWebComponentSelectors(entries, {
+    useContextProvider,
+    isDevelopment: IS_DEVELOPMENT,
+  });
 
-  let code = '';
+  let code = `${imports}\n`;
 
   if (useContextProvider) {
     code += injectClientContextProviderCode();
   }
 
   if (IS_DEVELOPMENT) {
-    code += await getDevelopmentCode();
+    code += await injectDevelopmentCode();
   }
 
-  if (useWebContextPlugins) {
-    code += 'window._P=webContextPlugins;\n';
-  }
-
-  code += `${imports}\n${getDefineElementCode(customElementKeys)}`;
+  code += `${pluginsGlobal}\n${defineElements(wcSelectors)}`;
 
   return { code, useWebContextPlugins };
 }
@@ -79,33 +78,40 @@ async function getImports(
   return { imports: imports.join('\n'), useWebContextPlugins: false };
 }
 
-function getDefineElementCode(keys: string[]): string {
+function getWebComponentSelectors(
+  entries: [string, string][],
+  {
+    useContextProvider,
+    isDevelopment,
+  }: { useContextProvider: boolean; isDevelopment: boolean },
+) {
+  const customElementKeys = entries
+    .filter(([_, path]) => path[0] !== '{')
+    .map(([key]) => key);
+
+  if (useContextProvider) {
+    customElementKeys.unshift('context-provider');
+  }
+  if (isDevelopment) {
+    customElementKeys.unshift('brisa-error-dialog');
+  }
+
+  return customElementKeys;
+}
+
+function defineElements(selectors: string[]): string {
   const defineElementCode =
     'const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);';
-  const definitions = keys
+  const definitions = selectors
     .map((key) => `defineElement("${key}", ${snakeToCamelCase(key)});`)
     .join('\n');
 
   return `${defineElementCode}\n${definitions}`;
 }
 
-async function getDevelopmentCode(): Promise<string> {
-  const brisaDialogErrorCode = (await injectBrisaDialogErrorCode()).replace(
+async function injectDevelopmentCode(): Promise<string> {
+  return (await injectBrisaDialogErrorCode()).replace(
     '__FILTER_DEV_RUNTIME_ERRORS__',
     getFilterDevRuntimeErrors(),
   );
-  return brisaDialogErrorCode;
-}
-
-function addOptionalComponents(
-  keys: string[],
-  useContextProvider: boolean,
-  isDevelopment: boolean,
-) {
-  if (useContextProvider) {
-    keys.unshift('context-provider');
-  }
-  if (isDevelopment) {
-    keys.unshift('brisa-error-dialog');
-  }
 }

@@ -154,24 +154,21 @@ describe('client build -> generateEntryPointCode', () => {
 
     const code = normalizeHTML(res.code);
 
-    expect(code).toContain(
+    expect(code).toBe(
       normalizeHTML(`
-      window._P=webContextPlugins;
-
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
+      
+      window._P=webContextPlugins;
+
+      const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
+        
+      defineElement("my-component", myComponent);
+      defineElement("my-component2", myComponent2);
     `),
     );
 
-    expect(code).toContain(
-      normalizeHTML(`
-        const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
-        
-        defineElement("my-component", myComponent);
-        defineElement("my-component2", myComponent2);
-      `),
-    );
     expect(res.useWebContextPlugins).toBeTrue();
   });
 
@@ -191,25 +188,28 @@ describe('client build -> generateEntryPointCode', () => {
 
     const code = normalizeHTML(res.code);
 
-    expect(code).toContain(
+    expect(code).toStartWith(
       normalizeHTML(`
-      window._P=webContextPlugins;
-
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
     `),
     );
 
-    expect(code).toContain(
+    expect(code).toContain('function ClientContextProvider');
+
+    expect(code).toEndWith(
       normalizeHTML(`
-        const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
+      window._P=webContextPlugins;
+
+      const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
         
-        defineElement("context-provider", contextProvider);
-        defineElement("my-component", myComponent);
-        defineElement("my-component2", myComponent2);
-      `),
+      defineElement("context-provider", contextProvider);
+      defineElement("my-component", myComponent);
+      defineElement("my-component2", myComponent2);
+    `),
     );
+
     expect(res.useWebContextPlugins).toBeTrue();
   });
 
@@ -233,10 +233,8 @@ describe('client build -> generateEntryPointCode', () => {
 
     const code = normalizeHTML(res.code);
 
-    expect(code).toContain(
+    expect(code).toStartWith(
       normalizeHTML(`
-      window._P=webContextPlugins;
-
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
@@ -245,6 +243,8 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toContain(
       normalizeHTML(`
+        window._P=webContextPlugins;
+
         const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
         
         defineElement("brisa-error-dialog", brisaErrorDialog);
@@ -281,10 +281,8 @@ describe('client build -> generateEntryPointCode', () => {
 
     const code = normalizeHTML(res.code);
 
-    expect(code).toContain(
+    expect(code).toStartWith(
       normalizeHTML(`
-      window._P=webContextPlugins;
-
       import myComponent from "/path/to/my-component";
       import myComponent2 from "/path/to/my-component2";
       import {webContextPlugins} from "/path/to/integrations";
@@ -293,13 +291,15 @@ describe('client build -> generateEntryPointCode', () => {
 
     expect(code).toContain(
       normalizeHTML(`
-        const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
-        
-        defineElement("brisa-error-dialog", brisaErrorDialog);
-        defineElement("context-provider", contextProvider);
-        defineElement("my-component", myComponent);
-        defineElement("my-component2", myComponent2);
-      `),
+      window._P=webContextPlugins;
+
+      const defineElement = (name, component) => name && !customElements.get(name) && customElements.define(name, component);
+      
+      defineElement("brisa-error-dialog", brisaErrorDialog);
+      defineElement("context-provider", contextProvider);
+      defineElement("my-component", myComponent);
+      defineElement("my-component2", myComponent2);
+    `),
     );
 
     expect(code).toContain(
