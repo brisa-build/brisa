@@ -50,8 +50,7 @@ describe('client build -> runBuild', () => {
     );
     expect(analysis).toEqual({
       [entrypoint]: {
-        // SRC has i18n.ts, so always true
-        useI18n: true,
+        useI18n: false,
         i18nKeys: new Set(),
       },
     });
@@ -95,7 +94,7 @@ describe('client build -> runBuild', () => {
     );
     expect(analysis).toEqual({
       [entrypoint1]: {
-        useI18n: true,
+        useI18n: false,
         i18nKeys: new Set(),
       },
       [entrypoint2]: {
