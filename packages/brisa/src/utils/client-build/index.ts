@@ -38,14 +38,20 @@ export default async function buildMultiClientEntrypoints(
     return clientBuildDetails;
   }
 
-  for (let i = 0; i < outputs.length; i++) {
-    const index = entrypointsData[i].index!;
-    const pathname = entrypoints[i];
-    clientBuildDetails[index].code = await outputs[i].text();
-    clientBuildDetails[index].size = outputs[i].size;
-    clientBuildDetails[index].useI18n = analysis[pathname]?.useI18n; // TODO: fix this
-    clientBuildDetails[index].i18nKeys = analysis[pathname]?.i18nKeys; // TODO: fix this
-  }
+  await Promise.all(
+    outputs.map(async (output, i) => {
+      const index = entrypointsData[i].index!;
+      const pathname = entrypoints[i];
+  
+      clientBuildDetails[index] = {
+        ...clientBuildDetails[index],
+        code: await output.text(),
+        size: output.size,
+        useI18n: analysis[pathname]?.useI18n ?? false, // TODO: fix this
+        i18nKeys: analysis[pathname]?.i18nKeys ?? new Set(), // TODO: fix this
+      };
+    })
+  );
 
   return clientBuildDetails;
 }
