@@ -11,13 +11,17 @@ import createContextPlugin from '@/utils/create-context/create-context-plugin';
 // TODO: Solve "define" for entrypoint
 //       ... _WEB_CONTEXT_PLUGIN_, _USE_PAGE_TRANSLATION_
 // TODO: Test and refactor all this
-export function runBuild(entrypoints: string[], webComponents: WCs) {
+export async function runBuild(entrypoints: string[], webComponents: WCs) {
   const { IS_PRODUCTION, SRC_DIR, CONFIG, I18N_CONFIG } = getConstants();
   const envVar = getDefinedEnvVar();
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
   const webComponentsPath = Object.values(webComponents);
 
-  return Bun.build({
+  const entrypointsSet = new Set(entrypoints);
+  const analysis: Record<string, { useI18n: boolean; i18nKeys: Set<string> }> =
+    {};
+
+  const buildResult = await Bun.build({
     entrypoints,
     root: SRC_DIR,
     format: 'iife',
@@ -43,6 +47,15 @@ export function runBuild(entrypoints: string[], webComponents: WCs) {
         {
           name: 'client-build-plugin',
           setup(build) {
+            let currentEntrypoint = entrypoints[0];
+
+            build.onResolve({ filter: /.*/ }, (args) => {
+              if (args.importer && entrypointsSet.has(args.importer)) {
+                currentEntrypoint = args.importer;
+              }
+              return undefined;
+            });
+
             build.onLoad(
               {
                 filter: new RegExp(
@@ -56,13 +69,22 @@ export function runBuild(entrypoints: string[], webComponents: WCs) {
                 let code = await Bun.file(path).text();
 
                 try {
+                  if (!analysis[currentEntrypoint]) {
+                    analysis[currentEntrypoint] = {
+                      useI18n: false,
+                      i18nKeys: new Set(),
+                    };
+                  }
+                  const currentAnalysis = analysis[currentEntrypoint];
                   const res = clientBuildPlugin(code, path, {
-                    isI18nAdded: true, // useI18n, (TODO)
-                    isTranslateCoreAdded: true, // i18nKeys.size > 0, (TODO)
+                    isI18nAdded: currentAnalysis.useI18n,
+                    isTranslateCoreAdded: currentAnalysis.i18nKeys.size > 0,
                   });
                   code = res.code;
-                  // useI18n ||= res.useI18n; (TODO)
-                  // i18nKeys = new Set([...i18nKeys, ...res.i18nKeys]); (TODO)
+                  currentAnalysis.useI18n ||= res.useI18n;
+                  res.i18nKeys.forEach((key) =>
+                    currentAnalysis.i18nKeys.add(key),
+                  );
                 } catch (error: any) {
                   logError({
                     messages: [
@@ -89,4 +111,9 @@ export function runBuild(entrypoints: string[], webComponents: WCs) {
       },
     ),
   });
+
+  return {
+    ...buildResult,
+    analysis,
+  };
 }

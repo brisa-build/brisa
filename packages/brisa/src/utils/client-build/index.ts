@@ -25,7 +25,8 @@ export default async function buildMultiClientEntrypoints(
     return clientBuildDetails;
   }
 
-  const { success, logs, outputs } = await runBuild(
+  // TODO: Use analysis for useI18n and i18nKeys
+  const { success, logs, outputs, analysis } = await runBuild(
     entrypoints,
     options.allWebComponents,
   );
