@@ -25,7 +25,6 @@ export default async function buildMultiClientEntrypoints(
     return clientBuildDetails;
   }
 
-  // TODO: Use analysis for useI18n and i18nKeys
   const { success, logs, outputs, analysis } = await runBuild(
     entrypoints,
     options.allWebComponents,
@@ -41,8 +40,11 @@ export default async function buildMultiClientEntrypoints(
 
   for (let i = 0; i < outputs.length; i++) {
     const index = entrypointsData[i].index!;
+    const pathname = entrypoints[i];
     clientBuildDetails[index].code = await outputs[i].text();
     clientBuildDetails[index].size = outputs[i].size;
+    clientBuildDetails[index].useI18n = analysis[pathname]?.useI18n; // TODO: fix this
+    clientBuildDetails[index].i18nKeys = analysis[pathname]?.i18nKeys; // TODO: fix this
   }
 
   return clientBuildDetails;
