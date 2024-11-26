@@ -5,6 +5,7 @@ import {
   writeTempEntrypoint,
 } from '../client-build/fs-temp-entrypoint-manager';
 import { runBuild } from '../client-build/run-build';
+import { processI18n } from '../client-build/process-i18n';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -66,7 +67,6 @@ export async function transformToWebComponents({
   integrationsPath,
   pagePath,
 }: TransformOptions) {
-  // TODO: Resolve useWebContextPlugins inside build for multi and single entrypoint
   const { entrypoint, useWebContextPlugins } = await writeTempEntrypoint({
     webComponentsList,
     useContextProvider,
@@ -74,9 +74,10 @@ export async function transformToWebComponents({
     pagePath,
   });
 
-  const { success, logs, outputs, analysis } = await runBuild(
+  const { success, logs, outputs } = await runBuild(
     [entrypoint],
     webComponentsList,
+    useWebContextPlugins,
   );
 
   await removeTempEntrypoint(entrypoint);
@@ -87,9 +88,7 @@ export async function transformToWebComponents({
   }
 
   return {
-    code: await outputs[0].text(),
     size: outputs[0].size,
-    useI18n: analysis[entrypoint]?.useI18n,
-    i18nKeys: analysis[entrypoint]?.i18nKeys,
+    ...processI18n(await outputs[0].text(), pagePath),
   };
 }

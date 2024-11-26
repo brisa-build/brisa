@@ -8,5 +8,5 @@ import clientBuildPlugin from '../client-build-plugin';
  * Docs: https:/brisa.build/api-reference/compiler-apis/compileWC
  */
 export default function compileWC(code: string) {
-  return clientBuildPlugin(code, 'web-component.tsx').code;
+  return clientBuildPlugin(code, 'web-component.tsx');
 }

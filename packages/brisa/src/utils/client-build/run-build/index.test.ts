@@ -36,10 +36,8 @@ describe('client build -> runBuild', () => {
       useContextProvider: false,
       pagePath: 'foo',
     });
-    const { success, logs, outputs, analysis } = await runBuild(
-      [entrypoint],
-      {},
-    );
+    const { success, logs, outputs } = await runBuild([entrypoint], {});
+    const entrypointBuild = await outputs[0].text();
 
     expect(success).toBe(true);
     expect(logs).toHaveLength(0);
@@ -48,12 +46,8 @@ describe('client build -> runBuild', () => {
     expect(outputs[0].text()).resolves.toContain(
       ' defineElement("custom-counter"',
     );
-    expect(analysis).toEqual({
-      [entrypoint]: {
-        useI18n: false,
-        i18nKeys: new Set(),
-      },
-    });
+    expect(entrypointBuild).not.toContain('useI18n');
+    expect(entrypointBuild).not.toContain('i18nKeys');
   });
 
   it('should run the build with multiple entrypoints', async () => {
@@ -76,10 +70,13 @@ describe('client build -> runBuild', () => {
       pagePath: 'bar',
     });
 
-    const { success, logs, outputs, analysis } = await runBuild(
+    const { success, logs, outputs } = await runBuild(
       [entrypoint1, entrypoint2],
       {},
     );
+
+    const entrypoint1Build = await outputs[0].text();
+    const entrypoint2Build = await outputs[1].text();
 
     expect(success).toBe(true);
     expect(logs).toHaveLength(0);
@@ -92,15 +89,10 @@ describe('client build -> runBuild', () => {
     expect(outputs[1].text()).resolves.toContain(
       ' defineElement("web-component"',
     );
-    expect(analysis).toEqual({
-      [entrypoint1]: {
-        useI18n: false,
-        i18nKeys: new Set(),
-      },
-      [entrypoint2]: {
-        useI18n: true,
-        i18nKeys: new Set(['hello']),
-      },
-    });
+
+    expect(entrypoint1Build).not.toContain('useI18n');
+    expect(entrypoint1Build).not.toContain('i18nKeys');
+    expect(entrypoint2Build).toContain('useI18n');
+    expect(entrypoint2Build).toContain('i18nKeys = ["hello"]');
   });
 });

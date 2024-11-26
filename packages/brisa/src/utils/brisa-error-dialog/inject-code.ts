@@ -28,7 +28,7 @@ export async function injectBrisaDialogErrorCode() {
               // https://github.com/oven-sh/bun/issues/7611
               await Bun.readableStreamToText(Bun.file(path).stream()),
               internalComponentId,
-            ).code,
+            ),
             loader,
           }));
         },

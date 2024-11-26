@@ -164,11 +164,10 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
                 let code = await Bun.file(path).text();
 
                 try {
-                  const res = clientBuildPlugin(code, path, {
+                  code = clientBuildPlugin(code, path, {
                     forceTranspilation: true,
                     customElementSelectorToDefine: webComponentsSelector[path],
                   });
-                  code = res.code;
                 } catch (error) {
                   console.log(LOG_PREFIX.ERROR, `Error transforming ${path}`);
                   console.log(LOG_PREFIX.ERROR, (error as Error).message);

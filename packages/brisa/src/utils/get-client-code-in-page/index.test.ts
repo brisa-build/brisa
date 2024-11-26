@@ -302,7 +302,7 @@ describe('utils', () => {
         pageWebComponents,
         integrationsPath,
       });
-      expect(output!.code).toContain('window._P=');
+      expect(output!.code).toContain('window._P =');
     });
 
     it('should add the integrations with emoji-picker as direct import', async () => {
@@ -341,9 +341,9 @@ describe('utils', () => {
         },
         integrationsPath,
       });
-      const contentOfLib = '()=>`has ${window._P.length} web context plugin`';
+      const contentOfLib = '() => `has ${window._P.length} web context plugin`';
 
-      expect(output!.code).toContain('window._P=');
+      expect(output!.code).toContain('window._P =');
       expect(output!.code).toContain(contentOfLib);
 
       GlobalRegistrator.register();
