@@ -1,7 +1,7 @@
-import { describe, it, expect, spyOn } from 'bun:test';
+import { describe, it, expect } from 'bun:test';
 import AST from '@/utils/ast';
 import { processI18n } from '.';
-import { normalizeHTML, toInline } from '@/helpers';
+import { normalizeHTML } from '@/helpers';
 
 const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
 const out = (c: string) =>
@@ -19,9 +19,10 @@ describe('utils', () => {
         window.useI18n = true;
       `;
 
-      const res = processI18n(code, '');
+      const res = processI18n(code);
+      const resCode = normalizeHTML(res.code);
 
-      expect(normalizeHTML(res.code)).toBe(
+      expect(resCode).toEndWith(
         out(`
          export default function Component({i18n}) {
           const { locale } = i18n;
@@ -31,6 +32,10 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
+
+      // Bridge without keys
+      expect(resCode).toContain('window.i18n');
+      expect(resCode).not.toContain('messages()');
     });
 
     it('should return useI18n + cleanup multi useI18n (entrypoint with diferent pre-analyzed files)', () => {
@@ -46,9 +51,10 @@ describe('utils', () => {
         window.useI18n = true;
       `;
 
-      const res = processI18n(code, '');
+      const res = processI18n(code);
+      const resCode = normalizeHTML(res.code);
 
-      expect(normalizeHTML(res.code)).toBe(
+      expect(resCode).toEndWith(
         out(`
          export default function Component({i18n}) {
           const { locale } = i18n;
@@ -58,6 +64,10 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
+
+      // Bridge without keys
+      expect(resCode).toContain('window.i18n');
+      expect(resCode).not.toContain('messages()');
     });
 
     it('should return useI18n and i18nKeys + cleanup', () => {
@@ -71,9 +81,10 @@ describe('utils', () => {
         window.i18nKeys = ["hello"]
       `;
 
-      const res = processI18n(code, '');
+      const res = processI18n(code);
+      const resCode = normalizeHTML(res.code);
 
-      expect(normalizeHTML(res.code)).toBe(
+      expect(resCode).toEndWith(
         out(`
          export default function Component({i18n}) {
           const { t } = i18n;
@@ -83,6 +94,10 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(['hello']));
+
+      // Bridge with keys
+      expect(resCode).toContain('window.i18n');
+      expect(resCode).toContain('messages()');
     });
 
     it('should return useI18n and i18nKeys + cleanup multi', () => {
@@ -98,9 +113,10 @@ describe('utils', () => {
         window.i18nKeys = ["hello"]
       `;
 
-      const res = processI18n(code, '');
+      const res = processI18n(code);
+      const resCode = normalizeHTML(res.code);
 
-      expect(normalizeHTML(res.code)).toBe(
+      expect(resCode).toEndWith(
         out(`
          export default function Component({i18n}) {
           const { t } = i18n;
@@ -110,6 +126,10 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(['hello']));
+
+      // Bridge with keys
+      expect(resCode).toContain('window.i18n');
+      expect(resCode).toContain('messages()');
     });
 
     it('should return useI18n and i18nKeys + collect and cleanup multi', () => {
@@ -125,9 +145,10 @@ describe('utils', () => {
         window.i18nKeys = ["baz"]
       `;
 
-      const res = processI18n(code, '');
+      const res = processI18n(code);
+      const resCode = normalizeHTML(res.code);
 
-      expect(normalizeHTML(res.code)).toBe(
+      expect(resCode).toEndWith(
         out(`
          export default function Component({i18n}) {
           const { t } = i18n;
@@ -137,6 +158,10 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(['foo', 'bar', 'baz']));
+
+      // Bridge with keys
+      expect(resCode).toContain('window.i18n');
+      expect(resCode).toContain('messages()');
     });
   });
 });

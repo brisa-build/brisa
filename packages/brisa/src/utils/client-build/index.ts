@@ -45,12 +45,11 @@ export default async function buildMultiClientEntrypoints(
   await Promise.all(
     outputs.map(async (output, i) => {
       const index = entrypointsData[i].index!;
-      const pathname = entrypoints[i];
 
       clientBuildDetails[index] = {
         ...clientBuildDetails[index],
         size: output.size,
-        ...processI18n(await output.text(), pathname),
+        ...processI18n(await output.text()),
       };
     }),
   );

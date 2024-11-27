@@ -89,6 +89,6 @@ export async function transformToWebComponents({
 
   return {
     size: outputs[0].size,
-    ...processI18n(await outputs[0].text(), pagePath),
+    ...processI18n(await outputs[0].text()),
   };
 }
