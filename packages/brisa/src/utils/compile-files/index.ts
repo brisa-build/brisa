@@ -70,6 +70,7 @@ export default async function compileFiles() {
   if (websocketPath) entrypoints.push(websocketPath);
   if (integrationsPath) entrypoints.push(integrationsPath);
 
+  const actionWrites: Promise<number>[] = [];
   const { success, logs, outputs } = await Bun.build({
     entrypoints,
     outdir: BUILD_DIR,
@@ -111,9 +112,11 @@ export default async function compileFiles() {
 
                     actionsEntrypoints.push(actionEntrypoint);
                     actionIdCount += 1;
-                    await Bun.write(
-                      actionEntrypoint,
-                      transpileActions(result.code),
+                    actionWrites.push(
+                      Bun.write(
+                        actionEntrypoint,
+                        transpileActions(result.code),
+                      ),
                     );
                   }
 
@@ -142,7 +145,9 @@ export default async function compileFiles() {
   if (!success) return { success, logs, pagesSize: {} };
 
   if (actionsEntrypoints.length) {
-    const actionResult = await buildActions({ actionsEntrypoints, define });
+    const actionResult = await Promise.all(actionWrites).then(() =>
+      buildActions({ actionsEntrypoints, define }),
+    );
     if (!actionResult.success) logs.push(...actionResult.logs);
   }
 
