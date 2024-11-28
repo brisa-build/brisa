@@ -3,11 +3,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 
-import getClientCodeInPage from '.';
+import layoutBuild from '.';
 import { getConstants } from '@/constants';
 import getWebComponentsList from '@/utils/get-web-components-list';
 
-const src = path.join(import.meta.dir, '..', '..', '__fixtures__');
+const src = path.join(import.meta.dir, '..', '..', '..', '__fixtures__');
 const webComponentsDir = path.join(src, 'web-components');
 const build = path.join(src, `out-${crypto.randomUUID()}}`);
 const brisaInternals = path.join(build, '_brisa');
@@ -28,7 +28,7 @@ const lazyRPCSize = 4105; // TODO: Reduce this size
 // so it's not included in the initial size
 const initialSize = unsuspenseSize + rpcSize;
 
-describe('utils', () => {
+describe('client-build', () => {
   beforeEach(async () => {
     fs.mkdirSync(build, { recursive: true });
     fs.mkdirSync(brisaInternals, { recursive: true });
@@ -47,10 +47,10 @@ describe('utils', () => {
     globalThis.mockConstants = undefined;
   });
 
-  describe('getClientCodeInPage', () => {
+  describe('layout-build', () => {
     it('should not return client code in page without web components, without suspense, without server actions', async () => {
-      const pagePath = path.join(pages, 'somepage.tsx');
-      const output = await getClientCodeInPage({ pagePath, allWebComponents });
+      const layoutPath = path.join(pages, 'somepage.tsx');
+      const output = await layoutBuild({ layoutPath, allWebComponents });
       const expected = {
         code: '',
         rpc: '',
@@ -67,9 +67,9 @@ describe('utils', () => {
     });
 
     it('should return client code size of brisa + 2 web-components in page with web components', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -81,8 +81,8 @@ describe('utils', () => {
     });
 
     it('should return client code size as 0 when a page does not have web components', async () => {
-      const pagePath = path.join(pages, 'somepage.tsx');
-      const output = await getClientCodeInPage({ pagePath, allWebComponents });
+      const layoutPath = path.join(pages, 'somepage.tsx');
+      const output = await layoutBuild({ layoutPath, allWebComponents });
       expect(output!.size).toEqual(0);
     });
 
@@ -92,9 +92,9 @@ describe('utils', () => {
         IS_STATIC_EXPORT: true,
         IS_PRODUCTION: true,
       };
-      const pagePath = path.join(pages, 'index.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'index.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -108,9 +108,9 @@ describe('utils', () => {
         IS_STATIC_EXPORT: true,
         IS_PRODUCTION: false,
       };
-      const pagePath = path.join(pages, 'index.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'index.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -126,9 +126,9 @@ describe('utils', () => {
         IS_STATIC_EXPORT: false,
         IS_PRODUCTION: true,
       };
-      const pagePath = path.join(pages, 'index.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'index.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -139,8 +139,8 @@ describe('utils', () => {
     });
 
     it('should return client code in page with suspense and rpc', async () => {
-      const pagePath = path.join(pages, 'index.tsx');
-      const output = await getClientCodeInPage({ pagePath, allWebComponents });
+      const layoutPath = path.join(pages, 'index.tsx');
+      const output = await layoutBuild({ layoutPath, allWebComponents });
 
       expect(output?.unsuspense.length).toBe(unsuspenseSize);
       expect(output?.rpc.length).toBe(rpcSize);
@@ -152,9 +152,9 @@ describe('utils', () => {
     });
 
     it('should define 2 web components if there is 1 web component and another one inside', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -164,8 +164,8 @@ describe('utils', () => {
 
     it('should load lazyRPC in /somepage because it has an hyperlink', async () => {
       const webComponentSize = 377;
-      const output = await getClientCodeInPage({
-        pagePath: path.join(pages, 'somepage.tsx'),
+      const output = await layoutBuild({
+        layoutPath: path.join(pages, 'somepage.tsx'),
         allWebComponents,
         pageWebComponents: {
           'with-link': allWebComponents['with-link'],
@@ -181,9 +181,9 @@ describe('utils', () => {
     });
 
     it('should add context-provider if the page has a context-provider without serverOnly attribute', async () => {
-      const pagePath = path.join(pages, 'somepage-with-context.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'somepage-with-context.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -196,9 +196,9 @@ describe('utils', () => {
         IS_DEVELOPMENT: true,
         IS_PRODUCTION: false,
       };
-      const pagePath = path.join(pages, 'somepage.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'somepage.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -211,9 +211,9 @@ describe('utils', () => {
         IS_DEVELOPMENT: false,
         IS_PRODUCTION: true,
       };
-      const pagePath = path.join(pages, 'somepage.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'somepage.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -221,10 +221,10 @@ describe('utils', () => {
     });
 
     it('should add context-provider if the page has not a context-provider but layoutHasContextProvider is true', async () => {
-      const pagePath = path.join(pages, 'somepage.tsx');
+      const layoutPath = path.join(pages, 'somepage.tsx');
       const layoutHasContextProvider = true;
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
         layoutHasContextProvider,
@@ -238,10 +238,10 @@ describe('utils', () => {
         IS_DEVELOPMENT: true,
         IS_PRODUCTION: false,
       };
-      const pagePath = path.join(pages, 'somepage.tsx');
+      const layoutPath = path.join(pages, 'somepage.tsx');
       const layoutHasContextProvider = true;
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
         layoutHasContextProvider,
@@ -258,9 +258,9 @@ describe('utils', () => {
     });
 
     it('should not add context-provider if the page has a context-provider with serverOnly attribute', async () => {
-      const pagePath = path.join(pages, 'somepage.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const layoutPath = path.join(pages, 'somepage.tsx');
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -268,10 +268,10 @@ describe('utils', () => {
     });
 
     it('should allow environment variables in web components with BRISA_PUBLIC_ prefix', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
       Bun.env.BRISA_PUBLIC_TEST = 'value of test env variable';
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
       });
@@ -279,10 +279,10 @@ describe('utils', () => {
     });
 
     it('should NOT add the integrations web context plugins when there are not plugins', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
       const integrationsPath = path.join(webComponentsDir, '_integrations.tsx');
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
         integrationsPath,
@@ -291,13 +291,13 @@ describe('utils', () => {
     });
 
     it('should add the integrations web context plugins when there are plugins', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
       const integrationsPath = path.join(
         webComponentsDir,
         '_integrations2.tsx',
       );
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents,
         integrationsPath,
@@ -306,13 +306,13 @@ describe('utils', () => {
     });
 
     it('should add the integrations with emoji-picker as direct import', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
       const integrationsPath = path.join(
         webComponentsDir,
         '_integrations3.tsx',
       );
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents: {
           ...pageWebComponents,
@@ -325,14 +325,14 @@ describe('utils', () => {
     });
 
     it('should integrate some-lib with web context plugins', async () => {
-      const pagePath = path.join(pages, 'page-with-web-component.tsx');
+      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
       const integrationsPath = path.join(
         webComponentsDir,
         '_integrations4.tsx',
       );
 
-      const output = await getClientCodeInPage({
-        pagePath,
+      const output = await layoutBuild({
+        layoutPath,
         allWebComponents,
         pageWebComponents: {
           ...pageWebComponents,

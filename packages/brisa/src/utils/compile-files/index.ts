@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
-import getClientCodeInPage from '@/utils/get-client-code-in-page';
+import layoutBuild from '@/utils/client-build/layout-build';
 import getEntrypoints, { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import getWebComponentsList from '@/utils/get-web-components-list';
@@ -298,8 +298,8 @@ async function compileClientCodePage(
   const clientSizesPerPage: Record<string, Blob['size']> = {};
   const layoutWebComponents = webComponentsPerEntrypoint[layoutBuildPath];
   const layoutCode = layoutBuildPath
-    ? await getClientCodeInPage({
-        pagePath: layoutBuildPath,
+    ? await layoutBuild({
+        layoutPath: layoutBuildPath,
         allWebComponents,
         pageWebComponents: layoutWebComponents,
         integrationsPath,

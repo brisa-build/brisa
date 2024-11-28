@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
-import { transformToWebComponents } from '@/utils/get-client-code-in-page';
+import { transformToWebComponents } from '@/utils/client-build/layout-build';
 import getWebComponentsList from '@/utils/get-web-components-list';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 
@@ -29,7 +29,7 @@ export default async function runWebComponents() {
   }
 
   const res = await transformToWebComponents({
-    pagePath: '__tests__',
+    layoutPath: '__tests__',
     webComponentsList: allWebComponents,
     integrationsPath,
     useContextProvider: true,

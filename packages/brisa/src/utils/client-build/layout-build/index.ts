@@ -1,36 +1,36 @@
 import { logBuildError } from '@/utils/log/log-build';
-import { preEntrypointAnalysis } from '../client-build/pre-entrypoint-analysis';
+import { preEntrypointAnalysis } from '../pre-entrypoint-analysis';
 import {
   removeTempEntrypoint,
   writeTempEntrypoint,
-} from '../client-build/fs-temp-entrypoint-manager';
-import { runBuild } from '../client-build/run-build';
-import { processI18n } from '../client-build/process-i18n';
+} from '../fs-temp-entrypoint-manager';
+import { runBuild } from '../run-build';
+import { processI18n } from '../process-i18n';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
   useContextProvider: boolean;
   integrationsPath?: string | null;
-  pagePath: string;
+  layoutPath: string;
 };
 
 type ClientCodeInPageProps = {
-  pagePath: string;
+  layoutPath: string;
   allWebComponents?: Record<string, string>;
   pageWebComponents?: Record<string, string>;
   integrationsPath?: string | null;
   layoutHasContextProvider?: boolean;
 };
 
-export default async function getClientCodeInPage({
-  pagePath,
+export default async function layoutBuild({
+  layoutPath,
   allWebComponents = {},
   pageWebComponents = {},
   integrationsPath,
   layoutHasContextProvider,
 }: ClientCodeInPageProps) {
   const analysis = await preEntrypointAnalysis(
-    pagePath,
+    layoutPath,
     allWebComponents,
     pageWebComponents,
     layoutHasContextProvider,
@@ -44,7 +44,7 @@ export default async function getClientCodeInPage({
     webComponentsList: analysis.webComponents,
     useContextProvider: analysis.useContextProvider,
     integrationsPath,
-    pagePath,
+    layoutPath,
   });
 
   if (!transformedCode) return null;
@@ -65,13 +65,13 @@ export async function transformToWebComponents({
   webComponentsList,
   useContextProvider,
   integrationsPath,
-  pagePath,
+  layoutPath,
 }: TransformOptions) {
   const { entrypoint, useWebContextPlugins } = await writeTempEntrypoint({
     webComponentsList,
     useContextProvider,
     integrationsPath,
-    pagePath,
+    pagePath: layoutPath,
   });
 
   const { success, logs, outputs } = await runBuild(
