@@ -77,7 +77,6 @@ async function getImports(
   );
 
   if (integrationsPath) {
-    // TODO: cache dynamic import can improve performance? We need to try it
     const module = await import(integrationsPath);
 
     if (module.webContextPlugins?.length > 0) {

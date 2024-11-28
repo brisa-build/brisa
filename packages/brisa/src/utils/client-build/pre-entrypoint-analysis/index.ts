@@ -87,7 +87,6 @@ export async function preEntrypointAnalysis(
     webComponents: aggregatedWebComponents,
 
     // Fields that need an extra analysis during/after build:
-    // TODO: Maybe useI18n and i18nKeys can be included to this previous analysis?
     code: '',
     size,
     useI18n: false,
