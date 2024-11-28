@@ -66,9 +66,6 @@ export async function activateHotReload() {
       },
     );
 
-    const nsEnd = nanoseconds();
-    const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
-
     currentProcess.on('error', (error: any) => {
       console.log(
         LOG_PREFIX.ERROR,
@@ -79,6 +76,9 @@ export async function activateHotReload() {
 
     currentProcess.on('exit', async (code: number) => {
       if (code !== 0) return;
+
+      const nsEnd = nanoseconds();
+      const ms = ((nsEnd - nsStart) / 1000000).toFixed(2);
 
       console.log(LOG_PREFIX.READY, `recompiled ${filename} in ${ms}ms`);
       if (!globalThis.brisaServer) return;
