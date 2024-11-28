@@ -4,10 +4,14 @@ import { type ESTree, parseScript } from 'meriyah';
 import { logError } from '../log/log-build';
 
 export default function AST(loader: JavaScriptLoader = 'tsx') {
-  const transpiler =
-    typeof Bun !== 'undefined'
-      ? new Bun.Transpiler({ loader })
-      : { transformSync: (code: string) => code };
+  const isBun = typeof Bun !== 'undefined';
+  const defaultTranspiler = { transformSync: (code: string) => code };
+
+  const minifier = isBun
+    ? new Bun.Transpiler({ loader, minifyWhitespace: true })
+    : defaultTranspiler;
+
+  const transpiler = isBun ? new Bun.Transpiler({ loader }) : defaultTranspiler;
 
   return {
     parseCodeToAST(code: string): ESTree.Program {
@@ -27,6 +31,9 @@ export default function AST(loader: JavaScriptLoader = 'tsx') {
     },
     generateCodeFromAST(ast: ESTree.Program) {
       return generate(ast, { indent: '  ' });
+    },
+    minify(code: string) {
+      return minifier.transformSync(code);
     },
   };
 }

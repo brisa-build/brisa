@@ -48,7 +48,6 @@ export default async function buildMultiClientEntrypoints(
 
       clientBuildDetails[index] = {
         ...clientBuildDetails[index],
-        size: output.size,
         ...processI18n(await output.text()),
       };
     }),

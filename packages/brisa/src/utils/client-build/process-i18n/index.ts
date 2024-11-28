@@ -4,7 +4,7 @@ import { getConstants } from '@/constants';
 import transferTranslatedPagePaths from '@/utils/transfer-translated-page-paths';
 import type { ESTree } from 'meriyah';
 
-const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const { parseCodeToAST, generateCodeFromAST, minify } = AST('tsx');
 const bridgeWithKeys = await build({ usei18nKeysLogic: true });
 const bridgeWithoutKeys = await build({ usei18nKeysLogic: false });
 const bridgeWithKeysAndFormatter = await build({
@@ -39,10 +39,13 @@ export function processI18n(code: string) {
     return value;
   });
 
+  const newCode = useI18n ? astToI18nCode(ast, i18nKeys) : code;
+
   return {
-    code: useI18n ? generateCodeFromAST(astWithBridge(ast, i18nKeys)) : code,
+    code: newCode,
     useI18n,
     i18nKeys,
+    size: newCode.length,
   };
 }
 
@@ -54,7 +57,7 @@ function isWindowProperty(value: any, property: string) {
   );
 }
 
-function astWithBridge(ast: ESTree.Program, i18nKeys: Set<string>) {
+function astToI18nCode(ast: ESTree.Program, i18nKeys: Set<string>) {
   const { I18N_CONFIG } = getConstants();
   const usei18nKeysLogic = i18nKeys.size > 0;
   const i18nConfig = JSON.stringify({
@@ -84,5 +87,5 @@ function astWithBridge(ast: ESTree.Program, i18nKeys: Set<string>) {
     ).body,
   );
 
-  return ast;
+  return minify(generateCodeFromAST(ast));
 }

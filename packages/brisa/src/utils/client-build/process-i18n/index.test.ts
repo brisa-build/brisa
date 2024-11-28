@@ -3,9 +3,9 @@ import AST from '@/utils/ast';
 import { processI18n } from '.';
 import { normalizeHTML } from '@/helpers';
 
-const { parseCodeToAST, generateCodeFromAST } = AST('tsx');
+const { parseCodeToAST, generateCodeFromAST, minify } = AST('tsx');
 const out = (c: string) =>
-  normalizeHTML(generateCodeFromAST(parseCodeToAST(c)));
+  minify(normalizeHTML(generateCodeFromAST(parseCodeToAST(c))));
 
 describe('utils', () => {
   describe('client-build -> process-i18n', () => {
@@ -32,6 +32,7 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
+      expect(res.size).toBe(res.code.length);
 
       // Bridge without keys
       expect(resCode).toContain('window.i18n');
@@ -64,6 +65,7 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toBeEmpty();
+      expect(res.size).toBe(res.code.length);
 
       // Bridge without keys
       expect(resCode).toContain('window.i18n');
@@ -94,6 +96,7 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(['hello']));
+      expect(res.size).toBe(res.code.length);
 
       // Bridge with keys
       expect(resCode).toContain('window.i18n');
@@ -126,6 +129,7 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(['hello']));
+      expect(res.size).toBe(res.code.length);
 
       // Bridge with keys
       expect(resCode).toContain('window.i18n');
@@ -158,6 +162,7 @@ describe('utils', () => {
       );
       expect(res.useI18n).toBeTrue();
       expect(res.i18nKeys).toEqual(new Set(['foo', 'bar', 'baz']));
+      expect(res.size).toBe(res.code.length);
 
       // Bridge with keys
       expect(resCode).toContain('window.i18n');

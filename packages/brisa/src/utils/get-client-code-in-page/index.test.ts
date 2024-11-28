@@ -18,7 +18,7 @@ const pageWebComponents = {
   'native-some-example': allWebComponents['native-some-example'],
 };
 
-const i18nCode = 2799;
+const i18nCode = 3653;
 const brisaSize = 5720; // TODO: Reduce this size :/
 const webComponents = 1118;
 const unsuspenseSize = 213;
@@ -248,12 +248,12 @@ describe('utils', () => {
       });
 
       const allDefineElementCalls = output!.code.match(
-        /(defineElement\("([a-z]|-)+", ([a-z]|[A-Z])+\))/gm,
+        /(defineElement\("([a-z]|-)+",([a-z]|[A-Z])+\))/gm,
       );
       expect(allDefineElementCalls).toEqual([
-        `defineElement("brisa-error-dialog", brisaErrorDialog)`,
-        `defineElement("context-provider", contextProvider)`,
-        `defineElement("native-some-example", SomeExample)`,
+        `defineElement("brisa-error-dialog",brisaErrorDialog)`,
+        `defineElement("context-provider",contextProvider)`,
+        `defineElement("native-some-example",SomeExample)`,
       ]);
     });
 
@@ -302,7 +302,7 @@ describe('utils', () => {
         pageWebComponents,
         integrationsPath,
       });
-      expect(output!.code).toContain('window._P =');
+      expect(output!.code).toContain('window._P=');
     });
 
     it('should add the integrations with emoji-picker as direct import', async () => {
@@ -341,9 +341,9 @@ describe('utils', () => {
         },
         integrationsPath,
       });
-      const contentOfLib = '() => `has ${window._P.length} web context plugin`';
+      const contentOfLib = '()=>`has ${window._P.length} web context plugin`';
 
-      expect(output!.code).toContain('window._P =');
+      expect(output!.code).toContain('window._P=');
       expect(output!.code).toContain(contentOfLib);
 
       GlobalRegistrator.register();
