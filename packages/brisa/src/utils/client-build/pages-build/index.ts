@@ -1,20 +1,18 @@
 import type { BuildArtifact } from 'bun';
-import { logBuildError } from '../log/log-build';
-import { removeTempEntrypoints } from './fs-temp-entrypoint-manager';
-import { getClientBuildDetails } from './get-client-build-details';
-import type { EntryPointData, Options } from './types';
-import { runBuild } from './run-build';
-import { processI18n } from './process-i18n';
+import { logBuildError } from '../../log/log-build';
+import { removeTempEntrypoints } from '../fs-temp-entrypoint-manager';
+import { getClientBuildDetails } from '../get-client-build-details';
+import type { EntryPointData, Options } from '../types';
+import { runBuild } from '../run-build';
+import { processI18n } from '../process-i18n';
 
 // TODO: Benchmarks old vs new
-// TODO: Move to module (build-multi-entrypoints) + add tests
-// TODO: Move getClientCodeInPage to module like build-single-entrypoint + add tests
 // TODO: Move compileClientCodePage from compile-files to inside this client-build folder + tests
 // TODO: move add-i18n-bridge to post-build
-export default async function buildMultiClientEntrypoints(
+export default async function clientPageBuild(
   pages: BuildArtifact[],
   options: Options,
-) {
+): Promise<EntryPointData[]> {
   let clientBuildDetails = await getClientBuildDetails(pages, options);
 
   const entrypointsData = clientBuildDetails.reduce((acc, curr, index) => {

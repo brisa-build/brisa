@@ -22,4 +22,5 @@ export type EntryPointData = {
   useWebContextPlugins?: boolean;
   pagePath: string;
   index?: number;
+  webComponents?: WCs;
 };

@@ -18,7 +18,7 @@ import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
-import buildMultiClientEntrypoints from '@/utils/client-build';
+import clientPageBuild from '@/utils/client-build/pages-build';
 
 const TS_REGEX = /\.tsx?$/;
 const BRISA_DEPS = ['brisa/server'];
@@ -306,7 +306,7 @@ async function compileClientCodePage(
       })
     : null;
 
-  const pagesData = await buildMultiClientEntrypoints(pages, {
+  const pagesData = await clientPageBuild(pages, {
     webComponentsPerEntrypoint,
     layoutWebComponents,
     allWebComponents,
