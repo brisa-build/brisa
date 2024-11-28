@@ -6,9 +6,6 @@ import type { EntryPointData, Options } from '../types';
 import { runBuild } from '../run-build';
 import { processI18n } from '../process-i18n';
 
-// TODO: Benchmarks old vs new
-// TODO: Move compileClientCodePage from compile-files to inside this client-build folder + tests
-// TODO: move add-i18n-bridge to post-build
 export default async function clientPageBuild(
   pages: BuildArtifact[],
   options: Options,
