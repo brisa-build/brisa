@@ -12,6 +12,9 @@ export default async function clientPageBuild(
   options: Options,
 ): Promise<EntryPointData[]> {
   const { LOG_PREFIX } = getConstants();
+
+  log(LOG_PREFIX.WAIT, 'analyzing and preparing client build...');
+
   let clientBuildDetails = await getClientBuildDetails(pages, options);
 
   const entrypointsData = clientBuildDetails.reduce((acc, curr, index) => {
