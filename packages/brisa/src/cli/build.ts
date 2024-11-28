@@ -5,6 +5,7 @@ import { getConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 import compileBrisaInternalsToDoBuildPortable from '@/utils/compile-serve-internals-into-build';
+import { log } from '@/utils/log/log-build';
 
 const outputText = {
   bun: 'Bun.js Web Service App',
@@ -16,7 +17,6 @@ const outputText = {
 };
 
 export default async function build() {
-  const log = process.env.QUIET_MODE === 'true' ? () => {} : console.log;
   const constants = getConstants();
   const {
     IS_PRODUCTION,

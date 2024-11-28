@@ -5,7 +5,7 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 import getEntrypoints, { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import getWebComponentsList from '@/utils/get-web-components-list';
-import { logTable } from '@/utils/log/log-build';
+import { log, logTable } from '@/utils/log/log-build';
 import serverComponentPlugin from '@/utils/server-component-plugin';
 import createContextPlugin from '@/utils/create-context/create-context-plugin';
 import { transpileActions, buildActions } from '@/utils/transpile-actions';
@@ -69,6 +69,8 @@ export default async function compileFiles() {
   if (i18nPath) entrypoints.push(i18nPath);
   if (websocketPath) entrypoints.push(websocketPath);
   if (integrationsPath) entrypoints.push(integrationsPath);
+
+  log(LOG_PREFIX.WAIT, `compiling ${entrypoints.length} server entrypoints...`);
 
   const actionWrites: Promise<number>[] = [];
   const { success, logs, outputs } = await Bun.build({

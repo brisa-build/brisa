@@ -6,7 +6,7 @@ import { getConstants } from '@/constants';
 import type { ActionInfo } from './get-actions-info';
 import getActionsInfo from './get-actions-info';
 import { getPurgedBody } from './get-purged-body';
-import { logBuildError } from '@/utils/log/log-build';
+import { log, logBuildError } from '@/utils/log/log-build';
 import { jsx, jsxDEV } from '../ast/constants';
 
 type CompileActionsParams = {
@@ -594,7 +594,7 @@ export async function buildActions({
   actionsEntrypoints,
   define,
 }: CompileActionsParams) {
-  const { BUILD_DIR, IS_PRODUCTION, CONFIG } = getConstants();
+  const { BUILD_DIR, IS_PRODUCTION, CONFIG, LOG_PREFIX } = getConstants();
   const isNode = CONFIG.output === 'node' && IS_PRODUCTION;
   const rawActionsDir = join(BUILD_DIR, 'actions_raw');
   const barrelFile = join(rawActionsDir, 'index.ts');
@@ -605,6 +605,9 @@ export async function buildActions({
   );
 
   const external = CONFIG.external ? [...CONFIG.external, 'brisa'] : ['brisa'];
+
+  log(LOG_PREFIX.WAIT, `compiling server actions...`);
+
   const res = await Bun.build({
     entrypoints: [barrelFile],
     outdir: join(BUILD_DIR, 'actions'),

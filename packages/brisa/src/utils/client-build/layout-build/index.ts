@@ -1,4 +1,4 @@
-import { logBuildError } from '@/utils/log/log-build';
+import { log, logBuildError } from '@/utils/log/log-build';
 import { preEntrypointAnalysis } from '../pre-entrypoint-analysis';
 import {
   removeTempEntrypoint,
@@ -6,6 +6,7 @@ import {
 } from '../fs-temp-entrypoint-manager';
 import { runBuild } from '../run-build';
 import { processI18n } from '../process-i18n';
+import { getConstants } from '@/constants';
 
 type TransformOptions = {
   webComponentsList: Record<string, string>;
@@ -29,6 +30,7 @@ export default async function layoutBuild({
   integrationsPath,
   layoutHasContextProvider,
 }: ClientCodeInPageProps) {
+  const { LOG_PREFIX } = getConstants();
   const analysis = await preEntrypointAnalysis(
     layoutPath,
     allWebComponents,
@@ -39,6 +41,8 @@ export default async function layoutBuild({
   if (!Object.keys(analysis.webComponents).length) {
     return analysis;
   }
+
+  log(LOG_PREFIX.WAIT, `compiling layout...`);
 
   const transformedCode = await transformToWebComponents({
     webComponentsList: analysis.webComponents,

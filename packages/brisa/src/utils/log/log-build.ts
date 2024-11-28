@@ -44,7 +44,12 @@ export function logTable(data: { [key: string]: string }[]) {
   lines.forEach((line) => console.log(LOG_PREFIX.INFO, line));
 }
 
-function log(type: 'Error' | 'Warning') {
+export function log(...messages: string[]) {
+  if (process.env.QUIET_MODE === 'true') return;
+  console.log(...messages);
+}
+
+function logProblem(type: 'Error' | 'Warning') {
   const { LOG_PREFIX } = getConstants();
   const LOG =
     LOG_PREFIX[
@@ -100,11 +105,11 @@ export function logError({
     footer = `${docTitle ?? 'Documentation'}: ${docLink}`;
   }
 
-  return log('Error')(messages, footer, stack);
+  return logProblem('Error')(messages, footer, stack);
 }
 
 export function logWarning(messages: string[], footer?: string) {
-  return log('Warning')(messages, footer);
+  return logProblem('Warning')(messages, footer);
 }
 
 export function logBuildError(
