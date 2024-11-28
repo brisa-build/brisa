@@ -166,8 +166,8 @@ describe('utils/handle-css-files', () => {
     await handleCSSFiles();
     expect(mockLog).toHaveBeenCalledTimes(2);
     expect(mockLog).toHaveBeenCalledWith(
-      LOG_PREFIX.INFO,
-      `Transpiling CSS with brisa-tailwindcss`,
+      LOG_PREFIX.WAIT,
+      `transpiling CSS with brisa-tailwindcss...`,
     );
     expect(mockLog).toHaveBeenCalledWith(
       LOG_PREFIX.INFO,

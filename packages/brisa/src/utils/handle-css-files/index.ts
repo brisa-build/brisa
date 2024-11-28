@@ -1,7 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
-import { logError } from '../log/log-build';
+import { log, logError } from '../log/log-build';
 import { gzipSync } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
 
@@ -26,10 +26,7 @@ export default async function handleCSSFiles() {
         const startTime = Date.now();
 
         if (IS_BUILD_PROCESS) {
-          console.log(
-            LOG_PREFIX.INFO,
-            `Transpiling CSS with ${integration.name}`,
-          );
+          log(LOG_PREFIX.WAIT, `transpiling CSS with ${integration.name}...`);
         }
 
         let useDefault = true;
