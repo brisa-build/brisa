@@ -1,10 +1,7 @@
 import { describe, expect, it, spyOn } from 'bun:test';
 import fs from 'node:fs/promises';
-import packageJSON from './package.json';
 import libs from './libs.json';
 import brisaTailwindcss from '.';
-
-const TAILWIND_VERSION = packageJSON.devDependencies.tailwindcss;
 
 describe('brisa-tailwindcss', () => {
   it('should return the correct name', () => {
@@ -108,6 +105,25 @@ describe('brisa-tailwindcss', () => {
     expect(mockLog.mock.calls[2][0]).toBe('INFO');
     expect(mockLog.mock.calls[2][1]).toBe('TICK');
     expect(mockLog.mock.calls[2][2]).toContain('TailwindCSS embedded in');
+    mockLog.mockRestore();
+    mockCp.mockRestore();
+    mockExists.mockRestore();
+  });
+
+  it('should not embed tailwindcss when embedded is false', async () => {
+    const integration = brisaTailwindcss({ embedded: false });
+    const mockLog = spyOn(console, 'log');
+    const mockCp = spyOn(fs, 'cp').mockResolvedValue();
+    const mockExists = spyOn(fs, 'exists').mockResolvedValue(true);
+
+    await integration.afterBuild({
+      BUILD_DIR: import.meta.dirname,
+      LOG_PREFIX: { INFO: 'INFO', WAIT: 'WAIT', TICK: 'TICK' },
+    });
+
+    expect(mockLog).not.toHaveBeenCalled();
+    expect(mockCp).not.toHaveBeenCalled();
+    expect(mockExists).not.toHaveBeenCalled();
     mockLog.mockRestore();
     mockCp.mockRestore();
     mockExists.mockRestore();

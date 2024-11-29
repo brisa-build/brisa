@@ -4,8 +4,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import libs from './libs.json';
 
+const defaultConfig = { embedded: true };
+
 // Note: is not bundled here to avoid issues with lightningcss
-export default function brisaTailwindcss() {
+export default function brisaTailwindcss({ embedded = true } = defaultConfig) {
   return {
     name: 'brisa-tailwindcss',
     async transpileCSS(pathname: string, content: string) {
@@ -30,6 +32,7 @@ export default function brisaTailwindcss() {
     // work correctly. As a solution, we install tailwind in the build folder and in this way the problem is solved.
     // Issue: https://github.com/brisa-build/brisa/issues/637
     async afterBuild({ BUILD_DIR, LOG_PREFIX }) {
+      if (!embedded) return;
       const start = Date.now();
       const destNodeModules = path.join(BUILD_DIR, 'node_modules');
       const nodeModules = Bun.resolveSync('brisa', BUILD_DIR).split('brisa')[0];

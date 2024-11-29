@@ -44,6 +44,34 @@ And you are ready to use TailwindCSS in your Brisa project.
 >
 > Installing the dependencies manually, take care to use a TailwindCSS version `v.4.x`.
 
+## Configuration
+
+You can configure TailwindCSS in your `brisa.config.ts` file:
+
+```ts
+import brisaTailwindCSS from "brisa-tailwindcss";
+
+export default {
+  integrations: [brisaTailwindCSS({ embedded: false })],
+} satisfies Configuration;
+```
+
+The current configuration has only one option:
+
+- `embedded` (optional): If you want to embed the TailwindCSS CSS in the build output. Default is `true`.
+
+> [!NOTE]
+>
+> Tailwind needs a subdependency that cannot be compiled, which is [lightningcss](https://github.com/parcel-bundler/lightningcss), so the default is to treat it as external and then embed it inside build.
+
+### Type
+
+```ts
+type Config = {
+  embedded?: boolean;
+};
+```
+
 ## Defaults
 
 If you don't have any `.css` file with `@tailwind` directive or `tailwindcss` import, Brisa will automatically generate in build-time a default CSS file with TailwindCSS directives to be similar than [TailwindCSS CDN](https://tailwindcss.com/docs/installation/play-cdn):
