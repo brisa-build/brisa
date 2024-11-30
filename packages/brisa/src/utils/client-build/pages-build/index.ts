@@ -35,7 +35,7 @@ export default async function clientPageBuild(
   const { success, logs, outputs } = await runBuild(
     entrypoints,
     options.allWebComponents,
-    entrypointsData[0].useContextProvider,
+    entrypointsData[0].useWebContextPlugins,
   );
 
   // Remove all temp files

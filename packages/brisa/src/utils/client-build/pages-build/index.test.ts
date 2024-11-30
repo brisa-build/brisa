@@ -8,6 +8,7 @@ import type { BuildArtifact } from 'bun';
 
 const src = path.join(import.meta.dir, '..', '..', '..', '__fixtures__');
 const build = path.join(src, `out-${crypto.randomUUID()}}`);
+const webComponentsDir = path.join(src, 'web-components');
 const brisaInternals = path.join(build, '_brisa');
 const allWebComponents = await getWebComponentsList(src);
 const pageWebComponents = {
@@ -151,5 +152,41 @@ describe('client-build', () => {
         'native-some-example': allWebComponents['native-some-example'],
       });
     });
+  });
+
+  it('should NOT add the integrations web context plugins when there are not plugins', async () => {
+    const pagePath = path.join(src, 'pages', 'page-with-web-component.tsx');
+    const integrationsPath = path.join(webComponentsDir, '_integrations.tsx');
+    const output = await clientPageBuild([toArtifact(pagePath)], {
+      allWebComponents,
+      webComponentsPerEntrypoint: {
+        [pagePath]: allWebComponents,
+      },
+      integrationsPath,
+      layoutWebComponents: {},
+    });
+
+    // Declaration
+    expect(output[0].code).not.toContain('window._P=');
+    // Brisa element usage
+    expect(output[0].code).not.toContain('._P)');
+  });
+
+  it('should add the integrations web context plugins when there are plugins', async () => {
+    const pagePath = path.join(src, 'pages', 'page-with-web-component.tsx');
+    const integrationsPath = path.join(webComponentsDir, '_integrations2.tsx');
+    const output = await clientPageBuild([toArtifact(pagePath)], {
+      allWebComponents,
+      webComponentsPerEntrypoint: {
+        [pagePath]: allWebComponents,
+      },
+      integrationsPath,
+      layoutWebComponents: {},
+    });
+
+    // Declaration
+    expect(output[0].code).toContain('window._P=');
+    // Brisa element usage
+    expect(output[0].code).toContain('._P)');
   });
 });

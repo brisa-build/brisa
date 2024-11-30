@@ -19,7 +19,7 @@ const pageWebComponents = {
 };
 
 const i18nCode = 3653;
-const brisaSize = 5720; // TODO: Reduce this size :/
+const brisaSize = 5638; // TODO: Reduce this size :/
 const webComponents = 1118;
 const unsuspenseSize = 213;
 const rpcSize = 2500; // TODO: Reduce this size
@@ -287,7 +287,10 @@ describe('client-build', () => {
         pageWebComponents,
         integrationsPath,
       });
+      // Declaration
       expect(output!.code).not.toContain('window._P=');
+      // Brisa element usage
+      expect(output!.code).not.toContain('._P)');
     });
 
     it('should add the integrations web context plugins when there are plugins', async () => {
@@ -302,7 +305,10 @@ describe('client-build', () => {
         pageWebComponents,
         integrationsPath,
       });
+      // Declaration
       expect(output!.code).toContain('window._P=');
+      // Brisa element usage
+      expect(output!.code).toContain('._P)');
     });
 
     it('should add the integrations with emoji-picker as direct import', async () => {
