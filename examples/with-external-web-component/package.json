@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "brisa": "0.1.7",
-    "counter-wc": "0.1.1",
+    "counter-wc": "0.1.3",
     "calendar-native-web-component": "0.0.32"
   },
   "devDependencies": {
