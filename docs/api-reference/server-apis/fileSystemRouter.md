@@ -18,7 +18,7 @@ pages
 
 The API of `fileSystemRouter` is the same API of [`Bun.FileSystemRouter`](https://bun.sh/docs/api/file-system-router) with some differences:
 
-- You can also use the `fileSystemRouter` API in Node.js.
+- You can also use the `fileSystemRouter` API in Node.js or Deno.
 - There are some fixes and improvements in the API.
 - The `fileSystemRouter` API (with Bun runtime) is faster than the `Bun.FileSystemRouter` API.
 
@@ -47,17 +47,17 @@ The `fileSystemRouter` function creates a new instance of the file system router
 ## Example usage
 
 ```tsx
-import path from 'node:path';
-import { fileSystemRouter } from 'brisa/server';
+import path from "node:path";
+import { fileSystemRouter } from "brisa/server";
 
 const router = fileSystemRouter({
-  dir: path.join(import.meta.dirname, 'pages'),
+  dir: path.join(import.meta.dirname, "pages"),
 });
 
-const matchedRoute = router.match('/blog/hello-world?foo=bar');
+const matchedRoute = router.match("/blog/hello-world?foo=bar");
 
 if (matchedRoute) {
-  console.log(matchedRoute); 
+  console.log(matchedRoute);
   // {
   //   filePath: 'pages/blog/[slug].tsx',
   //   kind: 'dynamic',
@@ -95,11 +95,11 @@ The `routes` property is the entries of routes and file paths.
 > `routes` entries are in alphabetical order
 
 ```tsx
-import path from 'node:path';
-import { fileSystemRouter } from 'brisa/server';
+import path from "node:path";
+import { fileSystemRouter } from "brisa/server";
 
 const router = fileSystemRouter({
-  dir: path.join(import.meta.dirname, 'pages'),
+  dir: path.join(import.meta.dirname, "pages"),
 });
 
 console.log(router.routes);
@@ -111,5 +111,3 @@ console.log(router.routes);
 //   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],
 // ]
 ```
-
-

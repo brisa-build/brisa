@@ -102,7 +102,7 @@ export async function getServeOptions() {
         if (JS_RUNTIME !== 'bun') {
           // Note: This only happens on development, and we use
           // the Bun runtime in development. Other runtimes like
-          // Node.js for now are only supported in production.
+          // Node.js / Deno for now are only supported in production.
           return new Response(null, { status: 404 });
         }
 

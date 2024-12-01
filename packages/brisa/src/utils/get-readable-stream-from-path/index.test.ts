@@ -5,7 +5,7 @@ import getReadableStreamFromPath from '.';
 const FIXTURES_PATH = path.join(import.meta.dir, '..', '..', '__fixtures__');
 
 describe('utils/get-readable-stream-from-path', () => {
-  describe('Node.js runtime', () => {
+  describe('Node.js / Deno runtime', () => {
     it('should return a ReadableStream from a file path', () => {
       const filePath = path.join(FIXTURES_PATH, 'public', 'favicon.ico');
       const stream = getReadableStreamFromPath(filePath, false);

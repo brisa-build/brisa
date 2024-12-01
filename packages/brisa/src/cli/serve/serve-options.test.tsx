@@ -1746,6 +1746,30 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mockOpenInEditor.mockRestore();
   });
 
+  it('should not call Bun.openInEditor in Deno and return 404', async () => {
+    globalThis.mockConstants = {
+      ...globalThis.mockConstants,
+      IS_PRODUCTION: false,
+      IS_DEVELOPMENT: true,
+      JS_RUNTIME: 'deno',
+    };
+    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
+      () => {},
+    );
+    const response = await testRequest(
+      new Request(
+        `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
+          'src/pages/somepage.tsx',
+        )}&line=1&column=1`,
+        { method: 'POST' },
+      ),
+    );
+
+    expect(response.status).toBe(404);
+    expect(mockOpenInEditor).not.toHaveBeenCalled();
+    mockOpenInEditor.mockRestore();
+  });
+
   it('should open the editor calling /__brisa_dev_file__ with internal brisa file from build with line and column', async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,

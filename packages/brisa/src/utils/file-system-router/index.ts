@@ -26,7 +26,7 @@ const SYMBOLS = new Set([
   '=',
 ]);
 
-// Inspired on Bun.FileSystemRouter, but compatible with Node.js as well
+// Inspired on Bun.FileSystemRouter, but compatible with Node.js/Deno as well
 export function fileSystemRouter(options: FileSystemRouterOptions) {
   const routes = Object.entries(resolveRoutes(options)).sort(
     sortPathsBySegments,

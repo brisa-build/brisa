@@ -79,10 +79,10 @@ export default function About() {
           <p>
             Bun is great and improves the development experience a lot. Although
             we recommend Bun.js also as runtime, as output you can use Node.js
-            if you want, generate a static output and upload it to a CDN, or
-            generate an executable app for Android (.apk),  iOS (.ipa),  Windows
-            (.exe), Mac (.dmg), or Linux (.deb). Yes, Brisa is multiplatform
-            thanks to its integration with Tauri.
+            or Deno if you want, generate a static output and upload it to a
+            CDN, or generate an executable app for Android (.apk),  iOS (.ipa), 
+            Windows (.exe), Mac (.dmg), or Linux (.deb). Yes, Brisa is
+            multiplatform thanks to its integration with Tauri.
           </p>
 
           <p>

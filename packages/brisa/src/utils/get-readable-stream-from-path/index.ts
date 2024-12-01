@@ -14,7 +14,7 @@ export default function getReadableStreamFromPath(
     return Bun.file(filePath).stream();
   }
 
-  // Node.js runtime
+  // Node.js / Deno runtime
   const readStream = fs.createReadStream(filePath);
 
   return new ReadableStream({

@@ -4,7 +4,7 @@ description: Learn how to build with different types of outputs
 
 # Output
 
-Brisa, offers versatile output configuration options to tailor your build output according to your deployment needs. The `output` configuration property in `brisa.config.ts` allows you to define the type of output you desire, with options such as `server`, `static`, and `desktop`.
+Brisa, offers versatile output configuration options to tailor your build output according to your deployment needs. The `output` configuration property in `brisa.config.ts` allows you to define the type of output you desire, with options such as `bun`, `node`, `deno`, `static`, `desktop`, `android` and `ios`.
 
 ## Understanding Output Types
 
@@ -40,6 +40,22 @@ export default {
 > [!NOTE]
 >
 > You can use specific Bun.js features only related with building the application, like Macros, but not runtime features like [`bun:ffi`](/building-your-application/configuring/zig-rust-c-files), for that you need to find the equivalent in Node.js.
+
+### 2. Deno Server Output (`deno`)
+
+The `deno` output type is designed for creating deployable Deno applications. To configure your Brisa project for Deno server output, adjust your `brisa.config.ts` as follows:
+
+```ts
+import type { Configuration } from "brisa";
+
+export default {
+  output: "deno",
+} satisfies Configuration;
+```
+
+> [!NOTE]
+>
+> You can use specific Bun.js features only related with building the application, like Macros, but not runtime features like [`bun:ffi`](/building-your-application/configuring/zig-rust-c-files), for that you need to find the equivalent in Deno.
 
 ### 3. Static Output (`static`)
 
@@ -158,4 +174,4 @@ To view the changes in the output, run the `brisa build` command. In the case of
 
 > [!TIP]
 >
-> If your application requires server-side features, like middleware or API endpoints, opt for the `server` output. For static websites, select the `static` output, and for desktop applications integrated with Tauri, use the `desktop` output.
+> If your application requires server-side features, like middleware or API endpoints, opt for the `bun` / `node` / `deno` output. For static websites, select the `static` output, and for desktop / mobile applications integrated with Tauri, use the `desktop` / `ios` / `android` output.

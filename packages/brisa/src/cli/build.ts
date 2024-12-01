@@ -10,6 +10,7 @@ import { log } from '@/utils/log/log-build';
 const outputText = {
   bun: 'Bun.js Web Service App',
   node: 'Node.js Server App',
+  deno: 'Deno Server App',
   static: 'Static Site App',
   android: 'Android App',
   ios: 'iOS App',

@@ -11,7 +11,7 @@ const { LOG_PREFIX, SRC_DIR, IS_DEVELOPMENT, IS_SERVE_PROCESS } = constants;
 const LIVE_RELOAD_WEBSOCKET_PATH = '__brisa_live_reload__';
 const LIVE_RELOAD_COMMAND = 'reload';
 
-// Similar than Bun.nanoseconds, but also working with Node.js
+// Similar than Bun.nanoseconds, but also working with Node.js / Deno
 function nanoseconds() {
   return Number(process.hrtime.bigint());
 }
@@ -54,8 +54,8 @@ export async function activateHotReload() {
 
     // Note: we are using spawnSync instead of executing directly the build because
     // we prefer to separate both processes. In this way, serve can be executed in
-    // different runtimes, like Node.js or Bun, however, the build process is always
-    // executed in Bun.
+    // different runtimes, like Node.js, Deno or Bun, however, the build process is
+    // always executed in Bun.
     // https://github.com/brisa-build/brisa/issues/404
     currentProcess = cp.spawn(
       process.execPath,

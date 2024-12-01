@@ -29,7 +29,7 @@ pub extern "C" fn add(a: isize, b: isize) -> isize {
 
 > [!CAUTION]
 >
-> If you are using `node` as output, this documentation does not apply. You need to find the equivalent in Node.js.
+> If you are using `node` or `deno` as output, this documentation does not apply. You need to find the equivalent in the specific JS runtime.
 
 ## Compile Your Files
 

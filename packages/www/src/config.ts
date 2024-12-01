@@ -316,6 +316,10 @@ export default {
               link: '/building-your-application/building/node-server',
             },
             {
+              text: 'Deno Server',
+              link: '/building-your-application/building/deno-server',
+            },
+            {
               text: 'Desktop app',
               link: '/building-your-application/building/desktop-app',
             },

@@ -258,7 +258,7 @@
   {
     "id": "/api-reference/compiler-apis/compileWC#outside-bunjs",
     "title": "Outside Bun.js",
-    "text": "This function is intended to be used within the Bun runtime, as it uses the Bun transpiler to convert TSX to JS. However, if you want to use it in other environments, such as Node.js or in the browser, you can do so, but you will need to transpile the TSX to JS beforehand, for example with @swc/wasm-web. Bun.Transpiler is not applied when the environment is not Bun.js, so you will need to transpile the code before using compileWC to convert it to js.",
+    "text": "This function is intended to be used within the Bun runtime, as it uses the Bun transpiler to convert TSX to JS. However, if you want to use it in other environments, such as Node.js, Deno or in the browser, you can do so, but you will need to transpile the TSX to JS beforehand, for example with @swc/wasm-web. Bun.Transpiler is not applied when the environment is not Bun.js, so you will need to transpile the code before using compileWC to convert it to js.",
     "titles": [
       "compileWC"
     ]
@@ -266,7 +266,7 @@
   {
     "id": "/api-reference/compiler-apis/compileWC#example-with-swcwasm-web",
     "title": "Example with @swc/wasm-web",
-    "text": "import { compileWC } from \"brisa/compiler\";\nimport initSwc, { transformSync } from \"@swc/wasm-web\";\n\nasync function main() {\n\tawait initSwc();\n\tconst code = `\n\t\texport default function MyComponent() { \n\t\t\treturn <div>Hello World</div>;\n\t\t}\n\t`;\n\tconst transpiledCode = transformSync(code, {\n\t\tjsc: {\n\t\t\tparser: {\n\t\t\t\tsyntax: \"typescript\",\n\t\t\t\ttsx: true,\n\t\t\t},\n\t\t},\n\t});\n\tconst finalCode = compileWC(transpiledCode.code);\n\tconsole.log(finalCode);\n}",
+    "text": "import { compileWC } from \"brisa/compiler\";\nimport initSwc, { transformSync } from \"@swc/wasm-web\";\n\nasync function main() {\n  await initSwc();\n  const code = `\n\t\texport default function MyComponent() { \n\t\t\treturn <div>Hello World</div>;\n\t\t}\n\t`;\n  const transpiledCode = transformSync(code, {\n    jsc: {\n      parser: {\n        syntax: \"typescript\",\n        tsx: true,\n      },\n    },\n  });\n  const finalCode = compileWC(transpiledCode.code);\n  console.log(finalCode);\n}",
     "titles": [
       "compileWC",
       "Outside Bun.js"
@@ -1336,7 +1336,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#filesystemrouter",
     "title": "fileSystemRouter",
-    "text": "The fileSystemRouter API is used to serve files from the file system. Internally, we use it for pages and API routes. pages\n├── index.tsx\n├── settings.tsx\n├── blog\n│   ├── [slug].tsx\n│   └── index.tsx\n└── [[...catchall]].tsx The API of fileSystemRouter is the same API of Bun.FileSystemRouter with some differences: You can also use the fileSystemRouter API in Node.js.\nThere are some fixes and improvements in the API.\nThe fileSystemRouter API (with Bun runtime) is faster than the Bun.FileSystemRouter API. The fileSystemRouter API is used internally by the Brisa server to serve files from the file system. However, you can also use it in your Custom Server.",
+    "text": "The fileSystemRouter API is used to serve files from the file system. Internally, we use it for pages and API routes. pages\n├── index.tsx\n├── settings.tsx\n├── blog\n│   ├── [slug].tsx\n│   └── index.tsx\n└── [[...catchall]].tsx The API of fileSystemRouter is the same API of Bun.FileSystemRouter with some differences: You can also use the fileSystemRouter API in Node.js or Deno.\nThere are some fixes and improvements in the API.\nThe fileSystemRouter API (with Bun runtime) is faster than the Bun.FileSystemRouter API. The fileSystemRouter API is used internally by the Brisa server to serve files from the file system. However, you can also use it in your Custom Server.",
     "titles": []
   },
   {
@@ -1379,7 +1379,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#example-usage",
     "title": "Example usage",
-    "text": "import path from 'node:path';\nimport { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: path.join(import.meta.dirname, 'pages'),\n});\n\nconst matchedRoute = router.match('/blog/hello-world?foo=bar');\n\nif (matchedRoute) {\n  console.log(matchedRoute); \n  // {\n  //   filePath: 'pages/blog/[slug].tsx',\n  //   kind: 'dynamic',\n  //   name: '/blog/[slug]',\n  //   pathname: '/blog/hello-world',\n  //   src: 'blog/[slug].tsx',\n  //   params: { slug: 'hello-world' },\n  //   query: { foo: 'bar' },\n  // }\n}",
+    "text": "import path from \"node:path\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst router = fileSystemRouter({\n  dir: path.join(import.meta.dirname, \"pages\"),\n});\n\nconst matchedRoute = router.match(\"/blog/hello-world?foo=bar\");\n\nif (matchedRoute) {\n  console.log(matchedRoute);\n  // {\n  //   filePath: 'pages/blog/[slug].tsx',\n  //   kind: 'dynamic',\n  //   name: '/blog/[slug]',\n  //   pathname: '/blog/hello-world',\n  //   src: 'blog/[slug].tsx',\n  //   params: { slug: 'hello-world' },\n  //   query: { foo: 'bar' },\n  // }\n}",
     "titles": [
       "fileSystemRouter"
     ]
@@ -1404,7 +1404,7 @@
   {
     "id": "/api-reference/server-apis/fileSystemRouter#routes-property",
     "title": "routes property",
-    "text": "The routes property is the entries of routes and file paths. routes entries are in alphabetical order import path from 'node:path';\nimport { fileSystemRouter } from 'brisa/server';\n\nconst router = fileSystemRouter({\n  dir: path.join(import.meta.dirname, 'pages'),\n});\n\nconsole.log(router.routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/[[...catchall]]', '/Users/aralroca/my-app/src/pages/[[...catchall]].tsx'],\n//   ['/blog', '/Users/aralroca/my-app/src/pages/blog/index.tsx'],\n//   ['/blog/[slug]', '/Users/aralroca/my-app/src/pages/blog/[slug].tsx'],\n//   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],\n// ]",
+    "text": "The routes property is the entries of routes and file paths. routes entries are in alphabetical order import path from \"node:path\";\nimport { fileSystemRouter } from \"brisa/server\";\n\nconst router = fileSystemRouter({\n  dir: path.join(import.meta.dirname, \"pages\"),\n});\n\nconsole.log(router.routes);\n// [\n//   ['/', '/Users/aralroca/my-app/src/pages/index.tsx'],\n//   ['/[[...catchall]]', '/Users/aralroca/my-app/src/pages/[[...catchall]].tsx'],\n//   ['/blog', '/Users/aralroca/my-app/src/pages/blog/index.tsx'],\n//   ['/blog/[slug]', '/Users/aralroca/my-app/src/pages/blog/[slug].tsx'],\n//   ['/settings', '/Users/aralroca/my-app/src/pages/settings.tsx'],\n// ]",
     "titles": [
       "fileSystemRouter"
     ]
@@ -1922,7 +1922,7 @@
   {
     "id": "/building-your-application/building#bun-server",
     "title": "Bun Server",
-    "text": "Brisa can be deployed to any hosting provider that supports Bun. Ensure your package.json has the \"build\" and \"start\" scripts: {\n  \"scripts\": {\n    \"dev\": \"brisa dev\",\n    \"build\": \"brisa build\",\n    \"start\": \"brisa start\"\n  }\n} Then, run bun run build to build your application. Finally, run bun run start to start the Bun server. This server supports all Brisa features.",
+    "text": "Brisa can be deployed to any hosting provider that supports Bun. Ensure your package.json has the \"build\" and \"start\" scripts: {\n  \"scripts\": {\n    \"dev\": \"brisa dev\",\n    \"build\": \"brisa build\",\n    \"start\": \"brisa start\"\n  }\n} Then, run bun run build to build your application. Finally, run bun run start to start the Bun server. This server supports all Brisa features. But if you need Node.js or Deno, we support that too, you just have to configure it. See the different build strategies in the next point.",
     "titles": [
       "Building",
       "Production Builds"
@@ -1931,7 +1931,7 @@
   {
     "id": "/building-your-application/building#app-strategy-static-server-desktop-android-ios",
     "title": "App Strategy (Static, Server, Desktop, Android, iOS)",
-    "text": "Brisa supports multiple output strategies to build your application. You can choose between: Build a Bun Server App\nBuild a Node.js Server App\nBuild a Static Site App\nBuild a Desktop App\nBuild a Android App\nBuild a iOS App",
+    "text": "Brisa supports multiple output strategies to build your application. You can choose between: Build a Bun Server App\nBuild a Node.js Server App\nBuild a Deno Server App\nBuild a Static Site App\nBuild a Desktop App\nBuild a Android App\nBuild a iOS App",
     "titles": [
       "Building"
     ]
@@ -1994,6 +1994,36 @@
     "text": "If you want to use a custom server, you can follow this guide: Custom Server.",
     "titles": [
       "Bun Server"
+    ]
+  },
+  {
+    "id": "/building-your-application/building/deno-server#deno-server",
+    "title": "Deno Server",
+    "text": "Brisa enables starting as a Deno Server to serve your app by changing the output to deno. It generates a Deno server that serves your application on the port 3000 by default, it can be changed with the flag --port. This server is capable of serving your application with all the features that Brisa offers, such as i18n, routing, server actions and middleware. You need a different output type than bun since during the build your application is optimized to be served on a Deno server. This means that we use Deno.serve and you can use deno.json at the root of your project to configure your Deno server and it will be moved inside the build folder.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/building/deno-server#configuration-optional",
+    "title": "Configuration (Optional)",
+    "text": "To enable a web service application, change the output mode inside brisa.config.ts: import type { Configuration } from \"brisa\";\n\nexport default {\n  output: \"deno\",\n} satisfies Configuration; After running brisa build, Brisa will generate a Deno server that serves your application on the port 3000 by default.",
+    "titles": [
+      "Deno Server"
+    ]
+  },
+  {
+    "id": "/building-your-application/building/deno-server#changing-the-port",
+    "title": "Changing the port",
+    "text": "To change the port, you can use the flag --port: brisa start --port 8080 The default port is process.env.PORT or 3000. After running brisa build, Brisa will generate a Bun server that serves your application on the port 8080. Although you can still use the Bun tooling to start your application in Deno, if you want, you can use NODE_ENV=production deno build/server.js to start your application with Deno without Brisa CLI.",
+    "titles": [
+      "Deno Server"
+    ]
+  },
+  {
+    "id": "/building-your-application/building/deno-server#custom-server",
+    "title": "Custom server",
+    "text": "If you want to use a custom server, you can follow this guide: Custom Server.",
+    "titles": [
+      "Deno Server"
     ]
   },
   {
@@ -3367,7 +3397,7 @@
   {
     "id": "/building-your-application/configuring/output#output",
     "title": "Output",
-    "text": "Brisa, offers versatile output configuration options to tailor your build output according to your deployment needs. The output configuration property in brisa.config.ts allows you to define the type of output you desire, with options such as server, static, and desktop.",
+    "text": "Brisa, offers versatile output configuration options to tailor your build output according to your deployment needs. The output configuration property in brisa.config.ts allows you to define the type of output you desire, with options such as bun, node, deno, static, desktop, android and ios.",
     "titles": []
   },
   {
@@ -3391,6 +3421,15 @@
     "id": "/building-your-application/configuring/output#2-nodejs-server-output-node",
     "title": "2. Node.js Server Output (node)",
     "text": "The node output type is designed for creating deployable Node.js applications. To configure your Brisa project for Node.js server output, adjust your brisa.config.ts as follows: import type { Configuration } from \"brisa\";\n\nexport default {\n  output: \"node\",\n} satisfies Configuration; You can use specific Bun.js features only related with building the application, like Macros, but not runtime features like bun:ffi, for that you need to find the equivalent in Node.js.",
+    "titles": [
+      "Output",
+      "Understanding Output Types"
+    ]
+  },
+  {
+    "id": "/building-your-application/configuring/output#2-deno-server-output-deno",
+    "title": "2. Deno Server Output (deno)",
+    "text": "The deno output type is designed for creating deployable Deno applications. To configure your Brisa project for Deno server output, adjust your brisa.config.ts as follows: import type { Configuration } from \"brisa\";\n\nexport default {\n  output: \"deno\",\n} satisfies Configuration; You can use specific Bun.js features only related with building the application, like Macros, but not runtime features like bun:ffi, for that you need to find the equivalent in Deno.",
     "titles": [
       "Output",
       "Understanding Output Types"
@@ -3435,7 +3474,7 @@
   {
     "id": "/building-your-application/configuring/output#additional-considerations",
     "title": "Additional Considerations",
-    "text": "When configuring your output type, it's crucial to consider the deployment environment and requirements. Each output type serves a distinct purpose, and choosing the right one ensures optimal performance and compatibility. To view the changes in the output, run the brisa build command. In the case of server output, the build is generated in the build folder, while for static and desktop output, an additional out folder is created. The build folder is retained as it is needed to generate the initial build before generating static files or the desktop app in the separate out folder. Learn more details about static export here. If your application requires server-side features, like middleware or API endpoints, opt for the server output. For static websites, select the static output, and for desktop applications integrated with Tauri, use the desktop output.",
+    "text": "When configuring your output type, it's crucial to consider the deployment environment and requirements. Each output type serves a distinct purpose, and choosing the right one ensures optimal performance and compatibility. To view the changes in the output, run the brisa build command. In the case of server output, the build is generated in the build folder, while for static and desktop output, an additional out folder is created. The build folder is retained as it is needed to generate the initial build before generating static files or the desktop app in the separate out folder. Learn more details about static export here. If your application requires server-side features, like middleware or API endpoints, opt for the bun / node / deno output. For static websites, select the static output, and for desktop / mobile applications integrated with Tauri, use the desktop / ios / android output.",
     "titles": [
       "Output"
     ]
@@ -3482,7 +3521,7 @@
   {
     "id": "/building-your-application/configuring/plugins#usage-in-bundler",
     "title": "Usage in bundler",
-    "text": "To use a plugin during the build, you must add it to the extendPlugins config in the brisa.config.ts file. Brisa will take care of running it for both the build of server files and the build of client files (web-components). import type { Configuration } from \"brisa\";\nimport { MyPlugin } from \"my-plugin\";\n\nexport default {\n  extendPlugins(plugins, { dev, isServer, entrypoint }) {\n    return [...plugins, MyPlugin];\n  },\n} satisfies Configuration; Parameter\nType\nDescription\n\n\n\n\nplugins\nBunPlugin[]\nArray of plugins to extend with.\n\n\noptions\nExtendPluginOptions\nOptions (see table below) Options: Field\nType\nDescription\n\n\n\n\ndev\nboolean\nIndicates whether it's a development build.\n\n\nisServer\nboolean\nIndicates whether it's a server build.\n\n\nentrypoint\nstring | undefined\nEntry point for client builds, optional for servers. On the server it is only executed once and the build is with all the entrypoints, while on the client a separate build is made for each page, that's why on the client there is the entrypoint field in the options. A plugin is defined as simple JavaScript object containing a name property and a setup function. Example of one: import type { BunPlugin } from \"bun\";\n\nexport const myPlugin: BunPlugin = {\n  name: \"Custom loader\",\n  setup(build) {\n    // implementation\n  },\n}; To know more about bundler Bun plugins take a look at the Bun documentation. In the case you want to know how to load plugins in runtime (not recommended in Brisa), take a look at this Bun documentation.",
+    "text": "To use a plugin during the build, you must add it to the extendPlugins config in the brisa.config.ts file. Brisa will take care of running it for both the build of server files and the build of client files (web-components). import type { Configuration } from \"brisa\";\nimport { MyPlugin } from \"my-plugin\";\n\nexport default {\n  extendPlugins(plugins, { dev, isServer }) {\n    return [...plugins, MyPlugin];\n  },\n} satisfies Configuration; Parameter\nType\nDescription\n\n\n\n\nplugins\nBunPlugin[]\nArray of plugins to extend with.\n\n\noptions\nExtendPluginOptions\nOptions (see table below) Options: Field\nType\nDescription\n\n\n\n\ndev\nboolean\nIndicates whether it's a development build.\n\n\nisServer\nboolean\nIndicates whether it's a server build. A plugin is defined as simple JavaScript object containing a name property and a setup function. Example of one: import type { BunPlugin } from \"bun\";\n\nexport const myPlugin: BunPlugin = {\n  name: \"Custom loader\",\n  setup(build) {\n    // implementation\n  },\n}; To know more about bundler Bun plugins take a look at the Bun documentation. In the case you want to know how to load plugins in runtime (not recommended in Brisa), take a look at this Bun documentation.",
     "titles": [
       "Plugins"
     ]
@@ -3600,7 +3639,7 @@
   {
     "id": "/building-your-application/configuring/zig-rust-c-files#create-your-zig-rust-or-other-file",
     "title": "Create Your Zig, Rust, or Other File:",
-    "text": "Zig: // add.zig\npub export fn add(a: i32, b: i32) i32 {\n  return a + b;\n} or with Rust: // add.rs\n#[no_mangle]\npub extern \"C\" fn add(a: isize, b: isize) -> isize {\n    a + b\n} If you are using node as output, this documentation does not apply. You need to find the equivalent in Node.js.",
+    "text": "Zig: // add.zig\npub export fn add(a: i32, b: i32) i32 {\n  return a + b;\n} or with Rust: // add.rs\n#[no_mangle]\npub extern \"C\" fn add(a: isize, b: isize) -> isize {\n    a + b\n} If you are using node or deno as output, this documentation does not apply. You need to find the equivalent in the specific JS runtime.",
     "titles": [
       "Use C ABI files (zig, rust, c/c++, c#, nim, kotlin...)"
     ]
@@ -5241,7 +5280,7 @@
   {
     "id": "/building-your-application/routing/websockets#real-time-communication-with-websockets",
     "title": "Real-time Communication with Websockets",
-    "text": "Websockets provide a powerful mechanism for establishing a full-duplex communication channel between a client and a server. This enables real-time updates and interactions in your application. Brisa supports server-side WebSockets, with on-the-fly compression, TLS support, and a Bun-native publish-subscribe API. Bun's WebSockets are fast, ~700,000 messages sent per second. This WebSockets documentation only works with the Bun.js runtime. If you want to use Node.js as output you will have to implement it with some library in this same file, look here how to do it.",
+    "text": "Websockets provide a powerful mechanism for establishing a full-duplex communication channel between a client and a server. This enables real-time updates and interactions in your application. Brisa supports server-side WebSockets, with on-the-fly compression, TLS support, and a Bun-native publish-subscribe API. Bun's WebSockets are fast, ~700,000 messages sent per second. This WebSockets documentation only works with the Bun.js runtime. If you want to use Node.js or Deno as output you will have to implement it with some library in this same file, look here how to do it.",
     "titles": []
   },
   {
@@ -5379,9 +5418,9 @@
     ]
   },
   {
-    "id": "/building-your-application/routing/websockets#websockets-in-nodejs",
-    "title": "WebSockets in Node.js",
-    "text": "If you want to use WebSockets in a Node.js environment, you can use the ws library. Here is an example of how to create a WebSocket server using the ws library in the src/websocket.ts file: src/websocket.ts const WebSocket = require('ws');\n\n// Create a WebSocket server\nconst wss = new WebSocket.Server({ port: 8080 });\n\nwss.on('connection', function connection(ws) {\n  // Log a message when a new client connects\n  console.log('A new client connected!');\n  \n  // Receive messages from the client\n  ws.on('message', function incoming(message) {\n    console.log('Received:', message);\n    \n    // Send a response back to the client\n    ws.send(`You said: ${message}`);\n  });\n\n  // Log a message when the client disconnects\n  ws.on('close', () => {\n    console.log('Client has disconnected');\n  });\n}); This src/websocket.ts file is loaded once when the server is created, if the module exports the attach, message, open, close, and drain functions, they will only be used in Bun.js, but when the file is executed in Node.js, the ws functions can be used to create a WebSocket server in Node.js.",
+    "id": "/building-your-application/routing/websockets#websockets-in-other-js-runtimes-node-deno",
+    "title": "WebSockets in other JS runtimes (Node / Deno)",
+    "text": "If you want to use WebSockets in a Node.js or Deno environment, you can use the ws library. Here is an example of how to create a WebSocket server using the ws library in the src/websocket.ts file: src/websocket.ts const WebSocket = require(\"ws\");\n\n// Create a WebSocket server\nconst wss = new WebSocket.Server({ port: 8080 });\n\nwss.on(\"connection\", function connection(ws) {\n  // Log a message when a new client connects\n  console.log(\"A new client connected!\");\n\n  // Receive messages from the client\n  ws.on(\"message\", function incoming(message) {\n    console.log(\"Received:\", message);\n\n    // Send a response back to the client\n    ws.send(`You said: ${message}`);\n  });\n\n  // Log a message when the client disconnects\n  ws.on(\"close\", () => {\n    console.log(\"Client has disconnected\");\n  });\n}); This src/websocket.ts file is loaded once when the server is created, if the module exports the attach, message, open, close, and drain functions, they will only be used in Bun.js, but when the file is executed in other JS runtimes, the ws functions can be used to create a WebSocket server.",
     "titles": [
       "Real-time Communication with Websockets"
     ]

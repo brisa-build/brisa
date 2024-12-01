@@ -38,7 +38,7 @@ export type InternalConstants = {
   ROOT_DIR: string;
   IS_PRODUCTION: boolean;
   IS_DEVELOPMENT: boolean;
-  JS_RUNTIME: 'bun' | 'node';
+  JS_RUNTIME: 'bun' | 'node' | 'deno';
   PAGE_404: string;
   PAGE_500: string;
   VERSION: string;
@@ -1127,6 +1127,7 @@ export type Configuration = {
    *
    * - `bun`: The output is a Bun.js serve that can be deployed to a server.
    * - `node`: The output is a Node.js server that can be deployed to a server.
+   * - `deno`: The output is a Deno server that can be deployed to a server.
    * - `static`: The output is a static export that can be deployed to a static hosting.
    * - `desktop`: The output is a desktop app that can be deployed to a desktop.
    * - `android`: The output is an Android app that can be deployed to an Android device.
@@ -1142,7 +1143,7 @@ export type Configuration = {
    *
    * - [How to use `output`](https://brisa.build/building-your-application/configuring/output)
    */
-  output?: 'bun' | 'node' | 'static' | 'desktop' | 'android' | 'ios';
+  output?: 'bun' | 'node' | 'deno' | 'static' | 'desktop' | 'android' | 'ios';
 
   /**
    * Description:

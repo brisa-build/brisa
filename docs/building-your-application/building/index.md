@@ -1,11 +1,11 @@
 ---
 description: Learn how to build your Brisa app to production
 prev:
-  text: 'Integrating Tailwind CSS'
-  link: '/building-your-application/integrations/tailwind-css'
+  text: "Integrating Tailwind CSS"
+  link: "/building-your-application/integrations/tailwind-css"
 next:
-  text: 'Web Service App'
-  link: '/building-your-application/building/web-service-app'
+  text: "Web Service App"
+  link: "/building-your-application/building/web-service-app"
 ---
 
 # Building
@@ -37,12 +37,15 @@ Brisa can be deployed to any hosting provider that supports Bun. Ensure your `pa
 
 Then, run `bun run build` to build your application. Finally, run `bun run start` to start the Bun server. This server supports all Brisa features.
 
+But if you need Node.js or Deno, we support that too, you just have to configure it. See the different build strategies in the next point.
+
 ## App Strategy (Static, Server, Desktop, Android, iOS)
 
 Brisa supports multiple [output](/building-your-application/configuring/output) strategies to build your application. You can choose between:
 
 - [Build a Bun Server App](/building-your-application/building/bun-server)
 - [Build a Node.js Server App](/building-your-application/building/node-server)
+- [Build a Deno Server App](/building-your-application/building/deno-server)
 - [Build a Static Site App](/building-your-application/building/static-site-app)
 - [Build a Desktop App](/building-your-application/building/desktop-app)
 - [Build a Android App](/building-your-application/building/android-app)

@@ -24,7 +24,7 @@ The `compileWC` function transpiles a JSX web component to be compatible with th
 
 #### Returns
 
-- The transpiled code of the web component. 
+- The transpiled code of the web component.
 
 ## Example
 
@@ -51,7 +51,7 @@ console.log(finalCode);
 
 ## Outside Bun.js
 
-This function is intended to be used within the [Bun](https://bun.sh/) runtime, as it uses the [Bun transpiler](https://bun.sh/docs/api/transpiler) to convert TSX to JS. However, if you want to use it in other environments, such as Node.js or in the browser, you can do so, but you will need to transpile the TSX to JS beforehand, for example with [`@swc/wasm-web`](https://swc.rs/docs/usage/wasm).
+This function is intended to be used within the [Bun](https://bun.sh/) runtime, as it uses the [Bun transpiler](https://bun.sh/docs/api/transpiler) to convert TSX to JS. However, if you want to use it in other environments, such as Node.js, Deno or in the browser, you can do so, but you will need to transpile the TSX to JS beforehand, for example with [`@swc/wasm-web`](https://swc.rs/docs/usage/wasm).
 
 > [!IMPORTANT]
 >
@@ -64,21 +64,21 @@ import { compileWC } from "brisa/compiler";
 import initSwc, { transformSync } from "@swc/wasm-web";
 
 async function main() {
-	await initSwc();
-	const code = `
+  await initSwc();
+  const code = `
 		export default function MyComponent() { 
 			return <div>Hello World</div>;
 		}
 	`;
-	const transpiledCode = transformSync(code, {
-		jsc: {
-			parser: {
-				syntax: "typescript",
-				tsx: true,
-			},
-		},
-	});
-	const finalCode = compileWC(transpiledCode.code);
-	console.log(finalCode);
+  const transpiledCode = transformSync(code, {
+    jsc: {
+      parser: {
+        syntax: "typescript",
+        tsx: true,
+      },
+    },
+  });
+  const finalCode = compileWC(transpiledCode.code);
+  console.log(finalCode);
 }
 ```
