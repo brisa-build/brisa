@@ -13,3 +13,15 @@ if (!Promise.withResolvers) {
     return { promise, resolve, reject };
   };
 }
+
+// @ts-ignore
+if (!Promise.try) {
+  // @ts-ignore
+  Promise.try = (fn) => {
+    try {
+      return Promise.resolve(fn());
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+}
