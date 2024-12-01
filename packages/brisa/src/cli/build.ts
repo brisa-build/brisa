@@ -6,6 +6,7 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 import compileBrisaInternalsToDoBuildPortable from '@/utils/compile-serve-internals-into-build';
 import { log } from '@/utils/log/log-build';
+import runtimeVersion from '@/utils/runtime-version';
 
 const outputText = {
   bun: 'Bun.js Web Service App',
@@ -34,11 +35,9 @@ export default async function build() {
 
   log(
     LOG_PREFIX.INFO,
-    `🚀 Brisa ${VERSION}:` +
-      (JS_RUNTIME === 'node'
-        ? ` Running on Node.js ${process.version}`
-        : ` Running on Bun.js ${Bun.version}`),
+    `🚀 Brisa ${VERSION}: Running on ${runtimeVersion(JS_RUNTIME)}`,
   );
+
   log(
     LOG_PREFIX.WAIT,
     IS_PRODUCTION

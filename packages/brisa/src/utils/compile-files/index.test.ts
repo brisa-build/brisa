@@ -80,7 +80,10 @@ describe('utils', () => {
       });
       expect(logs).toBeEmpty();
       expect(success).toBe(true);
-      expect(mockConsoleLog).toHaveBeenCalledTimes(0);
+      // 2 logs also working in dev:
+      // [ wait ]  compiling 2 server entrypoints...
+      // [ wait ]  analyzing and preparing client build...
+      expect(mockConsoleLog).toHaveBeenCalledTimes(2);
       expect(files).toHaveLength(3);
       expect(files[0]).toBe('_brisa');
       expect(files[1]).toBe('pages');
@@ -967,7 +970,11 @@ describe('utils', () => {
       );
 
       const info = constants.LOG_PREFIX.INFO;
+      const wait = constants.LOG_PREFIX.WAIT;
       const expected = minifyText(`
+        ${wait} compiling 1 server entrypoints... 
+        ${wait} analyzing and preparing client build...
+        ${wait} compiling 1 client entrypoints...
         ${info}
         ${info}Route           | JS server | JS client (gz)  
         ${info}----------------------------------------------

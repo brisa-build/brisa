@@ -4,7 +4,7 @@ import { getConstants } from '@/constants';
 import { logBuildError } from '../log/log-build';
 import getImportableFilepath from '../get-importable-filepath';
 
-const SERVER_OUTPUTS = new Set(['bun', 'node']);
+const SERVER_OUTPUTS = new Set(['bun', 'node', 'deno']);
 const NO_SERVER_EXPORTS = new Set([
   './client',
   './client-simplified',
@@ -14,6 +14,17 @@ const NO_SERVER_EXPORTS = new Set([
   './cli.js',
 ]);
 
+const JS_RUNTIME_NAME: Record<string, string> = {
+  node: 'Node.js',
+  deno: 'Deno',
+  default: 'Bun.js',
+} as const;
+
+const JS_RUNTIME_CMD: Record<string, string> = {
+  node: 'node',
+  deno: 'deno run',
+  default: 'bun run',
+} as const;
 /**
  * This function move the brisa/cli/out/serve/index.js file into the build folder
  * and defining the ROOT_DIR, BUILD_DIR, WORKSPACE constants.
@@ -40,9 +51,10 @@ export default async function compileServeInternalsIntoBuild() {
     'serve',
     'index.js',
   );
-  const isNode = CONFIG.output === 'node';
-  const runtimeName = isNode ? 'Node.js' : 'Bun.js';
-  const runtimeExec = isNode ? 'node' : 'bun run';
+  const isBun = !CONFIG.output || CONFIG.output === 'bun';
+  const runtimeName =
+    JS_RUNTIME_NAME[CONFIG.output!] ?? JS_RUNTIME_NAME.default;
+  const runtimeExec = JS_RUNTIME_CMD[CONFIG.output!] ?? JS_RUNTIME_CMD.default;
   const entrypoints = [];
   const configImportPath = getImportableFilepath('brisa.config', ROOT_DIR);
   const isServer = IS_PRODUCTION && SERVER_OUTPUTS.has(CONFIG.output ?? 'bun');
@@ -68,7 +80,8 @@ export default async function compileServeInternalsIntoBuild() {
       entry: '[name].[ext]',
     },
     external: CONFIG.external,
-    target: isNode ? 'node' : 'bun',
+    // Note: for Deno we need "node" as target too
+    target: isBun ? 'bun' : 'node',
     banner: [
       'process.env.IS_SERVE_PROCESS ??= true;',
       'process.env.IS_PROD ??= true;',

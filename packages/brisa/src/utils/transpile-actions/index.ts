@@ -595,7 +595,7 @@ export async function buildActions({
   define,
 }: CompileActionsParams) {
   const { BUILD_DIR, IS_PRODUCTION, CONFIG, LOG_PREFIX } = getConstants();
-  const isNode = CONFIG.output === 'node' && IS_PRODUCTION;
+  const isBun = !CONFIG.output || CONFIG.output === 'bun' || !IS_PRODUCTION;
   const rawActionsDir = join(BUILD_DIR, 'actions_raw');
   const barrelFile = join(rawActionsDir, 'index.ts');
 
@@ -614,7 +614,7 @@ export async function buildActions({
     external,
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: rawActionsDir,
-    target: isNode ? 'node' : 'bun',
+    target: isBun ? 'bun' : 'node',
     minify: IS_PRODUCTION,
     splitting: true,
     define,
