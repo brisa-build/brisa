@@ -595,6 +595,60 @@ describe('utils', () => {
       expect(logs).toContain(`The warn arises in: ${serverComponentPath}`);
     });
 
+    it('should NOT warn in DEV when there are actions and the config.output is "node"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+      const mockConsoleLog = spyOn(console, 'log');
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: 'node',
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(mockConsoleLog).not.toHaveBeenCalled();
+    });
+
+    it('should NOT warn in DEV when there are actions and the config.output is "deno"', () => {
+      const code = `
+        export default function ServerComponent1() {
+          return <div onClick={() => console.log('foo')} />;
+        }
+
+        export function ServerComponent2({ onFoo }) {
+          return <div onClick={onFoo} />;
+        }
+      `;
+      const mockConsoleLog = spyOn(console, 'log');
+      globalThis.mockConstants = {
+        ...getConstants(),
+        CONFIG: {
+          output: 'deno',
+        },
+      };
+      const out = serverComponentPlugin(code, {
+        allWebComponents: {},
+        fileID: 'a1',
+        path: serverComponentPath,
+      });
+
+      expect(out.hasActions).toBeTrue();
+      expect(mockConsoleLog).not.toHaveBeenCalled();
+    });
+
     it('should not warn in PROD when there are actions and the config.output is "desktop"', () => {
       const code = `
         export default function ServerComponent1() {
