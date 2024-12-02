@@ -8,6 +8,7 @@ _brisa
 **/out/*
 **/out-*/*
 **/dist/*
+**/build-utils/create-deno-json/deno.json
 **/.temp-test-files/*
 packages/brisa/index.js
 packages/brisa/out

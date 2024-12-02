@@ -7,6 +7,7 @@ import { logTable, generateStaticExport } from './build-utils';
 import compileBrisaInternalsToDoBuildPortable from '@/utils/compile-serve-internals-into-build';
 import { log } from '@/utils/log/log-build';
 import runtimeVersion from '@/utils/runtime-version';
+import { createDenoJSON } from '@/build-utils/create-deno-json';
 
 const outputText = {
   bun: 'Bun.js Web Service App',
@@ -127,6 +128,10 @@ export default async function build() {
   }
 
   await compileBrisaInternalsToDoBuildPortable();
+
+  if (IS_PRODUCTION && CONFIG.output === 'deno') {
+    createDenoJSON();
+  }
 
   if (IS_PRODUCTION && CONFIG.outputAdapter) {
     log(LOG_PREFIX.WAIT, `Adapting output to ${CONFIG.outputAdapter.name}...`);

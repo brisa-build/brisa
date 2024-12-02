@@ -325,5 +325,125 @@ describe('cli', () => {
       await build();
       expect(mockLog).not.toHaveBeenCalled();
     });
+
+    it('should NOT create deno.json when output is "bun" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'bun',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should NOT create deno.json when output is "node" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'bun',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should NOT create deno.json when output is "static" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'static',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should NOT create deno.json when output is "ios" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'ios',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should NOT create deno.json when output is "android" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'android',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should NOT create deno.json when output is "desktop" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'desktop',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should NOT create deno.json when output is "deno" in development', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'deno',
+        },
+        IS_PRODUCTION: false,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeFalse();
+    });
+
+    it('should create deno.json when output is "deno" in production', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        BUILD_DIR,
+        BRISA_DIR,
+        CONFIG: {
+          output: 'deno',
+        },
+        IS_PRODUCTION: true,
+      };
+
+      await build();
+      expect(fs.existsSync(path.join(BUILD_DIR, 'deno.json'))).toBeTrue();
+    });
   });
 });
