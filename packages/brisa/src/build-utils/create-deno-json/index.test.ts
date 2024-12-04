@@ -27,6 +27,7 @@ describe('createDenoJSON', () => {
       imports: {
         'fs/promises': 'node:fs/promises',
         path: 'node:path',
+        child_process: 'node:child_process',
       },
       permissions: {
         read: true,
@@ -56,6 +57,7 @@ describe('createDenoJSON', () => {
       imports: {
         'fs/promises': 'node:fs/promises',
         path: 'node:path',
+        child_process: 'node:child_process',
       },
       permissions: {
         read: false,
@@ -91,6 +93,7 @@ describe('createDenoJSON', () => {
       imports: {
         'fs/promises': 'node:fs/promises',
         path: 'node:path',
+        child_process: 'node:child_process',
         cluster: 'node:cluster',
       },
       permissions: {

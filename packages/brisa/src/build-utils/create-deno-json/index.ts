@@ -17,6 +17,7 @@ function getDenoJSON() {
     imports: {
       'fs/promises': 'node:fs/promises',
       path: 'node:path',
+      child_process: 'node:child_process',
     },
     permissions: {
       read: true,

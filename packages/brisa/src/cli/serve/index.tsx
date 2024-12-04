@@ -10,7 +10,7 @@ import handler from './node-serve/handler';
 import bunServe from './bun-serve';
 import { runtimeVersion } from '@/utils/js-runtime-util';
 
-const { LOG_PREFIX, JS_RUNTIME, VERSION } = constants;
+const { LOG_PREFIX, JS_RUNTIME, VERSION, IS_PRODUCTION } = constants;
 
 async function init(options: ServeOptions) {
   if (cluster.isPrimary && constants.CONFIG?.clustering) {
@@ -51,14 +51,14 @@ async function init(options: ServeOptions) {
     const { hostname, port } = await serve();
     const runtimeMsg = `🚀 Brisa ${VERSION}: Runtime on ${runtimeVersion(JS_RUNTIME)}`;
     const listeningMsg = `listening on http://${hostname}:${port}`;
+    const log =
+      constants.CONFIG?.clustering && cluster.worker
+        ? cluster.worker.send.bind(cluster.worker)
+        : console.log.bind(console, LOG_PREFIX.INFO);
 
-    if (!constants.CONFIG?.clustering) {
-      console.log(LOG_PREFIX.INFO, runtimeMsg);
-      console.log(LOG_PREFIX.INFO, listeningMsg);
-    }
-
-    cluster.worker?.send(runtimeMsg);
-    cluster.worker?.send(listeningMsg);
+    // In DEV this log is the first line on build (dev = build + serve)
+    if (IS_PRODUCTION) log(runtimeMsg);
+    log(listeningMsg);
   } catch (error) {
     const { message } = error as Error;
 
