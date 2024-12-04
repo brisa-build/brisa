@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach } from 'bun:test';
-import runtimeVersion from '.';
+import { runtimeVersion } from '.';
 
 describe('runtimeVersion', () => {
   beforeEach(() => {

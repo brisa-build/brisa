@@ -6,7 +6,7 @@ import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 import compileBrisaInternalsToDoBuildPortable from '@/utils/compile-serve-internals-into-build';
 import { log } from '@/utils/log/log-build';
-import runtimeVersion from '@/utils/runtime-version';
+import { runtimeVersion } from '@/utils/js-runtime-util';
 import { createDenoJSON } from '@/build-utils/create-deno-json';
 
 const outputText = {

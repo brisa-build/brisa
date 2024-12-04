@@ -44,7 +44,6 @@ const buildStandaloneFilePath = path.join(
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
-const INFO = blueLog('[ info ] ') + ' ';
 
 async function main({
   currentBunVersion,
@@ -317,15 +316,20 @@ async function main({
             return process.exit(0);
         }
       }
-      const isNode = OUTPUT === 'node';
-      const exec = isNode ? 'node' : BUN_EXEC;
-      console.log(
-        INFO,
-        `🚀 Brisa ${version}: Runtime on ` +
-          (isNode ? `Node.js ${process.version}` : `Bun.js ${Bun.version}`),
-      );
 
-      cp.spawnSync(exec, [serveFilepath, PORT.toString(), 'PROD'], prodOptions);
+      const runtimeStartCmd = {
+        node: ['node'],
+        deno: ['deno', 'run', '--allow-net', '--allow-read', '--allow-env'],
+      }[OUTPUT] ?? [BUN_EXEC];
+
+      const cmd = runtimeStartCmd[0];
+      const options = [serveFilepath, PORT.toString(), 'PROD'];
+      const rest =
+        runtimeStartCmd.length > 1
+          ? [...runtimeStartCmd.slice(1), ...options]
+          : options;
+
+      cp.spawnSync(cmd, rest, prodOptions);
     }
 
     // Add integrations like mdx, tailwindcss, etc

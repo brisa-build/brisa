@@ -8,9 +8,9 @@ import { logError } from '@/utils/log/log-build';
 import nodeServe from './node-serve';
 import handler from './node-serve/handler';
 import bunServe from './bun-serve';
+import { runtimeVersion } from '@/utils/js-runtime-util';
 
-const { LOG_PREFIX, JS_RUNTIME } = constants;
-const isNode = JS_RUNTIME === 'node';
+const { LOG_PREFIX, JS_RUNTIME, VERSION } = constants;
 
 async function init(options: ServeOptions) {
   if (cluster.isPrimary && constants.CONFIG?.clustering) {
@@ -43,17 +43,21 @@ async function init(options: ServeOptions) {
   }
 
   try {
-    const serve = isNode
-      ? nodeServe.bind(null, { port: Number(options.port) })
-      : bunServe.bind(null, options);
+    const serve =
+      JS_RUNTIME === 'bun'
+        ? bunServe.bind(null, options)
+        : nodeServe.bind(null, { port: Number(options.port) });
 
     const { hostname, port } = await serve();
+    const runtimeMsg = `🚀 Brisa ${VERSION}: Runtime on ${runtimeVersion(JS_RUNTIME)}`;
     const listeningMsg = `listening on http://${hostname}:${port}`;
 
     if (!constants.CONFIG?.clustering) {
+      console.log(LOG_PREFIX.INFO, runtimeMsg);
       console.log(LOG_PREFIX.INFO, listeningMsg);
     }
 
+    cluster.worker?.send(runtimeMsg);
     cluster.worker?.send(listeningMsg);
   } catch (error) {
     const { message } = error as Error;

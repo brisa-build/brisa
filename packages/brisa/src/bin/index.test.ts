@@ -1194,8 +1194,6 @@ describe('Brisa CLI', () => {
       { stdio: 'ignore' },
     ]);
 
-    expect(mockLog.mock.calls.flat().join('')).toContain(`Runtime on Bun.js`);
-
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
       [SERVE_PATH, '3005', 'PROD'],
@@ -1214,11 +1212,35 @@ describe('Brisa CLI', () => {
 
     await cli.main(options);
 
-    expect(mockLog.mock.calls.flat().join('')).toContain(`Runtime on Node.js`);
-
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'node',
       [SERVE_PATH, '3000', 'PROD'],
+      prodOptions,
+    ]);
+  });
+
+  it('should "bun start" call "deno" when output is "deno"', async () => {
+    process.argv = ['bun', 'brisa', 'start'];
+
+    mock.module(path.join(FIXTURES, 'brisa.config.ts'), () => ({
+      default: {
+        output: 'deno',
+      },
+    }));
+
+    await cli.main(options);
+
+    expect(mockSpawnSync.mock.calls[1]).toEqual([
+      'deno',
+      [
+        'run',
+        '--allow-net',
+        '--allow-read',
+        '--allow-env',
+        SERVE_PATH,
+        '3000',
+        'PROD',
+      ],
       prodOptions,
     ]);
   });

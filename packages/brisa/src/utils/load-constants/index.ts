@@ -10,6 +10,7 @@ import {
   yellowLog,
 } from '../log/log-color';
 import { version } from '../../../package.json';
+import { getRuntime } from '../js-runtime-util';
 
 const WIN32_SEP_REGEX = /\\/g;
 const PAGE_404 = '/_404';
@@ -61,7 +62,7 @@ export function internalConstants(): InternalConstants {
 
   return {
     WORKSPACE,
-    JS_RUNTIME: typeof Bun !== 'undefined' ? 'bun' : 'node',
+    JS_RUNTIME: getRuntime(),
     PAGE_404,
     PAGE_500,
     VERSION: version,
