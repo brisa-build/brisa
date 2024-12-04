@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 
-const { blueLog, yellowLog, redLog } = require('@/utils/log/log-color');
+const { yellowLog, redLog } = require('@/utils/log/log-color');
 const cp = require('child_process');
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 const process = require('node:process');
-const { version, packageManager } = require('@/../package.json');
+const { packageManager } = require('@/../package.json');
 const outPath = path
   .join(import.meta.dir, 'out')
   // There are some cases where the CLI is executed from the node_modules/.bin folder
@@ -42,6 +42,7 @@ const buildStandaloneFilePath = path.join(
   'index.js',
 );
 const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
+const serveFilepathProd = path.resolve(process.cwd(), 'build', 'server.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
 
@@ -319,11 +320,18 @@ async function main({
 
       const runtimeStartCmd = {
         node: ['node'],
-        deno: ['deno', 'run', '--allow-net', '--allow-read', '--allow-env'],
+        deno: [
+          'deno',
+          'run',
+          '--allow-net',
+          '--allow-read',
+          '--allow-env',
+          '--allow-sys',
+        ],
       }[OUTPUT] ?? [BUN_EXEC];
 
       const cmd = runtimeStartCmd[0];
-      const options = [serveFilepath, PORT.toString(), 'PROD'];
+      const options = [serveFilepathProd, PORT.toString(), 'PROD'];
       const rest =
         runtimeStartCmd.length > 1
           ? [...runtimeStartCmd.slice(1), ...options]

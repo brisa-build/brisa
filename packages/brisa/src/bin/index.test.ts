@@ -40,6 +40,7 @@ const TAILWINDCSS_PATH = path.join(
 const PANDACSS_PATH = path.join(INTEGRATIONS_PATH, 'pandacss', 'index.js');
 const BUILD_PATH = path.join(OUT_PATH, 'cli', 'build.js');
 const SERVE_PATH = path.join(OUT_PATH, 'cli', 'serve', 'index.js');
+const SERVE_PATH_PROD = path.join(process.cwd(), 'build', 'server.js');
 
 let originalArgv: string[];
 let mockSpawnSync: Mock<typeof cp.spawnSync>;
@@ -1172,7 +1173,7 @@ describe('Brisa CLI', () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
-      [SERVE_PATH, '3000', 'PROD'],
+      [SERVE_PATH_PROD, '3000', 'PROD'],
       prodOptions,
     ]);
   });
@@ -1196,7 +1197,7 @@ describe('Brisa CLI', () => {
 
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
-      [SERVE_PATH, '3005', 'PROD'],
+      [SERVE_PATH_PROD, '3005', 'PROD'],
       newProdOptions,
     ]);
   });
@@ -1214,7 +1215,7 @@ describe('Brisa CLI', () => {
 
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'node',
-      [SERVE_PATH, '3000', 'PROD'],
+      [SERVE_PATH_PROD, '3000', 'PROD'],
       prodOptions,
     ]);
   });
@@ -1237,7 +1238,8 @@ describe('Brisa CLI', () => {
         '--allow-net',
         '--allow-read',
         '--allow-env',
-        SERVE_PATH,
+        '--allow-sys',
+        SERVE_PATH_PROD,
         '3000',
         'PROD',
       ],
@@ -1274,7 +1276,7 @@ describe('Brisa CLI', () => {
     ]);
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       'bun',
-      [SERVE_PATH, '5000', 'PROD'],
+      [SERVE_PATH_PROD, '5000', 'PROD'],
       prodOptions,
     ]);
   });
@@ -1301,7 +1303,7 @@ describe('Brisa CLI', () => {
     );
     expect(mockSpawnSync.mock.calls[1]).toEqual([
       path.join(process.env.HOME!, '.bun', 'bin', 'bun'),
-      [SERVE_PATH, '3000', 'PROD'],
+      [SERVE_PATH_PROD, '3000', 'PROD'],
       prodOptions,
     ]);
   });

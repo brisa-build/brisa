@@ -23,11 +23,11 @@ async function init(options: ServeOptions) {
       cluster.fork();
     }
 
-    let messageDisplayed = false;
+    let workerId: number;
 
     cluster.on('message', (worker, message) => {
-      if (messageDisplayed) return;
-      messageDisplayed = true;
+      if (workerId && worker.id !== workerId) return;
+      workerId = worker.id;
       console.log(LOG_PREFIX.INFO, message);
     });
 
