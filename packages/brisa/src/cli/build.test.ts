@@ -65,6 +65,7 @@ describe('cli', () => {
       mockLog.mockRestore();
       mock.restore();
       globalThis.mockConstants = undefined;
+      process.env.QUIET_MODE = undefined;
     });
 
     it('should remove the content of build directory if it exists (except _brisa)', async () => {

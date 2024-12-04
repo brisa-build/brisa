@@ -51,6 +51,7 @@ describe('utils', () => {
       const constants = getConstants();
       const mockExtendPlugins = mock();
 
+      process.env.QUIET_MODE = undefined;
       globalThis.mockConstants = {
         ...constants,
         PAGES_DIR: DEV_PAGES_DIR,
@@ -952,6 +953,7 @@ describe('utils', () => {
         ASSETS_DIR: path.join(SRC_DIR, 'out', 'public'),
       };
 
+      process.env.QUIET_MODE = undefined;
       mockConsoleLog.mockImplementation(() => {});
       mock.module('brisa/server', () => ({
         SSRWebComponent,
