@@ -5,6 +5,7 @@ import clientPageBuild from '.';
 import { getConstants } from '@/constants';
 import getWebComponentsList from '@/utils/get-web-components-list';
 import type { BuildArtifact } from 'bun';
+import type { WCsEntrypoints } from '../types';
 
 const src = path.join(import.meta.dir, '..', '..', '..', '__fixtures__');
 const build = path.join(src, `out-${crypto.randomUUID()}}`);
@@ -188,5 +189,45 @@ describe('client-build', () => {
     expect(output[0].code).toContain('window._P=');
     // Brisa element usage
     expect(output[0].code).toContain('._P)');
+  });
+
+  it('should correctly associate web components with entrypoints', async () => {
+    const temp = path.join(src, 'pages', '.temp-test-files');
+
+    if (fs.existsSync(temp)) {
+      fs.rmSync(temp, { recursive: true });
+    }
+    fs.mkdirSync(temp);
+
+    const entrypoints = [];
+    const webComponentsPerEntrypoint: WCsEntrypoints = {};
+    const allWCs = {};
+
+    for (let i = 0; i < 20; i += 1) {
+      const id = crypto.randomUUID();
+      const wcPath = path.join(temp, `wc-${id}-test.tsx`);
+
+      fs.writeFileSync(wcPath, `export default () => <wc-${id}-test />;`);
+      entrypoints.push(wcPath);
+      Object.assign(allWCs, { [`wc-${id}-test`]: wcPath });
+
+      Object.assign(webComponentsPerEntrypoint, {
+        [wcPath]: { [`wc-${id}-test`]: wcPath },
+      });
+    }
+
+    const output = await clientPageBuild(entrypoints.map(toArtifact), {
+      allWebComponents: allWCs,
+      webComponentsPerEntrypoint,
+      layoutWebComponents: {},
+    });
+
+    fs.rmSync(temp, { recursive: true });
+    expect(output.length).toEqual(entrypoints.length);
+
+    for (const details of output) {
+      const pathname = path.parse(details.pagePath).name;
+      expect(details.code).toContain(pathname);
+    }
   });
 });

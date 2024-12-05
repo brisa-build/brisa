@@ -1,4 +1,4 @@
-const SNAKE_TO_CAMEL_CASE_REGEX = /([-_]([a-z]|[0-9]))/g;
+const SNAKE_TO_CAMEL_CASE_REGEX = /([-_\.]([a-z]|[0-9]))/g;
 
 export default function snakeToCamelCase(str: string) {
   return str
@@ -7,5 +7,5 @@ export default function snakeToCamelCase(str: string) {
 }
 
 function replaceSnakeToCamelCase(group: string) {
-  return group.toUpperCase().replace('-', '').replace('_', '');
+  return group.toUpperCase().replace('-', '').replace('_', '').replace('.', '');
 }

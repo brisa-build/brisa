@@ -14,5 +14,9 @@ describe('utils', () => {
     it('should work with upper case letters', () => {
       expect(snakeToCamelCase('some-EXAMPLE-1')).toBe('someExample1');
     });
+
+    it('should remove "."', () => {
+      expect(snakeToCamelCase('some.example')).toBe('someExample');
+    });
   });
 });
