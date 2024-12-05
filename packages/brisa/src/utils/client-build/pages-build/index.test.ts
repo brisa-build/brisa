@@ -204,15 +204,14 @@ describe('client-build', () => {
     const allWCs = {};
 
     for (let i = 0; i < 20; i += 1) {
-      const id = crypto.randomUUID();
-      const wcPath = path.join(temp, `wc-${id}-test.tsx`);
+      const wcPath = path.join(temp, `wc-${i}-test.tsx`);
 
-      fs.writeFileSync(wcPath, `export default () => <wc-${id}-test />;`);
+      fs.writeFileSync(wcPath, `export default () => <wc-${i}-test />;`);
       entrypoints.push(wcPath);
-      Object.assign(allWCs, { [`wc-${id}-test`]: wcPath });
+      Object.assign(allWCs, { [`wc-${i}-test`]: wcPath });
 
       Object.assign(webComponentsPerEntrypoint, {
-        [wcPath]: { [`wc-${id}-test`]: wcPath },
+        [wcPath]: { [`wc-${i}-test`]: wcPath },
       });
     }
 
