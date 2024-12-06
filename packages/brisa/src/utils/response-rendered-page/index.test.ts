@@ -55,7 +55,8 @@ describe('utils', () => {
           'X-Mode': 'reactivity',
         },
       });
-      const html = await response.text();
+
+      const html = await getTextFromResponse(response);
 
       expect(response.status).toBe(200);
       expect(response.headers.get('X-Mode')).toBe('reactivity');
@@ -77,7 +78,7 @@ describe('utils', () => {
           'X-Mode': 'reactivity',
         },
       });
-      const html = await response.text();
+      const html = await getTextFromResponse(response);
 
       expect(response.status).toBe(200);
       expect(response.headers.get('X-Mode')).toBe('reactivity');
@@ -105,7 +106,7 @@ describe('utils', () => {
           'X-Mode': 'reactivity',
         },
       });
-      const html = await response.text();
+      const html = await getTextFromResponse(response);
 
       expect(response.status).toBe(200);
       expect(response.headers.get('X-Mode')).toBe('reactivity');
@@ -134,7 +135,8 @@ describe('utils', () => {
           'X-Mode': 'reactivity',
         },
       });
-      const html = await response.text();
+
+      const html = await getTextFromResponse(response);
 
       expect(response.status).toBe(200);
       expect(response.headers.get('X-Mode')).toBe('reactivity');
@@ -169,7 +171,8 @@ describe('utils', () => {
           'X-Mode': 'reactivity',
         },
       });
-      const html = await response.text();
+
+      const html = await getTextFromResponse(response);
 
       expect(response.status).toBe(200);
       expect(response.headers.get('X-Mode')).toBe('reactivity');
@@ -194,7 +197,9 @@ describe('utils', () => {
           filePath: path.join(PAGES_DIR, 'somepage.tsx'),
         } as MatchedBrisaRoute,
       });
-      const html = await response.text();
+
+      const html = await getTextFromResponse(response);
+
       expect(response.status).toBe(200);
       expect(html).toStartWith('<!DOCTYPE html>');
       expect(html).toContain('<html lang="es" dir="ltr">');
@@ -330,3 +335,17 @@ describe('utils', () => {
     });
   });
 });
+
+async function getTextFromResponse(response: Response) {
+  try {
+    const text = await response.text();
+    if (text.startsWith('\u0000') || text.includes(',')) {
+      const byteArray = new Uint8Array(text.split(',').map(Number));
+      return new TextDecoder('utf-8').decode(byteArray);
+    }
+    return text;
+  } catch {
+    const buffer = await response.arrayBuffer();
+    return new TextDecoder('utf-8').decode(buffer);
+  }
+}

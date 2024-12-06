@@ -52,7 +52,10 @@ export default async function responseRenderedPage({
     status,
   };
 
-  return new Response(htmlStream, responseOptions);
+  return new Response(
+    htmlStream.pipeThrough(new TextEncoderStream()),
+    responseOptions,
+  );
 }
 
 export function routeToPrerenderedPagePath(route: MatchedBrisaRoute) {
