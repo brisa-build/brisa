@@ -69,6 +69,12 @@
       "bun": "./server/node.js",
       "node": "./server/node.js"
     },
+    "./server/deno": {
+      "import": "./server/deno.js",
+      "require": "./server/deno.js",
+      "bun": "./server/deno.js",
+      "node": "./server/deno.js"
+    },
     "./test": {
       "import": "./test/index.js",
       "require": "./test/index.js",
