@@ -36,7 +36,7 @@
     "release-adapter-vercel:canary": "bun run --cwd packages/adapter-vercel build && npm publish --workspace=packages/adapter-vercel --tag next --access public",
     "test": "bun run --filter 'brisa' test",
     "test:node": "node --test \"**/*.node-test.js\"",
-    "test:deno": "deno test --config ./deno.json --allow-all \"**/*.deno-test.js\"",
+    "test:deno": "deno test --allow-all \"**/*.deno-test.js\"",
     "test:coverage": "bun run --cwd packages/brisa --coverage",
     "tsc:check": "bun run --cwd packages/brisa tsc:check",
     "update-version": "bun run scripts/update-brisa-version.ts",
