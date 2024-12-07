@@ -10,6 +10,7 @@ export default function serve(options: ServeOptions & { tls?: TLSOptions }) {
     hostname: options.hostname,
     cert: options.tls?.cert,
     key: options.tls?.key,
+    responseWriteTimeout: options.idleTimeout,
     handler,
   });
 
