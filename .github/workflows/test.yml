@@ -71,5 +71,7 @@ jobs:
           deno-version: "latest"
       - name: Install dependencies (if needed)
         run: bun install
+      - name: Build project
+        run: bun run build && bun run create-brisa:build
       - name: Run Deno tests
         run: deno task test:deno
