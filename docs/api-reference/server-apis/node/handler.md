@@ -16,7 +16,7 @@ In the next example, we use the `handler` function to create a built-in [`http.c
 
 ```tsx 6
 import http from "node:http";
-import { handler } from "brisa/server";
+import { handler } from "brisa/server/node";
 
 async function customServer(req, res) {
   // Your implementation here ...

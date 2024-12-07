@@ -1334,6 +1334,84 @@
     ]
   },
   {
+    "id": "/api-reference/server-apis/deno/handler#handler",
+    "title": "handler",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/server-apis/deno/handler#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": [
+      "handler"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/handler#handlerreq-request-info-servehandlerinfolessaddrgreater-response-or-promiselessresponsegreater",
+    "title": "handler(req: Request, info: ServeHandlerInfo<Addr>): Response | Promise<Response>",
+    "text": "The handler function is the user Brisa handler to handle the incoming requests. You can use it to create a custom server.",
+    "titles": [
+      "handler",
+      "Reference"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/handler#example-usage",
+    "title": "Example usage:",
+    "text": "In the next example, we use the handler function to use it with Deno.serve: import { handler } from \"brisa/server/deno\";\n\nasync function customServer(req, info) {\n  // Your implementation here ...\n  await handler(req, info);\n}\n\nconst server = Deno.listen({ port: 3000, handler: customServer });",
+    "titles": [
+      "handler"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/handler#types",
+    "title": "Types",
+    "text": "export function handler(\n  req: Request,\n  info: ServeHandlerInfo<Addr>,\n): Response | Promise<Response>;",
+    "titles": [
+      "handler"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/serve#serve",
+    "title": "serve",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/server-apis/deno/serve#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": [
+      "serve"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/serve#serveoptions-serveoptions-port-number-hostname-string-server-returntypelesstypeof-denoservegreater",
+    "title": "serve(options: ServeOptions): { port: number; hostname: string; server: ReturnType<typeof Deno.serve>; }",
+    "text": "The serve function is used to start the Deno server and listen for incoming requests.",
+    "titles": [
+      "serve",
+      "Reference"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/serve#example-usage",
+    "title": "Example usage:",
+    "text": "In the next example, we use the serve function to start the Deno server. import { serve } from \"brisa/server/deno\";\n\nconst { server, port, hostname } = serve({\n  port: 3001,\n});\n\nconsole.log(\n  \"Deno Server ready 🥳\",\n  `listening on http://${hostname}:${port}...`,\n); Keep in mind that the serve for Deno is not in brisa/server but in brisa/server/deno. It only makes sense to use it if you need a custom server for extra things from the serve but if you start the server in the same way as Brisa.",
+    "titles": [
+      "serve"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/deno/serve#types",
+    "title": "Types",
+    "text": "export function serve(options: ServeOptions): {\n  port: number;\n  hostname: string;\n  server: ReturnType<typeof Deno.serve>;\n};",
+    "titles": [
+      "serve"
+    ]
+  },
+  {
     "id": "/api-reference/server-apis/fileSystemRouter#filesystemrouter",
     "title": "fileSystemRouter",
     "text": "The fileSystemRouter API is used to serve files from the file system. Internally, we use it for pages and API routes. pages\n├── index.tsx\n├── settings.tsx\n├── blog\n│   ├── [slug].tsx\n│   └── index.tsx\n└── [[...catchall]].tsx The API of fileSystemRouter is the same API of Bun.FileSystemRouter with some differences: You can also use the fileSystemRouter API in Node.js or Deno.\nThere are some fixes and improvements in the API.\nThe fileSystemRouter API (with Bun runtime) is faster than the Bun.FileSystemRouter API. The fileSystemRouter API is used internally by the Brisa server to serve files from the file system. However, you can also use it in your Custom Server.",
@@ -1539,7 +1617,7 @@
   {
     "id": "/api-reference/server-apis/node/handler#example-usage",
     "title": "Example usage:",
-    "text": "In the next example, we use the handler function to create a built-in http.createServer and set up your own custom server: import http from \"node:http\";\nimport { handler } from \"brisa/server\";\n\nasync function customServer(req, res) {\n  // Your implementation here ...\n  await handler(req, res);\n}\n\nconst server = http.createServer(customServer).listen(3001); Alternatively, you can use the handler function to create a custom server with Express, Connect or Polka: /// file: my-server.js\nimport { handler } from './build/handler.js';\nimport express from 'express';\n\nconst app = express();\n\n// add a route that lives separately from the SvelteKit app\napp.get('/healthcheck', (req, res) => {\n\tres.end('ok');\n});\n\n// let Brisa handle everything else, including serving prerendered pages and static assets\napp.use(handler);\n\napp.listen(3000, () => {\n\tconsole.log('listening on port 3000');\n});",
+    "text": "In the next example, we use the handler function to create a built-in http.createServer and set up your own custom server: import http from \"node:http\";\nimport { handler } from \"brisa/server/node\";\n\nasync function customServer(req, res) {\n  // Your implementation here ...\n  await handler(req, res);\n}\n\nconst server = http.createServer(customServer).listen(3001); Alternatively, you can use the handler function to create a custom server with Express, Connect or Polka: /// file: my-server.js\nimport { handler } from './build/handler.js';\nimport express from 'express';\n\nconst app = express();\n\n// add a route that lives separately from the SvelteKit app\napp.get('/healthcheck', (req, res) => {\n\tres.end('ok');\n});\n\n// let Brisa handle everything else, including serving prerendered pages and static assets\napp.use(handler);\n\napp.listen(3000, () => {\n\tconsole.log('listening on port 3000');\n});",
     "titles": [
       "handler"
     ]

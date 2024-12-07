@@ -518,6 +518,19 @@ export default {
                 },
               ],
             },
+            {
+              text: 'Deno APIs',
+              items: [
+                {
+                  text: 'serve',
+                  link: '/api-reference/server-apis/deno/serve',
+                },
+                {
+                  text: 'handler',
+                  link: '/api-reference/server-apis/deno/handler',
+                },
+              ],
+            },
           ],
         },
         {
