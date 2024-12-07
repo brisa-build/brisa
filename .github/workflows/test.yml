@@ -53,14 +53,22 @@ jobs:
       - name: Run Node.js tests
         run: bun run test:node
   deno-tests:
-    runs-on: ubuntu-latest
+   runs-on: ${{ matrix.os }}
     if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
           deno-version: "latest"
+      - name: Setup Bun.js
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.38
       - name: Install dependencies
-        run: deno install
-      - name: Run Deno tests
-        run: deno task test:deno
+        run: bun install
+      - name: Build project
+        run: bun run build && bun run create-brisa:build
+        run: bun run test:deno
