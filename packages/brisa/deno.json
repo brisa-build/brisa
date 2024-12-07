@@ -1,5 +1,6 @@
 {
   "tasks": {
     "test:deno": "deno test --allow-all \"**/*.deno-test.js\""
-  }
+  },
+  "nodeModulesDir": "auto"
 }
