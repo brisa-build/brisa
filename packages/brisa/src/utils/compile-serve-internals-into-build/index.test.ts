@@ -165,6 +165,7 @@ describe('utils/compileServeInternalsIntoBuild', () => {
       'jsx-dev-runtime.js',
       'jsx-runtime.js',
       'package.json',
+      'server-deno.js',
       'server-node.js',
       'server.js',
     ]);
@@ -203,6 +204,12 @@ describe('utils/compileServeInternalsIntoBuild', () => {
           import: './server.js',
           node: './server.js',
           require: './server.js',
+        },
+        './server/deno': {
+          bun: './server-deno.js',
+          import: './server-deno.js',
+          node: './server-deno.js',
+          require: './server-deno.js',
         },
         './server/node': {
           bun: './server-node.js',
