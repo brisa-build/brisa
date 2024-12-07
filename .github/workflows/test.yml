@@ -60,6 +60,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
+      - name: Setup Bun.js
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.38
       - uses: actions/checkout@v4
       - name: Setup Deno
         uses: denoland/setup-deno@v1
