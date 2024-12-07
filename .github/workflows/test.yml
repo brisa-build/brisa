@@ -56,16 +56,11 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'docs:') }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js (for npm dependencies)
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"
-      - name: Install dependencies (npm)
-        run: npm install
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
           deno-version: "latest"
+      - name: Install dependencies
+        run: deno install
       - name: Run Deno tests
         run: deno task test:deno
