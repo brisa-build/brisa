@@ -18,6 +18,7 @@ let mockLog: ReturnType<typeof spyOn>;
 const getReq = (url = 'http://localhost', ...params: any) =>
   extendRequestContext({
     originalRequest: new Request(url, {
+      method: 'POST',
       headers: {
         'x-action': 'some-action',
       },
@@ -432,7 +433,7 @@ describe('utils', () => {
         normalizeHTML(`<div>
           Test <some-web-component-to-transfer-store></some-web-component-to-transfer-store>
         </div>
-        <script id="init-S">window._S=[["foo","bar"]]</script>`),
+        <script>window._S=[["foo","bar"]];for(let [k, v] of _S) _s?.set?.(k, v)</script>`),
       );
     });
 
@@ -533,6 +534,46 @@ describe('utils', () => {
 
       expect(response.headers.get('X-Navigate')).toBe('/ru/some-url');
       expect(response.headers.get('X-Mode')).toBe('reactivity');
+    });
+
+    it('should be possible to navigate to another i18n locale + accept-language header', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        PAGES_DIR,
+        BUILD_DIR,
+        SRC_DIR: BUILD_DIR,
+        ASSETS_DIR,
+        LOCALES_SET: new Set(['en', 'es', 'ca']),
+        I18N_CONFIG: {
+          locales: ['en', 'es', 'ca'],
+          defaultLocale: 'en',
+        },
+      };
+      const error = new Error('/ca');
+      error.name = 'navigate:native';
+
+      const req = getReq('http://localhost/en');
+      req.i18n = {
+        defaultLocale: 'en',
+        locales: ['en', 'es', 'ca'],
+        locale: 'en',
+        t: (v) => v,
+        pages: {},
+        overrideMessages: () => {},
+      };
+      req.headers.set(
+        'accept-language',
+        'en,es-ES;q=0.9,es;q=0.8,de-CH;q=0.7,de;q=0.6,pt;q=0.5',
+      );
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: 'a1_1',
+        component: () => <div />,
+      });
+
+      expect(response.headers.get('X-Navigate')).toBe('/ca');
+      expect(response.headers.get('X-Mode')).toBe('native');
     });
 
     it('should navigate with trailing slash', async () => {

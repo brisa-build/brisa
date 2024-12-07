@@ -14,7 +14,11 @@ export default async function transferStoreService(req: RequestContext) {
   const isFormData = contentType?.includes('multipart/form-data');
   const formData = isFormData && bodyAvailable ? await req.formData() : null;
   const encryptedKeys = new Set<string>();
-  const body = !isFormData && bodyAvailable ? await reqClone.json() : null;
+  const body =
+    !isFormData && bodyAvailable
+      ? await reqClone.json().catch(() => null)
+      : null;
+
   const originalStoreEntries = formData
     ? JSON.parse(formData.get('x-s')?.toString() ?? '[]')
     : body?.['x-s'];

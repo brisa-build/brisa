@@ -436,6 +436,19 @@ describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
       expect(req.i18n.locale).toBe('ru');
     });
 
+    it('should not redirect to force another language different than the accept-language header', () => {
+      const req = extendRequestContext({
+        originalRequest: new Request('http://localhost:3000/ru/foo', {
+          headers: {
+            'Accept-Language': 'en-GB,en;q=0.9',
+          },
+        }),
+      });
+      req.finalURL = 'http://localhost:3000/ru/foo';
+      const { response } = handleI18n(req);
+      expect(response).toBeUndefined();
+    });
+
     it('should redirect to the last browser language as default locale if there is no locale in the URL', () => {
       const req = extendRequestContext({
         originalRequest: new Request('https://example.com', {
