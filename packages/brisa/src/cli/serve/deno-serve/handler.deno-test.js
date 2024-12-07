@@ -1,10 +1,14 @@
 import { assertEquals, assert } from 'jsr:@std/assert';
 import { join } from 'node:path';
 
-const FIXTURES_DIR = join(
-  new URL('.', import.meta.url).pathname,
-  '../../../../__fixtures__',
+const FIXTURES_DIR = path.resolve(
+  import.meta.dirname,
+  '..',
+  '..',
+  '..',
+  '__fixtures__',
 );
+
 const absolutePath = new URL('../../../../server/deno.js', import.meta.url)
   .href;
 
