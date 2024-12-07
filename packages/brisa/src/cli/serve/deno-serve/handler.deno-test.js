@@ -1,10 +1,7 @@
-import {
-  assertEquals,
-  assert,
-} from 'https://deno.land/std@0.201.0/testing/asserts.ts';
-import { resolve } from 'https://deno.land/std@0.201.0/path/mod.ts';
+import { assertEquals, assert } from 'jsr:@std/assert';
+import { join } from 'node:path';
 
-const FIXTURES_DIR = resolve(
+const FIXTURES_DIR = join(
   new URL('.', import.meta.url).pathname,
   '../../../../__fixtures__',
 );
@@ -15,10 +12,10 @@ Deno.test('should resolve a page', async () => {
   globalThis.mockConstants = {
     IS_SERVE_PROCESS: true,
     ROOT_DIR: FIXTURES_DIR,
-    SRC_DIR: resolve(FIXTURES_DIR, 'js'),
-    BUILD_DIR: resolve(FIXTURES_DIR, 'js'),
-    ASSETS_DIR: resolve(FIXTURES_DIR, 'public'),
-    PAGES_DIR: resolve(FIXTURES_DIR, 'js', 'pages'),
+    SRC_DIR: join(FIXTURES_DIR, 'js'),
+    BUILD_DIR: join(FIXTURES_DIR, 'js'),
+    ASSETS_DIR: join(FIXTURES_DIR, 'public'),
+    PAGES_DIR: join(FIXTURES_DIR, 'js', 'pages'),
     CONFIG: {},
     HEADERS: {
       CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
@@ -42,10 +39,10 @@ Deno.test('should redirect to the locale', async () => {
   globalThis.mockConstants = {
     IS_SERVE_PROCESS: true,
     ROOT_DIR: FIXTURES_DIR,
-    SRC_DIR: resolve(FIXTURES_DIR, 'js'),
-    BUILD_DIR: resolve(FIXTURES_DIR, 'js'),
-    ASSETS_DIR: resolve(FIXTURES_DIR, 'public'),
-    PAGES_DIR: resolve(FIXTURES_DIR, 'js', 'pages'),
+    SRC_DIR: join(FIXTURES_DIR, 'js'),
+    BUILD_DIR: join(FIXTURES_DIR, 'js'),
+    ASSETS_DIR: join(FIXTURES_DIR, 'public'),
+    PAGES_DIR: join(FIXTURES_DIR, 'js', 'pages'),
     I18N_CONFIG: {
       locales: ['en', 'es'],
       defaultLocale: 'es',
@@ -70,10 +67,10 @@ Deno.test('should redirect to trailingSlash', async () => {
   globalThis.mockConstants = {
     IS_SERVE_PROCESS: true,
     ROOT_DIR: FIXTURES_DIR,
-    SRC_DIR: resolve(FIXTURES_DIR, 'js'),
-    BUILD_DIR: resolve(FIXTURES_DIR, 'js'),
-    ASSETS_DIR: resolve(FIXTURES_DIR, 'public'),
-    PAGES_DIR: resolve(FIXTURES_DIR, 'js', 'pages'),
+    SRC_DIR: join(FIXTURES_DIR, 'js'),
+    BUILD_DIR: join(FIXTURES_DIR, 'js'),
+    ASSETS_DIR: join(FIXTURES_DIR, 'public'),
+    PAGES_DIR: join(FIXTURES_DIR, 'js', 'pages'),
     CONFIG: {
       trailingSlash: true,
     },
@@ -95,10 +92,10 @@ Deno.test('should redirect locale and trailing slash', async () => {
   globalThis.mockConstants = {
     IS_SERVE_PROCESS: true,
     ROOT_DIR: FIXTURES_DIR,
-    SRC_DIR: resolve(FIXTURES_DIR, 'js'),
-    BUILD_DIR: resolve(FIXTURES_DIR, 'js'),
-    ASSETS_DIR: resolve(FIXTURES_DIR, 'public'),
-    PAGES_DIR: resolve(FIXTURES_DIR, 'js', 'pages'),
+    SRC_DIR: join(FIXTURES_DIR, 'js'),
+    BUILD_DIR: join(FIXTURES_DIR, 'js'),
+    ASSETS_DIR: join(FIXTURES_DIR, 'public'),
+    PAGES_DIR: join(FIXTURES_DIR, 'js', 'pages'),
     I18N_CONFIG: {
       locales: ['en', 'es'],
       defaultLocale: 'es',
@@ -125,10 +122,10 @@ Deno.test('should return 404 if the asset does not exist', async () => {
   globalThis.mockConstants = {
     IS_SERVE_PROCESS: true,
     ROOT_DIR: FIXTURES_DIR,
-    SRC_DIR: resolve(FIXTURES_DIR, 'js'),
-    BUILD_DIR: resolve(FIXTURES_DIR, 'js'),
-    ASSETS_DIR: resolve(FIXTURES_DIR, 'public'),
-    PAGES_DIR: resolve(FIXTURES_DIR, 'js', 'pages'),
+    SRC_DIR: join(FIXTURES_DIR, 'js'),
+    BUILD_DIR: join(FIXTURES_DIR, 'js'),
+    ASSETS_DIR: join(FIXTURES_DIR, 'public'),
+    PAGES_DIR: join(FIXTURES_DIR, 'js', 'pages'),
     CONFIG: {},
     HEADERS: {
       CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
