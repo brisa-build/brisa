@@ -33,4 +33,4 @@ export type Configuration = {
 
 > [!NOTE]
 >
-> This `idleTimeout` is working in Bun and Node.js runtimes.
+> This `idleTimeout` is working in Bun, Deno and Node.js runtimes.
