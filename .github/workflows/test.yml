@@ -60,16 +60,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
+      - uses: actions/checkout@v4
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
           deno-version: "latest"
-      - name: Setup Bun.js
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.38
-      - name: Install dependencies
+      - name: Install dependencies (if needed)
         run: bun install
-      - name: Build project
-        run: bun run build && bun run create-brisa:build
-        run: bun run test:deno
+      - name: Run Deno tests
+        run: deno task test:deno
