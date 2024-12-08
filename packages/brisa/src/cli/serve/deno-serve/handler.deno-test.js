@@ -32,7 +32,7 @@ Deno.test('should resolve a page', async () => {
 
   const response = await handler(req);
   assertEquals(response.status, 200);
-  assert(response.body.includes('<title>Brisa</title><'));
+  assert((await response.text()).includes('<title>Brisa</title><'));
   assertEquals(
     response.headers.get('cache-control'),
     'no-cache, no-store, must-revalidate',
