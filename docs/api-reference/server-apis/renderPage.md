@@ -32,6 +32,11 @@ function handleEvent() {
 >
 > See the differences between "Action Signals" and `renderPage` in [this documentation](/building-your-application/data-management/server-actions#action-signals-vs-rerender).
 
+### Parameters
+
+- `withTransition` (optional): A boolean value that indicates whether the rerender should be done with [start view transition](https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition). Default is `false`.
+
+
 #### Types:
 
 ```ts

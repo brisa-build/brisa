@@ -49,7 +49,7 @@ function renderComponent<PropsType>(
   props: RenderComponentProps<PropsType> = {},
 ): never;
 
-type RenderComponentProps<T> = {
+type RenderComponentProps = {
   element?: JSX.Element;
   target?: string;
   mode?: "replace" | "append";
@@ -62,7 +62,7 @@ type RenderComponentProps<T> = {
 - `element` (optional): The component to render. By default, it will rerender the target component that triggered the action.
 - `target` (optional): The target location to render the component. It can be a CSS selector.
 - `mode` (optional): The mode to render the component. It can be `replace` or `append`. Default is `replace`.
-- `withTransition` (optional): If `true`, it will render the component with a transition effect. Default is `false`.
+- `withTransition` (optional): If `true`, it will render the component with [start view transition API](https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition). Default is `false`.
 
 #### Returns:
 

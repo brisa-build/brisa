@@ -21,6 +21,17 @@ export type RerenderInActionProps<T> =
       renderMode?: RenderMode;
     };
 
+export type RenderPageProps = {
+  withTransition?: boolean;
+};
+
+export type RenderComponentProps = {
+  element?: JSX.Element;
+  target?: string;
+  mode?: 'replace' | 'append';
+  withTransition?: boolean;
+};
+
 export type FileSystemRouterOptions = {
   dir: string;
   fileExtensions?: string[];
