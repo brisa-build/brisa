@@ -19,7 +19,7 @@ async function resolveRPC(
   const resetForm = res.headers.has('X-Reset');
   const componentId = res.headers.get('X-Cid') ?? dataSet?.cid;
   const transition = args === TRANSITION_MODE || mode === TRANSITION_MODE;
-  const isRerenderOfComponent = type?.includes('C');
+  const isRerenderOfComponent = type === 'component';
 
   function updateStore(entries: [string, any][]) {
     // Store WITH web components signals, so we need to notify the subscribers

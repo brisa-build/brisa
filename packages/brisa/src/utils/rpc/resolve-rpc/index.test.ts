@@ -556,7 +556,7 @@ describe('utils', () => {
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it('should render targetComponent with reactivity using the comments wrappers (cid)', async () => {
+    it('should render component with reactivity using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
 
       mock.module('diff-dom-streaming', () => ({
@@ -579,7 +579,7 @@ describe('utils', () => {
           'content-type': 'text/html',
           'X-Cid': '123',
           'X-Mode': 'reactivity',
-          'X-Type': 'targetComponent',
+          'X-Type': 'component',
         },
       });
 
@@ -616,7 +616,7 @@ describe('utils', () => {
       );
     });
 
-    it('should render targetComponent with transition using the comments wrappers (cid)', async () => {
+    it('should render component with transition using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
       const mockTransitionFinished = mock(() => {});
 
@@ -640,7 +640,7 @@ describe('utils', () => {
           'content-type': 'text/html',
           'X-Cid': '123',
           'X-Mode': 'transition',
-          'X-Type': 'targetComponent',
+          'X-Type': 'component',
         },
       });
 
@@ -685,7 +685,7 @@ describe('utils', () => {
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it('should ignore the node with id "S" and update the store with targetComponent', async () => {
+    it('should ignore the node with id "S" and update the store with component', async () => {
       const mockDiff = mock((...args: any) => {});
       mock.module('diff-dom-streaming', () => ({
         default: (...args: any) => mockDiff(...args),
@@ -696,7 +696,7 @@ describe('utils', () => {
           'content-type': 'text/html',
           'X-Cid': '123',
           'X-Mode': 'reactivity',
-          'X-Type': 'targetComponent',
+          'X-Type': 'component',
         },
       });
 

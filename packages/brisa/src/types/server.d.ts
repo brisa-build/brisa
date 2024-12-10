@@ -28,7 +28,7 @@ export type RenderPageProps = {
 export type RenderComponentProps = {
   element?: JSX.Element;
   target?: string;
-  placement?: 'replace' | 'append' | 'prepend',
+  placement?: 'replace' | 'append' | 'prepend';
   withTransition?: boolean;
 };
 

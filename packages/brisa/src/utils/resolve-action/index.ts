@@ -24,15 +24,6 @@ type Dependencies = [string, string, string][][];
 
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
-/**
- *
- * This method is called inside the catch block of the action function.
- * TODO:
- * - placement
- * - replace old currentComponent to "component" + element + target + placement
- * - simplify the Cid logic, no need for currentComponent, only targetComponent (without target)
- * - replace all rerenderInAction with renderComponent/renderPage
- */
 export default async function resolveAction({
   req,
   error,
