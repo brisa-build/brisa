@@ -81,7 +81,7 @@ When you use the `onSubmit` action of a `form`, it can **work without JavaScript
 The differences to be taken into account when no-JS are:
 
 - No action signals can be used, the properties of the store at this point die on the client.
-- The page is reloaded always with the new content, instead of doing the `rerenderInAction`.
+- The page is reloaded always with the new content, instead of doing the `renderPage`.
 
 <!-- {% twitter 1769418996476940630 %} -->
 
@@ -149,7 +149,7 @@ For more advanced server-side validation, you can use a library like [zod](https
 
 ```tsx
 import type { RequestContext } from "brisa";
-import { rerenderInAction } from "brisa/server";
+import { renderPage } from "brisa/server";
 import { z } from "zod";
 
 const schema = z.object({
@@ -174,11 +174,11 @@ export default function Form({}, { store }: RequestContext) {
 
         store.set("errors", result.success ? null : result.error.format());
 
-        // rerenderInAction is used to make the server components reactively react
-        // to the store change as well. If rerenderInAction is not used, only the
+        // renderPage is used to make the server components reactively react
+        // to the store change as well. If renderPage is not used, only the
         // web components that are listening to the store.get('errors') signal
         // react to the changes.
-        rerenderInAction({ type: "page" });
+        renderPage();
       }}
     >
       <input name="email" type="text" />
@@ -188,6 +188,10 @@ export default function Form({}, { store }: RequestContext) {
   );
 }
 ```
+
+> [!TIP]
+>
+> Instead of `renderPage` you can use [`renderComponent`](/api-reference/server-apis/renderComponent) to only re-render the form.
 
 > [!IMPORTANT]
 >
@@ -365,20 +369,14 @@ function Page({}, req: RequestContext) {
 }
 ```
 
-## `rerenderInAction`
+## `renderPage` and `renderComponent`
 
-The [`rerenderInAction`](/api-reference/server-apis/rerenderInAction) method is used to rerender the component or the page
-inside a server action. Outside of an action, it throws an error.
+The [`renderPage`](/api-reference/server-apis/renderPage) method is used to rerender the page and the [`renderComponent`](/api-reference/server-apis/renderComponent) to rerender the component where the action is executed. Outside of an action, it throws an error.
 
-#### Params:
-
-- `type`: The type of the rerender. It can be `targetComponent`, `currentComponent` or `page`. By default, it is `currentComponent`.
-- `mode`: The type of the rerender. It can be `reactivity` or `transition`. By default, it is `reactivity`.
-
-`rerenderInAction` needs to be called outside of the `try/catch` block:
+They needs to be called outside of the `try/catch` block:
 
 ```tsx
-import { rerenderInAction } from "brisa/server";
+import { renderPage } from "brisa/server";
 
 // Inside a server action
 function handleEvent() {
@@ -389,13 +387,13 @@ function handleEvent() {
   }
 
   // Trigger a full-page rerender
-  rerenderInAction({ type: "page" });
+  renderPage();
 }
 ```
 
 > [!NOTE]
 >
-> See the differences between "Action Signals" and `rerenderInAction` in [this documentation](#action-signals-vs-rerenderinaction).
+> See the differences between "Action Signals" and re-render in [this documentation](#action-signals-vs-rerender).
 
 ## `navigate`
 
@@ -457,7 +455,7 @@ You should treat Server Actions as you would public-facing API endpoints, and en
 ```tsx
 import { Database } from "bun:sqlite";
 import type { RequestContext } from "brisa";
-import { rerenderInAction } from "brisa/server";
+import { renderPage } from "brisa/server";
 import validateToken from "@/auth/validate-token";
 
 const db = new Database("mydb.sqlite");
@@ -476,11 +474,11 @@ export default function CatsComponent({}, req: RequestContext) {
     if (!isTokenValid) {
       // handle invalid token
       req.store.set("invalidTokenError", "The token is invalid");
-      rerenderInAction({ type: "page" });
+      renderPage();
     }
 
     insert.run(e.formData.get("cat") as string);
-    rerenderInAction({ type: "page" });
+    renderPage();
   }
 
   req.store.transferToClient(["invalidTokenError"]);
@@ -548,7 +546,7 @@ For these cases, you can use the [**action signals**](#action-signals) through t
 
 ```tsx filename="src/pages/index.tsx"
 import type { RequestContext } from "brisa";
-import { Initiator, rerenderInAction } from "brisa/server";
+import { Initiator, renderComponent } from "brisa/server";
 
 export default function Page({}, { store, method, initiator }: RequestContext) {
   // set communication render-value during the initial request
@@ -565,7 +563,7 @@ export default function Page({}, { store, method, initiator }: RequestContext) {
     // set communication action-client:
     store.set("foo", Math.random());
     // rerender this component:
-    rerenderInAction();
+    renderComponent();
   }
 
   return (
@@ -673,15 +671,15 @@ export default function WebCounter({}, { store }: WebContext) {
 
 This example shows a counter shared between the server and the client. It can be incremented from the action (server component) or from the browser event (web component), and the store value will always be synchronized between the two.
 
-## Action Signals vs `rerenderInAction`
+## Action Signals vs rerender
 
 It depends on the type of communication you want. If you want:
 
-- Communicate with the web components only: You **don't need** to use `rerenderInAction`, you can use the [`store` as action signal](#store-as-action-signal) instead.
-- Communicate with the server components: You need to use `rerenderInAction`.
-- Communicate with the server components and web components: You need to use `rerenderInAction` and the web components will react to the changes to their attributes.
+- Communicate with the web components only: You **don't need** to use `renderPage` or `renderComponent`, you can use the [`store` as action signal](#store-as-action-signal) instead.
+- Communicate with the server components: You need to use `renderPage` or `renderComponent` depending on what you expect to rerender.
+- Communicate with the server components and web components: You need to use `renderPage` or `renderComponent`, and the web components will react to the changes to their attributes.
 
-![Action Signals and rerenderInAction](/assets/actionsignals.svg)
+![Action Signals and rerender](/assets/actionsignals.svg)
 
 ## Transfer data
 
@@ -827,7 +825,7 @@ The `POST` request generated by the Server Action consistently yields an HTML st
 - `X-Mode`: This header is crucial for determining whether the stream corresponds to `reactivity` or `transition`.
 - `X-Type`: This header indicates the type of the stream, which can be `component` or `page`. This information is essential for the client to understand how to process the stream.
 - `X-Navigate`: This header indicates that instead of observing the stream, the client should navigate to another route.
-- `X-Cid`: This header returns the id of the component that called the [`rerenderInAction`](/building-your-application/data-management/server-actions#rerenderinaction) method with `currentComponent` type. This header is used internally by Brisa to determine which component should be rerendered. When it is not present, the component that fired the action is rerendered.
+- `X-Cid`: This header returns the id of the component that called the [`renderPage`](#renderpage-and-rendercomponent) method with `currentComponent` type. This header is used internally by Brisa to determine which component should be rerendered. When it is not present, the component that fired the action is rerendered.
 - `X-Reset`: This header is to communicate to the RPC client that the `<form>` should be reset after the action is executed. This header is added automatically by Brisa when the `e.target.reset()` on server action `onSubmit` is called.
 
 When utilizing a reverse proxy, it is imperative to ensure the upstream propagation of these headers for seamless communication between the client and the backend server.

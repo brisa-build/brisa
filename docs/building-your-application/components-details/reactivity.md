@@ -189,7 +189,7 @@ No directly. The signals are reactive and they are used in the client-side. Howe
 
 ```tsx
 import type { RequestContext } from "brisa";
-import { rerenderInAction } from "brisa/server";
+import { renderPage } from "brisa/server";
 
 export default function ServerComponent({}, { store }: RequestContext) {
   // Setting store
@@ -204,7 +204,7 @@ export default function ServerComponent({}, { store }: RequestContext) {
   function updateName() {
     // Update the store inside a server action
     store.set("user", { username: "bar", displayName: "Bar" });
-    rerenderInAction({ type: "page" });
+    renderPage();
   }
 
   // Consuming store

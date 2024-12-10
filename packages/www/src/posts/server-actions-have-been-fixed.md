@@ -289,11 +289,11 @@ export default function Form({}, { store }: RequestContext) {
 
         store.set("errors", result.success ? null : result.error.format());
 
-        // rerenderInAction is used to make the server components reactively react
-        // to the store change as well. If rerenderInAction is not used, only the
+        // renderComponent is used to make the server components reactively react
+        // to the store change as well. If renderComponent is not used, only the
         // web components that are listening to the store.get('errors') signal
         // react to the changes.
-        rerenderInAction({ type: "targetComponent" });
+        renderComponent();
       }}
     >
       <input name="email" type="text" />

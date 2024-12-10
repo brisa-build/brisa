@@ -26,7 +26,7 @@ Consider a server component with login form where users can input their credenti
 
 ```tsx 9-10
 import { navigate, type RequestContext } from "brisa";
-import { rerenderInAction } from "brisa/server";
+import { renderPage } from "brisa/server";
 import signIn from "@/utils/auth/sign-in";
 
 export default function LoginPage({}, request: RequestContext) {
@@ -40,7 +40,7 @@ export default function LoginPage({}, request: RequestContext) {
     if (success) navigate("/admin");
 
     request.store.set("auth-error", "Invalid credentials");
-    rerenderInAction({ type: "page" });
+    renderPage();
   }
 
   return (
@@ -66,15 +66,15 @@ After the authentication provider processes the credentials, there are two possi
 - **Successful Authentication**: This outcome implies that the login was successful. Further actions, such as accessing protected routes and fetching user information, can then be initiated.
 - **Failed Authentication**: In cases where the credentials are incorrect or an error is encountered, the function returns a corresponding error message to indicate the authentication failure.
 
-Finally, you can `navigate` to another page or use the request `store` to save form errors, and use `rerenderInAction` to render these errors on the form:
+Finally, you can `navigate` to another page or use the request `store` to save form errors, and use `renderPage` to render these errors on the form:
 
 ```tsx
 if (success) navigate("/admin");
 
 request.store.set("auth-error", "Invalid credentials");
-rerenderInAction({ type: "page" });
+renderPage();
 ```
 
 > [!IMPORTANT]
 >
-> Both `navigate` and `rerenderInAction` throw an exception returning a [Never](https://www.typescriptlang.org/docs/handbook/basic-types.html#never) type, therefore the code after is not executed so there is no need to put an `else` conditional. It is important to keep this in mind because if it is put in a `try-catch` they would stop working unless from the catch you throw again these actions.
+> Both `navigate` and `renderPage` throw an exception returning a [Never](https://www.typescriptlang.org/docs/handbook/basic-types.html#never) type, therefore the code after is not executed so there is no need to put an `else` conditional. It is important to keep this in mind because if it is put in a `try-catch` they would stop working unless from the catch you throw again these actions.

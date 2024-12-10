@@ -7,7 +7,7 @@ description: Determines if an object is an instance of the Throwable class.
 `throwable` is an object that contains methods to check if an error is an internal Brisa trowable. It is used to handle specific scenarios such as re-rendering, navigation, and not-found errors.
 
 - **throwable.is**: checks **all** throwable types.
-- **throwable.isRerender** checks if an error is a re-render throwable (from [`rerenderInAction`](/api-reference/server-apis/rerenderInAction) API).
+- **throwable.isRerender** checks if an error is a re-render throwable (from [`renderPage`](/api-reference/server-apis/renderPage) and [`renderComponent`](/api-reference/server-apis/renderComponent) API).
 - **throwable.isNavigate** checks if an error is a navigate throwable (from [`navigate`](/api-reference/functions/navigate) API).
 - **throwable.isNotFound** checks if an error is a not-found throwable (from [`notFound`](/api-reference/functions/notFound) API).
 

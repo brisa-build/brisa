@@ -30,7 +30,8 @@ The Brisa API reference is divided into the following sections:
 
 ## Server APIs
 
-- [`renderInAction`](/api-reference/server-apis/rerenderInAction)
+- [`renderPage`](/api-reference/server-apis/renderPage)
+- [`renderComponent`](/api-reference/server-apis/renderComponent)
 - [`renderToReadableStream`](/api-reference/server-apis/renderToReadableStream)
 - [`renderToString`](/api-reference/server-apis/renderToString)
 - [`getServeOptions`](/api-reference/server-apis/getServeOptions)

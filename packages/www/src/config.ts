@@ -470,8 +470,12 @@ export default {
           text: '🌐 Server APIs',
           items: [
             {
-              text: 'rerenderInAction',
-              link: '/api-reference/server-apis/rerenderInAction',
+              text: 'renderPage',
+              link: '/api-reference/server-apis/renderPage',
+            },
+            {
+              text: 'renderComponent',
+              link: '/api-reference/server-apis/renderComponent',
             },
             {
               text: 'renderToReadableStream',

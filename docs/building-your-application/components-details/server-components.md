@@ -119,7 +119,7 @@ export default function UserImages({ urls = [], width = 300, height = 300 }) {
 
 ### `key` property
 
-Each child in a list should have a unique "`key`" prop. Keys tell Brisa which array item each component corresponds to, so that it can match them up later after the execution of a [`server action`](/building-your-application/data-management/server-actions) that does a [`rerenderInAction`](/api-reference/server-apis/rerenderInAction). This becomes important if your array items can move (e.g. due to sorting), get inserted, or get deleted. A well-chosen key helps Brisa infer what exactly has happened, and make the correct updates to the DOM tree after the server action execution.
+Each child in a list should have a unique "`key`" prop. Keys tell Brisa which array item each component corresponds to, so that it can match them up later after the execution of a [`server action`](/building-your-application/data-management/server-actions) that does a [`renderPage`](/api-reference/server-apis/renderPage) or [`renderComponent`](/api-reference/server-apis/renderComponent). This becomes important if your array items can move (e.g. due to sorting), get inserted, or get deleted. A well-chosen key helps Brisa infer what exactly has happened, and make the correct updates to the DOM tree after the server action execution.
 
 ```tsx
 export default function List({ people }) {
@@ -247,7 +247,7 @@ The `store` is a **shared** state among all server-components (possible to trans
 
 ```tsx
 import type { RequestContext } from "brisa";
-import { rerenderInAction } from "brisa/server";
+import { renderPage } from "brisa/server";
 
 export default function SharedStore({}, { store }: RequestContext) {
   // Setting store
@@ -262,7 +262,7 @@ export default function SharedStore({}, { store }: RequestContext) {
   function updateName() {
     // Update the store inside a server action
     store.set("user", { username: "bar", displayName: "Bar" });
-    rerenderInAction({ type: "page" });
+    renderPage();
   }
 
   // Consuming store

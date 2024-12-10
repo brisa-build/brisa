@@ -66,7 +66,7 @@ test("server action test", async () => {
 
 > [!WARNING]
 >
-> [`rerenderInAction`](/api-reference/server-apis/rerenderInAction), [`navigate`](/api-reference/functions/navigate), and other actions that change the state of the application are not available in the test environment. You can use the [`mock`](https://bun.sh/docs/test/mocks) function to simulate the server action and test the component behavior.
+> [`renderPage`](/api-reference/server-apis/renderPage), [`renderComponent`](/api-reference/server-apis/renderComponent), [`navigate`](/api-reference/functions/navigate), and other actions that change the state of the application are not available in the test environment. You can use the [`mock`](https://bun.sh/docs/test/mocks) function to simulate the server action and test the component behavior.
 
 ## Testing Web Components
 
