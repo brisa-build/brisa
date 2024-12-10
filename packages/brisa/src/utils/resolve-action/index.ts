@@ -27,6 +27,11 @@ const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 /**
  *
  * This method is called inside the catch block of the action function.
+ * TODO:
+ * - placement
+ * - replace old currentComponent to "component" + element + target + placement
+ * - simplify the Cid logic, no need for currentComponent, only targetComponent (without target)
+ * - replace all rerenderInAction with renderComponent/renderPage
  */
 export default async function resolveAction({
   req,
@@ -82,7 +87,7 @@ export default async function resolveAction({
   );
 
   // Return error to be captured on the response-action withResolvers
-  if (!isOriginalAction && options.type === 'targetComponent') {
+  if (!isOriginalAction && options.type === 'component') {
     throw error;
   }
 
@@ -112,8 +117,8 @@ export default async function resolveAction({
   // Rerender only component (not page):
   const dependencies = req.store.get(DEPENDENCIES);
   const componentId = extractComponentId(dependencies, actionId);
-  // @ts-ignore
-  const props = error[Symbol.for('props')] ?? {};
+  const element = (error as any)[Symbol.for('element')] ?? [];
+  const props = element[1] ?? {};
   const actionValue = Object.assign(() => {}, {
     actionId,
     actions: dependencies,

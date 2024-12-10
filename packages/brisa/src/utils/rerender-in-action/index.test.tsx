@@ -1,38 +1,38 @@
-import { describe, it, expect } from "bun:test";
-import { PREFIX_MESSAGE, SUFFIX_MESSAGE, renderPage, renderComponent } from ".";
+import { describe, it, expect } from 'bun:test';
+import { PREFIX_MESSAGE, SUFFIX_MESSAGE, renderPage, renderComponent } from '.';
 
-const ELEMENT_SYMBOL = Symbol.for("element");
+const ELEMENT_SYMBOL = Symbol.for('element');
 
-describe("utils", () => {
-  describe("renderComponent", () => {
-    it("should throw the correct throwable", () => {
+describe('utils', () => {
+  describe('renderComponent', () => {
+    it('should throw the correct throwable', () => {
       try {
         renderComponent();
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
           JSON.stringify({
-            type: "component",
-            renderMode: "reactivity",
-            mode: "replace",
+            type: 'component',
+            renderMode: 'reactivity',
+            placement: 'replace',
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
       }
     });
 
-    it("should throw the correct throwable withTransition: false", () => {
+    it('should throw the correct throwable withTransition: false', () => {
       try {
         renderComponent({ withTransition: false });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
           JSON.stringify({
-            type: "component",
-            renderMode: "reactivity",
-            mode: "replace",
+            type: 'component',
+            renderMode: 'reactivity',
+            placement: 'replace',
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
@@ -40,17 +40,17 @@ describe("utils", () => {
       }
     });
 
-    it("should throw the correct throwable withTransition=true", () => {
+    it('should throw the correct throwable withTransition=true', () => {
       try {
         renderComponent({ withTransition: true });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
           JSON.stringify({
-            type: "component",
-            renderMode: "transition",
-            mode: "replace",
+            type: 'component',
+            renderMode: 'transition',
+            placement: 'replace',
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
@@ -58,17 +58,17 @@ describe("utils", () => {
       }
     });
 
-    it("should throw the correct throwable with element", () => {
+    it('should throw the correct throwable with element', () => {
       try {
         renderComponent({ element: <>foo</> });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
           JSON.stringify({
-            type: "component",
-            renderMode: "reactivity",
-            mode: "replace",
+            type: 'component',
+            renderMode: 'reactivity',
+            placement: 'replace',
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
@@ -76,17 +76,17 @@ describe("utils", () => {
       }
     });
 
-    it("should throw the correct throwable with element and mode replace", () => {
+    it('should throw the correct throwable with element and mode replace', () => {
       try {
-        renderComponent({ element: <>foo</>, mode: "replace" });
+        renderComponent({ element: <>foo</>, placement: 'replace' });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
           JSON.stringify({
-            type: "component",
-            renderMode: "reactivity",
-            mode: "replace",
+            type: 'component',
+            renderMode: 'reactivity',
+            placement: 'replace',
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
@@ -94,17 +94,17 @@ describe("utils", () => {
       }
     });
 
-    it("should throw the correct throwable with element and mode append", () => {
+    it('should throw the correct throwable with element and mode append', () => {
       try {
-        renderComponent({ element: <>foo</>, mode: "append" });
+        renderComponent({ element: <>foo</>, placement: 'append' });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
           JSON.stringify({
-            type: "component",
-            renderMode: "reactivity",
-            mode: "append",
+            type: 'component',
+            renderMode: 'reactivity',
+            placement: 'append',
           }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
@@ -113,15 +113,15 @@ describe("utils", () => {
     });
   });
 
-  describe("renderPage", () => {
-    it("should throw the correct throwable without params", () => {
+  describe('renderPage', () => {
+    it('should throw the correct throwable without params', () => {
       try {
         renderPage();
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "page", renderMode: "reactivity" }),
+          JSON.stringify({ type: 'page', renderMode: 'reactivity' }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
         expect(error[ELEMENT_SYMBOL]).toBeUndefined();
@@ -132,10 +132,10 @@ describe("utils", () => {
       try {
         renderPage({ withTransition: true });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "page", renderMode: "transition" }),
+          JSON.stringify({ type: 'page', renderMode: 'transition' }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
         expect(error[ELEMENT_SYMBOL]).toBeUndefined();
@@ -146,10 +146,10 @@ describe("utils", () => {
       try {
         renderPage({ withTransition: false });
       } catch (error: any) {
-        expect(error.name).toBe("rerender");
+        expect(error.name).toBe('rerender');
         expect(error.message).toContain(PREFIX_MESSAGE);
         expect(error.message).toContain(
-          JSON.stringify({ type: "page", renderMode: "reactivity" }),
+          JSON.stringify({ type: 'page', renderMode: 'reactivity' }),
         );
         expect(error.message).toContain(SUFFIX_MESSAGE);
         expect(error[ELEMENT_SYMBOL]).toBeUndefined();

@@ -28,7 +28,7 @@ export type RenderPageProps = {
 export type RenderComponentProps = {
   element?: JSX.Element;
   target?: string;
-  mode?: 'replace' | 'append';
+  placement?: 'replace' | 'append' | 'prepend',
   withTransition?: boolean;
 };
 
@@ -117,33 +117,57 @@ export function renderToString(
 /**
  * Description:
  *
- * The `rerenderInAction` method is used to rerender the component or the page
- * inside a server action. Outside of an action, it throws an error.
+ * The `renderPage` method is used to rerender the page inside a server action.
+ * Outside of an action, it throws an error.
  *
  * Params:
  *
- * - `type`: `type`: The type of the rerender. It can be `currentComponent`,
- *           `targetComponent` or `page`. By default, it is `currentComponent`,
- *            this means that it is going to rerender the component that called
- *            the `rerenderInAction` method. When using `targetComponent` it is
- *            going to rerender the component that fired the original action.
- *            When using `page` it is going to rerender the whole page.
- * - `renderMode`: The type of the rerender. It can be `reactivity` or `transition`.
- *           By default, it is `reactivity`.
+ * - `withTransition` (optional): A boolean to enable the transition mode. By default, it's `false`.
  *
  * Example:
  *
  * ```ts
- * rerenderInAction({ type: 'page' });
+ * renderPage();
  * ```
  *
  * Docs:
  *
- * - [How to use `rerenderInAction`](https://brisa.build/api-reference/server-apis/rerenderInAction#rerenderinaction)
+ * - [How to use `renderPage`](https://brisa.build/api-reference/server-apis/renderPage#renderPage)
  */
-export function rerenderInAction<PropsType>(
-  props: RerenderInActionProps<PropsType> = {},
-): never;
+export function renderPage(config: RenderPageProps): never;
+
+/**
+ * Description:
+ *
+ * The `renderComponent` method is used to rerender the component inside a server action.
+ * Outside of an action, it throws an error.
+ *
+ * Also is useful to render an specific component in a specific place.
+ *
+ * Params:
+ *
+ * - `element` (optional): The JSX element to render. By default, it's the target component that triggers the action.
+ * - `target` (optional): CSS Selector to target the component to render.
+ * - `placement` (optional): `replace`, `append` or `prepend`. By default, it's `replace`.
+ * - `withTransition` (optional): A boolean to enable the transition mode. By default, it's `false`.
+ *
+ * Example of re-render:
+ *
+ * ```ts
+ * renderComponent();
+ * ```
+ *
+ * Example of render a specific component in a specific place:
+ *
+ * ```ts
+ * renderComponent({ element: <Component />, target: '#target' });
+ * ```
+ *
+ * Docs:
+ *
+ * - [How to use `renderComponent`](https://brisa.build/api-reference/server-apis/renderComponent#renderComponent)
+ */
+export function renderComponent(config: RenderComponentProps): never;
 
 /**
  * Description:

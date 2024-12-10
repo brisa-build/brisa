@@ -155,7 +155,7 @@ describe('utils', () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'reactivity',
           }) +
           SUFFIX_MESSAGE,
@@ -261,7 +261,7 @@ describe('utils', () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'transition',
           }) +
           SUFFIX_MESSAGE,
@@ -286,19 +286,19 @@ describe('utils', () => {
       expect(response.headers.get('Transfer-Encoding')).toBe('chunked');
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
-      expect(response.headers.get('X-Type')).toBe('targetComponent');
+      expect(response.headers.get('X-Type')).toBe('component');
       // responseHeaders of the page:
       expect(response.headers.get('X-Test')).toBe('success');
     });
 
-    it('should throw an error when is not the originalActionId and type is "targetComponent"', async () => {
+    it('should throw an error when is not the originalActionId and type is "component"', async () => {
       const req = getReq();
       // @ts-ignore
       req._originalActionId = 'a1_1';
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'transition',
           }) +
           SUFFIX_MESSAGE,
@@ -316,14 +316,14 @@ describe('utils', () => {
       ).toThrow(error);
     });
 
-    it('should render the "targetComponent" when the originalActionId is the same as the actionId', async () => {
+    it('should render the "component" when the originalActionId is the same as the actionId', async () => {
       const req = getReq();
       // @ts-ignore
       req._originalActionId = 'a1_1';
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'transition',
           }) +
           SUFFIX_MESSAGE,
@@ -346,7 +346,7 @@ describe('utils', () => {
       expect(response.headers.get('Transfer-Encoding')).toBe('chunked');
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
-      expect(response.headers.get('X-Type')).toBe('targetComponent');
+      expect(response.headers.get('X-Type')).toBe('component');
       expect(response.headers.get('X-Cid')).toBeNull();
       // responseHeaders of the page:
       expect(response.headers.get('X-Test')).toBe('success');
@@ -407,7 +407,7 @@ describe('utils', () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'transition',
           }) +
           SUFFIX_MESSAGE,
@@ -445,14 +445,14 @@ describe('utils', () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'transition',
           }) +
           SUFFIX_MESSAGE,
       );
       error.name = 'rerender';
       // @ts-ignore
-      error[Symbol.for('props')] = { name: 'John' };
+      error[Symbol.for('element')] = <Component name="John" />;
 
       const req = getReq();
       // @ts-ignore
@@ -480,7 +480,7 @@ describe('utils', () => {
       const error = new Error(
         PREFIX_MESSAGE +
           JSON.stringify({
-            type: 'targetComponent',
+            type: 'component',
             renderMode: 'transition',
           }) +
           SUFFIX_MESSAGE,

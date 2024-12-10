@@ -1,8 +1,4 @@
-import type {
-  RerenderInActionProps,
-  RenderPageProps,
-  RenderComponentProps,
-} from '@/types/server';
+import type { RenderPageProps, RenderComponentProps } from '@/types/server';
 import { blueLog } from '@/utils/log/log-color';
 
 export const PREFIX_MESSAGE = 'Error rerendering within action: ';
@@ -10,19 +6,7 @@ export const SUFFIX_MESSAGE = `\n\nPlease use the 'renderPage' / 'renderComponen
   'https://brisa.build/api-reference/server-apis/renderPage',
 )}`;
 
-/**
- * TODO: Remove this function + types in 0.3
- * @deprecated Use `renderPage` or `renderComponent` instead.
- */
-export default function rerenderInAction<T>(
-  config: RerenderInActionProps<T> = {},
-) {
-  console.warn(
-    'BREAKING CHANGE: `rerenderInAction` is not more supported. Use `renderPage` or `renderComponent` instead.',
-  );
-}
-
-export function renderPage<T>(config: RenderPageProps = {}) {
+export function renderPage(config: RenderPageProps = {}) {
   const renderMode = config.withTransition ? 'transition' : 'reactivity';
 
   const throwable = new Error(
@@ -37,10 +21,10 @@ export function renderPage<T>(config: RenderPageProps = {}) {
 export function renderComponent(config: RenderComponentProps = {}) {
   const type = config.target ?? 'component';
   const renderMode = config.withTransition ? 'transition' : 'reactivity';
-  const mode = config.mode ?? 'replace';
+  const placement = config.placement ?? 'replace';
 
   const throwable = new Error(
-    `${PREFIX_MESSAGE}${JSON.stringify({ type, renderMode, mode })}${SUFFIX_MESSAGE}`,
+    `${PREFIX_MESSAGE}${JSON.stringify({ type, renderMode, placement })}${SUFFIX_MESSAGE}`,
   );
 
   if (type !== 'page') {
