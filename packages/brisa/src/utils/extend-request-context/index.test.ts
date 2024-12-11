@@ -374,5 +374,32 @@ describe('brisa core', () => {
       });
       expect(requestContext.initiator).toBe(Initiator.SERVER_ACTION);
     });
+
+    it('should add tasks to the request with "after"', () => {
+      const requestContext = extendRequestContext({
+        originalRequest: new Request('https://example.com'),
+      });
+
+      const mockAfter = mock(() => {});
+      requestContext.after(() => mockAfter());
+
+      expect((requestContext as any)._tasks).toHaveLength(1);
+      expect(mockAfter).not.toHaveBeenCalled();
+    });
+
+    it('should keep tasks from one req to another one', () => {
+      const requestContext = extendRequestContext({
+        originalRequest: new Request('https://example.com'),
+      });
+
+      requestContext.after(() => {});
+      expect((requestContext as any)._tasks).toHaveLength(1);
+
+      const requestContext2 = extendRequestContext({
+        originalRequest: requestContext,
+      });
+
+      expect((requestContext as any)._tasks).toHaveLength(1);
+    });
   });
 });

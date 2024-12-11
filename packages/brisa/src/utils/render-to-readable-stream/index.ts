@@ -110,6 +110,9 @@ export default function renderToReadableStream(
 
       controller.close();
 
+      // Resolve tasks from "after" request method
+      await Promise.all((req as any)._tasks.map((task: () => void) => task()));
+
       if (
         isPage &&
         !IS_PRODUCTION &&

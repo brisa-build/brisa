@@ -3796,6 +3796,35 @@ describe('utils', () => {
       );
     });
 
+    it('should resolve request._tasks after the response stream', async () => {
+      const request = extendRequestContext({
+        originalRequest: extendRequestContext({
+          originalRequest: new Request('http://test.com/en'),
+        }),
+      });
+
+      const mockAfter = mock(() => {});
+      request.after(() => mockAfter());
+
+      const stream = renderToReadableStream(
+        <html>
+          <head></head>
+          <body></body>
+        </html>,
+        { request },
+      );
+
+      const reader = stream.getReader();
+
+      while (true) {
+        const result = await reader.read();
+        if (result.done) break;
+        expect(mockAfter).not.toHaveBeenCalled();
+      }
+
+      expect(mockAfter).toHaveBeenCalled();
+    });
+
     it('should include window.r with the route without i18n', () => {
       const request = extendRequestContext({
         originalRequest: extendRequestContext({

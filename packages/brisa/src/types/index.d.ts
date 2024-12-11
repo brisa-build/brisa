@@ -353,6 +353,26 @@ export interface RequestContext extends Request {
    * - [How to use `css`](https://brisa.build/api-reference/components/request-context#css)
    */
   css(strings: TemplateStringsArray, ...values: string[]): void;
+
+  /**
+   * Description:
+   *
+   * The `after` method is used to execute a function after the response has been sent.
+   *
+   * Example:
+   *
+   * ```ts
+   * after(() => console.log('Hello World'));
+   * ```
+   *
+   * This log will be executed after the response has been sent.
+   *
+   * Docs:
+   *
+   * - [How to use `after`](https://brisa.build/api-reference/components/request-context#after)
+   *
+   */
+  after(fn: Effect): void | Promise<void>;
 }
 
 type Effect = () => void | Promise<void>;

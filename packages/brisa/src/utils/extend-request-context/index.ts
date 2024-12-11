@@ -29,6 +29,12 @@ export default function extendRequestContext({
   finalURL,
   id,
 }: ExtendRequestContext): RequestContext {
+  // After tasks
+  originalRequest._tasks ??= [];
+  originalRequest.after = (task) => {
+    originalRequest._tasks.push(task);
+  };
+
   // finalURL
   originalRequest.finalURL =
     finalURL ?? originalRequest.finalURL ?? originalRequest.url;

@@ -37,6 +37,9 @@ export default function ServerComponent(props, requestContext: RequestContext) {
 
     // Add styles
     css,
+
+    // Run tasks after the response is sent
+    after,
   } = requestContext;
   // ... Server component implementation ...
 }
@@ -320,3 +323,29 @@ css`
 > We recommend using the `css` template literal for specific cases such as generating CSS animations based on dynamic JavaScript variables.
 
 For more details, refer to the [Template literal `css`](/building-your-application/components-details/web-components#template-literal-css) documentation.
+
+## `after`
+
+`after(cb: () => void): void`
+
+The `after` method allows you to schedule work to be executed after a response (or prerender) is finished. This is useful for tasks and other side effects that should not block the response, such as logging and analytics.
+
+It can be used everywhere when you have access to the `RequestContext` (Middleware, API routes, Server components, etc).
+
+Example:
+
+```tsx
+import { type RequestContext } from "brisa";
+
+export default function SomeComponent({}, { after }: RequestContext) {
+  after(() => {
+    console.log("The response is sent");
+  });
+
+  return <div>Some content</div>;
+}
+```
+
+> [!NOTE]
+>
+> **Good to know**:  `after` is not a Dynamic API and calling it does not cause a route to become dynamic. If it's used within a static page, the callback will execute at build time.
