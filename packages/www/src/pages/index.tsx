@@ -24,11 +24,11 @@ function CustomCounter(props, { state }) {
   return (
     <>
       <div>Counter: {count.value}</div>
-      <button onClick={() => count.value++}>
-        Increment
-      </button>
       <button onClick={() => count.value--}>
         Decrement
+      </button>
+      <button onClick={() => count.value++}>
+        Increment
       </button>
     </>
   );

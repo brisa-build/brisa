@@ -14,23 +14,23 @@ function CustomCounter(props: { start: number }, { state, css }: WebContext) {
       padding: 80px 20px;
       margin: 10px auto 50px auto;
     }
-    
+
     p {
       font-size: 22px;
       font-weight: bold;
     }
 
-    button{
-      padding:10px;
-      border:1px solid var(--color-primary); 
-      margin:5px;
+    button {
+      padding: 10px;
+      border: 1px solid var(--color-primary);
+      margin: 5px;
       background-color: var(--color-white);
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
 
-    button:hover { 
+    button:hover {
       background-color: var(--color-light-green);
     }
   `;
@@ -38,8 +38,8 @@ function CustomCounter(props: { start: number }, { state, css }: WebContext) {
   return (
     <div>
       <p>Counter: {count.value}</p>
-      <button onClick={() => count.value++}>Increment</button>
       <button onClick={() => count.value--}>Decrement</button>
+      <button onClick={() => count.value++}>Increment</button>
     </div>
   );
 }
