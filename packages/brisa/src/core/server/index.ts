@@ -6,5 +6,6 @@ export { default as rerenderInAction } from '@/utils/rerender-in-action';
 export { getServeOptions } from '@/cli/serve/serve-options';
 export { Initiator } from '@/public-constants';
 export { fileSystemRouter } from '@/utils/file-system-router';
+export { encrypt, decrypt } from '@/utils/crypto';
 export { default as serve } from '@/cli/serve/bun-serve';
 export const getServer = () => globalThis.brisaServer;

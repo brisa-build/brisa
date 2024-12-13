@@ -705,6 +705,25 @@ You can use [`data-` attributes](https://developer.mozilla.org/en-US/docs/Learn/
 />
 ```
 
+You also can [`encrypt`](/api-reference/server-apis/encrypt) / [`decrypt`](/api-reference/server-apis/decrypt) sensivle data using `data-attributes`:
+
+```tsx
+import { encrypt, decrypt } from "brisa/server";
+
+// ...
+<button
+  onClick={(e: Event) => {
+    // Decrypt on the server action:
+    console.log(
+      decrypt((e.target as HTMLButtonElement).dataset.encrypted!)
+    )
+  }}
+  data-encrypted={encrypt("some sensible data")}
+>
+  Click to recover sensible data on the server
+</button>
+```
+
 ### Using the store
 
 You can use the store to transfer data from the client to the server. This is useful when you need to send data that is not in a form.
@@ -742,6 +761,8 @@ On the client it will always be encrypted and there will be no way to decrypt it
 ```ts
 store.get("some-key"); // In the server is automatic decrypted
 ```
+
+**More**: Take a look also the [`encrypt`](/api-reference/server-apis/encrypt) an [`decrypt`](/api-reference/server-apis/decrypt) functions.
 
 > [!NOTE]
 >

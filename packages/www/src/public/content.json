@@ -32,7 +32,7 @@
   {
     "id": "/api-reference#server-apis",
     "title": "Server APIs",
-    "text": "renderInAction\nrenderToReadableStream\nrenderToString\ngetServeOptions\nfileSystemRouter\nInitator\nserve\nSSRWebComponent\nNode.js APIs\n\nserve\nhandler",
+    "text": "renderInAction\nrenderToReadableStream\nrenderToString\ngetServeOptions\nfileSystemRouter\nInitator\nserve\nencrypt\ndecrypt\nSSRWebComponent\nNode.js APIs\n\nserve\nhandler",
     "titles": [
       "API Reference"
     ]
@@ -328,7 +328,7 @@
   {
     "id": "/api-reference/components/request-context#request-context",
     "title": "Request Context",
-    "text": "The RequestContext is a set of utilities provided by Brisa to facilitate the development of server components. It is a Request with some extra functionalities such as managing store, handling context, i18n, and more. import type { RequestContext } from \"brisa\";\n\nexport default function ServerComponent(props, requestContext: RequestContext) {\n  const {\n    // Shared data across server/web components\n    store,\n    useContext,\n\n    // Useful to control pending state in server components\n    indicate,\n\n    // Data of the current route\n    route,\n\n    // Consume translations and control internationalization\n    i18n,\n\n    // Access to websockets\n    ws,\n\n    // Get the user IP\n    getIp,\n\n    // The `finalURL` is the path of your page file\n    finalURL,\n\n    // Request id\n    id,\n\n    // The initiator of the request (\"SERVER_ACTION\", \"SPA_NAVIGATION\", \"INITIAL_REQUEST\", \"API_REQUEST\")\n    initiator,\n\n    // Add styles\n    css,\n  } = requestContext;\n  // ... Server component implementation ...\n} Being an extension of the Request, you also have access to all fields of the Request. In contrast to other frameworks that necessitate imports, our methodology incorporates all these properties directly within each server component.",
+    "text": "The RequestContext is a set of utilities provided by Brisa to facilitate the development of server components. It is a Request with some extra functionalities such as managing store, handling context, i18n, and more. import type { RequestContext } from \"brisa\";\n\nexport default function ServerComponent(props, requestContext: RequestContext) {\n  const {\n    // Shared data across server/web components\n    store,\n    useContext,\n\n    // Useful to control pending state in server components\n    indicate,\n\n    // Data of the current route\n    route,\n\n    // Consume translations and control internationalization\n    i18n,\n\n    // Access to websockets\n    ws,\n\n    // Get the user IP\n    getIp,\n\n    // The `finalURL` is the path of your page file\n    finalURL,\n\n    // Request id\n    id,\n\n    // The initiator of the request (\"SERVER_ACTION\", \"SPA_NAVIGATION\", \"INITIAL_REQUEST\", \"API_REQUEST\")\n    initiator,\n\n    // Add styles\n    css,\n\n    // Run tasks after the response is sent\n    after,\n  } = requestContext;\n  // ... Server component implementation ...\n} Being an extension of the Request, you also have access to all fields of the Request. In contrast to other frameworks that necessitate imports, our methodology incorporates all these properties directly within each server component.",
     "titles": []
   },
   {
@@ -433,6 +433,14 @@
     "id": "/api-reference/components/request-context#css",
     "title": "css",
     "text": "css(strings: TemplateStringsArray, ...values: string[]): void The css template literal is used to inject CSS into the DOM. It allows developers to define styles directly within server components using a template literal. Unlike web components, this css template literal in server components does not encapsulate. This code would affect all divs on the page: Example: css`\n  div {\n    background-color: ${color};\n  }\n`; We recommend using the css template literal for specific cases such as generating CSS animations based on dynamic JavaScript variables. For more details, refer to the Template literal css documentation.",
+    "titles": [
+      "Request Context"
+    ]
+  },
+  {
+    "id": "/api-reference/components/request-context#after",
+    "title": "after",
+    "text": "after(cb: () => void): void The after method allows you to schedule work to be executed after a response (or prerender) is finished. This is useful for tasks and other side effects that should not block the response, such as logging and analytics. It can be used everywhere when you have access to the RequestContext (Middleware, API routes, Server components, etc). Example: import { type RequestContext } from \"brisa\";\n\nexport default function SomeComponent({}, { after }: RequestContext) {\n  after(() => {\n    console.log(\"The response is sent\");\n  });\n\n  return <div>Some content</div>;\n} Good to know:  after is not a Dynamic API and calling it does not cause a route to become dynamic. If it's used within a static page, the callback will execute at build time.",
     "titles": [
       "Request Context"
     ]
@@ -1334,6 +1342,37 @@
     ]
   },
   {
+    "id": "/api-reference/server-apis/decrypt#decrypt",
+    "title": "decrypt",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/server-apis/decrypt#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": [
+      "decrypt"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/decrypt#decryptencryptedstring-string-unknown",
+    "title": "decrypt(encryptedString: string): unknown",
+    "text": "The decrypt function allows you to securely retrieve sensitive data sent from the client to the server. It works in conjunction with the encrypt function to ensure safe handling of sensitive information. Converts an encrypted string back into its original text or object, enabling secure client-server communication.",
+    "titles": [
+      "decrypt",
+      "Reference"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/decrypt#example-usage",
+    "title": "Example usage:",
+    "text": "import { encrypt, decrypt } from \"brisa/server\";\n\n// ...\n<button\n  onClick={(e: Event) => {\n    // Decrypt on the server action:\n    console.log(\n      decrypt((e.target as HTMLButtonElement).dataset.encrypted!)\n    )\n  }}\n  data-encrypted={encrypt(\"some sensible data\")}\n>\n  Click to recover sensible data on the server\n</button> In this example, the encrypt function secures the data before it is stored in a data-encrypted attribute. The decrypt function is then used on the server to recover the original value.",
+    "titles": [
+      "decrypt"
+    ]
+  },
+  {
     "id": "/api-reference/server-apis/deno/handler#handler",
     "title": "handler",
     "text": "",
@@ -1409,6 +1448,37 @@
     "text": "export function serve(options: ServeOptions): {\n  port: number;\n  hostname: string;\n  server: ReturnType<typeof Deno.serve>;\n};",
     "titles": [
       "serve"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/encrypt#encrypt",
+    "title": "encrypt",
+    "text": "",
+    "titles": []
+  },
+  {
+    "id": "/api-reference/server-apis/encrypt#reference",
+    "title": "Reference",
+    "text": "",
+    "titles": [
+      "encrypt"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/encrypt#encrypttextorobject-unknown-string",
+    "title": "encrypt(textOrObject: unknown): string",
+    "text": "The encrypt function allows you to securely send sensitive data from the client to the server. It is typically used in conjunction with the decrypt function to safely handle data transmission. Converts a given text or object into an encrypted string for secure client-server communication.",
+    "titles": [
+      "encrypt",
+      "Reference"
+    ]
+  },
+  {
+    "id": "/api-reference/server-apis/encrypt#example-usage",
+    "title": "Example usage:",
+    "text": "import { encrypt, decrypt } from \"brisa/server\";\n\n// ...\n<button\n  onClick={(e: Event) => {\n    // Decrypt on the server action:\n    console.log(\n      decrypt((e.target as HTMLButtonElement).dataset.encrypted!)\n    )\n  }}\n  data-encrypted={encrypt(\"some sensible data\")}\n>\n  Click to recover sensible data on the server\n</button> In this example, the encrypt function secures the data before it is stored in a data-encrypted attribute. The decrypt function is then used on the server to recover the original value.",
+    "titles": [
+      "encrypt"
     ]
   },
   {
@@ -4004,7 +4074,7 @@
   {
     "id": "/building-your-application/data-management/server-actions#using-data-attributes",
     "title": "Using data attributes",
-    "text": "You can use data- attributes to transfer data from the client to the server. This is useful when you need to send data that is not in a form. <input\n  debounceInput={300}\n  onInput={(e) => {\n    // All this code runs only on the server\n    const value = e.target.value;\n\n    // Get the value in the server action\n    const id = e.target.dataset.id;\n  }}\n  data-id=\"123\"\n/>",
+    "text": "You can use data- attributes to transfer data from the client to the server. This is useful when you need to send data that is not in a form. <input\n  debounceInput={300}\n  onInput={(e) => {\n    // All this code runs only on the server\n    const value = e.target.value;\n\n    // Get the value in the server action\n    const id = e.target.dataset.id;\n  }}\n  data-id=\"123\"\n/> You also can encrypt / decrypt sensivle data using data-attributes: import { encrypt, decrypt } from \"brisa/server\";\n\n// ...\n<button\n  onClick={(e: Event) => {\n    // Decrypt on the server action:\n    console.log(\n      decrypt((e.target as HTMLButtonElement).dataset.encrypted!)\n    )\n  }}\n  data-encrypted={encrypt(\"some sensible data\")}\n>\n  Click to recover sensible data on the server\n</button>",
     "titles": [
       "Server Actions",
       "Transfer data"
@@ -4022,7 +4092,7 @@
   {
     "id": "/building-your-application/data-management/server-actions#transfer-sensitive-data",
     "title": "Transfer sensitive data",
-    "text": "If you want to transfer sensitive data from the render to use it later on the action you can use: store.transferToClient([\"some-key\"], { encrypt: true }); On the client it will always be encrypted and there will be no way to decrypt it, while on the server action you will have access with: store.get(\"some-key\"); // In the server is automatic decrypted Brisa uses aes-256-cbc for encryption, a combination of cryptographic algorithms used to securely encrypt information recommended by OpenSSL. Encryption keys are generated during the build of your project. It is important to note that encryption is a blocking process and may increase the time it takes for the request. It also exposes public data for the server action to access. Before using encrypt, consider if there is a better way to have this data from the action like querying a DB, without the need to expose it in the client.",
+    "text": "If you want to transfer sensitive data from the render to use it later on the action you can use: store.transferToClient([\"some-key\"], { encrypt: true }); On the client it will always be encrypted and there will be no way to decrypt it, while on the server action you will have access with: store.get(\"some-key\"); // In the server is automatic decrypted More: Take a look also the encrypt an decrypt functions. Brisa uses aes-256-cbc for encryption, a combination of cryptographic algorithms used to securely encrypt information recommended by OpenSSL. Encryption keys are generated during the build of your project. It is important to note that encryption is a blocking process and may increase the time it takes for the request. It also exposes public data for the server action to access. Before using encrypt, consider if there is a better way to have this data from the action like querying a DB, without the need to expose it in the client.",
     "titles": [
       "Server Actions"
     ]

@@ -37,6 +37,8 @@ The Brisa API reference is divided into the following sections:
 - [`fileSystemRouter`](/api-reference/server-apis/fileSystemRouter)
 - [`Initator`](/api-reference/server-apis/Initiator)
 - [`serve`](/api-reference/server-apis/serve)
+- [`encrypt`](/api-reference/server-apis/encrypt)
+- [`decrypt`](/api-reference/server-apis/decrypt)
 - [`SSRWebComponent`](/api-reference/server-apis/SSRWebComponent)
 - Node.js APIs
   - [`serve`](/api-reference/server-apis/node/serve)

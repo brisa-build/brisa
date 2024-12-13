@@ -31,6 +31,42 @@ export type FileSystemRouter = {
   match: (routeToMatch: string) => MatchedBrisaRoute | null;
 };
 
+/**
+ * Encrypt sensible data to don't be visible on the client and then recover on a server action:
+ *
+ * ```tsx
+ *  <button
+ *   onClick={(e: Event) =>
+ *     console.log(
+ *       decrypt((e.target as HTMLButtonElement).dataset.encrypted)
+ *      )
+ *   }
+ *   data-encrypted={encrypt("hello")}
+ * >
+ *   Sensible data
+ * </button>
+ * ```
+ */
+export function encrypt(textOrObject: unknown): string;
+
+/**
+ * Decrypt sensible data on a server action:
+ *
+ * ```tsx
+ *  <button
+ *   onClick={(e: Event) =>
+ *     console.log(
+ *       decrypt((e.target as HTMLButtonElement).dataset.encrypted)
+ *      )
+ *   }
+ *   data-encrypted={encrypt("hello")}
+ * >
+ *   Sensible data
+ * </button>
+ * ```
+ */
+export function decrypt(text: string): unknown;
+
 export function fileSystemRouter(
   options: FileSystemRouterOptions,
 ): FileSystemRouter;

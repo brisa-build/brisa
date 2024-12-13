@@ -498,6 +498,14 @@ export default {
               link: '/api-reference/server-apis/serve',
             },
             {
+              text: 'encrypt',
+              link: '/api-reference/server-apis/encrypt',
+            },
+            {
+              text: 'decrypt',
+              link: '/api-reference/server-apis/decrypt',
+            },
+            {
               text: 'SSRWebComponent',
               link: '/api-reference/server-apis/SSRWebComponent',
             },
