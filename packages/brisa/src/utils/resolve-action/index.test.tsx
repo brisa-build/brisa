@@ -347,6 +347,45 @@ describe('utils', () => {
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
       expect(response.headers.get('X-Type')).toBe('component');
+      expect(response.headers.get('X-Target')).toBe('component');
+      expect(response.headers.get('X-Cid')).toBeNull();
+      // responseHeaders of the page:
+      expect(response.headers.get('X-Test')).toBe('success');
+    });
+
+    it('should add X-Target with the correct target', async () => {
+      const req = getReq();
+      // @ts-ignore
+      req._originalActionId = 'a1_1';
+      const error = new Error(
+        PREFIX_MESSAGE +
+          JSON.stringify({
+            type: 'component',
+            renderMode: 'transition',
+            target: '#foo',
+          }) +
+          SUFFIX_MESSAGE,
+      );
+
+      error.name = 'rerender';
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: 'a1_1',
+        component: () => <div>Test</div>,
+      });
+
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe('<div>Test</div>');
+      expect(response.headers.get('Content-Type')).toBe(
+        'text/html; charset=utf-8',
+      );
+      expect(response.headers.get('Transfer-Encoding')).toBe('chunked');
+      expect(response.headers.get('vary')).toBe('Accept-Encoding');
+      expect(response.headers.get('X-Mode')).toBe('transition');
+      expect(response.headers.get('X-Type')).toBe('component');
+      expect(response.headers.get('X-Target')).toBe('#foo');
       expect(response.headers.get('X-Cid')).toBeNull();
       // responseHeaders of the page:
       expect(response.headers.get('X-Test')).toBe('success');
@@ -387,6 +426,7 @@ describe('utils', () => {
       expect(response.headers.get('vary')).toBe('Accept-Encoding');
       expect(response.headers.get('X-Mode')).toBe('transition');
       expect(response.headers.get('X-Type')).toBe('currentComponent');
+      expect(response.headers.get('X-Target')).toBe('component');
       expect(response.headers.get('X-Cid')).toBe('test-cid');
       // responseHeaders of the page:
       expect(response.headers.get('X-Test')).toBe('success');
