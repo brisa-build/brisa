@@ -134,7 +134,7 @@ export function renderToString(
  *
  * - [How to use `renderPage`](https://brisa.build/api-reference/server-apis/renderPage#renderPage)
  */
-export function renderPage(config: RenderPageProps): never;
+export function renderPage(config?: RenderPageProps): never;
 
 /**
  * Description:
@@ -167,7 +167,7 @@ export function renderPage(config: RenderPageProps): never;
  *
  * - [How to use `renderComponent`](https://brisa.build/api-reference/server-apis/renderComponent#renderComponent)
  */
-export function renderComponent(config: RenderComponentProps): never;
+export function renderComponent(config?: RenderComponentProps): never;
 
 /**
  * Description:
