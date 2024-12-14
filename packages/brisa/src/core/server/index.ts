@@ -9,3 +9,9 @@ export { fileSystemRouter } from '@/utils/file-system-router';
 export { encrypt, decrypt } from '@/utils/crypto';
 export { default as serve } from '@/cli/serve/bun-serve';
 export const getServer = () => globalThis.brisaServer;
+
+// TODO: Remove it in future releases
+export const rerenderInAction = () =>
+  console.warn(
+    '🚨 BREAKING CHANGE: rerenderInAction is not more supported. You need to replace it to renderPage() or renderComponent() methods.',
+  );
