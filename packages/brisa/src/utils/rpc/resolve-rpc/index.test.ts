@@ -1031,7 +1031,9 @@ describe('utils', () => {
       expect(mockTransitionFinished).toBeCalled();
     });
 
-    it('should before an element into target with reactivity', async () => {
+    // TODO: Remove this .todo after this happy-DOM issue will be fixed:
+    // https://github.com/capricorn86/happy-dom/issues/1637
+    it.todo('should before an element into target with reactivity', async () => {
       const mockDiff = mock((...args: any) => {});
 
       mock.module('diff-dom-streaming', () => ({
@@ -1095,7 +1097,9 @@ describe('utils', () => {
       );
     });
 
-    it('should before an element into a target with transition', async () => {
+    // TODO: Remove this .todo after this happy-DOM issue will be fixed:
+    // https://github.com/capricorn86/happy-dom/issues/1637
+    it.todo('should before an element into a target with transition', async () => {
       const mockDiff = mock((...args: any) => {});
       const mockTransitionFinished = mock(() => {});
 
