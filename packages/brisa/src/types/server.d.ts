@@ -28,7 +28,7 @@ export type RenderPageProps = {
 export type RenderComponentProps = {
   element?: JSX.Element;
   target?: string;
-  placement?: 'replace' | 'append' | 'prepend';
+  placement?: 'replace' | 'before' | 'after' | 'append' | 'prepend';
   withTransition?: boolean;
 };
 
@@ -148,7 +148,7 @@ export function renderPage(config?: RenderPageProps): never;
  *
  * - `element` (optional): The JSX element to render. By default, it's the target component that triggers the action.
  * - `target` (optional): CSS Selector to target the component to render.
- * - `placement` (optional): `replace`, `append` or `prepend`. By default, it's `replace`.
+ * - `placement` (optional): `replace`, `before`, `after`, `append` or `prepend`. By default, it's `replace`.
  * - `withTransition` (optional): A boolean to enable the transition mode. By default, it's `false`.
  *
  * Example of re-render:

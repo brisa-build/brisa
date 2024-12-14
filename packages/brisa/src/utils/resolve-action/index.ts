@@ -130,6 +130,7 @@ export default async function resolveAction({
   pageHeaders.set('X-Mode', options.renderMode);
   pageHeaders.set('X-Type', options.type);
   pageHeaders.set('X-Target', options.target ?? 'component');
+  pageHeaders.set('X-Placement', options.placement ?? 'replace');
   if (componentId) pageHeaders.set('X-Cid', componentId);
 
   return new Response(stream, {

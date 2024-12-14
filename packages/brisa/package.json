@@ -134,12 +134,12 @@
     "meriyah": "6.0.3"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "15.11.0",
-    "@types/bun": "1.1.13",
+    "@happy-dom/global-registrator": "15.11.7",
+    "@types/bun": "1.1.14",
     "brisa": "latest",
     "@types/mime-types": "2.1.4",
     "mime-types": "2.1.35",
-    "typescript": "5.6.3",
+    "typescript": "5.7.2",
     "brisa-tailwindcss": "workspace:*",
     "brisa-pandacss": "workspace:*"
   },
