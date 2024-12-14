@@ -44,13 +44,11 @@ export async function a3_3({}: any, req: any) {
 
 export async function a3_4({ onAction5 }: any, req: any) {
   const [withAwait] = req.store.get('__params:a3_4');
-  console.log('a3_4 is original action?', req._originalActionId === 'a3_4');
   withAwait ? await onAction5('foo') : onAction5('foo');
   await req._waitActionCallPromises('a3_4');
 }
 
 export async function a3_5({}: any, req: any) {
-  console.log('a3_5 is original action?', req._originalActionId === 'a3_5');
   await req._waitActionCallPromises('a3_5');
   return new Response('a3_5');
 }

@@ -483,30 +483,6 @@ describe('utils', () => {
       );
     });
 
-    it('should req._originalActionId be accessible inside actions', async () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a3_4',
-            'x-actions': JSON.stringify([[['onAction5', 'a3_5']]]),
-          },
-          body: JSON.stringify({
-            args: [],
-          }),
-        }),
-      });
-
-      await responseAction(req);
-
-      const logs = logMock.mock.calls.toString();
-
-      expect(logs).toBe(
-        'a3_4 is original action?,true,a3_5 is original action?,false',
-      );
-    });
-
     it('should return the response of the second action when the second one returns a Response', async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {

@@ -10,17 +10,6 @@ export type Options = {
 
 type RenderMode = 'reactivity' | 'transition';
 
-export type RerenderInActionProps<T> =
-  | {
-      type?: 'currentComponent' | 'targetComponent';
-      renderMode?: RenderMode;
-      props?: T;
-    }
-  | {
-      type?: 'page';
-      renderMode?: RenderMode;
-    };
-
 export type RenderPageProps = {
   withTransition?: boolean;
 };

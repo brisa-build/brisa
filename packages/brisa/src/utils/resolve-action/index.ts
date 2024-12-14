@@ -71,16 +71,9 @@ export default async function resolveAction({
     return new Response(error.message, { status: 500 });
   }
 
-  // @ts-ignore
-  const isOriginalAction = req._originalActionId === actionId;
   const options = JSON.parse(
     error.message.replace(PREFIX_MESSAGE, '').replace(SUFFIX_MESSAGE, ''),
   );
-
-  // Return error to be captured on the response-action withResolvers
-  if (!isOriginalAction && options.type === 'component') {
-    throw error;
-  }
 
   const pagesRouter = getRouteMatcher(
     PAGES_DIR,

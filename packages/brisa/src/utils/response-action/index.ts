@@ -159,12 +159,6 @@ export default async function responseAction(req: RequestContext) {
     );
   };
 
-  // _originalActionId is the value of the action that was called by the user.
-  // This will be used inside the resolve-action to check if the action that
-  // is being executed is the original one or a nested one.
-  // @ts-ignore - req._originalActionId should not be a public type
-  req._originalActionId = action;
-
   let response = await actionModule[action](props, req);
   const isResponse = response instanceof Response;
   resolve(response);
