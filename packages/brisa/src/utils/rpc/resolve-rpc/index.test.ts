@@ -1033,53 +1033,55 @@ describe('utils', () => {
 
     // TODO: Remove this .todo after this happy-DOM issue will be fixed:
     // https://github.com/capricorn86/happy-dom/issues/1637
-    it.todo('should before an element into target with reactivity', async () => {
-      const mockDiff = mock((...args: any) => {});
+    it.todo(
+      'should before an element into target with reactivity',
+      async () => {
+        const mockDiff = mock((...args: any) => {});
 
-      mock.module('diff-dom-streaming', () => ({
-        default: (...args: any) => mockDiff(...args),
-      }));
+        mock.module('diff-dom-streaming', () => ({
+          default: (...args: any) => mockDiff(...args),
+        }));
 
-      const encoder = new TextEncoder();
-      const stream = new ReadableStream({
-        start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
-            ),
-          );
-          controller.close();
-        },
-      });
-      const res = new Response(stream, {
-        headers: {
-          'content-type': 'text/html',
-          'X-Cid': '123',
-          'X-Mode': 'reactivity',
-          'X-Type': 'component',
-          'X-Placement': 'before',
-          'X-Target': 'form',
-        },
-      });
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(
+              encoder.encode(
+                '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+              ),
+            );
+            controller.close();
+          },
+        });
+        const res = new Response(stream, {
+          headers: {
+            'content-type': 'text/html',
+            'X-Cid': '123',
+            'X-Mode': 'reactivity',
+            'X-Type': 'component',
+            'X-Placement': 'before',
+            'X-Target': 'form',
+          },
+        });
 
-      await initBrowser();
+        await initBrowser();
 
-      document.body.innerHTML = '<section><form>Foo</form></section>';
+        document.body.innerHTML = '<section><form>Foo</form></section>';
 
-      await resolveRPC(res, dataSet);
+        await resolveRPC(res, dataSet);
 
-      const [, s] = mockDiff.mock.calls[0];
-      const reader = s.getReader();
-      let text = '';
+        const [, s] = mockDiff.mock.calls[0];
+        const reader = s.getReader();
+        let text = '';
 
-      while (true) {
-        const buffer = await reader.read();
-        if (buffer.done) break;
-        text += decoder.decode(buffer.value);
-      }
+        while (true) {
+          const buffer = await reader.read();
+          if (buffer.done) break;
+          text += decoder.decode(buffer.value);
+        }
 
-      expect(text).toBe(
-        normalizeHTML(`
+        expect(text).toBe(
+          normalizeHTML(`
           <html>
             <head></head>
             <body>
@@ -1094,66 +1096,69 @@ describe('utils', () => {
             </body>
           </html>
       `),
-      );
-    });
+        );
+      },
+    );
 
     // TODO: Remove this .todo after this happy-DOM issue will be fixed:
     // https://github.com/capricorn86/happy-dom/issues/1637
-    it.todo('should before an element into a target with transition', async () => {
-      const mockDiff = mock((...args: any) => {});
-      const mockTransitionFinished = mock(() => {});
+    it.todo(
+      'should before an element into a target with transition',
+      async () => {
+        const mockDiff = mock((...args: any) => {});
+        const mockTransitionFinished = mock(() => {});
 
-      mock.module('diff-dom-streaming', () => ({
-        default: (...args: any) => mockDiff(...args),
-      }));
+        mock.module('diff-dom-streaming', () => ({
+          default: (...args: any) => mockDiff(...args),
+        }));
 
-      const encoder = new TextEncoder();
-      const stream = new ReadableStream({
-        start(controller) {
-          controller.enqueue(
-            encoder.encode(
-              '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
-            ),
-          );
-          controller.close();
-        },
-      });
-      const res = new Response(stream, {
-        headers: {
-          'content-type': 'text/html',
-          'X-Cid': '123',
-          'X-Mode': 'transition',
-          'X-Type': 'component',
-          'X-Placement': 'before',
-          'X-Target': 'form',
-        },
-      });
+        const encoder = new TextEncoder();
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(
+              encoder.encode(
+                '<!--o:123--><div class="foo">Bar</div><!--c:123-->',
+              ),
+            );
+            controller.close();
+          },
+        });
+        const res = new Response(stream, {
+          headers: {
+            'content-type': 'text/html',
+            'X-Cid': '123',
+            'X-Mode': 'transition',
+            'X-Type': 'component',
+            'X-Placement': 'before',
+            'X-Target': 'form',
+          },
+        });
 
-      await initBrowser();
+        await initBrowser();
 
-      document.body.innerHTML = '<section><form>Foo</form></section>';
+        document.body.innerHTML = '<section><form>Foo</form></section>';
 
-      window.lastDiffTransition = {
-        get finished() {
-          mockTransitionFinished();
-          return Promise.resolve();
-        },
-      };
+        window.lastDiffTransition = {
+          get finished() {
+            mockTransitionFinished();
+            return Promise.resolve();
+          },
+        };
 
-      await resolveRPC(res, dataSet);
+        await resolveRPC(res, dataSet);
 
-      const [, s] = mockDiff.mock.calls[0];
-      const reader = s.getReader();
-      let text = '';
+        const [, s] = mockDiff.mock.calls[0];
+        const reader = s.getReader();
+        let text = '';
 
-      while (true) {
-        const buffer = await reader.read();
-        if (buffer.done) break;
-        text += decoder.decode(buffer.value);
-      }
+        while (true) {
+          const buffer = await reader.read();
+          if (buffer.done) break;
+          text += decoder.decode(buffer.value);
+        }
 
-      expect(text).toBe(
-        normalizeHTML(`
+        expect(text).toBe(
+          normalizeHTML(`
           <html>
             <head></head>
             <body>
@@ -1168,9 +1173,10 @@ describe('utils', () => {
             </body>
           </html>
       `),
-      );
-      expect(mockTransitionFinished).toBeCalled();
-    });
+        );
+        expect(mockTransitionFinished).toBeCalled();
+      },
+    );
 
     it('should render component with reactivity using the comments wrappers (cid)', async () => {
       const mockDiff = mock((...args: any) => {});
