@@ -14,6 +14,25 @@ describe('utils', () => {
         expect(error.message).toContain(
           JSON.stringify({
             type: 'component',
+            target: 'component',
+            renderMode: 'reactivity',
+            placement: 'replace',
+          }),
+        );
+        expect(error.message).toContain(SUFFIX_MESSAGE);
+      }
+    });
+
+    it('should throw the correct throwable in a different target', () => {
+      try {
+        renderComponent({ target: '#foo' });
+      } catch (error: any) {
+        expect(error.name).toBe('rerender');
+        expect(error.message).toContain(PREFIX_MESSAGE);
+        expect(error.message).toContain(
+          JSON.stringify({
+            type: 'component',
+            target: '#foo',
             renderMode: 'reactivity',
             placement: 'replace',
           }),
@@ -31,6 +50,7 @@ describe('utils', () => {
         expect(error.message).toContain(
           JSON.stringify({
             type: 'component',
+            target: 'component',
             renderMode: 'reactivity',
             placement: 'replace',
           }),
@@ -49,6 +69,7 @@ describe('utils', () => {
         expect(error.message).toContain(
           JSON.stringify({
             type: 'component',
+            target: 'component',
             renderMode: 'transition',
             placement: 'replace',
           }),
@@ -67,6 +88,7 @@ describe('utils', () => {
         expect(error.message).toContain(
           JSON.stringify({
             type: 'component',
+            target: 'component',
             renderMode: 'reactivity',
             placement: 'replace',
           }),
@@ -85,6 +107,7 @@ describe('utils', () => {
         expect(error.message).toContain(
           JSON.stringify({
             type: 'component',
+            target: 'component',
             renderMode: 'reactivity',
             placement: 'replace',
           }),
@@ -103,6 +126,7 @@ describe('utils', () => {
         expect(error.message).toContain(
           JSON.stringify({
             type: 'component',
+            target: 'component',
             renderMode: 'reactivity',
             placement: 'append',
           }),

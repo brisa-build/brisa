@@ -19,15 +19,15 @@ export function renderPage(config: RenderPageProps = {}) {
 }
 
 export function renderComponent(config: RenderComponentProps = {}) {
-  const type = config.target ?? 'component';
+  const target = config.target ?? 'component';
   const renderMode = config.withTransition ? 'transition' : 'reactivity';
   const placement = config.placement ?? 'replace';
 
   const throwable = new Error(
-    `${PREFIX_MESSAGE}${JSON.stringify({ type, renderMode, placement })}${SUFFIX_MESSAGE}`,
+    `${PREFIX_MESSAGE}${JSON.stringify({ type: 'component', target, renderMode, placement })}${SUFFIX_MESSAGE}`,
   );
 
-  if (type !== 'page') {
+  if (config.element) {
     // @ts-ignore
     throwable[Symbol.for('element')] = config.element;
   }
