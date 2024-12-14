@@ -437,7 +437,7 @@ describe('utils', () => {
       );
     });
 
-    it('should render the component using the Symbol.for("props") from the error throwable', async () => {
+    it('should render the component using the Symbol.for("element") from the error throwable', async () => {
       function Component({ name }: { name: string }) {
         return <div>{name}</div>;
       }
