@@ -6,6 +6,7 @@ type RenderMode = 'native' | 'transition' | 'reactivity';
 const TRANSITION_MODE = 'transition';
 const $window = window as any;
 const encoder = new TextEncoder();
+const component = 'component';
 
 async function resolveRPC(
   res: Response,
@@ -15,11 +16,13 @@ async function resolveRPC(
   const store = $window._s;
   const mode = res.headers.get('X-Mode');
   const type = res.headers.get('X-Type');
+  const target = res.headers.get('X-Target');
   const urlToNavigate = res.headers.get('X-Navigate');
   const resetForm = res.headers.has('X-Reset');
   const componentId = res.headers.get('X-Cid') ?? dataSet?.cid;
   const transition = args === TRANSITION_MODE || mode === TRANSITION_MODE;
-  const isRerenderOfComponent = type === 'component';
+  const isRerenderOfComponent = type === component;
+  const sameTarget = target === component;
 
   function updateStore(entries: [string, any][]) {
     // Store WITH web components signals, so we need to notify the subscribers
@@ -54,8 +57,17 @@ async function resolveRPC(
       ? new ReadableStream({
           async start(controller) {
             const html = document.documentElement.outerHTML;
+            let elementOuter: string | undefined;
+
+            if (!sameTarget) {
+              const elm = document.querySelector(target!);
+              elementOuter = elm?.outerHTML;
+            }
+
             controller.enqueue(
-              encoder.encode(html.split(`<!--o:${componentId}-->`)[0]),
+              encoder.encode(
+                html.split(elementOuter ?? `<!--o:${componentId}-->`)[0],
+              ),
             );
             const reader = res.body!.getReader();
             while (true) {
@@ -64,7 +76,9 @@ async function resolveRPC(
               controller.enqueue(value);
             }
             controller.enqueue(
-              encoder.encode(html.split(`<!--c:${componentId}-->`)[1]),
+              encoder.encode(
+                html.split(elementOuter ?? `<!--c:${componentId}-->`)[1],
+              ),
             );
             controller.close();
           },
