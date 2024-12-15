@@ -2075,18 +2075,18 @@ describe('utils', () => {
 
     it('should work rerendering a component with onSubmit and function calls', () => {
       const code = `
-      import { rerenderInAction } from "brisa/server";
+      import { renderComponent } from "brisa/server";
 
       export default function CounterServer(
         { value = 0 }: { value: number },
       ) {
 
         function increment(v: number) {
-          rerenderInAction({ type: "targetComponent", props: { value: v + 1 } });
+          renderComponent({ element: <CounterServer value={v + 1} /> });
         }
 
         function decrement(v: number) {
-          rerenderInAction({ type: "targetComponent", props: { value: v - 1 } });
+          renderComponent({ type: <CounterServer value={v - 1} /> });
         }
 
         return (
@@ -2109,15 +2109,15 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {rerenderInAction} from "${brisaServerFile}";
+      import {renderComponent} from "${brisaServerFile}";
 
       function CounterServer({value = 0}) {
         function increment(v) {
-          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+          renderComponent({element: jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this)});
         }
 
         function decrement(v) {
-          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+          renderComponent({type: jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this)});
         }
 
         return jsxDEV("div", {
@@ -2142,11 +2142,11 @@ describe('utils', () => {
           if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
         };
         function increment(v) {
-          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+          renderComponent({element: jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this)});
         }
 
         function decrement(v) {
-          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+          renderComponent({type: jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this)});
         }
         await __action(...req.store.get("__params:a1_1"));
         await req._waitActionCallPromises("a1_1");
@@ -2165,7 +2165,7 @@ describe('utils', () => {
 
     it('should work rerendering a component with onSubmit and function calls with variables inside', () => {
       const code = `
-      import { rerenderInAction } from "brisa/server";
+      import { renderComponent } from "brisa/server";
 
       export default function CounterServer(
         { value = 0 }: { value: number },
@@ -2173,12 +2173,12 @@ describe('utils', () => {
 
         function increment(v: number) {
           const value = v + 1;
-          rerenderInAction({ type: "targetComponent", props: { value} });
+          renderComponent(<CounterServer value={value} />);
         }
 
         function decrement(v: number) {
           const value = v - 1;
-          rerenderInAction({ type: "targetComponent", props: { value } });
+          renderComponent(<CounterServer value={value} />);
         }
 
         return (
@@ -2201,17 +2201,17 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {rerenderInAction} from "${brisaServerFile}";
+      import {renderComponent} from "${brisaServerFile}";
 
       function CounterServer({value = 0}) {
         function increment(v) {
           const value = v + 1;
-          rerenderInAction({type: "targetComponent",props: {value}});
+          renderComponent(jsxDEV(CounterServer, {value}, undefined, false, undefined, this));
         }
 
         function decrement(v) {
           const value = v - 1;
-          rerenderInAction({type: "targetComponent",props: {value}});
+          renderComponent(jsxDEV(CounterServer, {value}, undefined, false, undefined, this));
         }
 
         return jsxDEV("div", {
@@ -2238,12 +2238,12 @@ describe('utils', () => {
         };
         function increment(v) {
           const value = v + 1;
-          rerenderInAction({type: "targetComponent",props: {value}});
+          renderComponent(jsxDEV(CounterServer, {value}, undefined, false, undefined, this));
         }
 
         function decrement(v) {
           const value = v - 1;
-          rerenderInAction({type: "targetComponent",props: {value}});
+          renderComponent(jsxDEV(CounterServer, {value}, undefined, false, undefined, this));
         }
         await __action(...req.store.get("__params:a1_1"));
         await req._waitActionCallPromises("a1_1");
@@ -2262,18 +2262,18 @@ describe('utils', () => {
 
     it('should work rerendering a component with onSubmit and arrow function calls', () => {
       const code = `
-      import { rerenderInAction } from "brisa/server";
+      import { renderComponent } from "brisa/server";
 
       export default function CounterServer(
         { value = 0 }: { value: number },
       ) {
 
         const increment = (v: number) => {
-          rerenderInAction({ type: "targetComponent", props: { value: v + 1 } });
+          renderComponent(<CounterServer value={v + 1} />);
         }
 
         const decrement = (v: number) => {
-          rerenderInAction({ type: "targetComponent", props: { value: v - 1 } });
+          renderComponent(<CounterServer value={v - 1} />);
         }
 
         return (
@@ -2296,15 +2296,15 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {rerenderInAction} from "${brisaServerFile}";
+      import {renderComponent} from "${brisaServerFile}";
 
       function CounterServer({value = 0}) {
         const increment = v => {
-          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+          renderComponent(jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this));
         };
 
         const decrement = v => {
-          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+          renderComponent(jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this));
         };
 
         return jsxDEV("div", {
@@ -2330,11 +2330,11 @@ describe('utils', () => {
           if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
         };
         const increment = v => {
-          rerenderInAction({type: "targetComponent",props: {value: v + 1}});
+          renderComponent(jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this));
         };
 
         const decrement = v => {
-          rerenderInAction({type: "targetComponent",props: {value: v - 1}});
+          renderComponent(jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this));
         };
         await __action(...req.store.get("__params:a1_1"));
         await req._waitActionCallPromises("a1_1");

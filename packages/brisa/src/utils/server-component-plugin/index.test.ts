@@ -1222,7 +1222,7 @@ describe('utils', () => {
 
     // On Components we want to propagate the action (without the need to create it),
     // meanwhile on elements we want to create the arrow function to allow the
-    // rerenderInAction to re-render the target component
+    // `renderComponent` to re-render the target component
     it('should NOT create the arrow function when is a Component instead of element', () => {
       const code = `
         export default function ServerComponent({onClick}) {
@@ -1277,7 +1277,7 @@ describe('utils', () => {
 
     // On Components we want to propagate the action (without the need to create it),
     // meanwhile on elements we want to create the arrow function to allow the
-    // rerenderInAction to re-render the target component
+    // renderComponent to re-render the target component
     it('should NOT create the arrow function using destructuring props comming from props in Component', () => {
       const code = `
         export default function ServerComponent({onClick}) {

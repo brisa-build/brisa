@@ -917,7 +917,7 @@ interface Throwable {
    *
    * The `is` method is used to check if an error is a Brisa throwable:
    *
-   * **rerender** from `rerenderInAction`, **navigate** or **notFound**.
+   * **rerender** from `renderPage` / `renderComponent`, **navigate** or **notFound**.
    *
    * You can also use the `isRerender`, `isNavigate`, and `isNotFound` properties to check for specific throwables.
    *
@@ -942,7 +942,7 @@ interface Throwable {
   /**
    * Description:
    *
-   * The `isRerender` method is used to check if an error is a Brisa throwable **rerender** from `rerenderInAction`.
+   * The `isRerender` method is used to check if an error is a Brisa throwable **rerender** from `renderPage` or `renderComponent`.
    *
    * Example:
    *

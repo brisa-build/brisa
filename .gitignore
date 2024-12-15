@@ -40,3 +40,6 @@ tsconfig.tsbuildinfo
 ## Panda
 styled-system
 styled-system-studio
+
+## Deno (we are using bun.lockb)
+deno.lock

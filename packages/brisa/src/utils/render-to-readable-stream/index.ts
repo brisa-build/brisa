@@ -275,7 +275,7 @@ async function enqueueDuringRendering(
         );
       }
 
-      // Open tag useful for a rerenderInAction to know the component
+      // Open tag useful for a `renderComponent` to know the component
       if (hasActions) {
         controller.generateComponentId();
         controller.enqueue(
@@ -292,7 +292,7 @@ async function enqueueDuringRendering(
         isNextInSlottedPosition,
       );
 
-      // Close tag useful for a rerenderInAction to know the component
+      // Close tag useful for a `renderComponent` to know the component
       if (hasActions) {
         controller.enqueue(
           `<!--c:${controller.getComponentId()}-->`,

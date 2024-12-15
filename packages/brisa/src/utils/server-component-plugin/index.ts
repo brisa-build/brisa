@@ -629,7 +629,7 @@ function markComponentHasActions(componentName: string, parent: any) {
   });
 }
 
-// For elements, we need to create an arrow function to enable the rerenderInAction to
+// For elements, we need to create an arrow function to enable the `renderComponent` to
 // re-render the target component. Therefore, for elements, we use this function to
 // convert the action identifier attribute into an arrow function, which is then used
 // to create the action.

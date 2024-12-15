@@ -1,5 +1,5 @@
 import type { RequestContext } from 'brisa';
-import { Initiator, rerenderInAction } from 'brisa/server';
+import { Initiator, renderPage } from 'brisa/server';
 
 function SuspenseState() {
   return (
@@ -25,12 +25,12 @@ export default async function CounterServer(
 
   function increment() {
     store.set('count', store.get('count') + 1);
-    rerenderInAction({ type: 'page' });
+    renderPage();
   }
 
   function decrement() {
     store.set('count', store.get('count') - 1);
-    rerenderInAction({ type: 'page' });
+    renderPage();
   }
 
   return (

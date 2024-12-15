@@ -1,5 +1,5 @@
 import type { RequestContext } from 'brisa';
-import { rerenderInAction } from 'brisa/server';
+import { renderComponent } from 'brisa/server';
 
 export default function CounterServer(
   { initialValue = 0 }: { initialValue: number },
@@ -10,12 +10,12 @@ export default function CounterServer(
 
   function increment() {
     store.set('count', store.get('count') + 1);
-    rerenderInAction({ type: 'targetComponent' });
+    renderComponent();
   }
 
   function decrement() {
     store.set('count', store.get('count') - 1);
-    rerenderInAction({ type: 'targetComponent' });
+    renderComponent();
   }
 
   return (

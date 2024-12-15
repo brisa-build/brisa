@@ -1,5 +1,5 @@
 import type { RequestContext } from 'brisa';
-import { rerenderInAction } from 'brisa/server';
+import { renderPage } from 'brisa/server';
 import { Database } from 'bun:sqlite';
 
 type Movie = {
@@ -24,7 +24,7 @@ export default function Homepage({}, { css, indicate }: RequestContext) {
 
     (e.target as HTMLFormElement).reset();
     insertMovieQuery.run({ $title, $year });
-    rerenderInAction({ type: 'page' });
+    renderPage();
   }
 
   // Disabling button via CSS during the request

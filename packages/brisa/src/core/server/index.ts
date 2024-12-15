@@ -11,7 +11,14 @@ export { default as serve } from '@/cli/serve/bun-serve';
 export const getServer = () => globalThis.brisaServer;
 
 // TODO: Remove it in future releases
-export const rerenderInAction = () =>
+export const rerenderInAction = () => {
   console.warn(
     '🚨 BREAKING CHANGE: rerenderInAction is not more supported. You need to replace it to renderPage() or renderComponent() methods.',
   );
+  console.log(
+    '👉 renderPage(): http://brisa.build/api-reference/server-apis/renderPage',
+  );
+  console.log(
+    '👉 renderComponent(): http://brisa.build/api-reference/server-apis/renderComponent',
+  );
+};
