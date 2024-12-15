@@ -1,4 +1,4 @@
-import { renderComponent } from "brisa/server";
+import { renderComponent } from 'brisa/server';
 
 type Question = {
   answer: string;
@@ -7,26 +7,26 @@ type Question = {
 };
 
 const questions: Question[] = [
-  { id: 1, answer: "no", question: "Is the Earth flat? " },
-  { id: 2, answer: "yes", question: "Is the Earth round? " },
-  { id: 3, answer: "no", question: "Can giraffes lay eggs?" },
-  { id: 4, answer: "yes", question: "Can penguins fly?" },
-  { id: 5, answer: "no", question: "Can a cow jump over the moon?" },
-  { id: 6, answer: "yes", question: "Is water wet by definition?" },
-  { id: 7, answer: "yes", question: "Is the sky blue?" },
-  { id: 8, answer: "yes", question: "Do fish sleep with their eyes open?" },
-  { id: 9, answer: "no", question: "Can a cow fly?" },
+  { id: 1, answer: 'no', question: 'Is the Earth flat? ' },
+  { id: 2, answer: 'yes', question: 'Is the Earth round? ' },
+  { id: 3, answer: 'no', question: 'Can giraffes lay eggs?' },
+  { id: 4, answer: 'yes', question: 'Can penguins fly?' },
+  { id: 5, answer: 'no', question: 'Can a cow jump over the moon?' },
+  { id: 6, answer: 'yes', question: 'Is water wet by definition?' },
+  { id: 7, answer: 'yes', question: 'Is the sky blue?' },
+  { id: 8, answer: 'yes', question: 'Do fish sleep with their eyes open?' },
+  { id: 9, answer: 'no', question: 'Can a cow fly?' },
 ];
 
 function openModal() {
   const randomIndex = Math.floor(Math.random() * questions.length);
   renderComponent({
     element: <Modal {...questions[randomIndex]} />,
-    target: "#content",
+    target: '#content',
   });
 }
 
-function processAnswer(e: ClickEvent, value = "yes") {
+function processAnswer(e: ClickEvent, value = 'yes') {
   const id = (e.target as HTMLButtonElement).dataset.id;
   const isCorrect = questions.find((q) => q.id === Number(id)).answer === value;
   renderComponent({
@@ -39,7 +39,7 @@ function processAnswer(e: ClickEvent, value = "yes") {
         Incorrect!
       </p>
     ),
-    target: "dialog",
+    target: 'dialog',
   });
 }
 
@@ -67,10 +67,10 @@ function Modal({ question, answer, id }: Question) {
     <dialog open>
       <form method="dialog">
         <h2>{question}</h2>
-        <button data-id={id} onClick={(e) => processAnswer(e, "yes")}>
+        <button data-id={id} onClick={(e) => processAnswer(e, 'yes')}>
           Yes
         </button>
-        <button data-id={id} onClick={(e) => processAnswer(e, "no")}>
+        <button data-id={id} onClick={(e) => processAnswer(e, 'no')}>
           No
         </button>
       </form>
