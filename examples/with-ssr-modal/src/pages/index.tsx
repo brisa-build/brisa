@@ -6,6 +6,8 @@ type Question = {
   id: number;
 };
 
+// All this code is server-code. So is impossible that the user knows the answer
+// after inspecting the page.
 const questions: Question[] = [
   { id: 1, answer: 'no', question: 'Is the Earth flat? ' },
   { id: 2, answer: 'yes', question: 'Is the Earth round? ' },

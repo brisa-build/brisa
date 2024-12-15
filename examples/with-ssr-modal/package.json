@@ -3,6 +3,7 @@
   "module": "src/pages/index.tsx",
   "type": "module",
   "example-category": "basics",
+  "webTitle": "Server-Side Dialog Management",
   "scripts": {
     "dev": "brisa dev",
     "dev:debug": "brisa dev --debug",
