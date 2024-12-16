@@ -2,7 +2,6 @@ import type { ESTree } from 'meriyah';
 import type { ActionInfo } from '@/utils/transpile-actions/get-actions-info';
 import removeAllReturns from '@/utils/ast/remove-all-returns';
 import containsIdentifiers from '@/utils/ast/contains-identifiers';
-import getAllIdentifiers from '@/utils/ast/get-all-identifiers';
 import getVarDeclarationIdentifiers from '@/utils/ast/get-var-declaration-identifiers';
 
 /**
@@ -20,7 +19,10 @@ export function getPurgedBody(info: ActionInfo): ESTree.BlockStatement {
   const bodyIdentifiers = getVarDeclarationIdentifiers(body);
   const actionFn =
     info.actionFnExpression ?? getActionFnFromActionIdentifier(info);
-  const actionIdentifiers = getAllIdentifiers(actionFn);
+  const actionIdentifiers = getAllFunctionIdentifiers(
+    body,
+    actionFn as ESTree.Node,
+  );
   const intersectionSet = new Set<string>();
 
   // Get the intersection of the identifiers between the action and the body
@@ -62,4 +64,42 @@ function getActionFnFromActionIdentifier(info: ActionInfo) {
   });
 
   return actionFn;
+}
+
+export function getAllFunctionIdentifiers(
+  node: ESTree.Node | undefined,
+  fnNode: ESTree.Node,
+): Set<string> {
+  const callExpressions = new Set<string>();
+  let identifiers = new Set<string>();
+
+  if (!node) return identifiers;
+
+  JSON.stringify(fnNode, (k, v) => {
+    if (v?.type === 'Identifier') {
+      identifiers.add(v.name);
+    }
+
+    if (v?.type === 'CallExpression') {
+      callExpressions.add(v.callee.name);
+      identifiers.add(v.callee.name);
+    }
+
+    return v;
+  });
+
+  if (callExpressions.size > 0) {
+    JSON.stringify(node, (k, v) => {
+      // This helper is used for (non-arrow) functions
+      // (they are already transformed from arrow to function)
+      if (v?.type === 'FunctionDeclaration' && callExpressions.has(v.id.name)) {
+        identifiers = identifiers.union(getAllFunctionIdentifiers(node, v));
+        return null;
+      }
+
+      return v;
+    });
+  }
+
+  return identifiers;
 }

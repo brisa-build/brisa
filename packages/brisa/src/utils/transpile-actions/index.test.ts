@@ -2163,6 +2163,232 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
+    it('should work an action calling a inner function #684', () => {
+      const code = `
+      import { renderComponent } from "brisa/server";
+
+      export default function CounterServer(
+        { value = 0 }: { value: number },
+      ) {
+
+        function inc(v) {
+          renderComponent({ element: <CounterServer value={v + 1} /> });
+        }
+
+        function dec(v) {
+          renderComponent({ type: <CounterServer value={v - 1} /> });
+        }
+
+        function increment(v: number) {
+          inc(v);
+        }
+
+        function decrement(v: number) {
+          dec(v)
+        }
+
+        return (
+          <div>
+            <h2>Server counter</h2>
+            <form onSubmit={e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter")!);
+              if (content === "-") decrement(+e.formData.get("counter")!);
+            }}>
+              <button>+</button>
+              <input name="counter" type="number" value={value}></input>
+              <button>-</button>
+            </form>
+          </div>
+        );
+      }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+      import {resolveAction as __resolveAction} from "brisa/server";
+      import {renderComponent} from "${brisaServerFile}";
+
+      function CounterServer({value = 0}) {
+        function inc(v) {
+          renderComponent({element: jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this)});
+        }
+
+        function dec(v) {
+          renderComponent({type: jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this)});
+        }
+
+        function increment(v) {
+          inc(v);
+        }
+
+        function decrement(v) {
+          dec(v);
+        }
+
+        return jsxDEV("div", {
+          children: [jsxDEV("h2", {children: "Server counter"}, undefined, false, undefined, this), jsxDEV(
+            "form", {onSubmit: e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter"));
+              if (content === "-") decrement(+e.formData.get("counter"));
+            },
+            children: [jsxDEV("button", {children: "+"}, undefined, false, undefined, this), jsxDEV(
+              "input", {name: "counter",type: "number",value}, undefined, false, undefined, this), jsxDEV(
+                "button", {children: "-"}, undefined, false, undefined, this)],"data-action-onsubmit": "a1_1","data-action": true}, undefined, true, undefined, this)]}, undefined, true, undefined, this);
+        }
+    
+        CounterServer._hasActions = true;
+
+    export async function a1_1({value = 0}, req) {
+      try {
+        const __action = e => {
+          const content = e.currentTarget.innerHTML;
+          if (content === "+") req._p(increment(+req._p(e.formData.get("counter"))));
+          if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
+        };
+        function inc(v) {
+          renderComponent({element: jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this)});
+        }
+
+        function dec(v) {
+          renderComponent({type: jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this)});
+        }
+        function increment(v) {
+          inc(v);
+        }
+
+        function decrement(v) {
+          dec(v);
+        }
+        await __action(...req.store.get("__params:a1_1"));
+        await req._waitActionCallPromises("a1_1");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_1",
+          component: __props => jsxDEV(CounterServer, {value, ...__props}, undefined, false, undefined, this)
+        });
+      }
+    }`);
+
+      expect(output).toEqual(expected);
+    });
+
+    it('should work an action calling a inner arrow function #684', () => {
+      const code = `
+      import { renderComponent } from "brisa/server";
+
+      export default function CounterServer(
+        { value = 0 }: { value: number },
+      ) {
+
+        const inc = (v) => {
+          renderComponent({ element: <CounterServer value={v + 1} /> });
+        };
+
+        const dec = (v) => {
+          renderComponent({ type: <CounterServer value={v - 1} /> });
+        };
+
+        const increment = (v: number) => {
+          inc(v);
+        };
+
+        const decrement = (v: number) => {
+          dec(v)
+        };
+
+        return (
+          <div>
+            <h2>Server counter</h2>
+            <form onSubmit={e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter")!);
+              if (content === "-") decrement(+e.formData.get("counter")!);
+            }}>
+              <button>+</button>
+              <input name="counter" type="number" value={value}></input>
+              <button>-</button>
+            </form>
+          </div>
+        );
+      }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+      import {resolveAction as __resolveAction} from "brisa/server";
+      import {renderComponent} from "${brisaServerFile}";
+
+      function CounterServer({value = 0}) {
+        const inc = v => {
+          renderComponent({element: jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this)});
+        };
+
+        const dec = v => {
+          renderComponent({type: jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this)});
+        };
+
+        const increment = v => {
+          inc(v);
+        };
+
+        const decrement = v => {
+          dec(v);
+        };
+
+        return jsxDEV("div", {
+          children: [jsxDEV("h2", {children: "Server counter"}, undefined, false, undefined, this), jsxDEV(
+            "form", {onSubmit: e => {
+              const content = e.currentTarget.innerHTML;
+              if (content === "+") increment(+e.formData.get("counter"));
+              if (content === "-") decrement(+e.formData.get("counter"));
+            },
+            children: [jsxDEV("button", {children: "+"}, undefined, false, undefined, this), jsxDEV(
+              "input", {name: "counter",type: "number",value}, undefined, false, undefined, this), jsxDEV(
+                "button", {children: "-"}, undefined, false, undefined, this)],"data-action-onsubmit": "a1_1","data-action": true}, undefined, true, undefined, this)]}, undefined, true, undefined, this);
+        }
+    
+        CounterServer._hasActions = true;
+
+    export async function a1_1({value = 0}, req) {
+      try {
+        const __action = e => {
+          const content = e.currentTarget.innerHTML;
+          if (content === "+") req._p(increment(+req._p(e.formData.get("counter"))));
+          if (content === "-") req._p(decrement(+req._p(e.formData.get("counter"))));
+        };
+        const inc = v => {
+          renderComponent({element: jsxDEV(CounterServer, {value: v + 1}, undefined, false, undefined, this)});
+        };
+
+        const dec = v => {
+          renderComponent({type: jsxDEV(CounterServer, {value: v - 1}, undefined, false, undefined, this)});
+        };
+        const increment = v => {
+          inc(v);
+        };
+
+        const decrement = v => {
+          dec(v);
+        };
+        await __action(...req.store.get("__params:a1_1"));
+        await req._waitActionCallPromises("a1_1");
+      } catch (error) {
+        return __resolveAction({
+          req,
+          error,
+          actionId: "a1_1",
+          component: __props => jsxDEV(CounterServer, {value, ...__props}, undefined, false, undefined, this)
+        });
+      }
+    }`);
+
+      expect(output).toEqual(expected);
+    });
+
     it('should work rerendering a component with onSubmit and function calls with variables inside', () => {
       const code = `
       import { renderComponent } from "brisa/server";
