@@ -15,7 +15,10 @@ type Result = {
 
 const TRAILING_SLASH_REGEX = /\/$/;
 
-export default function handleI18n(req: RequestContext): {
+export default function handleI18n(
+  req: RequestContext,
+  currentLocale?: string,
+): {
   response?: Response;
   pagesRouter?: ReturnType<typeof getRouteMatcher>;
   rootRouter?: ReturnType<typeof getRouteMatcher>;
@@ -26,6 +29,7 @@ export default function handleI18n(req: RequestContext): {
     RESERVED_PAGES,
     I18N_CONFIG,
     CONFIG,
+    LOCALES_SET,
     IS_PRODUCTION,
   } = getConstants();
   const { locales, defaultLocale, pages, domains } = I18N_CONFIG || {};
@@ -44,7 +48,7 @@ export default function handleI18n(req: RequestContext): {
   };
 
   // Redirect to default locale if there is no locale in the URL
-  if (localeFromUrl !== locale) {
+  if (localeFromUrl !== locale && !LOCALES_SET.has(localeFromUrl)) {
     const { route } = result.pagesRouter.match(req);
     const translatedRoute =
       (pages as any)?.[route?.name!]?.[locale] ?? pathname;

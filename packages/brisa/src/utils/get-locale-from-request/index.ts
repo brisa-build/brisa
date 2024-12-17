@@ -2,6 +2,8 @@ import { getConstants } from '@/constants';
 import type { I18nConfig, RequestContext } from '@/types';
 
 export default function getLocaleFromRequest(request: RequestContext): string {
+  if (request.i18n?.locale) return request.i18n.locale;
+
   const { I18N_CONFIG = {} as I18nConfig, LOCALES_SET } = getConstants();
   const { pathname } = new URL(request.finalURL);
   const [, locale] = pathname.split('/');

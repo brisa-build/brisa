@@ -731,7 +731,7 @@ describe('utils', () => {
       );
     });
 
-    it('should navigate with the i18n locale', async () => {
+    it('should navigate with the default locale when no req.i18n', async () => {
       globalThis.mockConstants = {
         ...(getConstants() ?? {}),
         PAGES_DIR,
@@ -756,6 +756,44 @@ describe('utils', () => {
       });
 
       expect(response.headers.get('X-Navigate')).toBe('/ru/some-url');
+      expect(response.headers.get('X-Mode')).toBe('reactivity');
+    });
+
+    it('should navigate with the req.i18n.locale', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        PAGES_DIR,
+        BUILD_DIR,
+        SRC_DIR: BUILD_DIR,
+        ASSETS_DIR,
+        LOCALES_SET: new Set(['en', 'es']),
+        I18N_CONFIG: {
+          locales: ['ru', 'es'],
+          defaultLocale: 'ru',
+        },
+      };
+      const error = new Error('/some-url');
+      error.name = 'navigate:reactivity';
+
+      const req = getReq();
+
+      req.i18n = {
+        defaultLocale: 'ru',
+        locales: ['ru', 'es'],
+        locale: 'en',
+        t: (v) => v,
+        pages: {},
+        overrideMessages: () => {},
+      };
+
+      const response = await resolveAction({
+        req,
+        error,
+        actionId: 'a1_1',
+        component: () => <div />,
+      });
+
+      expect(response.headers.get('X-Navigate')).toBe('/en/some-url');
       expect(response.headers.get('X-Mode')).toBe('reactivity');
     });
 
