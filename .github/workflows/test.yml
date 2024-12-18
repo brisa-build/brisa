@@ -22,7 +22,7 @@ jobs:
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.38
+          bun-version: 1.1.40
       - name: Install dependencies
         run: bun install
       - name: Build project
@@ -45,7 +45,7 @@ jobs:
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.38
+          bun-version: 1.1.40
       - name: Install dependencies
         run: bun install
       - name: Build project
@@ -63,7 +63,7 @@ jobs:
       - name: Setup Bun.js
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 1.1.38
+          bun-version: 1.1.40
       - uses: actions/checkout@v4
       - name: Setup Deno
         uses: denoland/setup-deno@v1
