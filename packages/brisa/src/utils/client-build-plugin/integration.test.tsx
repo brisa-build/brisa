@@ -6322,7 +6322,7 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
-    it('should not duplicate "Open" button after change state + change prop signal #686', async () => {
+    it('should render well after change state + change prop signal #686', async () => {
       const code = `
         export default async function Chat({ foo, bar }, { state }) {
           const message = state(false);
@@ -6375,7 +6375,9 @@ describe('integration', () => {
       await Bun.sleep(0);
 
       const chatExample = document.querySelector('chat-example') as HTMLElement;
-      const button = chatExample.shadowRoot!.querySelector('button') as HTMLButtonElement;
+      const button = chatExample.shadowRoot!.querySelector(
+        'button',
+      ) as HTMLButtonElement;
 
       expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
         normalizeHTML(`
