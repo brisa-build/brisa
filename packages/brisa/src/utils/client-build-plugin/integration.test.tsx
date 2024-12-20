@@ -6322,6 +6322,103 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
+    it('should handle nested ternaries with signals correctly #686', async () => {
+      const code = `
+        export default function NestedTernaries({ level1, level2 }, { state }) {
+          const showInner = state(false);
+          
+          return (
+            <div>
+              {level1 ? (
+                <>
+                  <div>
+                    Outer {level1}
+                    {level2 ? (
+                      <>
+                        <span>Level 2 - Active</span>
+                        <button onClick={() => (showInner.value = !showInner.value)}>
+                          Toggle Inner
+                        </button>
+                        {showInner.value ? (
+                          <p>Inner Content Visible</p>
+                        ) : (
+                          <p>Inner Content Hidden</p>
+                        )}
+                      </>
+                    ) : (
+                      <span>Level 2 - Inactive</span>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div>No Level 1</div>
+              )}
+            </div>
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(code, 'src/web-components/nested-ternaries.tsx');
+
+      document.body.innerHTML =
+        '<nested-ternaries level1="true" level2="true"></nested-ternaries>';
+      await Bun.sleep(0);
+
+      const component = document.querySelector(
+        'nested-ternaries',
+      ) as HTMLElement;
+      const shadowRoot = component.shadowRoot!;
+      const toggleButton = shadowRoot.querySelector('button');
+
+      // Initial render
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer true
+              <span>Level 2 - Active</span>
+              <button>Toggle Inner</button>
+              <p>Inner Content Hidden</p>
+            </div>
+          </div>
+        `),
+      );
+
+      // Simulate toggle click
+      toggleButton!.click();
+      await Bun.sleep(0);
+
+      // After toggling inner content
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer true
+              <span>Level 2 - Active</span>
+              <button>Toggle Inner</button>
+              <p>Inner Content Visible</p>
+            </div>
+          </div>
+        `),
+      );
+
+      // Change props
+      component.setAttribute('level2', 'false');
+      await Bun.sleep(0);
+
+      // Check render after level2 becomes inactive
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer true
+              <span>Level 2 - Inactive</span>
+            </div>
+          </div>
+        `),
+      );
+    });
+
     it('should render well after change state + change prop signal #686', async () => {
       const code = `
         export default async function Chat({ foo, bar }, { state }) {
