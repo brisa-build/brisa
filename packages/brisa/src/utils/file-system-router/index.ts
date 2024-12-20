@@ -117,7 +117,7 @@ function getURLParams(url: URL) {
   const params: Record<string, string | string[]> = {};
   for (const key of url.searchParams.keys()) {
     params[key] = url.searchParams.getAll(key);
-    
+
     if (params[key].length === 1) {
       params[key] = params[key][0];
     }
