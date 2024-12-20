@@ -376,6 +376,7 @@ describe('utils', () => {
       // With query:
       '/?test=1',
       '/user/john?test=1',
+      '/user/john?test=1&test=2',
       '/foo/bar?test=1',
       '/rest/a/b/c?test=1',
       '/rest2/a/b/c?test=1',

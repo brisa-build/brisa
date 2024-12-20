@@ -131,6 +131,12 @@ function getParamsAndQuery(route: string, pathname: string, url: URL) {
   );
 
   const query = { ...params, ...Object.fromEntries(url.searchParams) };
+  for (const key of url.searchParams.keys()) {
+    query[key] = url.searchParams.getAll(key);
+    if (query[key].length === 1) {
+      query[key] = query[key][0];
+    }
+  }
 
   return { params, query };
 }
