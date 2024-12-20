@@ -130,7 +130,7 @@ function getParamsAndQuery(route: string, pathname: string, url: URL) {
     {} as Record<string, string | string[]>,
   );
 
-  const query = { ...params, ...Object.fromEntries(url.searchParams) };
+  const query = { ...params, ...getURLParams(url) };
   for (const key of url.searchParams.keys()) {
     query[key] = url.searchParams.getAll(key);
     if (query[key].length === 1) {
