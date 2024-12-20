@@ -6322,6 +6322,208 @@ describe('integration', () => {
       expect(testComponent?.shadowRoot?.innerHTML).toBe('last number = 10');
     });
 
+    it('should handle signals at multiple levels correctly', async () => {
+      const code = `
+        export default function MultiLevelSignals({ active }, { state }) {
+          const showOuter = state(false);
+          const showInner = state(false);
+    
+          return (
+            <div>
+              {active ? (
+                <>
+                  <div>
+                    Outer Section
+                    <button onClick={() => (showOuter.value = !showOuter.value)}>
+                      Toggle Outer
+                    </button>
+                    {showOuter.value ? (
+                      <>
+                        <p>Outer Visible</p>
+                        <button onClick={() => (showInner.value = !showInner.value)}>
+                          Toggle Inner
+                        </button>
+                        {showInner.value ? (
+                          <span>Inner Content Visible</span>
+                        ) : (
+                          <span>Inner Content Hidden</span>
+                        )}
+                      </>
+                    ) : (
+                      <p>Outer Hidden</p>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div>No Active Section</div>
+              )}
+            </div>
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(
+        code,
+        'src/web-components/multi-level-signals.tsx',
+      );
+
+      document.body.innerHTML =
+        '<multi-level-signals active="true"></multi-level-signals>';
+      await Bun.sleep(0);
+
+      const component = document.querySelector(
+        'multi-level-signals',
+      ) as HTMLElement;
+      const shadowRoot = component.shadowRoot!;
+      const toggleOuterButton = shadowRoot.querySelector('button');
+
+      // Initial render
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer Section
+              <button>Toggle Outer</button>
+              <p>Outer Hidden</p>
+            </div>
+          </div>
+        `),
+      );
+
+      // Toggle outer section
+      toggleOuterButton!.click();
+      await Bun.sleep(0);
+
+      // After toggling outer section
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer Section
+              <button>Toggle Outer</button>
+              <p>Outer Visible</p>
+              <button>Toggle Inner</button>
+              <span>Inner Content Hidden</span>
+            </div>
+          </div>
+        `),
+      );
+
+      // Change active prop
+      component.setAttribute('active', 'false');
+      await Bun.sleep(0);
+
+      // Check render after active becomes false
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>No Active Section</div>
+          </div>
+        `),
+      );
+    });
+
+    it('should handle nested ternaries with cross-signal dependencies', async () => {
+      const code = `
+        export default function CrossSignals({ toggle }, { state }) {
+          const outerSignal = state(false);
+          const innerSignal = state(false);
+    
+          return (
+            <div>
+              {toggle ? (
+                <>
+                  <div>
+                    Outer {toggle}
+                    <button onClick={() => (outerSignal.value = !outerSignal.value)}>
+                      Toggle Outer
+                    </button>
+                    {outerSignal.value ? (
+                      <>
+                        <p>Outer is Active</p>
+                        {innerSignal.value ? (
+                          <p>Inner is Active</p>
+                        ) : (
+                          <button onClick={() => (innerSignal.value = true)}>
+                            Activate Inner
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <p>Outer is Inactive</p>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <p>Toggle is off</p>
+              )}
+            </div>
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(code, 'src/web-components/cross-signals.tsx');
+
+      document.body.innerHTML = '<cross-signals toggle="true"></cross-signals>';
+      await Bun.sleep(0);
+
+      const component = document.querySelector('cross-signals') as HTMLElement;
+      const shadowRoot = component.shadowRoot!;
+      const toggleOuterButton = shadowRoot.querySelector('button');
+
+      // Initial render
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer true
+              <button>Toggle Outer</button>
+              <p>Outer is Inactive</p>
+            </div>
+          </div>
+        `),
+      );
+
+      // Toggle outer
+      toggleOuterButton!.click();
+      await Bun.sleep(0);
+
+      // After toggling outer
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer true
+              <button>Toggle Outer</button>
+              <p>Outer is Active</p>
+              <button>Activate Inner</button>
+            </div>
+          </div>
+        `),
+      );
+
+      // Activate inner
+      const activateInnerButton = shadowRoot.querySelector(
+        'button:nth-of-type(2)',
+      ) as HTMLButtonElement;
+      activateInnerButton!.click();
+      await Bun.sleep(0);
+
+      // After activating inner
+      expect(normalizeHTML(shadowRoot.innerHTML)).toBe(
+        normalizeHTML(`
+          <div>
+            <div>
+              Outer true
+              <button>Toggle Outer</button>
+              <p>Outer is Active</p>
+              <p>Inner is Active</p>
+            </div>
+          </div>
+        `),
+      );
+    });
+
     it('should handle nested ternaries with signals correctly #686', async () => {
       const code = `
         export default function NestedTernaries({ level1, level2 }, { state }) {
