@@ -265,7 +265,11 @@ export default async function Layout({}, request: RequestContext) {
 
   request.store.set("data", data);
 
-  // Transfer "data" from store to client
+  // Transfer "data" from store to client  
+  // You extend the life of the store from request-time:
+  //  render (server) → 💀
+  // to:
+  //  render (server) → client → action (server) → rerender (server) → client → ...
   request.store.transferToClient(["data"]);
 
   return (
