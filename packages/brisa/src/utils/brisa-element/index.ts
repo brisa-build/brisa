@@ -365,11 +365,14 @@ export default function brisaElement(
                     );
                   }
 
-                  insertOrUpdate(arr(tempContainer.childNodes) as ChildNode[]);
+                  const nodes = arr(tempContainer.childNodes) as ChildNode[];
+
+                  insertOrUpdate(nodes);
                 }
                 // Reactive text node
                 else {
-                  insertOrUpdate([createTextNode(child)]);
+                  const textNodes = [createTextNode(child)];
+                  insertOrUpdate(textNodes);
                 }
               }
               if (childOrPromise instanceof Promise)
