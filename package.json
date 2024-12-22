@@ -47,9 +47,9 @@
     "www:deploy": "bun run build && bun run www:build && vercel --prod",
     "prepare": "husky && bun run packages/brisa-tailwindcss/scripts/generate-json-deps.ts"
   },
-  "packageManager": "bun@1.1.40",
+  "packageManager": "bun@1.1.42",
   "engines": {
-    "bun": ">= 1.1.40",
+    "bun": ">= 1.1.42",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
