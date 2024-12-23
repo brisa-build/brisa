@@ -49,7 +49,13 @@ export default function brisaTailwindcss({ embedded = true } = defaultConfig) {
           const to = path.join(destNodeModules, lib);
 
           if (await fs.exists(from)) {
-            return fs.cp(from, to, { recursive: true });
+            const toBinPath = path.join(to, 'node_modules/.bin');
+
+            await fs.cp(from, to, { recursive: true });
+            // Delete .bin folder in submodules if exists. Could contain broken symlinks as we are moving the node_modules folder.
+            if (await fs.exists(toBinPath)) {
+              await fs.rm(toBinPath, { recursive: true, force: true });
+            }
           }
         }),
       );
