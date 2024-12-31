@@ -28,9 +28,11 @@ function openModal() {
   });
 }
 
-function processAnswer(e: ClickEvent, value = 'yes') {
+function processAnswer(e: MouseEvent, value = 'yes') {
   const id = (e.target as HTMLButtonElement).dataset.id;
-  const isCorrect = questions.find((q) => q.id === Number(id)).answer === value;
+  const isCorrect =
+    questions.find((q) => q.id === Number(id))?.answer === value;
+
   renderComponent({
     element: isCorrect ? (
       <p id="content" class="correct">
