@@ -326,11 +326,12 @@ export default function brisaElement(
             const element = lastNodes && !el.isConnected ? shadowRoot : el;
 
             if (lastNodes && element.contains(lastNodes[0])) {
-              lastNodes[0].before(...nodes);
-              for (const node of lastNodes) node?.remove();
+              lastNodes[0].after(...nodes);
+              for (const node of lastNodes) node.remove();
             } else {
               element.append(...nodes);
             }
+            lastNodes = nodes;
           };
 
           effect(
@@ -364,16 +365,11 @@ export default function brisaElement(
                     );
                   }
 
-                  const nodes = arr(tempContainer.childNodes) as ChildNode[];
-
-                  insertOrUpdate(nodes);
-                  lastNodes = nodes;
+                  insertOrUpdate(arr(tempContainer.childNodes) as ChildNode[]);
                 }
                 // Reactive text node
                 else {
-                  const textNodes = [createTextNode(child)];
-                  insertOrUpdate(textNodes);
-                  lastNodes = textNodes;
+                  insertOrUpdate([createTextNode(child)]);
                 }
               }
               if (childOrPromise instanceof Promise)
