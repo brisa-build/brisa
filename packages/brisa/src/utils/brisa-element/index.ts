@@ -323,13 +323,11 @@ export default function brisaElement(
           let lastNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            const element = lastNodes && !el.isConnected ? shadowRoot : el;
-
-            if (lastNodes && element.contains(lastNodes[0])) {
+            if (lastNodes && el.contains(lastNodes[0])) {
               lastNodes[0].after(...nodes);
               for (const node of lastNodes) node.remove();
             } else {
-              element.append(...nodes);
+              el.append(...nodes);
             }
             lastNodes = nodes;
           };
@@ -342,6 +340,9 @@ export default function brisaElement(
                 [child, el] = handlePortal(child, el);
 
                 const isDangerHTML = (child as any)?.[0] === HTML;
+                
+                // Fix disconnected elements #618 & #686
+                if (lastNodes && !el.isConnected) el = shadowRoot as any;
 
                 if (isDangerHTML || isReactiveArray(child)) {
                   const tempContainer = createElement(CONTEXT) as any;
