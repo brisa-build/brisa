@@ -356,7 +356,7 @@ export default function brisaElement(
                     for (const c of child as Children[]) {
                       mount(NULL, {}, c, tempContainer, r(r2), effect);
                     }
-                  } else if ((child as ReactiveArray).length) {
+                  } else {
                     mount(
                       ...(child as ReactiveArray),
                       tempContainer,
