@@ -340,9 +340,11 @@ export default function brisaElement(
                 [child, el] = handlePortal(child, el);
 
                 const isDangerHTML = (child as any)?.[0] === HTML;
-                
+
                 // Fix disconnected elements #618 & #686
-                if (lastNodes && !el.isConnected) el = shadowRoot as any;
+                if (lastNodes && !el.parentNode) {
+                  el = shadowRoot as any;
+                }
 
                 if (isDangerHTML || isReactiveArray(child)) {
                   const tempContainer = createElement(CONTEXT) as any;
