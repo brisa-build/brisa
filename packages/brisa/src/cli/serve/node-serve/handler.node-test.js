@@ -344,6 +344,54 @@ describe('Node.js handler', () => {
     });
   });
 
+  it('should work with slow streaming', async () => {
+    globalThis.mockConstants = {
+      IS_SERVE_PROCESS: true,
+      ROOT_DIR: FIXTURES_DIR,
+      SRC_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
+      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      CONFIG: {
+        trailingSlash: false,
+      },
+      HEADERS: {
+        CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
+      },
+      LOG_PREFIX: {},
+    };
+    const req = new http.IncomingMessage(new net.Socket());
+    req.url = '/slow-streaming';
+    req.method = 'GET';
+    req.headers = {
+      host: 'localhost',
+    };
+
+    const res = createMockResponse(req);
+    const handler = await import(absolutePath).then((m) => m.handler);
+
+    await handler(req, res);
+
+    assert.strictEqual(res.statusCode, 200);
+    assert.deepStrictEqual(res.headers, {
+      'cache-control': 'no-cache, no-store, must-revalidate',
+      'content-type': 'text/html; charset=utf-8',
+      'transfer-encoding': 'chunked',
+      vary: 'Accept-Encoding',
+    });
+
+    // Wait all writes to be done
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const body = res.getBody();
+
+    assert.strictEqual(
+      body.includes(
+        '<ul><li>first </li><li>second </li><li>third </li><li>fourth </li><li>fifth </li><li>sixth</li></ul>',
+      ),
+      true,
+    );
+  });
+
   it('should redirect work with params', async () => {
     globalThis.mockConstants = {
       IS_SERVE_PROCESS: true,

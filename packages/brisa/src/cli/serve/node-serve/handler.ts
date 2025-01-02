@@ -160,6 +160,11 @@ export async function setResponse(
 
   next();
   async function next() {
+    // interval to keep alive the stream connection
+    const interval = setInterval(() => {
+      res.write(Buffer.from(''));
+    }, 10);
+
     try {
       for (;;) {
         const { done, value } = await reader.read();
@@ -171,8 +176,10 @@ export async function setResponse(
           return;
         }
       }
+      clearInterval(interval);
       res.end();
     } catch (error) {
+      clearInterval(interval);
       cancel(error instanceof Error ? error : new Error(String(error)));
     }
   }
