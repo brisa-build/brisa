@@ -328,7 +328,7 @@ export default function brisaElement(
             let nodeToClean;
 
             // If the first node is no longer in the DOM (it is "disconnected"),
-            // it is necessary to clean up or rearrange other overlapping nodes.
+            // it is necessary to clean up to fix overlapping nodes.
             // This can happen with different effects that use the same element.
             // https://github.com/brisa-build/brisa/issues/686
             while (index > 0 && (nodeToClean = curr!.previousSibling)) {
