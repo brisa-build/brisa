@@ -320,15 +320,15 @@ export default function brisaElement(
             mount(...(children as [string, Attr, Children]), el, r, effect);
           }
         } else if (isFunction(children)) {
-          let lastNodes: ChildNode[] | undefined;
+          let insertedNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            const firstNode = lastNodes?.find((n) => el.contains(n));
+            const firstNode = insertedNodes?.find((n) => el.contains(n));
 
             if (firstNode) {
               firstNode.before(...nodes);
 
-              const last = lastNodes!.at(-1)!;
+              const last = insertedNodes!.at(-1)!;
               let current = nodes.at(-1)?.nextSibling;
 
               // Remove connected nodes #686
@@ -342,7 +342,7 @@ export default function brisaElement(
             } else {
               el.append(...nodes);
             }
-            lastNodes = nodes;
+            insertedNodes = nodes;
           };
 
           effect(
@@ -355,7 +355,7 @@ export default function brisaElement(
                 const isDangerHTML = (child as any)?.[0] === HTML;
 
                 // Fix disconnected elements #618 & #686
-                if (lastNodes && !el.parentNode) {
+                if (insertedNodes && !el.parentNode) {
                   el = shadowRoot as any;
                 }
 
