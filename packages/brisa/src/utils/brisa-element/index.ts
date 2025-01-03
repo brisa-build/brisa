@@ -324,8 +324,18 @@ export default function brisaElement(
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
             if (lastNodes && el.contains(lastNodes[0])) {
-              lastNodes[0].after(...nodes);
-              for (const node of lastNodes) node.remove();
+              lastNodes[0].before(...nodes);
+
+              const last = lastNodes.at(-1)!;
+              let current = nodes.at(-1)?.nextSibling;
+
+              while (current && current !== last) {
+                const nodeToRemove = current;
+                current = current.nextSibling;
+                nodeToRemove.remove();
+              }
+
+              last.remove();
             } else {
               el.append(...nodes);
             }
