@@ -6930,6 +6930,272 @@ describe('integration', () => {
               {foo ? (
                 <>
                   {message.value ? (
+                    <div>
+                      Opened
+                    </div>
+                  ) : (
+                    <div>
+                      Closed
+                    </div>
+                  )}
+                  <div>
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => (message.value = !message.value)}
+                      >
+                        Open
+                      </button>
+                    </div>
+                    <div>Foo</div>
+                    <div>Bar</div>
+                  </div>
+                </>
+              ) : (
+                <div>
+                Foo
+                </div>
+              )}
+            </div>
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(code, 'src/web-components/chat-example.tsx');
+
+      document.body.innerHTML = '<chat-example foo="bar" bar="baz" />';
+      await Bun.sleep(0);
+
+      const chatExample = document.querySelector('chat-example') as HTMLElement;
+      const button = chatExample.shadowRoot!.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            Closed
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+        </div>  
+      `),
+      );
+
+      button.click();
+      await Bun.sleep(0);
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            Opened
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+        </div>  
+      `),
+      );
+
+      chatExample.setAttribute('foo', 'baz');
+      await Bun.sleep(0);
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            Opened
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+        </div>  
+      `),
+      );
+    });
+
+    it('should work when the signal condition is the last child #686', async () => {
+      const code = `
+        export default async function Chat({ foo, bar }, { state }) {
+          const message = state(false);
+
+          return (
+            <div>
+              {foo ? (
+                <>
+                  <div>
+                    U
+                    <h3 class="text-sm">
+                      {foo} {bar}
+                    </h3>
+                  </div>
+                  <div>
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => (message.value = !message.value)}
+                      >
+                        Open
+                      </button>
+                    </div>
+                    <div>Foo</div>
+                    <div>Bar</div>
+                  </div>
+                 {message.value ? (
+                    <div>
+                      Opened
+                    </div>
+                  ) : (
+                    <div>
+                      Closed
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div>
+                Foo
+                </div>
+              )}
+            </div>
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(code, 'src/web-components/chat-example.tsx');
+
+      document.body.innerHTML = '<chat-example foo="bar" bar="baz" />';
+      await Bun.sleep(0);
+
+      const chatExample = document.querySelector('chat-example') as HTMLElement;
+      const button = chatExample.shadowRoot!.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            U
+            <h3 class="text-sm">
+              bar baz
+            </h3>
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+          <div>
+            Closed
+          </div>
+        </div>  
+      `),
+      );
+
+      button.click();
+      await Bun.sleep(0);
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            U
+            <h3 class="text-sm">
+              bar baz
+            </h3>
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+          <div>
+            Opened
+          </div>
+        </div>  
+      `),
+      );
+
+      chatExample.setAttribute('foo', 'baz');
+      await Bun.sleep(0);
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            U
+            <h3 class="text-sm">
+              baz baz
+            </h3>
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+          <div>
+            Opened
+          </div>
+        </div>  
+      `),
+      );
+    });
+
+    it('should work when the signal condition is the first child + array #686', async () => {
+      const code = `
+        export default async function Chat({ foo, bar }, { state }) {
+          const message = state(false);
+
+          return (
+            <div>
+              {foo ? (
+                <>
+                  {message.value ? (
                     [<div>
                       Is
                     </div>,
@@ -7050,7 +7316,7 @@ describe('integration', () => {
       );
     });
 
-    it('should work when the signal condition is the last child #686', async () => {
+    it('should work when the signal condition is the last child + array #686', async () => {
       const code = `
         export default async function Chat({ foo, bar }, { state }) {
           const message = state(false);
