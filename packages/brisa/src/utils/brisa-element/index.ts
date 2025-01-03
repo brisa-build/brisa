@@ -326,6 +326,7 @@ export default function brisaElement(
             const index = insertedNodes?.findIndex((n) => el.contains(n))!;
             let curr: ChildNode | null | undefined = insertedNodes?.[index];
 
+            // avoid node overlapping #686
             if (index > 0) {
               for (let node of nodes) {
                 curr!.previousSibling?.remove();
