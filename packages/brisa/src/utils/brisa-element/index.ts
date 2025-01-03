@@ -326,11 +326,12 @@ export default function brisaElement(
             const index = insertedNodes?.findIndex((n) => el.contains(n))!;
             let curr: ChildNode | null | undefined = insertedNodes?.[index];
 
-            // avoid node overlapping #686
+            // If the first node is no longer in the DOM (it is "disconnected"),
+            // it is necessary to clean up or rearrange other overlapping nodes.
+            // This can happen with different effects that use the same element.
+            // https://github.com/brisa-build/brisa/issues/686
             if (index > 0) {
-              for (let node of nodes) {
-                curr!.previousSibling?.remove();
-              }
+              for (let node of nodes) curr!.previousSibling?.remove();
             }
 
             if (curr) {
@@ -340,9 +341,9 @@ export default function brisaElement(
 
               // Remove connected nodes #686
               while (curr && curr !== last) {
-                const nodeToRemove = curr;
-                curr = curr.nextSibling;
-                nodeToRemove.remove();
+                const next = curr.nextSibling as ChildNode;
+                curr.remove();
+                curr = next;
               }
 
               last.remove();
