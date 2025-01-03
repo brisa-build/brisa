@@ -329,6 +329,7 @@ export default function brisaElement(
               const last = lastNodes.at(-1)!;
               let current = nodes.at(-1)?.nextSibling;
 
+              // Remove connected nodes #686
               while (current && current !== last) {
                 const nodeToRemove = current;
                 current = current.nextSibling;
