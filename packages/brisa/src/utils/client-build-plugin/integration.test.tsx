@@ -6920,6 +6920,136 @@ describe('integration', () => {
       );
     });
 
+    it('should work when the signal condition is the first child #686', async () => {
+      const code = `
+        export default async function Chat({ foo, bar }, { state }) {
+          const message = state(false);
+
+          return (
+            <div>
+              {foo ? (
+                <>
+                  {message.value ? (
+                    [<div>
+                      Is
+                    </div>,
+                    <div>
+                      Opened
+                    </div>]
+                  ) : (
+                    <div>
+                      Closed
+                    </div>
+                  )}
+                  <div>
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => (message.value = !message.value)}
+                      >
+                        Open
+                      </button>
+                    </div>
+                    <div>Foo</div>
+                    <div>Bar</div>
+                  </div>
+                </>
+              ) : (
+                <div>
+                Foo
+                </div>
+              )}
+            </div>
+          );
+        }
+      `;
+
+      defineBrisaWebComponent(code, 'src/web-components/chat-example.tsx');
+
+      document.body.innerHTML = '<chat-example foo="bar" bar="baz" />';
+      await Bun.sleep(0);
+
+      const chatExample = document.querySelector('chat-example') as HTMLElement;
+      const button = chatExample.shadowRoot!.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            Closed
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+        </div>  
+      `),
+      );
+
+      button.click();
+      await Bun.sleep(0);
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+          <div>
+            Is
+          </div>
+           <div>
+            Opened
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+        </div>  
+      `),
+      );
+
+      chatExample.setAttribute('foo', 'baz');
+      await Bun.sleep(0);
+
+      expect(normalizeHTML(chatExample.shadowRoot!.innerHTML)).toBe(
+        normalizeHTML(`
+        <div>
+           <div>
+            Is
+          </div>
+           <div>
+            Opened
+          </div>
+          <div>
+            <div>
+              <button type="button">Open</button>
+            </div>
+            <div>
+              Foo
+            </div>
+            <div>
+              Bar
+            </div>
+          </div>
+        </div>  
+      `),
+      );
+    });
+
     // TODO: This test should work after this happydom feat about ElementInternals
     // https://github.com/capricorn86/happy-dom/issues/1419
     it.todo('it should work associating a form to the custom element', () => {
