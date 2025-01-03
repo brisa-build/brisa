@@ -323,9 +323,14 @@ export default function brisaElement(
           let insertedNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            let curr: ChildNode | null | undefined = insertedNodes?.find((n) =>
-              el.contains(n),
-            );
+            const index = insertedNodes?.findIndex((n) => el.contains(n))!;
+            let curr: ChildNode | null | undefined = insertedNodes?.[index];
+
+            if (index > 0) {
+              for (let node of nodes) {
+                curr!.previousSibling?.remove();
+              }
+            }
 
             if (curr) {
               curr.before(...nodes);
