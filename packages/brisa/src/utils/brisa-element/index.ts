@@ -323,10 +323,12 @@ export default function brisaElement(
           let lastNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            if (lastNodes && el.contains(lastNodes[0])) {
-              lastNodes[0].before(...nodes);
+            const firstNode = lastNodes?.find((n) => el.contains(n));
 
-              const last = lastNodes.at(-1)!;
+            if (firstNode) {
+              firstNode.before(...nodes);
+
+              const last = lastNodes!.at(-1)!;
               let current = nodes.at(-1)?.nextSibling;
 
               // Remove connected nodes #686
