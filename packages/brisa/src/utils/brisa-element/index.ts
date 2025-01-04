@@ -340,7 +340,7 @@ export default function brisaElement(
 
               curr.before(...nodes);
 
-              // Remove connected nodes #686
+              // Remove old connected nodes #686
               while (curr && curr !== last) {
                 const next = curr.nextSibling as ChildNode;
                 curr.remove();
