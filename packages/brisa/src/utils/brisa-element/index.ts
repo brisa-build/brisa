@@ -323,10 +323,11 @@ export default function brisaElement(
           let insertedNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            let index = insertedNodes?.findIndex((n) => el.contains(n))!;
-            let curr: ChildNode | null | undefined = insertedNodes?.[index];
+            let anchorIndex = insertedNodes?.findIndex((n) => el.contains(n))!;
+            let oldNode: ChildNode | null | undefined =
+              insertedNodes?.[anchorIndex];
 
-            if (curr) {
+            if (oldNode) {
               const last = insertedNodes!.at(-1)!;
               let nodeToClean;
 
@@ -334,17 +335,20 @@ export default function brisaElement(
               // it is necessary to clean up to fix overlapping nodes.
               // This can happen with different effects that use the same element.
               // https://github.com/brisa-build/brisa/issues/686
-              while (index > 0 && (nodeToClean = curr!.previousSibling)) {
+              while (
+                anchorIndex > 0 &&
+                (nodeToClean = oldNode!.previousSibling)
+              ) {
                 nodeToClean.remove();
               }
 
-              curr.before(...nodes);
+              oldNode.before(...nodes);
 
               // Remove old connected nodes #686
-              while (curr && curr !== last) {
-                const next = curr.nextSibling as ChildNode;
-                curr.remove();
-                curr = next;
+              while (oldNode && oldNode !== last) {
+                const next = oldNode.nextSibling as ChildNode;
+                oldNode.remove();
+                oldNode = next;
               }
 
               last.remove();
