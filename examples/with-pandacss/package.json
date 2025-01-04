@@ -5,19 +5,19 @@
   "example-category": "integrations",
   "type": "module",
   "scripts": {
-    "dev": "brisa dev",
+    "dev": "bun run prepare && brisa dev",
     "dev:debug": "brisa dev --debug",
     "prepare": "panda codegen",
-    "build": "brisa build",
+    "build": "bun run prepare && brisa build",
     "start": "brisa start"
   },
   "dependencies": {
     "brisa": "0.2.2-canary.4"
   },
   "devDependencies": {
-    "@pandacss/dev": "0.46.1",
+    "@pandacss/dev": "0.51.1",
     "@types/bun": "latest",
-    "postcss": "8.4.47",
+    "postcss": "8.4.49",
     "typescript": "latest"
   }
 }

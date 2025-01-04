@@ -116,7 +116,7 @@ export async function loadProjectConstants({
     idleTimeout: 30,
   };
 
-  const binaryExternalLibs = ['lightningcss'];
+  const defaultExternalDeps = [...getDevDeps(), 'lightningcss'];
   const CSS_FILES =
     (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
   const integrations = await importFileIfExists(
@@ -150,8 +150,8 @@ export async function loadProjectConstants({
   }
 
   // Add external libraries to the list of external libraries
-  if (!CONFIG.external) CONFIG.external = binaryExternalLibs;
-  else CONFIG.external = [...CONFIG.external, ...binaryExternalLibs];
+  if (!CONFIG.external) CONFIG.external = defaultExternalDeps;
+  else CONFIG.external = [...CONFIG.external, ...defaultExternalDeps];
 
   // This is needed for some helpers like "navigate" to work properly
   // in the server side. (For the client-side it's solved during the build process)
@@ -165,4 +165,11 @@ export async function loadProjectConstants({
     LOCALES_SET,
     IS_STATIC_EXPORT,
   };
+}
+
+function getDevDeps() {
+  const packageJSONDir = process.env.npm_package_json;
+  if (!packageJSONDir) return [];
+  const packageJSON = require(packageJSONDir);
+  return Object.keys(packageJSON.devDependencies || {});
 }
