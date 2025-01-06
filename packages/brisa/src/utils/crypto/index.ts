@@ -3,10 +3,13 @@ import process from 'node:process';
 
 const getAlorithm = () =>
   [
-    'aes-256-cbc',
-    Buffer.from(process.env.__CRYPTO_KEY__ ?? '', 'hex'),
+    'aes-256-cbc' as crypto.CipherGCMTypes,
+    Buffer.from(
+      process.env.__CRYPTO_KEY__ ?? '',
+      'hex',
+    ) as unknown as crypto.CipherKey,
     process.env.__CRYPTO_IV__ ?? '',
-  ] satisfies [string, Buffer, string];
+  ] satisfies [crypto.CipherGCMTypes, crypto.CipherKey, string];
 
 export const ENCRYPT_PREFIX = '__encrypted:';
 export const ENCRYPT_NONTEXT_PREFIX = '__encrypted-notext:';

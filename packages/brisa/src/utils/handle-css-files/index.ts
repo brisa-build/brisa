@@ -2,7 +2,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logError } from '../log/log-build';
-import { gzipSync } from 'bun';
+import { gzipSync, type BunFile } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
 
 export default async function handleCSSFiles() {
@@ -85,11 +85,11 @@ export default async function handleCSSFiles() {
       const start = Date.now();
 
       for (const file of cssFilePaths) {
-        const buffer = fs.readFileSync(path.join(publicFolder, file));
+        const buffer = fs.readFileSync(path.join(publicFolder, file)) as any;
         Bun.write(path.join(publicFolder, file + '.gz'), gzipSync(buffer));
         Bun.write(
           path.join(publicFolder, file + '.br'),
-          brotliCompressSync(buffer),
+          brotliCompressSync(buffer) as any,
         );
       }
 

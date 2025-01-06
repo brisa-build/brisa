@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { gzipSync } from 'bun';
+import { gzipSync, type BunFile } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
 import getFilesFromDir from '@/utils/get-files-from-dir';
 import { getConstants } from '@/constants';
@@ -29,7 +29,10 @@ export default async function precompressAssets(assetsPath: string) {
       console.timeEnd(logGzipMsg);
 
       console.time(logBrotliMsg);
-      Bun.write(`${asset}.br`, brotliCompressSync(buffer));
+      Bun.write(
+        `${asset}.br`,
+        brotliCompressSync(buffer) as unknown as BunFile,
+      );
       console.timeEnd(logBrotliMsg);
     }),
   );
