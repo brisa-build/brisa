@@ -104,6 +104,7 @@ export async function loadProjectConstants({
   BUILD_DIR,
   WORKSPACE,
   ROOT_DIR,
+  IS_BUILD_PROCESS,
 }: InternalConstants): Promise<ProjectConstants> {
   const defaultConfig = {
     trailingSlash: false,
@@ -116,7 +117,9 @@ export async function loadProjectConstants({
     idleTimeout: 30,
   };
 
-  const defaultExternalDeps = [...getDevDeps(), 'lightningcss'];
+  const defaultExternalDeps = IS_BUILD_PROCESS
+    ? [...getDevDeps(), 'lightningcss']
+    : [];
   const CSS_FILES =
     (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
   const integrations = await importFileIfExists(
