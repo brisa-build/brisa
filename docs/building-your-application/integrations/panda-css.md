@@ -13,7 +13,7 @@ PandaCSS lets you create atomic compiled styles like tailwind. You might find it
 Run this command to integrate PandaCSS in your Brisa project:
 
 ```sh
-brisa add pandacss
+bunx brisa add pandacss
 ```
 
 And you are ready to use PandaCSS in your Brisa project.
