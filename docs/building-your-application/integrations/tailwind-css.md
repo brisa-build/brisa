@@ -13,7 +13,7 @@ Tailwind lets you use utility classes instead of writing CSS. These utility clas
 Run this command to integrate TailwindCSS in your Brisa project:
 
 ```sh
-brisa add tailwindcss
+bunx brisa add tailwindcss
 ```
 
 And you are ready to use TailwindCSS in your Brisa project.
