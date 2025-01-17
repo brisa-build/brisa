@@ -6,6 +6,7 @@ type HardToSoftRedirectParams = {
   req: RequestContext;
   location: string;
   mode?: RenderMode;
+  res?: Response;
 };
 
 const SPA_INITIATORS = new Set<keyof InitiatorType>([
@@ -17,11 +18,13 @@ export default function hardToSoftRedirect({
   req,
   location,
   mode,
+  res,
 }: HardToSoftRedirectParams) {
-  const headers = new Headers({
-    'Content-Type': 'application/json',
-    'X-Navigate': location,
-  });
+  const headers = new Headers(res?.headers);
+
+  headers.set('Content-Type', 'application/json');
+  headers.set('X-Navigate', location);
+  headers.delete('Location');
 
   if (mode) headers.set('X-Mode', mode);
 
@@ -35,6 +38,6 @@ export function handleSPARedirects(req: RequestContext, res: Response) {
     res?.status < 400;
 
   return isSPASoftRedirect
-    ? hardToSoftRedirect({ req, location: res.headers.get('Location')! })
+    ? hardToSoftRedirect({ req, location: res.headers.get('Location')!, res })
     : res;
 }

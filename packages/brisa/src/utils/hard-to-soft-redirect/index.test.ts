@@ -10,7 +10,11 @@ describe('utils', () => {
   describe('hardToSoftRedirect', () => {
     it('should return a response with the navigate header', () => {
       const location = '/some-location';
-      const response = hardToSoftRedirect({ req, location });
+      const response = hardToSoftRedirect({
+        req,
+        location,
+        res: new Response(),
+      });
 
       expect(response.headers.get('X-Navigate')).toBe(location);
       expect(response.headers.has('X-Mode')).toBeFalse();
@@ -19,13 +23,18 @@ describe('utils', () => {
     it('should return a response with the navigate header and the mode reactivity', () => {
       const location = '/some-location';
       const mode = 'reactivity';
-      const response = hardToSoftRedirect({ req, location, mode });
+      const response = hardToSoftRedirect({
+        req,
+        location,
+        mode,
+        res: new Response(),
+      });
 
       expect(response.headers.get('X-Navigate')).toBe(location);
       expect(response.headers.get('X-Mode')).toBe(mode);
     });
 
-    it('should transfer the request store', async () => {
+    it('should work without response as argument', async () => {
       const reqWithStore = extendRequestContext({ originalRequest: req });
       reqWithStore.store.set('foo', 'bar');
       reqWithStore.store.transferToClient(['foo']);
@@ -35,6 +44,34 @@ describe('utils', () => {
       });
 
       expect(await response.json()).toEqual([['foo', 'bar']]);
+    });
+
+    it('should transfer the request store', async () => {
+      const reqWithStore = extendRequestContext({ originalRequest: req });
+      reqWithStore.store.set('foo', 'bar');
+      reqWithStore.store.transferToClient(['foo']);
+      const response = hardToSoftRedirect({
+        req: reqWithStore,
+        location: '/some-location',
+        res: new Response(),
+      });
+
+      expect(await response.json()).toEqual([['foo', 'bar']]);
+    });
+
+    it('should maintain the headers except Location', () => {
+      const res = new Response(null, {
+        headers: { foo: 'bar', Location: '/some-location' },
+      });
+      const response = hardToSoftRedirect({
+        req,
+        location: '/some-location',
+        res,
+      });
+
+      expect(response.headers.get('Content-Type')).toBe('application/json');
+      expect(response.headers.get('foo')).toBe('bar');
+      expect(response.headers.has('Location')).toBeFalse();
     });
   });
 
