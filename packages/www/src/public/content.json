@@ -4471,7 +4471,7 @@
   {
     "id": "/building-your-application/integrations/panda-css#installation",
     "title": "Installation",
-    "text": "Run this command to integrate PandaCSS in your Brisa project: brisa add pandacss And you are ready to use PandaCSS in your Brisa project.",
+    "text": "Run this command to integrate PandaCSS in your Brisa project: bunx brisa add pandacss And you are ready to use PandaCSS in your Brisa project.",
     "titles": [
       "Integrating Panda CSS"
     ]
@@ -4501,7 +4501,7 @@
   {
     "id": "/building-your-application/integrations/tailwind-css#installation",
     "title": "Installation",
-    "text": "Run this command to integrate TailwindCSS in your Brisa project: brisa add tailwindcss And you are ready to use TailwindCSS in your Brisa project.",
+    "text": "Run this command to integrate TailwindCSS in your Brisa project: bunx brisa add tailwindcss And you are ready to use TailwindCSS in your Brisa project.",
     "titles": [
       "Integrating Tailwind CSS v4"
     ]
