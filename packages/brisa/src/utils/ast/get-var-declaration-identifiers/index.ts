@@ -27,6 +27,22 @@ export default function getVarDeclarationIdentifiers(node: ESTree.Node) {
   }
 
   JSON.stringify(node, (k, v) => {
+    if (v?.type === 'IfStatement') {
+      const deps = getIdentifiersDependenciesOn(v.test);
+
+      // Add all condition dependencies when in the condition
+      // there is an existing identifier #712
+      for (const dep of deps) {
+        if (!identifiers.has(dep)) continue;
+
+        const identifierDeps = identifiers.get(dep)!;
+        const all = getIdentifiersDependenciesOn(v);
+
+        // Add all dependencies except the current one
+        for (const value of all) value !== dep && identifierDeps.add(value);
+      }
+    }
+
     if (!DECLARATORS.has(v?.type)) return v;
 
     if (v.id.type === 'ObjectPattern') {
