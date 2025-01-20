@@ -2996,6 +2996,142 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
+    it('should be possible to re-define variable inside a condition, inside the action #712', () => {
+      const code = `
+        export default function SomeComponent() {
+          let foo = 0;
+          const bar = 'hello world';
+
+          function onAction() {
+            if(bar === 'foo') {
+              foo = 1;
+            }
+          }
+
+          return <div onClick={onAction}> Click me </div>;
+        }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function SomeComponent() {
+          let foo = 0;
+          const bar = 'hello world';
+
+          function onAction() {
+            if (bar === 'foo') {
+              foo = 1;
+            }
+          }
+
+          return jsxDEV("div", {
+            onClick: (...args) => onAction(...args),
+            children: " Click me ",
+            "data-action-onclick": "a1_1",
+            "data-action": true
+          }, undefined, false, undefined, this);
+        }
+
+        SomeComponent._hasActions = true;
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = (...args) => req._p(onAction(...args));
+            let foo = 0;
+            const bar = 'hello world';
+            function onAction() {
+              if (bar === 'foo') {
+                foo = 1;
+              }
+            }
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(SomeComponent, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
+
+    it('should be possible to re-define variable inside a condition, outside the action #712', () => {
+      const code = `
+        export default function SomeComponent() {
+          let foo = 0;
+          const bar = 'hello world';
+
+          if(bar === 'foo') {
+            foo = 1;
+          }
+
+          function onAction() {
+            console.log(bar);
+          }
+
+          return <div onClick={onAction}> Click me </div>;
+        }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function SomeComponent() {
+          let foo = 0;
+          const bar = 'hello world';
+
+          if(bar === 'foo') {
+            foo = 1;
+          }
+
+          function onAction() {
+            console.log(bar);
+          }
+
+          return jsxDEV("div", {
+            onClick: (...args) => onAction(...args),
+            children: " Click me ",
+            "data-action-onclick": "a1_1",
+            "data-action": true
+          }, undefined, false, undefined, this);
+        }
+
+        SomeComponent._hasActions = true;
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = (...args) => req._p(onAction(...args));
+            let foo = 0;
+            const bar = 'hello world';
+
+            if(bar === 'foo') {
+              foo = 1;
+            }
+            function onAction() {
+              console.log(bar);
+            }
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(SomeComponent, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
+
     it.todo(
       'should work mixing elements with element generators and components',
       () => {
