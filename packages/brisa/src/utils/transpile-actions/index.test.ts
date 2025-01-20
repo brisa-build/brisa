@@ -3067,7 +3067,7 @@ describe('utils', () => {
           let foo = 0;
           const bar = 'hello world';
 
-          if(bar === 'foo') {
+          if (bar === 'foo') {
             foo = 1;
           }
 
@@ -3087,7 +3087,7 @@ describe('utils', () => {
           let foo = 0;
           const bar = 'hello world';
 
-          if(bar === 'foo') {
+          if (bar === 'foo') {
             foo = 1;
           }
 
@@ -3111,7 +3111,7 @@ describe('utils', () => {
             let foo = 0;
             const bar = 'hello world';
 
-            if(bar === 'foo') {
+            if (bar === 'foo') {
               foo = 1;
             }
             function onAction() {

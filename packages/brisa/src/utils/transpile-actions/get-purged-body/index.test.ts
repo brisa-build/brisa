@@ -476,13 +476,13 @@ describe('utils', () => {
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
 
-    it('should not purge a used variable after a condition of another used variable', () => {
+    it('should not purge a used variable after a condition of another used variable #712', () => {
       const codeToPurge = `
         function SomeComponent() {
           let foo = 0;
           const bar = 'hello world';
 
-          if(bar === 'foo') {
+          if (bar === 'foo') {
             foo = 1;
           }
 
@@ -492,13 +492,13 @@ describe('utils', () => {
 
           return <div onClick={onAction} data-action-onClick="a1_1"> Click me </div>;
         }`;
-      
+
       const expectedCode = `
         function SomeComponent() {
           let foo = 0;
           const bar = 'hello world';
 
-          if(bar === 'foo') {
+          if (bar === 'foo') {
             foo = 1;
           }
 
@@ -508,7 +508,7 @@ describe('utils', () => {
         }`;
 
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
-    })
+    });
   });
 
   describe('get-all-function-identifiers', () => {
