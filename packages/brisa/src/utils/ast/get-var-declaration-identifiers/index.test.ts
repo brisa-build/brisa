@@ -199,6 +199,68 @@ describe('utils', () => {
         ]);
         expect(output).toEqual(expectedMap);
       });
+
+      it('should add all condition dependencies when inside an IfStatement #712', () => {
+        const node = {
+          type: 'Program',
+          body: [
+            {
+              type: 'VariableDeclaration',
+              declarations: [
+                {
+                  type: 'VariableDeclarator',
+                  id: { type: 'Identifier', name: 'foo' },
+                  init: { type: 'Literal', value: 0 },
+                },
+                {
+                  type: 'VariableDeclarator',
+                  id: { type: 'Identifier', name: 'bar' },
+                  init: { type: 'Literal', value: 'hello world' },
+                },
+              ],
+              kind: 'let',
+            },
+            {
+              type: 'FunctionDeclaration',
+              id: { type: 'Identifier', name: 'onAction' },
+              params: [],
+              body: {
+                type: 'BlockStatement',
+                body: [
+                  {
+                    type: 'IfStatement',
+                    test: {
+                      type: 'BinaryExpression',
+                      operator: '===',
+                      left: { type: 'Identifier', name: 'bar' },
+                      right: { type: 'Literal', value: 'foo' },
+                    },
+                    consequent: {
+                      type: 'ExpressionStatement',
+                      expression: {
+                        type: 'AssignmentExpression',
+                        operator: '=',
+                        left: { type: 'Identifier', name: 'foo' },
+                        right: { type: 'Literal', value: 1 },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        };
+
+        const output = getVarDeclarationIdentifiers(node as ESTree.Node);
+
+        const expectedMap = new Map<string, Set<string>>([
+          ['foo', new Set()],
+          ['bar', new Set(['foo'])],
+          ['onAction', new Set()],
+        ]);
+
+        expect(output).toEqual(expectedMap);
+      });
     });
   });
 });
