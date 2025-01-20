@@ -475,6 +475,40 @@ describe('utils', () => {
       `);
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
+
+    it('should not purge a used variable after a condition of another used variable', () => {
+      const codeToPurge = `
+        function SomeComponent() {
+          let foo = 0;
+          const bar = 'hello world';
+
+          if(bar === 'foo') {
+            foo = 1;
+          }
+
+          function onAction() {
+            console.log(bar);
+          }
+
+          return <div onClick={onAction} data-action-onClick="a1_1"> Click me </div>;
+        }`;
+      
+      const expectedCode = `
+        function SomeComponent() {
+          let foo = 0;
+          const bar = 'hello world';
+
+          if(bar === 'foo') {
+            foo = 1;
+          }
+
+          function onAction() {
+            console.log(bar);
+          }
+        }`;
+
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    })
   });
 
   describe('get-all-function-identifiers', () => {
