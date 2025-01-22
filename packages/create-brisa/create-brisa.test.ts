@@ -5,7 +5,7 @@ import fs from 'node:fs';
 
 const CREATE_BRISA_PATH = join(import.meta.dir, 'create-brisa.cjs');
 const EXPECTED_INNER_FILES = [
-  'bun.lockb',
+  'bun.lock',
   'bunfig.toml',
   'node_modules',
   'package.json',

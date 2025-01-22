@@ -6,7 +6,7 @@ const getAlorithm = () =>
     'aes-256-cbc',
     Buffer.from(process.env.__CRYPTO_KEY__ ?? '', 'hex'),
     process.env.__CRYPTO_IV__ ?? '',
-  ] satisfies [string, Buffer, string];
+  ] satisfies [string, Uint8Array<ArrayBufferLike>, string];
 
 export const ENCRYPT_PREFIX = '__encrypted:';
 export const ENCRYPT_NONTEXT_PREFIX = '__encrypted-notext:';

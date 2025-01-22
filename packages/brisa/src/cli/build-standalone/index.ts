@@ -79,6 +79,8 @@ async function compileStandaloneServerComponents(
     : brisaServerDeps;
 
   return Bun.build({
+        // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
+        throw: false, 
     entrypoints,
     outdir: BUILD_DIR,
     root: SRC_DIR,
@@ -150,6 +152,8 @@ async function compileStandaloneWebComponents(standaloneWC: string[]) {
     minify: IS_PRODUCTION,
     define: getDefine(),
     external,
+    // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
+    throw: false, 
     naming: '[dir]/[name].client.[ext]',
     plugins: extendPlugins(
       [

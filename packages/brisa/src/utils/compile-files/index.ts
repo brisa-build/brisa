@@ -74,6 +74,8 @@ export default async function compileFiles() {
 
   const actionWrites: Promise<number>[] = [];
   const { success, logs, outputs } = await Bun.build({
+    // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
+    throw: false, 
     entrypoints,
     outdir: BUILD_DIR,
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
