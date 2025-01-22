@@ -153,7 +153,7 @@ export async function clientBuild(
             ),
           );
           writes.push(
-            Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode)),
+            Bun.write(`${i18nPagePath}.br`, brotliCompressSync(i18nCode) as any),
           );
         }
       }
@@ -170,7 +170,7 @@ export async function clientBuild(
       const gzipClientPage = gzipSync(new TextEncoder().encode(code));
 
       writes.push(Bun.write(`${clientPage}.gz`, gzipClientPage));
-      writes.push(Bun.write(`${clientPage}.br`, brotliCompressSync(code)));
+      writes.push(Bun.write(`${clientPage}.br`, brotliCompressSync(code) as any));
       clientSizesPerPage[route] += gzipClientPage.length;
     }
   }
@@ -241,7 +241,7 @@ function addExtraChunk(
     writes.push(
       Bun.write(
         join(pagesClientPath, `${jsFilename}.br`),
-        brotliCompressSync(code),
+        brotliCompressSync(code) as any,
       ),
     );
     return gzipUnsuspense.length;

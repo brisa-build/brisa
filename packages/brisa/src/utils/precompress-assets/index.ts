@@ -29,7 +29,7 @@ export default async function precompressAssets(assetsPath: string) {
       console.timeEnd(logGzipMsg);
 
       console.time(logBrotliMsg);
-      Bun.write(`${asset}.br`, brotliCompressSync(buffer));
+      Bun.write(`${asset}.br`, brotliCompressSync(buffer) as any);
       console.timeEnd(logBrotliMsg);
     }),
   );

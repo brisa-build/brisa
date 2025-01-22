@@ -6,7 +6,7 @@ const getAlorithm = () =>
     'aes-256-cbc',
     Buffer.from(process.env.__CRYPTO_KEY__ ?? '', 'hex'),
     process.env.__CRYPTO_IV__ ?? '',
-  ] satisfies [string, Uint8Array<ArrayBufferLike>, string];
+  ] satisfies [string, Buffer, string];
 
 export const ENCRYPT_PREFIX = '__encrypted:';
 export const ENCRYPT_NONTEXT_PREFIX = '__encrypted-notext:';
@@ -14,6 +14,7 @@ export const ENCRYPT_NONTEXT_PREFIX = '__encrypted-notext:';
 export function encrypt(textOrObject: unknown) {
   if (textOrObject == null) return textOrObject;
 
+  // @ts-ignore
   const cipher = crypto.createCipheriv(...getAlorithm());
   let text = textOrObject;
   let prefix = ENCRYPT_PREFIX;
@@ -30,6 +31,7 @@ export function encrypt(textOrObject: unknown) {
 
 export function decrypt(encrypted: string) {
   const isString = encrypted.startsWith(ENCRYPT_PREFIX);
+  // @ts-ignore
   const decipher = crypto.createDecipheriv(...getAlorithm());
   const input = encrypted
     .replace(ENCRYPT_PREFIX, '')

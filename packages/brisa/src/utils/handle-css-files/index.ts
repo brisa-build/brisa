@@ -86,10 +86,10 @@ export default async function handleCSSFiles() {
 
       for (const file of cssFilePaths) {
         const buffer = fs.readFileSync(path.join(publicFolder, file));
-        Bun.write(path.join(publicFolder, file + '.gz'), gzipSync(buffer));
+        Bun.write(path.join(publicFolder, file + '.gz'), gzipSync(buffer as any) as any);
         Bun.write(
           path.join(publicFolder, file + '.br'),
-          brotliCompressSync(buffer),
+          brotliCompressSync(buffer as any) as any,
         );
       }
 
