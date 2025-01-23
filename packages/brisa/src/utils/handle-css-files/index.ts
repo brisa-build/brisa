@@ -2,26 +2,26 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logError } from '../log/log-build';
-import { gzipSync } from 'bun';
+import { gzipSync, Glob } from 'bun';
 import { brotliCompressSync } from 'node:zlib';
+
+const cssGlob = new Glob('**/*.css');
 
 export default async function handleCSSFiles() {
   try {
     const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_BUILD_PROCESS, IS_PRODUCTION } =
       getConstants();
     const publicFolder = path.join(BUILD_DIR, 'public');
-    const allFiles = fs.readdirSync(BUILD_DIR);
-    const cssFilePaths: string[] = [];
+
+    if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder);
+
+    const cssFilePaths: string[] = await moveCSSInsidePublic(BUILD_DIR);
     const integrations = (CONFIG?.integrations ?? []).filter(
       (integration) => integration.transpileCSS,
     );
 
-    if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder);
-
     // Using CSS integrations
     if (integrations.length > 0) {
-      const cssFiles = allFiles.filter((file) => file.endsWith('.css'));
-
       for (const integration of integrations) {
         const startTime = Date.now();
 
@@ -34,15 +34,14 @@ export default async function handleCSSFiles() {
 
         let useDefault = true;
 
-        for (const file of cssFiles) {
-          const pathname = path.join(BUILD_DIR, file);
+        for (const file of cssFilePaths) {
+          const pathname = path.join(publicFolder, file);
           const rawContent = fs.readFileSync(pathname, 'utf-8');
           const content =
             (await integration.transpileCSS?.(pathname, rawContent)) ?? '';
           useDefault &&=
             integration.defaultCSS?.applyDefaultWhenEvery?.(rawContent) ?? true;
           fs.writeFileSync(path.join(publicFolder, file), content);
-          cssFilePaths.push(file);
         }
 
         if (useDefault && integration.defaultCSS) {
@@ -65,18 +64,6 @@ export default async function handleCSSFiles() {
             `CSS transpiled with ${integration.name} in ${ms}ms`,
           );
         }
-      }
-    }
-
-    // Without integrations
-    else {
-      for (const file of allFiles) {
-        if (!file.endsWith('.css')) continue;
-        fs.renameSync(
-          path.join(BUILD_DIR, file),
-          path.join(publicFolder, file),
-        );
-        cssFilePaths.push(file);
       }
     }
 
@@ -112,4 +99,19 @@ export default async function handleCSSFiles() {
       stack: e.stack,
     });
   }
+}
+
+async function moveCSSInsidePublic(buildDir: string) {
+  const files = [];
+
+  for await (const filename of cssGlob.scan(buildDir)) {
+    const filePath = path.join(buildDir, filename);
+    const hash = Bun.hash(await Bun.file(filePath).arrayBuffer());
+    const newFilename = `style-${hash}.css`
+
+    fs.renameSync(filePath, path.join(buildDir, 'public', newFilename));
+    files.push(newFilename);
+  }
+
+  return files;
 }
