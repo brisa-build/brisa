@@ -7,13 +7,13 @@ export default async function compileAll() {
   await compileAssets();
 
   try {
-    const { success, logs, pagesSize } = await compileFiles();
+    const { success, logs, pagesSize, outputs } = await compileFiles();
 
     if (!success) {
       logBuildError('Failed to compile pages', logs);
     }
 
-    await handleCSSFiles();
+    await handleCSSFiles(outputs);
 
     return { success, logs, pagesSize };
   } catch (e: any) {
