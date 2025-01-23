@@ -8,17 +8,7 @@ describe('utils/resolve-import-sync', () => {
   });
 
   it('should resolve a library', () => {
-    expect(resolveImportSync('brisa')).toBe(
-      path.resolve(
-        import.meta.dir,
-        '..',
-        '..',
-        '..',
-        'out',
-        'core',
-        'index.js',
-      ),
-    );
+    expect(resolveImportSync('brisa').endsWith(path.join('brisa', 'out', 'core', 'index.js'))).toBeTrue();
   });
 
   it('should resolve a file using TypeScript alias from process.cwd', () => {

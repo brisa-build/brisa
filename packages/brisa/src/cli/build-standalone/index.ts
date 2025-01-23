@@ -79,8 +79,8 @@ async function compileStandaloneServerComponents(
     : brisaServerDeps;
 
   return Bun.build({
-        // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-        throw: false, 
+    // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
+    throw: false, 
     entrypoints,
     outdir: BUILD_DIR,
     root: SRC_DIR,
