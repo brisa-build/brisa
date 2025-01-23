@@ -10,14 +10,14 @@
     },
     "packages/adapter-vercel": {
       "name": "brisa-adapter-vercel",
-      "version": "0.2.4-canary.2",
+      "version": "0.2.4-canary.3",
       "devDependencies": {
         "brisa": "workspace:*",
       },
     },
     "packages/brisa": {
       "name": "brisa",
-      "version": "0.2.4-canary.2",
+      "version": "0.2.4-canary.3",
       "bin": {
         "brisa": "./index.js"
       },
@@ -40,7 +40,7 @@
     },
     "packages/brisa-pandacss": {
       "name": "brisa-pandacss",
-      "version": "0.2.4-canary.2",
+      "version": "0.2.4-canary.3",
       "dependencies": {
         "@pandacss/dev": "0.47.0",
         "postcss": "8.4.47",
@@ -48,7 +48,7 @@
     },
     "packages/brisa-tailwindcss": {
       "name": "brisa-tailwindcss",
-      "version": "0.2.4-canary.2",
+      "version": "0.2.4-canary.3",
       "devDependencies": {
         "@tailwindcss/postcss": "4.0.0-alpha.33",
         "postcss": "8.4.49",
@@ -62,7 +62,7 @@
     },
     "packages/create-brisa": {
       "name": "create-brisa",
-      "version": "0.2.4-canary.2",
+      "version": "0.2.4-canary.3",
       "bin": {
         "create-brisa": "./create-brisa.cjs"
       },
@@ -72,7 +72,7 @@
     },
     "packages/www": {
       "name": "www",
-      "version": "0.2.4-canary.2",
+      "version": "0.2.4-canary.3",
       "dependencies": {
         "@swc/wasm-web": "1.9.3",
         "brisa": "workspace:*",
