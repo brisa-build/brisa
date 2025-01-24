@@ -231,4 +231,4 @@ But thanks to `store.transferToClient` method, you extend the lifecycle of some 
 - Client side (as signal)
 - etc ...
 
-And modifing the value on server actions, is reflected in a reactive way on the client side signals.
+And modifying the value on server actions, is reflected in a reactive way on the client side signals.
