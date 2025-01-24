@@ -8,6 +8,97 @@
   "commitConvention": "angular",
   "contributors": [
     {
+      "login": "aralroca",
+      "name": "Aral Roca Gomez",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/13313058?v=4",
+      "profile": "https://aralroca.com",
+      "contributions": [
+        "maintenance",
+        "code"
+      ]
+    },
+    {
+      "login": "AlbertSabate",
+      "name": "Albert Sabaté",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2384218?s=100",
+      "profile": "https://github.com/AlbertSabate",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "danielart",
+      "name": "Daniel Art",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4655428?s=100",
+      "profile": "https://github.com/danielart",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "enzonotario",
+      "name": "Enzo Notario",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10469299?s=100",
+      "profile": "https://github.com/enzonotario",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "amatiasq",
+      "name": "Amatias Q",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1533589?s=100",
+      "profile": "https://github.com/amatiasq",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gariasf",
+      "name": "Garias F",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5864275?s=100",
+      "profile": "https://github.com/gariasf",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "adriablancafort",
+      "name": "Adria Blancafort",
+      "avatar_url": "https://avatars.githubusercontent.com/u/76774853?s=100",
+      "profile": "https://github.com/adriablancafort",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "anusikh",
+      "name": "Anusikh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56106489?s=100",
+      "profile": "https://github.com/anusikh",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mobley-trent",
+      "name": "Mobley Trent",
+      "avatar_url": "https://avatars.githubusercontent.com/u/67474838?s=100",
+      "profile": "https://github.com/mobley-trent",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gustavocadev",
+      "name": "Gustavo Cadev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/84424661?s=100",
+      "profile": "https://github.com/gustavocadev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
       "login": "kentcdodds",
       "name": "Kent C. Dodds",
       "avatar_url": "https://avatars.githubusercontent.com/u/1500684?v=4",
