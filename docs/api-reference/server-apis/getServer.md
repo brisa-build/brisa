@@ -1,5 +1,5 @@
 ---
-description: Get the server instace of Brisa
+description: Get the server instance of Brisa
 ---
 
 # `getServer`

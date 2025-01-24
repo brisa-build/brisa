@@ -69,7 +69,7 @@ If you want to build your application for [different outputs](/building-your-app
 
 If you want to make a desktop app for Windows, another one for Mac, also android and ios, all at the same time. We recommend you do this in an array inside a pipeline and use an environment variable to decide the output. 
 
-The good thing is that if you are on Windows, it will use the native Windows stuff for the Destkop app build, the same with Linux and Mac.
+The good thing is that if you are on Windows, it will use the native Windows stuff for the Desktop app build, the same with Linux and Mac.
 
 ## Development build
 
@@ -172,7 +172,7 @@ const htmlWC1 = await renderToString(<WebComponent1 foo="bar" />);
 const htmlWC2 = await renderToString(<WebComponent2 foo="bar" />);
 ```
 
-In the case of incompatibilties with the jsx-runtime, you can use the `jsx` function:
+In the case of incompatibilities with the jsx-runtime, you can use the `jsx` function:
 
 ```tsx
 import { renderToString } from 'brisa/server';
@@ -230,7 +230,7 @@ import { Component } from 'path/component.server.ts';
 const html = await renderToString(<Component foo="bar" />);
 ```
 
-In the case of incompatibilties with the jsx-runtime, you can use the `jsx` function:
+In the case of incompatibilities with the jsx-runtime, you can use the `jsx` function:
 
 ```tsx
 import { renderToString } from 'brisa/server';

@@ -139,7 +139,7 @@ The properties are signals but can be used directly without using the `.value`, 
 > }
 > ```
 >
-> This is not related with reacitivity, but for web components Brisa needs to specify the [`observedAttributes`](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
+> This is not related with reactivity, but for web components Brisa needs to specify the [`observedAttributes`](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
 
 ### Step 1: Pass props to the child component
 

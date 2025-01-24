@@ -114,7 +114,7 @@ export default {
 
 > [!IMPORTANT]
 >
-> **Prerequisits**: You need to download [Android Studio](https://developer.android.com/studio) and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#android).
+> **Prerequisites**: You need to download [Android Studio](https://developer.android.com/studio) and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#android).
 
 Once activated you can call `brisa dev` to work locally with hotreloading in the android app or `brisa build` to build the android app native executables.
 
@@ -145,7 +145,7 @@ export default {
 
 > [!IMPORTANT]
 >
-> **Prerequisits**: You need to download iOS targets and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#ios).
+> **Prerequisites**: You need to download iOS targets and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#ios).
 
 Once activated you can call `brisa dev` to work locally with hotreloading in the iOS app or `brisa build` to build the iOS app native executables.
 
