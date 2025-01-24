@@ -167,7 +167,7 @@ We recommend that whenever possible you add the data to the `store` inside the r
 
 The reason is that the **Context API is more expensive** and if you don't put the [`serverOnly`](/building-your-application/components-details/context#serveronly-property) attribute it creates a DOM element (`context-provider`) and shares the data with the rest of the web-components that are in the same component tree.
 
-In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/api-reference/components/request-context) as a second parameter, and you can access easly to that data.
+In both cases the data lives within the lifetime of the request, it is not global data, and one of the benefits is that all server-components receive the [`RequestContext`](/api-reference/components/request-context) as a second parameter, and you can access easily to that data.
 
 The `RequestContext` is an extension of the [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request), where apart from the [Request API](https://developer.mozilla.org/en-US/docs/Web/API/Request) you have some [extra things](/api-reference/components/request-context), such as the store.
 
