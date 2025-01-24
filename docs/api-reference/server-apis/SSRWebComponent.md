@@ -1,5 +1,5 @@
 ---
-description: SSRWebComponent is a compoment wrapper that allows you to render a web component on the server side.
+description: SSRWebComponent is a component wrapper that allows you to render a web component on the server side.
 ---
 
 # `SSRWebComponent`
