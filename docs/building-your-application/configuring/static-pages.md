@@ -18,7 +18,7 @@ export default function MyPage() {
 }
 ```
 
-The `prerender` export can be a `boolean` or a `() => {[param: string]: string|string[]}[] | async () => {[param: string]: string|string[]}[]` (only in the case of dynamic routes to indicate all the necesary params to prerender).
+The `prerender` export can be a `boolean` or a `() => {[param: string]: string|string[]}[] | async () => {[param: string]: string|string[]}[]` (only in the case of dynamic routes to indicate all the necessary params to prerender).
 
 In the case of a page that is not `[dynamic]`, `[[...catchAll]]`, or `[...rest]`, the `boolean` is enough.
 

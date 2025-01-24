@@ -863,7 +863,7 @@ or
 t("hello-2", { name: "Brisa" }, { elements: { bold: <strong /> } });
 ```
 
-### Default value when translation does't exist
+### Default value when translation doesn't exist
 
 If the translation does not exist and all [fallback](#fallbacks) keys fail (if any), then as default behavior, the key is shown.
 

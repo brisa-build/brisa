@@ -6,7 +6,7 @@ description: Learn how to deploy to fly.io
 
 [Fly.io](https://fly.io/) is the fastest way to deploy straight from your source code. You’ll be up and running in just minutes.
 
-## Requeriments
+## Requirements
 
 Follow this docs to install `flyctl`:
 

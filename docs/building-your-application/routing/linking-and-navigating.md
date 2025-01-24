@@ -227,7 +227,7 @@ The `navigate` function can be used both on the client and on the server. Althou
 
 > [!NOTE]
 >
-> All [i18n](#i18n-navigation) navigaton rules apply equally in this function.
+> All [i18n](#i18n-navigation) navigation rules apply equally in this function.
 
 > [!TIP]
 >

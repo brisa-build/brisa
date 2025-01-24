@@ -72,7 +72,7 @@ export default {
 } satisfies Configuration;
 ```
 
-To override Diffie-Helman parameters:
+To override Diffie-Hellman parameters:
 
 ```ts
 import type { Configuration } from "brisa";
@@ -80,7 +80,7 @@ import type { Configuration } from "brisa";
 export default {
   tls: {
     // other config
-    dhParamsFile: "/path/to/dhparams.pem", // path to Diffie Helman parameters
+    dhParamsFile: "/path/to/dhparams.pem", // path to Diffie Hellman parameters
   },
 } satisfies Configuration;
 ```

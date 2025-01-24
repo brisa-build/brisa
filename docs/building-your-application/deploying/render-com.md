@@ -4,7 +4,7 @@ title: Deploying on Render.com
 
 # Deploying on Render.com
 
-This documentation outlines the process of deploying a Brisa application on [Render.com](https://render.com). Render is a cloud service provider that offers uploaddable **static sites** and a web service with **docker containers**.
+This documentation outlines the process of deploying a Brisa application on [Render.com](https://render.com). Render is a cloud service provider that offers uploadable **static sites** and a web service with **docker containers**.
 
 Depending on your [`output`](/building-your-application/configuring/output) strategy, you can deploy your Brisa application on Render.com using different approaches:
 
