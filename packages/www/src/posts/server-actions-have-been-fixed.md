@@ -224,9 +224,9 @@ In this case, the `onAfterMyAction` event is executed on the parent component an
   <figcaption><small>Propagate action</small></figcaption>
 </figure>
 
-### 4. Comunication between both worlds
+### 4. Communication between both worlds
 
-Especially after the last few weeks Web Components have been a bit frowned upon after several discussions on X (formelly Twitter). However, being **part of the HTML**, it is the **best way** to **interact with Server Actions** for several reasons:
+Especially after the last few weeks Web Components have been a bit frowned upon after several discussions on X (formerly Twitter). However, being **part of the HTML**, it is the **best way** to **interact with Server Actions** for several reasons:
 
 1. You can **capture** any **Web Component event** from the **server** and generate client-server communication. Example `<web-component onEvent={serverAction} />`. This is very powerful, since all the events inside the Web Component is only client logic without putting any server logic there, simply from the server when consuming the Web Component you can do server actions.
 2. The **HTTP protocol** can be used for what it was designed for, to **transfer Hypertext** (HTML) in **streaming**, this way if after a re-rendering from a Server Action any attribute of a Web Component is updated, the diffing algorithm of the RPC Client makes the Web Component to be updated without much effort. The Web Components **attributes** in Brisa **are signals** that make the internal parts of Web Component react without having to rerender. This process in other frameworks becomes very complicated, making the RPC server have to process JSON or JS over the wire, instead of HTML, which makes the streaming implementation more complicated.
