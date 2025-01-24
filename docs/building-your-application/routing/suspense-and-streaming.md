@@ -119,7 +119,7 @@ export default async function MyWebComponent({}, { state }) {
 MyWebComponent.suspense = (props, webContext) => <div>loading...</div>;
 ```
 
-You can do a `fetch` in the render because in Brisa there are no rerenders, so it will always run only once mouting the component.
+You can do a `fetch` in the render because in Brisa there are no rerenders, so it will always run only once mounting the component.
 
 Another benefit of web-components is the suspense defined therein is reactive to `props`, `state`, `context` and `store`. So you can make it interactive from the client if you need to.
 
