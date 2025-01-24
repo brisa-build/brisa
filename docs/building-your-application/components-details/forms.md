@@ -79,7 +79,7 @@ export default function UncontrolledFormServer() {
 
 Adds 0 bytes of JS client. Only the Brisa RPC client is needed which is ~2kB.
 
-### Web component _(not recomended 👎)_
+### Web component _(not recommended 👎)_
 
 The client code of a uncontrolled form would be as follows:
 
@@ -114,7 +114,7 @@ If you are making an uncontrolled form in a web component it is a sign that you 
 >
 > Using uncontrolled form in web components adds client JS code, not only the event JS, but also the JS of the web component itself.
 
-## Controlled Forms _(not recomended 👎)_
+## Controlled Forms _(not recommended 👎)_
 
 A controlled form in Brisa is a `form` whose state is controlled by the Brisa web component. In other words, the form elements such as `input` fields, `checkbox`, `radio` buttons, etc have their values bound to the component's state. This allows to manage and control the form's behavior and be able to give **instant feedback** to the user about errors.
 
