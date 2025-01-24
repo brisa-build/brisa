@@ -703,7 +703,7 @@ You can use [`data-` attributes](https://developer.mozilla.org/en-US/docs/Learn/
 />
 ```
 
-You also can [`encrypt`](/api-reference/server-apis/encrypt) / [`decrypt`](/api-reference/server-apis/decrypt) sensivle data using `data-attributes`:
+You also can [`encrypt`](/api-reference/server-apis/encrypt) / [`decrypt`](/api-reference/server-apis/decrypt) sensitive data using `data-attributes`:
 
 ```tsx
 import { encrypt, decrypt } from "brisa/server";
