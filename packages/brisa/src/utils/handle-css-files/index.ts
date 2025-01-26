@@ -22,7 +22,7 @@ export default async function handleCSSFiles() {
 
     if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder);
 
-    const cssFilePaths: Set<string> = new Set(
+    let cssFilePaths: Set<string> = new Set(
       await handleCSSInsidePublic(BUILD_DIR, publicFolder),
     );
     const integrations = (CONFIG?.integrations ?? []).filter(
@@ -31,10 +31,10 @@ export default async function handleCSSFiles() {
 
     // Using CSS integrations
     if (integrations.length > 0) {
-      // Use the src CSS files to transpile it with the integration parser
-      //  (instead of Bun CSS Parser)
-      cssFilePaths.union(
-        new Set(...(await handleCSSInsidePublic(SRC_DIR, publicFolder))),
+      // Use the "src" CSS files to transpile it with the integration parser
+      // instead of the "build" because they are not transpiled by Bun CSS Parser
+      cssFilePaths = cssFilePaths.union(
+        new Set(await handleCSSInsidePublic(SRC_DIR, publicFolder)),
       );
 
       for (const integration of integrations) {

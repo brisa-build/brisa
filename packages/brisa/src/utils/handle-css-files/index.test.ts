@@ -138,11 +138,11 @@ describe('utils/handle-css-files', () => {
 
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
 
-    mockHash.mockReturnValueOnce(111111).mockReturnValue(222222);
+    mockHash.mockReturnValue(111111);
 
     await handleCSSFiles();
 
-    const baseCSSFilename = 'base-222222.css';
+    const baseCSSFilename = 'base-111111.css';
     const styleCSSFilename = 'style-111111.css';
 
     const cssFiles = (
@@ -165,7 +165,7 @@ describe('utils/handle-css-files', () => {
 
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), '@tailwind base;');
 
-    mockHash.mockReturnValueOnce(111111);
+    mockHash.mockReturnValue(111111);
 
     await handleCSSFiles();
 
@@ -189,7 +189,7 @@ describe('utils/handle-css-files', () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
     globalThis.mockConstants = { BUILD_DIR, SRC_DIR, CONFIG, LOG_PREFIX };
 
-    mockHash.mockReturnValueOnce(111111);
+    mockHash.mockReturnValue(111111);
 
     await handleCSSFiles();
 
