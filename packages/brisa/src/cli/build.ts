@@ -9,6 +9,10 @@ import { log } from '@/utils/log/log-build';
 import { runtimeVersion } from '@/utils/js-runtime-util';
 import { createDenoJSON } from '@/build-utils/create-deno-json';
 
+// Patch BigInt.prototype.toJSON to allow stringify 
+// correctly BigInt values during the build
+import '@/build-utils/patches';
+
 const outputText = {
   bun: 'Bun.js Web Service App',
   node: 'Node.js Server App',
