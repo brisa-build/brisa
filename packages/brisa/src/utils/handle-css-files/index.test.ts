@@ -14,6 +14,7 @@ import handleCSSFiles, { getCSSLoader } from '.';
 import brisaTailwindCSS from 'brisa-tailwindcss';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
+const SRC_DIR = path.join(import.meta.dirname, 'src');
 const LOG_PREFIX = {
   INFO: '[INFO]',
   TICK: '✔',
@@ -27,6 +28,7 @@ describe('utils/handle-css-files', () => {
     if (!fs.existsSync(BUILD_DIR)) fs.mkdirSync(BUILD_DIR);
     globalThis.mockConstants = {
       BUILD_DIR,
+      SRC_DIR,
       LOG_PREFIX,
     } as unknown as BrisaConstants;
     mockHash = spyOn(Bun, 'hash');
@@ -216,6 +218,7 @@ describe('utils/handle-css-files', () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
     globalThis.mockConstants = {
       BUILD_DIR,
+      SRC_DIR,
       CONFIG,
       LOG_PREFIX,
       IS_BUILD_PROCESS: false,
@@ -232,6 +235,7 @@ describe('utils/handle-css-files', () => {
     const CONFIG = { assetCompression: true };
     globalThis.mockConstants = {
       BUILD_DIR,
+      SRC_DIR,
       CONFIG,
       LOG_PREFIX,
       IS_PRODUCTION: true,
@@ -251,6 +255,7 @@ describe('utils/handle-css-files', () => {
     const CONFIG = { assetCompression: true };
     globalThis.mockConstants = {
       BUILD_DIR,
+      SRC_DIR,
       CONFIG,
       LOG_PREFIX,
       IS_PRODUCTION: false,

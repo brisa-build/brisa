@@ -10,19 +10,23 @@ const cssGlob = new Glob('**/*.css');
 
 export default async function handleCSSFiles() {
   try {
-    const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_BUILD_PROCESS, IS_PRODUCTION } =
+    const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_BUILD_PROCESS, IS_PRODUCTION, SRC_DIR } =
       getConstants();
     const publicFolder = path.join(BUILD_DIR, 'public');
 
     if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder);
 
-    const cssFilePaths: string[] = await moveCSSInsidePublic(BUILD_DIR);
+    const cssFilePaths: string[] = await handleCSSInsidePublic(BUILD_DIR, publicFolder);
     const integrations = (CONFIG?.integrations ?? []).filter(
       (integration) => integration.transpileCSS,
     );
 
     // Using CSS integrations
     if (integrations.length > 0) {
+      // Use the src CSS files to transpile it with the integration parser
+      //  (instead of Bun CSS Parser)
+      cssFilePaths.push(...(await handleCSSInsidePublic(SRC_DIR, publicFolder)));
+
       for (const integration of integrations) {
         const startTime = Date.now();
 
@@ -102,15 +106,15 @@ export default async function handleCSSFiles() {
   }
 }
 
-async function moveCSSInsidePublic(buildDir: string) {
+async function handleCSSInsidePublic(dir: string, outDir: string) {
   const files = [];
 
-  for await (const filename of cssGlob.scan(buildDir)) {
-    const filePath = path.join(buildDir, filename);
+  for await (const filename of cssGlob.scan(dir)) {
+    const filePath = path.join(dir, filename);
     const hash = Bun.hash(await Bun.file(filePath).arrayBuffer());
     const newFilename = `style-${hash}.css`
 
-    fs.renameSync(filePath, path.join(buildDir, 'public', newFilename));
+    fs.copyFileSync(filePath, path.join(outDir, newFilename));
     files.push(newFilename);
   }
 
