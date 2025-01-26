@@ -13,6 +13,7 @@ import generateStaticExport from '@/utils/generate-static-export';
 import getWebComponentsPerEntryPoints from '@/utils/get-webcomponents-per-entrypoints';
 import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-page-paths';
 import { clientBuild } from '../client-build';
+import { getCSSLoader } from '@/utils/handle-css-files';
 
 const BRISA_DEPS = ['brisa/server'];
 
@@ -88,6 +89,7 @@ export default async function compileFiles() {
     splitting: false,
     external,
     define,
+    loader: getCSSLoader(),
     plugins: extendPlugins(
       [
         {
