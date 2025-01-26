@@ -14,7 +14,7 @@ import handleCSSFiles, { getCSSLoader } from '.';
 import brisaTailwindCSS from 'brisa-tailwindcss';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
-const SRC_DIR = path.join(import.meta.dirname, 'src');
+const SRC_DIR = BUILD_DIR;
 const LOG_PREFIX = {
   INFO: '[INFO]',
   TICK: '✔',
@@ -51,7 +51,9 @@ describe('utils/handle-css-files', () => {
     await handleCSSFiles();
 
     const newFilename = 'style-123456.css';
-    expect(fs.existsSync(path.join(BUILD_DIR, 'public', newFilename))).toBeTrue();
+    expect(
+      fs.existsSync(path.join(BUILD_DIR, 'public', newFilename)),
+    ).toBeTrue();
   });
 
   it('should create a css-files.js file with the new CSS file names (renamed)', async () => {
@@ -68,7 +70,10 @@ describe('utils/handle-css-files', () => {
 
   it('should move (rename) multi CSS files style-<hash>.css inside /public', async () => {
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
-    fs.writeFileSync(path.join(BUILD_DIR, 'test2.css'), 'body { color: blue; }');
+    fs.writeFileSync(
+      path.join(BUILD_DIR, 'test2.css'),
+      'body { color: blue; }',
+    );
 
     mockHash.mockReturnValueOnce(111111).mockReturnValueOnce(222222);
 
@@ -84,11 +89,12 @@ describe('utils/handle-css-files', () => {
 
   it('should create a css-files.js file with multiple renamed css file names', async () => {
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
-    fs.writeFileSync(path.join(BUILD_DIR, 'test2.css'), 'body { color: blue; }');
+    fs.writeFileSync(
+      path.join(BUILD_DIR, 'test2.css'),
+      'body { color: blue; }',
+    );
 
-    mockHash
-      .mockReturnValueOnce(111111)
-      .mockReturnValueOnce(222222);
+    mockHash.mockReturnValueOnce(111111).mockReturnValueOnce(222222);
 
     await handleCSSFiles();
 
@@ -103,9 +109,9 @@ describe('utils/handle-css-files', () => {
 
   it('should create a base.css content file using TailwindCSS integration when no file has @tailwind', async () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
-    globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
+    globalThis.mockConstants = { BUILD_DIR, SRC_DIR, CONFIG, LOG_PREFIX };
 
-    mockHash.mockReturnValueOnce(999999); 
+    mockHash.mockReturnValueOnce(999999);
 
     await handleCSSFiles();
 
@@ -119,17 +125,20 @@ describe('utils/handle-css-files', () => {
       fs.existsSync(path.join(BUILD_DIR, 'public', expectedFilename)),
     ).toBeTrue();
     expect(
-      fs.readFileSync(path.join(BUILD_DIR, 'public', expectedFilename), 'utf-8'),
+      fs.readFileSync(
+        path.join(BUILD_DIR, 'public', expectedFilename),
+        'utf-8',
+      ),
     ).toContain('MIT License | https://tailwindcss.com');
   });
 
   it('should create the base-<hash>.css on front of the others when no file has @tailwind', async () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
-    globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
+    globalThis.mockConstants = { BUILD_DIR, SRC_DIR, CONFIG, LOG_PREFIX };
 
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
 
-    mockHash.mockReturnValueOnce(111111).mockReturnValueOnce(222222);
+    mockHash.mockReturnValueOnce(111111).mockReturnValue(222222);
 
     await handleCSSFiles();
 
@@ -142,7 +151,9 @@ describe('utils/handle-css-files', () => {
 
     expect(cssFiles).toEqual([baseCSSFilename, styleCSSFilename].toSorted());
 
-    expect(fs.existsSync(path.join(BUILD_DIR, 'public', baseCSSFilename))).toBeTrue();
+    expect(
+      fs.existsSync(path.join(BUILD_DIR, 'public', baseCSSFilename)),
+    ).toBeTrue();
     expect(
       fs.readFileSync(path.join(BUILD_DIR, 'public', baseCSSFilename), 'utf-8'),
     ).toContain('MIT License | https://tailwindcss.com');
@@ -150,7 +161,7 @@ describe('utils/handle-css-files', () => {
 
   it('should NOT create a base.css file when some file has @tailwind', async () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
-    globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
+    globalThis.mockConstants = { BUILD_DIR, SRC_DIR, CONFIG, LOG_PREFIX };
 
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), '@tailwind base;');
 
@@ -176,7 +187,7 @@ describe('utils/handle-css-files', () => {
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), code);
 
     const CONFIG = { integrations: [brisaTailwindCSS()] };
-    globalThis.mockConstants = { BUILD_DIR, CONFIG, LOG_PREFIX };
+    globalThis.mockConstants = { BUILD_DIR, SRC_DIR, CONFIG, LOG_PREFIX };
 
     mockHash.mockReturnValueOnce(111111);
 
@@ -193,6 +204,7 @@ describe('utils/handle-css-files', () => {
     const CONFIG = { integrations: [brisaTailwindCSS()] };
     globalThis.mockConstants = {
       BUILD_DIR,
+      SRC_DIR,
       CONFIG,
       LOG_PREFIX,
       IS_BUILD_PROCESS: true,
@@ -242,12 +254,16 @@ describe('utils/handle-css-files', () => {
     };
 
     fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
-    mockHash.mockReturnValueOnce(111111)
+    mockHash.mockReturnValueOnce(111111);
 
     await handleCSSFiles();
 
     expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
-      ['style-111111.css', 'style-111111.css.br', 'style-111111.css.gz'].toSorted(),
+      [
+        'style-111111.css',
+        'style-111111.css.br',
+        'style-111111.css.gz',
+      ].toSorted(),
     );
   });
 
@@ -274,7 +290,9 @@ describe('utils/handle-css-files', () => {
 
 describe('getCSSLoader', () => {
   it('should return a plain text loader for CSS files when useExternalTranspiler is true', () => {
-    globalThis.mockConstants = { CONFIG: { integrations: [{ transpileCSS: true }] } } as any;
+    globalThis.mockConstants = {
+      CONFIG: { integrations: [{ transpileCSS: true }] },
+    } as any;
 
     const loader = getCSSLoader();
 
@@ -287,7 +305,9 @@ describe('getCSSLoader', () => {
   });
 
   it('should return a plain text loader for CSS files when useExternalTranspiler is false', () => {
-    globalThis.mockConstants = { CONFIG: { integrations: [{ transpileCSS: false }] } } as any;
+    globalThis.mockConstants = {
+      CONFIG: { integrations: [{ transpileCSS: false }] },
+    } as any;
 
     const loader = getCSSLoader();
 
@@ -301,4 +321,4 @@ describe('getCSSLoader', () => {
 
     expect(loader).toBeUndefined();
   });
-})
+});

@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type {Loader} from 'bun';
+import type { Loader } from 'bun';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logError } from '../log/log-build';
@@ -10,13 +10,21 @@ const cssGlob = new Glob('**/*.css');
 
 export default async function handleCSSFiles() {
   try {
-    const { BUILD_DIR, CONFIG, LOG_PREFIX, IS_BUILD_PROCESS, IS_PRODUCTION, SRC_DIR } =
-      getConstants();
+    const {
+      BUILD_DIR,
+      CONFIG,
+      LOG_PREFIX,
+      IS_BUILD_PROCESS,
+      IS_PRODUCTION,
+      SRC_DIR,
+    } = getConstants();
     const publicFolder = path.join(BUILD_DIR, 'public');
 
     if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder);
 
-    const cssFilePaths: string[] = await handleCSSInsidePublic(BUILD_DIR, publicFolder);
+    const cssFilePaths: Set<string> = new Set(
+      await handleCSSInsidePublic(BUILD_DIR, publicFolder),
+    );
     const integrations = (CONFIG?.integrations ?? []).filter(
       (integration) => integration.transpileCSS,
     );
@@ -25,7 +33,9 @@ export default async function handleCSSFiles() {
     if (integrations.length > 0) {
       // Use the src CSS files to transpile it with the integration parser
       //  (instead of Bun CSS Parser)
-      cssFilePaths.push(...(await handleCSSInsidePublic(SRC_DIR, publicFolder)));
+      cssFilePaths.union(
+        new Set(...(await handleCSSInsidePublic(SRC_DIR, publicFolder))),
+      );
 
       for (const integration of integrations) {
         const startTime = Date.now();
@@ -57,7 +67,7 @@ export default async function handleCSSFiles() {
             )) ?? '';
           const filename = `base-${Bun.hash(content)}.css`;
           fs.writeFileSync(path.join(publicFolder, filename), content);
-          cssFilePaths.unshift(filename);
+          cssFilePaths.add(filename);
         }
 
         if (IS_BUILD_PROCESS) {
@@ -78,7 +88,10 @@ export default async function handleCSSFiles() {
 
       for (const file of cssFilePaths) {
         const buffer = fs.readFileSync(path.join(publicFolder, file));
-        Bun.write(path.join(publicFolder, file + '.gz'), gzipSync(buffer as any) as any);
+        Bun.write(
+          path.join(publicFolder, file + '.gz'),
+          gzipSync(buffer as any) as any,
+        );
         Bun.write(
           path.join(publicFolder, file + '.br'),
           brotliCompressSync(buffer as any) as any,
@@ -96,7 +109,7 @@ export default async function handleCSSFiles() {
     // Write css-files.js
     fs.writeFileSync(
       path.join(BUILD_DIR, 'css-files.js'),
-      'export default ' + JSON.stringify(cssFilePaths),
+      'export default ' + JSON.stringify(Array.from(cssFilePaths)),
     );
   } catch (e: any) {
     logError({
@@ -112,7 +125,7 @@ async function handleCSSInsidePublic(dir: string, outDir: string) {
   for await (const filename of cssGlob.scan(dir)) {
     const filePath = path.join(dir, filename);
     const hash = Bun.hash(await Bun.file(filePath).arrayBuffer());
-    const newFilename = `style-${hash}.css`
+    const newFilename = `style-${hash}.css`;
 
     fs.copyFileSync(filePath, path.join(outDir, newFilename));
     files.push(newFilename);
@@ -122,20 +135,19 @@ async function handleCSSInsidePublic(dir: string, outDir: string) {
 }
 
 export function getCSSLoader(): { [x: string]: Loader } | undefined {
-  const { CONFIG } =
-  getConstants();
+  const { CONFIG } = getConstants();
   const useExternalTranspiler = (CONFIG?.integrations ?? []).some(
     (integration) => integration.transpileCSS,
   );
 
-  // Adding plain text loader for CSS files avoid the Bun CSS Parser for these files 
+  // Adding plain text loader for CSS files avoid the Bun CSS Parser for these files
   // already handled by the external transpiler (Tailwind, PandaCSS, etc)
-  if(useExternalTranspiler) {
+  if (useExternalTranspiler) {
     return {
       '.css': 'text',
       '.scss': 'text',
       '.sass': 'text',
       '.less': 'text',
-    }
+    };
   }
 }
