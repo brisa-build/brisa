@@ -22,8 +22,9 @@ export default async function handleCSSFiles() {
 
     if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder);
 
-    let cssFilePaths: Set<string> = new Set(
-      await handleCSSInsidePublic(BUILD_DIR, publicFolder),
+    const cssFilePaths: string[] = await handleCSSInsidePublic(
+      BUILD_DIR,
+      publicFolder,
     );
     const integrations = (CONFIG?.integrations ?? []).filter(
       (integration) => integration.transpileCSS,
@@ -33,9 +34,13 @@ export default async function handleCSSFiles() {
     if (integrations.length > 0) {
       // Use the "src" CSS files to transpile it with the integration parser
       // instead of the "build" because they are not transpiled by Bun CSS Parser
-      cssFilePaths = cssFilePaths.union(
-        new Set(await handleCSSInsidePublic(SRC_DIR, publicFolder)),
+      const cssFilePathsFromSrc = await handleCSSInsidePublic(
+        SRC_DIR,
+        publicFolder,
       );
+      for (const file of cssFilePathsFromSrc) {
+        if (!cssFilePaths.includes(file)) cssFilePaths.push(file);
+      }
 
       for (const integration of integrations) {
         const startTime = Date.now();
@@ -67,7 +72,7 @@ export default async function handleCSSFiles() {
             )) ?? '';
           const filename = `base-${Bun.hash(content)}.css`;
           fs.writeFileSync(path.join(publicFolder, filename), content);
-          cssFilePaths.add(filename);
+          cssFilePaths.unshift(filename);
         }
 
         if (IS_BUILD_PROCESS) {
@@ -109,7 +114,7 @@ export default async function handleCSSFiles() {
     // Write css-files.js
     fs.writeFileSync(
       path.join(BUILD_DIR, 'css-files.js'),
-      'export default ' + JSON.stringify(Array.from(cssFilePaths)),
+      'export default ' + JSON.stringify(cssFilePaths),
     );
   } catch (e: any) {
     logError({
