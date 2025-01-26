@@ -8,6 +8,7 @@ import getActionsInfo from './get-actions-info';
 import { getPurgedBody } from './get-purged-body';
 import { log, logBuildError } from '@/utils/log/log-build';
 import { jsx, jsxDEV } from '../ast/constants';
+import { getCSSLoader } from '@/utils/handle-css-files';
 
 type CompileActionsParams = {
   actionsEntrypoints: string[];
@@ -620,6 +621,7 @@ export async function buildActions({
     minify: IS_PRODUCTION,
     splitting: true,
     define,
+    loader: getCSSLoader(),
   });
 
   if (!res.success) {

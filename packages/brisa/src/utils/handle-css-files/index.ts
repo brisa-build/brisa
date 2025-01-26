@@ -1,4 +1,5 @@
 import path from 'node:path';
+import type {Loader} from 'bun';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logError } from '../log/log-build';
@@ -114,4 +115,23 @@ async function moveCSSInsidePublic(buildDir: string) {
   }
 
   return files;
+}
+
+export function getCSSLoader(): { [x: string]: Loader } | undefined {
+  const { CONFIG } =
+  getConstants();
+  const useExternalTranspiler = (CONFIG?.integrations ?? []).some(
+    (integration) => integration.transpileCSS,
+  );
+
+  // Adding plain text loader for CSS files avoid the Bun CSS Parser for these files 
+  // already handled by the external transpiler (Tailwind, PandaCSS, etc)
+  if(useExternalTranspiler) {
+    return {
+      '.css': 'text',
+      '.scss': 'text',
+      '.sass': 'text',
+      '.less': 'text',
+    }
+  }
 }

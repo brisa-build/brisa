@@ -10,7 +10,7 @@ import {
 import path from 'node:path';
 import fs from 'node:fs';
 import type { BrisaConstants } from '@/types';
-import handleCSSFiles from '.';
+import handleCSSFiles, { getCSSLoader } from '.';
 import brisaTailwindCSS from 'brisa-tailwindcss';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
@@ -266,3 +266,34 @@ describe('utils/handle-css-files', () => {
     ]);
   });
 });
+
+describe('getCSSLoader', () => {
+  it('should return a plain text loader for CSS files when useExternalTranspiler is true', () => {
+    globalThis.mockConstants = { CONFIG: { integrations: [{ transpileCSS: true }] } } as any;
+
+    const loader = getCSSLoader();
+
+    expect(loader).toEqual({
+      '.css': 'text',
+      '.scss': 'text',
+      '.sass': 'text',
+      '.less': 'text',
+    });
+  });
+
+  it('should return a plain text loader for CSS files when useExternalTranspiler is false', () => {
+    globalThis.mockConstants = { CONFIG: { integrations: [{ transpileCSS: false }] } } as any;
+
+    const loader = getCSSLoader();
+
+    expect(loader).toBeUndefined();
+  });
+
+  it('should return a plain text loader for CSS files when useExternalTranspiler is undefined', () => {
+    globalThis.mockConstants = { CONFIG: {} };
+
+    const loader = getCSSLoader();
+
+    expect(loader).toBeUndefined();
+  });
+})
