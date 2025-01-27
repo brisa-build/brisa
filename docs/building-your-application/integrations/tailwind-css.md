@@ -10,13 +10,27 @@ Tailwind lets you use utility classes instead of writing CSS. These utility clas
 
 ## Installation
 
-Run this command to integrate TailwindCSS in your Brisa project:
+Follow these steps to set up **TailwindCSS** in your Brisa project:
+
+### 1. Install TailwindCSS
+
+Run the following command to add TailwindCSS to your project:
 
 ```sh
 bunx brisa add tailwindcss
 ```
 
-And you are ready to use TailwindCSS in your Brisa project.
+### 2. Import TailwindCSS
+
+After the installation, import TailwindCSS in your main CSS file:
+
+```css
+@import "tailwindcss";
+```
+
+Then, import this CSS file in `src/layout/index.tsx`.
+
+And that's it! You're all set to use **TailwindCSS** in your Brisa project.
 
 ## Manual Installation
 
