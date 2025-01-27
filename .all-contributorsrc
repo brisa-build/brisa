@@ -115,6 +115,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "rohits-web03",
+      "name": "Rohit Kumar Dey",
+      "avatar_url": "https://avatars.githubusercontent.com/u/132741672?v=4",
+      "profile": "https://rohitdev-psi.vercel.app/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
