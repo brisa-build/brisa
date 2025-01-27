@@ -2,5 +2,5 @@
 // @ts-ignore
 BigInt.prototype.toJSON = function () {
   // @ts-ignore
-  return JSON.rawJSON(this)
+  return JSON.rawJSON(this);
 };

@@ -147,7 +147,7 @@ body.dark {
 
 @font-face {
   font-family: "Inter";
-  src: url("/inter.ttf") format("truetype");
+  src: url("@/public/inter.ttf") format("truetype");
   font-display: swap;
 }
 

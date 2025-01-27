@@ -611,7 +611,7 @@ export async function buildActions({
 
   const res = await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false, 
+    throw: false,
     entrypoints: [barrelFile],
     outdir: join(BUILD_DIR, 'actions'),
     external,

@@ -5,7 +5,7 @@ const outdir = path.join(import.meta.dirname, '..', 'compiler');
 
 const output = await Bun.build({
   // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-  throw: false, 
+  throw: false,
   outdir,
   entrypoints: [path.join(src, 'core', 'compiler', 'index.ts')],
   minify: true,

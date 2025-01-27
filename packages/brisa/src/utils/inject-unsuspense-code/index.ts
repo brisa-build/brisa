@@ -5,7 +5,7 @@ import path from 'node:path';
 export async function injectUnsuspenseCode() {
   const { success, logs, outputs } = await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false, 
+    throw: false,
     entrypoints: [path.join(import.meta.dir, 'unsuspense.ts')],
     target: 'browser',
     minify: true,

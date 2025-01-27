@@ -13,7 +13,7 @@ export async function injectBrisaDialogErrorCode() {
 
   const { success, logs, outputs } = await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false, 
+    throw: false,
     entrypoints: [pathname],
     target: 'browser',
     external: ['brisa'],

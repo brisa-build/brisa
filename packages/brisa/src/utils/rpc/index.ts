@@ -20,7 +20,7 @@ export async function injectRPCLazyCode() {
 async function buildRPC(file: string, isStatic = false) {
   const { success, logs, outputs } = await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false, 
+    throw: false,
     entrypoints: [path.join(import.meta.dir, file)],
     target: 'browser',
     minify: true,

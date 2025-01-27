@@ -1,6 +1,6 @@
 {
   "name": "brisa-adapter-vercel",
-  "version": "0.2.4-canary.5",
+  "version": "0.2.4",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -18,9 +18,7 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/adapter-vercel"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "brisa": "workspace:*"
   },
