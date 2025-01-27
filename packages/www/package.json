@@ -27,7 +27,7 @@
     "@swc/wasm-web": "1.9.3"
   },
   "devDependencies": {
-    "@types/bun": "1.1.14",
+    "@types/bun": "1.2.0",
     "@types/markdown-it": "14.1.2",
     "@types/markdown-it-container": "2.0.10",
     "@types/mark.js": "8.11.12",
