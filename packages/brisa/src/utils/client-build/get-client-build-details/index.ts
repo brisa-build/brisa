@@ -11,7 +11,9 @@ export async function getClientBuildDetails(
 ) {
   return (
     await Promise.all(
-      pages.map((p) => getClientEntrypointBuildDetails(p, options)),
+      pages
+        .filter((p) => p.kind === 'entry-point')
+        .map((p) => getClientEntrypointBuildDetails(p, options)),
     )
   ).filter(Boolean) as EntryPointData[];
 }
