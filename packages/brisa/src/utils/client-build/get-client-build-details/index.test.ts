@@ -51,7 +51,7 @@ describe('client build -> get-client-build-details', () => {
 
     await writeTempFiles([page]);
 
-    const pages = [{ path: page.filePath }] as any;
+    const pages = [{ path: page.filePath, kind: 'entry-point' }] as any;
     const options = {
       allWebComponents: {},
       webComponentsPerEntrypoint: {},
@@ -101,7 +101,7 @@ describe('client build -> get-client-build-details', () => {
       'my-component': wcFile.filePath,
     };
 
-    const pages = [{ path: page.filePath }] as any;
+    const pages = [{ path: page.filePath, kind: 'entry-point' }] as any;
     const options: Options = {
       allWebComponents: webComponentsMap,
       webComponentsPerEntrypoint: {
@@ -158,7 +158,7 @@ describe('client build -> get-client-build-details', () => {
 
     await writeTempFiles([nonPageFile]);
 
-    const pages = [{ path: nonPageFile.filePath }] as any;
+    const pages = [{ path: nonPageFile.filePath, kind: 'entry-point' }] as any;
     const options = {
       allWebComponents: {},
       webComponentsPerEntrypoint: {},
@@ -206,8 +206,8 @@ describe('client build -> get-client-build-details', () => {
     };
 
     const pagesOutputs = [
-      { path: page1.filePath },
-      { path: page2.filePath },
+      { path: page1.filePath, kind: 'entry-point' },
+      { path: page2.filePath, kind: 'entry-point' },
     ] as any;
 
     const options = {
@@ -262,7 +262,7 @@ describe('client build -> get-client-build-details', () => {
     );
 
     await writeTempFiles([page]);
-    const pages = [{ path: page.filePath }] as any;
+    const pages = [{ path: page.filePath, kind: 'entry-point' }] as any;
 
     const options = {
       allWebComponents: {},

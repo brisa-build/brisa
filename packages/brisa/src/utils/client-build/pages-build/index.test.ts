@@ -18,7 +18,11 @@ const pageWebComponents = {
 };
 
 const toArtifact = (path: string) =>
-  ({ path, text: () => Bun.file(path).text() }) as BuildArtifact;
+  ({
+    path,
+    text: () => Bun.file(path).text(),
+    kind: 'entry-point',
+  }) as BuildArtifact;
 
 describe('client-build', () => {
   beforeEach(async () => {
