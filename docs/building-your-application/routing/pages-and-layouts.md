@@ -184,6 +184,10 @@ export function responseHeaders(request, responseStatus) {
 }
 ```
 
+> [!IMPORTANT]
+>
+> As in Brisa we render the server components in streaming, the headers are **ALWAYS sent before rendering the page**. It is very important to keep this in mind.
+
 :::
 
 ## Head
