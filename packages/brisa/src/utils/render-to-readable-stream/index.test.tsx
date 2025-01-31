@@ -738,10 +738,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/_brisa/pages/_rpc-${constants.VERSION}.js"></script>`,
+        `<script data-cfasync="false" src="/_brisa/pages/_rpc-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
+        `<script data-cfasync="false" src="/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
     });
 
@@ -771,10 +771,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION}.js"></script>`,
+        `<script data-cfasync="false" src="/test/_brisa/pages/_rpc-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
+        `<script data-cfasync="false" src="/test/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
     });
 
@@ -801,10 +801,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
+        `<script data-cfasync="false" src="/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>`,
+        `<script data-cfasync="false" src="/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>`,
       );
     });
 
@@ -834,10 +834,10 @@ describe('utils', () => {
       const stream = renderToReadableStream(element, { request });
       const result = await Bun.readableStreamToText(stream);
       expect(result).not.toContain(
-        `<script src="/test/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
+        `<script data-cfasync="false" src="/test/_brisa/pages/_unsuspense-${constants.VERSION}.js"></script>`,
       );
       expect(result).toContain(
-        `<script src="/test/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>`,
+        `<script data-cfasync="false" src="/test/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>`,
       );
     });
 
@@ -891,9 +891,9 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head></head>
             <body>
-              <script src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
-              <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+              <script data-cfasync="false" async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
@@ -953,9 +953,9 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head basepath="/test"></head>
             <body>
-              <script src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script data-cfasync="false" src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
-              <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
+              <script data-cfasync="false" async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
@@ -1020,7 +1020,7 @@ describe('utils', () => {
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
-              <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+              <script data-cfasync="false" async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
@@ -1088,7 +1088,7 @@ describe('utils', () => {
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
-              <script async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
+              <script data-cfasync="false" async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
@@ -3860,7 +3860,7 @@ describe('utils', () => {
             <head></head>
             <body>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
-              <script async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
+              <script data-cfasync="false" async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
           </html>
       `),
