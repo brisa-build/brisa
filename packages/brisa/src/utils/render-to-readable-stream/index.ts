@@ -388,13 +388,13 @@ async function enqueueDuringRendering(
       // Script to unsuspense all suspense components
       if (controller.hasUnsuspense) {
         controller.enqueue(
-          `<script src="${compiledPagesPath}/_unsuspense-${VERSION}.js"></script>`,
+          `<script data-cfasync="false" src="${compiledPagesPath}/_unsuspense-${VERSION}.js"></script>`,
           suspenseId,
         );
       }
       if (controller.hasActionRPC) {
         controller.enqueue(
-          `<script src="${compiledPagesPath}/_rpc-${VERSION}.js" async></script>`,
+          `<script data-cfasync="false" src="${compiledPagesPath}/_rpc-${VERSION}.js" async></script>`,
           suspenseId,
         );
       }
@@ -450,7 +450,7 @@ async function enqueueDuringRendering(
           );
 
           if (fs.existsSync(pathPageI18n)) {
-            let script = `<script src="${compiledPagesPath}/${filenameI18n}"></script>`;
+            let script = `<script data-cfasync="false" src="${compiledPagesPath}/${filenameI18n}"></script>`;
 
             // Script to override client translations caused by "overrideMessages" function
             if (request.store.has('_messages')) {
@@ -475,7 +475,7 @@ async function enqueueDuringRendering(
         controller.areSignalsInjected = true;
         controller.enqueue(`<script>window.r=${route}</script>`, suspenseId);
         controller.enqueue(
-          `<script async fetchpriority="high" src="${compiledPagesPath}/${filename}"></script>`,
+          `<script data-cfasync="false" async fetchpriority="high" src="${compiledPagesPath}/${filename}"></script>`,
           suspenseId,
         );
       }
