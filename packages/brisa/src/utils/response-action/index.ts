@@ -1,7 +1,8 @@
 import type { RequestContext } from '@/types';
 import { deserialize } from '@/utils/serialization';
-import transferStoreService from '@/utils/transfer-store-service';
-import { resolveStore } from '@/utils/transfer-store-service';
+import transferStoreService, {
+  resolveStore,
+} from '@/utils/transfer-store-service';
 import { logError } from '@/utils/log/log-build';
 import { pathToFileURLWhenNeeded } from '../get-importable-filepath';
 import importFileIfExists from '../import-file-if-exists';
@@ -12,9 +13,7 @@ const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 export default async function responseAction(req: RequestContext) {
   const { BUILD_DIR } = getConstants();
   const actionModule = await importFileIfExists('actions', BUILD_DIR);
-
-  const { transferClientStoreToServer, formData, body } =
-    await transferStoreService(req);
+  const { formData, body } = await transferStoreService(req);
   const url = new URL(req.url);
   const action =
     req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';
@@ -61,9 +60,6 @@ export default async function responseAction(req: RequestContext) {
     params[0]._wc;
 
   if (isWebComponentEvent) params = params[0].detail;
-
-  // Transfer client store to server store
-  transferClientStoreToServer();
 
   const actionCallPromises: [string, Promise<unknown>][] = [];
   const responses: Response[] = [];

@@ -11,7 +11,6 @@ import path from 'node:path';
 import extendRequestContext from '@/utils/extend-request-context';
 import responseAction from '.';
 import { getConstants } from '@/constants';
-import { ENCRYPT_NONTEXT_PREFIX, encrypt } from '@/utils/crypto';
 import { boldLog } from '@/utils/log/log-color';
 import { normalizeHTML } from '@/helpers';
 
@@ -55,57 +54,6 @@ describe('utils', () => {
 
       expect(resBody).toEqual([]);
       expect(req.store.get('__params:a1_1')).toEqual([{ foo: 'bar' }]);
-    });
-
-    it('should be possible to access to store variables from "x-s" store body', async () => {
-      const xs = [['foo', 'bar']];
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a1_1',
-          },
-          body: JSON.stringify({
-            'x-s': xs,
-            args: [
-              {
-                foo: 'bar',
-              },
-            ],
-          }),
-        }),
-      });
-
-      const res = await responseAction(req);
-      const resBody = await res.json();
-
-      expect(req.store.get('foo')).toBe('bar');
-      expect(resBody).toEqual(xs);
-    });
-
-    it('should remove the field "x-s" from form-data (Brisa internal field)', async () => {
-      const formData = new FormData();
-      formData.append('foo', 'bar');
-      formData.append('x-s', '[["foo", "bar"]]');
-
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'multipart/form-data',
-            'x-action': 'a1_1',
-          },
-          body: formData,
-        }),
-      });
-
-      req.formData = async () => formData;
-
-      await responseAction(req);
-
-      expect(formData.get('x-s')).toBeNull();
-      expect(req.store.get('foo')).toBe('bar');
     });
 
     it('should add the correct param when using form-data', async () => {
@@ -184,30 +132,6 @@ describe('utils', () => {
       const res = await responseAction(req);
 
       expect(res.headers.get('x-reset')).toBe('1');
-    });
-
-    it('should form-data work with "x-s" store appended to the form-data"', async () => {
-      const formData = new FormData();
-      formData.append('foo', 'bar');
-      formData.append('x-s', JSON.stringify([['foo', 'bar']]));
-
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'multipart/form-data',
-            'x-action': 'a1_1',
-          },
-          body: formData,
-        }),
-      });
-
-      req.formData = async () => formData;
-
-      const res = await responseAction(req);
-
-      expect(req.store.get('foo')).toBe('bar');
-      expect(res.headers.get('x-reset')).toBeEmpty();
     });
 
     it('should form-data work with ?_aid instead of x-action to work without JS', async () => {
@@ -567,144 +491,6 @@ describe('utils', () => {
       expect(resBody).toBe('a3_7 error');
     });
 
-    it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {
-      const xs = [['sensitive-data', encrypt('foo')]];
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a1_1',
-          },
-          body: JSON.stringify({
-            'x-s': xs,
-            args: [
-              {
-                foo: 'bar',
-              },
-            ],
-          }),
-        }),
-      });
-
-      const res = await responseAction(req);
-      const resBody = await res.json();
-
-      expect(req.store.get('sensitive-data')).toBe('foo');
-      expect(resBody).toEqual(xs);
-    });
-
-    it('should decrypt the store variables from "x-s" body that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
-      const xs = [['sensitive-data', encrypt({ foo: 'bar' })]];
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a1_1',
-          },
-          body: JSON.stringify({
-            'x-s': xs,
-            args: [],
-          }),
-        }),
-      });
-
-      const res = await responseAction(req);
-      const resBody = await res.json();
-
-      expect(req.store.get('sensitive-data')).toEqual({ foo: 'bar' });
-      expect(resBody).toEqual(xs);
-    });
-
-    it('should emojis work inside store', async () => {
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a1_1',
-          },
-          body: JSON.stringify({
-            'x-s': [['sensitive-data', '👍']],
-            args: [],
-          }),
-        }),
-      });
-
-      const res = await responseAction(req);
-      const resBody = await res.json();
-
-      expect(req.store.get('sensitive-data')).toBe('👍');
-      expect(resBody).toEqual([['sensitive-data', '👍']]);
-    });
-
-    it('should log an error if the decryption fails from "x-s" store body', async () => {
-      const xs = [
-        ['sensitive-data', ENCRYPT_NONTEXT_PREFIX + 'invalid-encrypted-data'],
-      ];
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a1_1',
-          },
-          body: JSON.stringify({
-            'x-s': xs,
-            args: [
-              {
-                foo: 'bar',
-              },
-            ],
-          }),
-        }),
-      });
-
-      const res = await responseAction(req);
-      const resBody = await res.json();
-      const { LOG_PREFIX } = getConstants();
-
-      expect(logMock).toHaveBeenCalledTimes(7);
-      expect(logMock.mock.calls[0]).toEqual([LOG_PREFIX.ERROR, 'Ops! Error:']);
-      expect(logMock.mock.calls[1]).toEqual([
-        LOG_PREFIX.ERROR,
-        '--------------------------',
-      ]);
-      expect(logMock.mock.calls[2]).toEqual([
-        LOG_PREFIX.ERROR,
-        boldLog(
-          'Error transferring client "sensitive-data" store to server store',
-        ),
-      ]);
-      expect(logMock.mock.calls[3]).toEqual([
-        LOG_PREFIX.ERROR,
-        'The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.',
-      ]);
-      expect(logMock.mock.calls[4]).toEqual([
-        LOG_PREFIX.ERROR,
-        '--------------------------',
-      ]);
-
-      expect(resBody).toEqual([
-        [
-          '__BRISA_ERRORS__',
-          [
-            {
-              title:
-                'Error transferring client "sensitive-data" store to server store',
-              details: [
-                'The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.',
-              ],
-              docTitle: 'Documentation about store.transferToClient',
-              docLink:
-                'https://brisa.build/api-reference/components/request-context#transfertoclient',
-            },
-          ],
-        ],
-      ]);
-    });
-
     it('should transfer headers from page SYNC responseHeaders from /somepage', async () => {
       const req = extendRequestContext({
         originalRequest: new Request(PAGE, {
@@ -796,31 +582,6 @@ describe('utils', () => {
       expect(req.store.get(Symbol.for('DEPENDENCIES'))).toEqual([
         [['onClick', 'a1_2']],
       ]);
-    });
-
-    it('should clear the context store', async () => {
-      const xs = [
-        ['context:0:1:0', 'foo'],
-        ['context:0:1:1', 'bar'],
-        ['foo', 'bar'],
-      ];
-      const req = extendRequestContext({
-        originalRequest: new Request(PAGE, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-action': 'a1_1',
-          },
-          body: JSON.stringify({
-            'x-s': xs,
-            args: [],
-          }),
-        }),
-      });
-
-      const res = await responseAction(req);
-
-      expect(await res.text()).toBe(JSON.stringify([['foo', 'bar']]));
     });
   });
 });

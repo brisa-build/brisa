@@ -2,8 +2,6 @@ import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import path from 'node:path';
 import renderToReadableStream from '@/utils/render-to-readable-stream';
 import { getConstants } from '@/constants';
-import transferStoreService from '@/utils/transfer-store-service';
-import { Initiator } from '@/public-constants';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
 import getReadableStreamFromPath from '../get-readable-stream-from-path';
 
@@ -22,7 +20,6 @@ export default async function responseRenderedPage({
   error,
   headers = {},
 }: Params) {
-  const { transferClientStoreToServer } = await transferStoreService(req);
   const { PageComponent, pageModule, pageHeaders } =
     await getPageComponentWithHeaders({
       req,
@@ -31,11 +28,6 @@ export default async function responseRenderedPage({
       status,
       headers,
     });
-
-  // Avoid to transfer again if comes from a rerender from an action
-  if (req.initiator !== Initiator.SERVER_ACTION) {
-    transferClientStoreToServer();
-  }
 
   const fileStream = getReadableStreamFromPath(
     routeToPrerenderedPagePath(route),
