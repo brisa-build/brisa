@@ -17,6 +17,11 @@ import type { RequestContext } from '@/types';
 import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import { getServeOptions } from './serve-options';
+import {
+  ENCRYPT_NONTEXT_PREFIX,
+  encrypt,
+  ENCRYPT_PREFIX,
+} from '@/utils/crypto';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -39,6 +44,9 @@ async function testRequest(
     })) || new Response('', { status: 101 })) as Response
   );
 }
+
+const __CRYPTO_KEY__ = process.env.__CRYPTO_KEY__;
+const __CRYPTO_IV__ = process.env.__CRYPTO_IV__;
 
 describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
@@ -64,8 +72,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   afterEach(() => {
     globalThis.__BASE_PATH__ = '';
-    process.env.__CRYPTO_KEY__ = undefined;
-    process.env.__CRYPTO_IV__ = undefined;
+    process.env.__CRYPTO_KEY__ = __CRYPTO_KEY__;
+    process.env.__CRYPTO_IV__ = __CRYPTO_IV__;
     process.env.BRISA_BUILD_FOLDER = '';
     globalThis.mockConstants = undefined;
     delete process.argv[1];
@@ -83,6 +91,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should detect as isCLI false when process.argv[1] NOT include serve/index.js', async () => {
+    process.env.__CRYPTO_KEY__ = undefined;
+    process.env.__CRYPTO_IV__ = undefined;
     process.argv[1] = path.join('brisa', 'out', 'cli', 'build', 'index.js');
     await (await import('./serve-options')).setUpEnvVars();
 
@@ -94,6 +104,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should set the env variables when they are not set for a custom server', async () => {
+    process.env.__CRYPTO_KEY__ = undefined;
+    process.env.__CRYPTO_IV__ = undefined;
     await (await import('./serve-options')).setUpEnvVars(false);
 
     expect(process.env.__CRYPTO_KEY__).toBeDefined();
@@ -104,6 +116,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should BRISA_BUILD_FOLDER env variable be defined always (to use prebuild)', async () => {
+    process.env.__CRYPTO_KEY__ = undefined;
+    process.env.__CRYPTO_IV__ = undefined;
     await (await import('./serve-options')).setUpEnvVars(true);
 
     expect(process.env.__CRYPTO_KEY__).not.toBeDefined();
@@ -114,6 +128,8 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   it('should detect as isCLI true when process.argv[1] include serve/index.js', async () => {
+    process.env.__CRYPTO_KEY__ = undefined;
+    process.env.__CRYPTO_IV__ = undefined;
     process.argv[1] = path.join('brisa', 'out', 'cli', 'serve', 'index.js');
     await (await import('./serve-options')).setUpEnvVars();
 
@@ -992,6 +1008,208 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
     expect(html).toContain(
       `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+    );
+  });
+
+  it('should be possible to access to store variables from "x-s" store body', async () => {
+    const xs = [['foo', 'bar']];
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': xs,
+      }),
+    };
+    const req = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    ) as any;
+    const res = await testRequest(req);
+    const html = await res.text();
+
+    expect(req.store.get('foo')).toBe('bar');
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+    );
+  });
+
+  it('should remove the field "x-s" from form-data (Brisa internal field)', async () => {
+    const formData = new FormData();
+    formData.append('foo', 'bar');
+
+    // Should ignore the "x-s" field
+    formData.append('x-s', '[["foo", "bar"]]');
+
+    const options = {
+      method: 'POST',
+      body: formData,
+    };
+    const req = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    ) as any;
+    const res = await testRequest(req);
+    const html = await res.text();
+
+    expect(req.store.get('foo')).toBe('bar');
+    expect(res.headers.get('x-reset')).toBeEmpty();
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+    );
+  });
+
+  it('should form-data work with "x-s" store appended to the form-data"', async () => {
+    const formData = new FormData();
+    formData.append('x-s', JSON.stringify([['foo', 'bar']]));
+
+    const options = {
+      method: 'POST',
+      body: formData,
+    };
+    const req = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    ) as any;
+    const res = await testRequest(req);
+    const html = await res.text();
+
+    expect(req.store.get('foo')).toBe('bar');
+    expect(res.headers.get('x-reset')).toBeEmpty();
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+    );
+  });
+
+  it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {
+    const xs = [['sensitive-data', encrypt('foo')]];
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': xs,
+      }),
+    };
+    const request = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    ) as any;
+    const response = await testRequest(request);
+    const html = await response.text();
+
+    expect(request.store.get('sensitive-data')).toEqual('foo');
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["sensitive-data","${ENCRYPT_PREFIX}`,
+    );
+  });
+
+  it('should decrypt the store variables from "x-s" body that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
+    const xs = [['sensitive-data', encrypt({ foo: 'bar' })]];
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': xs,
+      }),
+    };
+    const request = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    ) as any;
+    const response = await testRequest(request);
+    const html = await response.text();
+
+    expect(request.store.get('sensitive-data')).toEqual({ foo: 'bar' });
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["sensitive-data","${ENCRYPT_NONTEXT_PREFIX}`,
+    );
+  });
+
+  it('should emojis work inside store', async () => {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': [['sensitive-data', '👍']],
+      }),
+    };
+    const request = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    ) as any;
+    const response = await testRequest(request);
+    const html = await response.text();
+
+    expect(request.store.get('sensitive-data')).toBe('👍');
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["sensitive-data","👍"]]</script>`,
+    );
+  });
+
+  it('should log and render an error if the decryption fails from "x-s" store body', async () => {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': [
+          ['sensitive-data', ENCRYPT_NONTEXT_PREFIX + 'invalid-encrypted-data'],
+        ],
+      }),
+    };
+    const mockLog = spyOn(console, 'log');
+    const request = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    );
+    const response = await testRequest(request);
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain(
+      `Error transferring client \\\"sensitive-data\\\" store to server store"`,
+    );
+    expect(mockLog).toHaveBeenCalled();
+  });
+
+  it('should clear the context store', async () => {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': [
+          ['context:0:1:0', 'foo'],
+          ['context:0:1:1', 'bar'],
+          ['foo', 'bar'],
+        ],
+      }),
+    };
+    const request = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    );
+    const response = await testRequest(request);
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+    );
+  });
+
+  it('should clear the context store', async () => {
+    const options = {
+      method: 'POST',
+      body: JSON.stringify({
+        'x-s': [
+          ['context:0:1:0', 'foo'],
+          ['context:0:1:1', 'bar'],
+          ['foo', 'bar'],
+        ],
+      }),
+    };
+    const request = new Request(
+      `http:///localhost:1234${basePath}/es/page-with-web-component`,
+      options,
+    );
+    const response = await testRequest(request);
+    const html = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(html).toContain(
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
     );
   });
 

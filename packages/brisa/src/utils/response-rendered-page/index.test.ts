@@ -235,25 +235,6 @@ describe('utils', () => {
       expect(response.headers.get('X-Test')).toBe('success');
     });
 
-    it('should transfer the store from client to server and server to client', async () => {
-      const req = extendRequestContext({
-        originalRequest: new Request('http://localhost:1234/es', {
-          method: 'POST',
-          body: JSON.stringify({
-            'x-s': [['key', 'value']],
-          }),
-        }),
-      });
-      const response = await responseRenderedPage({
-        req,
-        route: {
-          filePath: path.join(PAGES_DIR, 'index.tsx'),
-        } as MatchedBrisaRoute,
-      });
-
-      expect(await response.text()).toContain('window._S=[["key","value"]]');
-    });
-
     it('should NOT transfer the store when is already transferred for the server action (POST)', async () => {
       const req = extendRequestContext({
         originalRequest: new Request('http://localhost:1234/es', {
