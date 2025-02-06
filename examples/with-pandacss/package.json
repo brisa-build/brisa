@@ -12,7 +12,7 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "0.2.5-canary.6"
+    "brisa": "0.2.5"
   },
   "devDependencies": {
     "@pandacss/dev": "0.51.1",
