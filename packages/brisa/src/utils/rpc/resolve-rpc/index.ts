@@ -31,8 +31,8 @@ async function resolveRPC(
     if (store) {
       for (const [key, value] of entries) store.set(key, value);
     }
-    // Store WITHOUT web components signals
-    else $window._S = entries;
+    // Original Store (without reactivity)
+    $window._S = entries;
   }
 
   // Reset form from the server action

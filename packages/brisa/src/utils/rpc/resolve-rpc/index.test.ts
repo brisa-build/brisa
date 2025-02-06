@@ -103,6 +103,8 @@ describe('utils', () => {
       await resolveRPC(res, dataSet);
 
       expect(window._s.get('foo')).toBe('bar');
+      // Should update the original store too
+      expect(window._S).toEqual([['foo', 'bar']]);
     });
 
     it('should update the store without initialize (no signals, only server store with transferToClient)', async () => {
