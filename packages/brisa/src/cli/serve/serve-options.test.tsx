@@ -17,6 +17,7 @@ import type { RequestContext } from '@/types';
 import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import { getServeOptions } from './serve-options';
+import type { RequestContent } from '@/utils/transfer-store-service';
 import {
   ENCRYPT_NONTEXT_PREFIX,
   encrypt,
@@ -1705,6 +1706,37 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(mockResponseAction.mock.calls[0][0].initiator).toBe(
       Initiator.SERVER_ACTION,
     );
+  });
+
+  it('should the response action receive the formData', async () => {
+    const mockResponseAction = mock(
+      (req: RequestContext, content: RequestContent) => {},
+    );
+    const formData = new FormData();
+    formData.append('foo', 'bar');
+    formData.append('x-s', '[["some", "value"]]');
+
+    mock.module('@/utils/response-action', () => ({
+      default: (req: RequestContext, content: RequestContent) =>
+        mockResponseAction(req, content),
+    }));
+
+    await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/somepage`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'x-action': 'a1_1',
+        },
+      }),
+    );
+
+    const [req, reqContent] = mockResponseAction.mock.calls[0];
+
+    expect(req.store.get('some')).toBe('value');
+    expect(Array.from(reqContent.formData!.entries())).toEqual([
+      ['foo', 'bar'],
+    ]);
   });
 
   it('should have req.initiator with "SPA_NAVIGATION" when the Page is POST method without x-action header', async () => {

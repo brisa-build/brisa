@@ -27,7 +27,9 @@ import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
 import getInitiator from '@/utils/get-initiator';
 import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
-import transferStoreService from '@/utils/transfer-store-service';
+import transferStoreService, {
+  type RequestContent,
+} from '@/utils/transfer-store-service';
 
 export async function getServeOptions() {
   setUpEnvVars();
@@ -249,14 +251,15 @@ export async function getServeOptions() {
     const isApi = initiator === Initiator.API_REQUEST;
     const api = isApi ? rootRouter.match(req) : null;
     const isPOST = req.method === 'POST';
+    let reqContent: RequestContent | undefined;
 
     req.initiator = initiator;
     req.route = (isApi ? api?.route : route) as MatchedBrisaRoute;
 
     // Transfer once the client store to server (middleware, actions, navigate...)
     if (isPOST && !isApi) {
-      const { transferClientStoreToServer } = await transferStoreService(req);
-      transferClientStoreToServer();
+      reqContent = await transferStoreService(req);
+      reqContent.transferClientStoreToServer();
     }
 
     // Middleware
@@ -283,7 +286,7 @@ export async function getServeOptions() {
 
         // Actions
         if (initiator === Initiator.SERVER_ACTION) {
-          return responseAction(req);
+          return responseAction(req, reqContent!);
         }
       }
 

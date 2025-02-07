@@ -7,6 +7,8 @@ import {
 } from '@/utils/crypto';
 import { logError } from '@/utils/log/log-build';
 
+export type RequestContent = Awaited<ReturnType<typeof transferStoreService>>;
+
 export default async function transferStoreService(req: RequestContext) {
   const contentType = req.headers.get('content-type');
   const reqClone = req.clone();
