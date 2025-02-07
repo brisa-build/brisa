@@ -1,6 +1,6 @@
 {
   "name": "brisa-pandacss",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
