@@ -1,6 +1,7 @@
 import type { RequestContext } from '@/types';
 import { deserialize } from '@/utils/serialization';
-import transferStoreService, {
+import {
+  type RequestContent,
   resolveStore,
 } from '@/utils/transfer-store-service';
 import { logError } from '@/utils/log/log-build';
@@ -10,10 +11,12 @@ import { getConstants } from '@/constants';
 
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
-export default async function responseAction(req: RequestContext) {
+export default async function responseAction(
+  req: RequestContext,
+  { formData, body }: RequestContent,
+) {
   const { BUILD_DIR } = getConstants();
   const actionModule = await importFileIfExists('actions', BUILD_DIR);
-  const { formData, body } = await transferStoreService(req);
   const url = new URL(req.url);
   const action =
     req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';

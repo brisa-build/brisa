@@ -13,6 +13,7 @@ import responseAction from '.';
 import { getConstants } from '@/constants';
 import { boldLog } from '@/utils/log/log-color';
 import { normalizeHTML } from '@/helpers';
+import transferStoreService from '@/utils/transfer-store-service';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGE = 'http://locahost/es/somepage';
@@ -48,8 +49,9 @@ describe('utils', () => {
           }),
         }),
       });
+      const reqContent = await transferStoreService(req);
 
-      const res = await responseAction(req);
+      const res = await responseAction(req, reqContent);
       const resBody = await res.json();
 
       expect(resBody).toEqual([]);
@@ -72,8 +74,9 @@ describe('utils', () => {
       });
 
       req.formData = async () => formData;
+      const reqContent = await transferStoreService(req);
 
-      const res = await responseAction(req);
+      const res = await responseAction(req, reqContent);
 
       expect(req.store.get('__params:a1_1')).toEqual([
         {
@@ -128,8 +131,8 @@ describe('utils', () => {
       });
 
       req.formData = async () => formData;
-
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
 
       expect(res.headers.get('x-reset')).toBe('1');
     });
@@ -150,7 +153,8 @@ describe('utils', () => {
 
       req.formData = async () => formData;
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
 
       expect(req.store.get('__params:a1_1')).toEqual([
         {
@@ -221,7 +225,8 @@ describe('utils', () => {
         }),
       });
 
-      await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      await responseAction(req, reqContent);
 
       expect(req.store.get('__params:a1_1')).toEqual([{ foo: 'bar' }, 'bar']);
     });
@@ -245,7 +250,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
       const resBody = await res.json();
 
       expect(resBody).toEqual([]);
@@ -275,7 +281,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
       const resBody = await res.json();
 
       expect(resBody).toEqual([]);
@@ -308,7 +315,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
       const resBody = await res.json();
 
       expect(resBody).toEqual([]);
@@ -334,7 +342,8 @@ describe('utils', () => {
         }),
       });
 
-      await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      await responseAction(req, reqContent);
 
       // @ts-ignore
       expect(req._p).toBeTypeOf('function');
@@ -358,7 +367,8 @@ describe('utils', () => {
         }),
       });
 
-      await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      await responseAction(req, reqContent);
 
       const logs = logMock.mock.calls.toString();
 
@@ -392,7 +402,8 @@ describe('utils', () => {
         }),
       });
 
-      await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      await responseAction(req, reqContent);
 
       const logs = logMock.mock.calls.toString();
 
@@ -422,7 +433,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
 
       expect(await res.text()).toBe('a3_5');
     });
@@ -443,7 +455,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
 
       expect(await res.text()).toBe('a3_5');
     });
@@ -463,7 +476,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
       const resBody = await res.text();
 
       expect(resBody).toBe('a3_7 error');
@@ -485,7 +499,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
       const resBody = await res.text();
 
       expect(resBody).toBe('a3_7 error');
@@ -508,7 +523,8 @@ describe('utils', () => {
         } as any,
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
 
       expect(res.headers.get('x-test')).toBe('test');
     });
@@ -530,7 +546,8 @@ describe('utils', () => {
         } as any,
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
 
       expect(res.headers.get('x-test')).toBe('success');
     });
@@ -547,7 +564,8 @@ describe('utils', () => {
         }),
       });
 
-      const res = await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      const res = await responseAction(req, reqContent);
       const logMessage = logMock.mock.calls.toString();
 
       expect(logMock).toHaveBeenCalled();
@@ -577,7 +595,8 @@ describe('utils', () => {
         }),
       });
 
-      await responseAction(req);
+      const reqContent = await transferStoreService(req);
+      await responseAction(req, reqContent);
 
       expect(req.store.get(Symbol.for('DEPENDENCIES'))).toEqual([
         [['onClick', 'a1_2']],
