@@ -1,11 +1,14 @@
 ---
-title: "Brisa 0.2.5"
+title: "Brisa 0.2.5 & 0.2.6 Release Notes"
 created: 02/06/2025
 description: "Brisa release notes for version 0.2.5"
 author: Aral Roca
 author_site: https://x.com/aralroca
 cover_image: /images/blog-images/release-0.2.5.webp
 ---
+
+> [!IMPORTANT]
+> **Notice**: This release includes a critical regression in Server Actions, which was promptly fixed in [v0.2.6](https://github.com/brisa-build/brisa/releases/tag/0.2.6) the following day.
 
 **Brisa v0.2.5 is here!** 🎉
 
