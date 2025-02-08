@@ -245,7 +245,7 @@ export default function Counter({}, { state, effect }: WebContext) {
   const addition = state<number>(1);
 
   effect(() => {
-    count.value = count.peek() + addition.peek();
+    count.value = count.peek() + addition.value;
   });
 
   return (
