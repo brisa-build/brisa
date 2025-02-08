@@ -232,3 +232,56 @@ But thanks to `store.transferToClient` method, you extend the lifecycle of some 
 - etc ...
 
 And modifying the value on server actions, is reflected in a reactive way on the client side signals.
+
+## Can I use a `state` / `store` value inside an effect without subscribing?
+
+Yes, you can use a `state` / `stor`e value inside an effect without subscribing. 
+
+For the `state`, you have the [`.peek()`](/building-your-application/components-details/web-components#peek) method to get the current value without subscribing:
+
+```tsx
+export default function Counter({}, { state, effect }: WebContext) {
+  const count = state<number>(0);
+  const addition = state<number>(1);
+
+  effect(() => {
+    count.value = count.peek() + addition.peek();
+  });
+
+  return (
+    <>
+      <button onClick={() => addition.value++}>+</button>
+      <span> Counter: {count.value} </span>
+      <button onClick={() => addition.value--}>-</button>
+    </>
+  );
+}
+```
+
+In this example, the `count` signal is updated by the `addition` signal without subscribing to `count`.
+
+For the `store`, you can use the [`.Map.get`](/building-your-application/components-details/web-components#example-with-no-reactive-store) method to get the current value without subscribing:
+
+```tsx
+export default function Counter({}, { store, effect }: WebContext) {
+  store.set('count', 0);
+  store.set('addition', 1);
+
+  effect(() => {
+    store.set('count', store.Map.get('count') + store.get('addition'));
+  });
+
+  const increment = () => store.set('addition', store.get('addition') + 1);
+  const decrement = () => store.set('addition', store.get('addition') - 1);
+
+  return (
+    <>
+      <button onClick={increment)}>+</button>
+      <span> Counter: {count.value} </span>
+      <button onClick={decrement}>-</button>
+    </>
+  );
+}
+```
+
+In this example, the `count` store field is updated by the `addition` store field without subscribing to `count`. The `store.Map` is used to have the real `Map` object without the reactivity.
