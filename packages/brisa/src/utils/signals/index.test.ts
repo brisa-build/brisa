@@ -692,4 +692,29 @@ describe('signals', () => {
     expect(window._s.get('foo')).toBe('BAR!');
     expect(window._s.get('bar')).toBe('FOO!');
   });
+
+  it('should count.peek() return the value without subscription to the effect', () => {
+    const { state, effect, reset } = signals();
+    const count = state<number>(0);
+    const addition = state<number>(1);
+    const mockEffect = mock<(count?: number) => void>(() => {});
+
+    effect(() => {
+      count.value = count.peek() + addition.value;
+      mockEffect(count.peek());
+    });
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+    expect(mockEffect.mock.calls[0][0]).toBe(1);
+
+    count.value = 1;
+
+    expect(mockEffect).toHaveBeenCalledTimes(1);
+
+    addition.value = 2;
+
+    expect(mockEffect).toHaveBeenCalledTimes(2);
+    expect(mockEffect.mock.calls[1][0]).toBe(3);
+    reset();
+  });
 });
