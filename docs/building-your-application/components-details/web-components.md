@@ -470,6 +470,21 @@ export default function Counter({}, { state }: WebContext) {
 
 Whenever a state mutate (change the `.value`) reactively updates these parts of the DOM where the signal has been set.
 
+### Peek
+
+If you want to get the value of a signal without subscribing to an effect, you can use the `peek` method:
+
+```tsx
+const count = state<number>(0);
+const addition = state<number>(1);
+
+effect(() => {
+  count.value = count.peek() + addition.peek();
+});
+```
+
+In this example, the `count` state will be updated only when the `addition` state changes.
+
 ## Store (`store` method)
 
 The difference between state and `store` is that store is a **shared** state among all web-components. The store is a reactive `Map`, where the methods `get`, `has`, `set` and `delete` are reactive.
@@ -501,6 +516,20 @@ export default function SharedStore({}, { store }: WebContext) {
   );
 }
 ```
+
+### Example with no-reactive store:
+
+```tsx
+effect(() => {
+  store.set('counter', store.Map.get('counter') + store.get('addition'));
+})
+```
+
+In this example, the `effect` is used to update the store when the `addition` store entry changes. This is because the store with the `.Map` is not reactive, is a simple `Map` object.
+
+> [!NOTE]
+>
+> It's very similar than the [`.peek()`](#peek) used in the state, but in this case, the store is a `Map` object.
 
 ### Example with `derived` and `store`:
 

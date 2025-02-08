@@ -483,6 +483,12 @@ export interface BaseWebContext {
    * count.value += 1;
    * ```
    *
+   * Example mutation without subscription (only setter):
+   *
+   * ```ts
+   * count.value = count.peek() + 1;
+   * ```
+   *
    * Docs:
    *  - [How to use `state`](https://brisa.build/building-your-application/components-details/web-components#state-state-method)
    */
@@ -1491,7 +1497,38 @@ export type BrisaContext<T> = {
   id: string;
 };
 
-export type Signal<T> = { value: T };
+export type Signal<T> = {
+  /**
+   * Description:
+   *
+   * The `value` property is used to get and set the value of the signal.
+   *
+   * The getter do a subscription to the effect, so when the value
+   * changes, the DOM will be updated reactively.
+   *
+   * - [How to use `value`](https://brisa.build/building-your-application/components-details/web-components#state)
+   */
+  value: T;
+  /**
+   * Description:
+   *
+   * The `peek` method is used to get the value of the signal without
+   * subscribing to the effect.
+   *
+   * Example:
+   *
+   * ```ts
+   * effect(() => {
+   *   count.value = count.peek() + 1;
+   * });
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `peek`](https://brisa.build/building-your-application/components-details/web-components#peek)
+   */
+  peek(): T;
+};
 
 export type IndicatorSignal = {
   id: string;

@@ -101,8 +101,11 @@ export default function signals() {
     subEffectsPerEffect.delete(fn);
   }
 
-  function state<T>(currentValue?: T): { value: T } {
+  function state<T>(currentValue?: T): { value: T; peek(): T } {
     return {
+      peek() {
+        return currentValue!;
+      },
       get value() {
         if (stack[0]) {
           effects.set(this, getSet<Effect>(effects, this).add(stack[0]));
