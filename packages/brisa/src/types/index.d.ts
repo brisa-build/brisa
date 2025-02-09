@@ -845,15 +845,84 @@ type SitemapItem = {
 export type Sitemap = SitemapItem[] | Promise<SitemapItem[]>;
 
 export type ReactiveMap = {
+  /**
+   * Description:
+   *
+   * The `get` method is used to get a reactive value from the store.
+   * This means that when the value changes, the effect that uses it
+   * will be re-executed. In the case to be used inside the JSX, it
+   * will update only the part of the DOM where it is used.
+   *
+   * Docs:
+   * https://brisa.build/api-reference/components/web-context#store
+   */
   get: <T>(key: string) => T;
+  /**
+   * Description:
+   *
+   * The `set` method is used to set a reactive value in the store.
+   * This means that when the value changes, the effect that uses it
+   * will be re-executed. In the case to be used inside the JSX, it
+   * will update only the part of the DOM where it is used.
+   *
+   * Docs:
+   * https://brisa.build/api-reference/components/web-context#store
+   */
   set: <T>(key: string, value: T) => void;
+  /**
+   * Description:
+   *
+   * The `delete` method is used to delete a reactive value from the store.
+   * This means that when the value changes, the effect that uses it
+   * will be re-executed. In the case to be used inside the JSX, it
+   * will update only the part of the DOM where it is used.
+   *
+   * Docs:
+   * https://brisa.build/building-your-application/components-details/web-components#store-store-method
+   */
   delete: (key: string) => void;
+  /**
+   * Description:
+   *
+   * The `has` method is used to check if a reactive value exists in the store.
+   *
+   * Docs:
+   * https://brisa.build/building-your-application/components-details/web-components#store-store-method
+   */
   has: (key: string) => boolean;
+  /**
+   * Description:
+   *
+   * The `setOptimistic` method is used to set a reactive value in the store with the optimistic
+   * approach after an action. If the action fails, the value will be rolled back.
+   *
+   * Docs:
+   * https://brisa.build/building-your-application/data-management/server-actions#optimistic-updates
+   */
   setOptimistic: <T>(
     actionName: string,
     storeKey: string,
     updater: (value: T) => T,
   ) => void;
+  /**
+   * Description:
+   *
+   * The `Map` method is used to get the store as a Map object (without reactivity).
+   *
+   * As a Map, you can use `get`, `set`, `delete`, `has`, etc. Without reactivity. Useful
+   * to use values without an effect subscription:
+   *
+   * ```ts
+   * effect(() => {
+   *  store.set('count', store.Map.get('count') + store.get('addition'));
+   * })
+   * ```
+   *
+   * In this case, the effect will be re-executed when the `addition` value changes, but not the `count`.
+   *
+   * Docs:
+   * https://brisa.build/building-your-application/components-details/web-components#example-with-no-reactive-store
+   */
   Map: Map<string, unknown>;
 };
 

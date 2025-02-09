@@ -69,6 +69,16 @@ For more details, refer to the [store](/building-your-application/components-det
 
 ### `setOptimistic`
 
+Optimistic updates are a strategy used in client-server architectures to enhance the user experience by locally updating the user interface (UI) optimistically before receiving confirmation from the server about the success of an operation. This approach aims to reduce perceived latency and provide a more responsive application.
+
+```ts
+store.setOptimistic("some-server-action-name", "count", (value) => value + 1);
+```
+
+> [!NOTE]
+>
+> See the [optimistic updates](/building-your-application/data-management/server-actions#optimistic-updates) documentation for more details.
+
 ## `useContext`
 
 `useContext: <T>(context: BrisaContext<T>) => { value: T }`
