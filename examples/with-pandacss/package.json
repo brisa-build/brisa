@@ -15,9 +15,9 @@
     "brisa": "0.2.7-canary.1"
   },
   "devDependencies": {
-    "@pandacss/dev": "0.51.1",
+    "@pandacss/dev": "0.53.0",
     "@types/bun": "latest",
-    "postcss": "8.4.49",
+    "postcss": "8.5.2",
     "typescript": "latest"
   }
 }
