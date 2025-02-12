@@ -43,7 +43,12 @@ export default async function getPageComponentWithHeaders({
   });
 
   pageHeaders.delete('set-cookie');
-  for (const header of [middlewareResponseHeaders, layoutResponseHeaders, pageResponseHeaders, headers]) {
+  for (const header of [
+    middlewareResponseHeaders,
+    layoutResponseHeaders,
+    pageResponseHeaders,
+    headers,
+  ]) {
     if (Array.isArray(header?.['set-cookie'])) {
       for (const cookie of header['set-cookie']) {
         pageHeaders.append('set-cookie', cookie);
