@@ -1,4 +1,4 @@
-import type { WebContext } from "brisa";
+import type { WebContext } from 'brisa';
 
 export default function WSChat({}, { state, onMount }: WebContext) {
   const messages = state<string[]>([]);
@@ -6,10 +6,10 @@ export default function WSChat({}, { state, onMount }: WebContext) {
   let ws;
 
   function connect() {
-    ws = new WebSocket("ws://localhost:3000");
+    ws = new WebSocket('ws://localhost:3000');
 
     ws.onmessage = (event) => {
-      if (event.data !== "ws-chat") return;
+      if (event.data !== 'ws-chat') return;
       messages.value = [...messages.peek(), event.data];
     };
   }
@@ -18,7 +18,7 @@ export default function WSChat({}, { state, onMount }: WebContext) {
     if (ws && ws.readyState === WebSocket.OPEN) {
       const input = inputRef.value;
       ws.send(input.value);
-      input.value = "";
+      input.value = '';
     }
   }
 
