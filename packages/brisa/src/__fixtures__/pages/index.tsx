@@ -18,5 +18,6 @@ Home.suspense = () => {
 export async function responseHeaders(req: RequestContext, status: number) {
   return {
     'x-test': status === 500 ? 'fail' : 'success',
+    'set-cookie': ['cookie1', 'cookie2'],
   };
 }

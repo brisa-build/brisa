@@ -61,13 +61,22 @@ describe('utils', () => {
     });
 
     it('should return PageComponent, pageModule and pageHeaders with x-test responseHeaders as fail', async () => {
-      const exectedPageResponseHeaders = { 'x-test': 'fail' };
       const route = {
         filePath: join(PAGES_DIR, 'index.tsx'),
       } as MatchedBrisaRoute;
       const error = new Error('error');
       const status = 500;
       const headers = { header: 'value' };
+      const exectedPageResponseHeaders = new Headers({
+        'cache-control': 'no-store, must-revalidate',
+        'transfer-encoding': 'chunked',
+        vary: 'Accept-Encoding',
+        'content-type': 'text/html; charset=utf-8',
+        ...headers,
+        'x-test': 'fail',
+      });
+      exectedPageResponseHeaders.append('set-cookie', 'cookie1');
+      exectedPageResponseHeaders.append('set-cookie', 'cookie2');
       const result = await getPageComponentWithHeaders({
         req,
         route,
@@ -75,37 +84,30 @@ describe('utils', () => {
         status,
         headers,
       });
+
       expect(result.PageComponent).toBeTypeOf('function');
       expect(result.pageModule.responseHeaders).toBeTypeOf('function');
-      expect(result.pageHeaders).toEqual(
-        new Headers({
-          'cache-control': 'no-store, must-revalidate',
-          'transfer-encoding': 'chunked',
-          vary: 'Accept-Encoding',
-          'content-type': 'text/html; charset=utf-8',
-          ...headers,
-          ...exectedPageResponseHeaders,
-        }),
-      );
+      expect(result.pageHeaders).toEqual(exectedPageResponseHeaders);
     });
 
     it('should return PageComponent, pageModule and pageHeaders with x-test responseHeaders as success', async () => {
-      const exectedPageResponseHeaders = { 'x-test': 'success' };
+      const exectedPageResponseHeaders = new Headers({
+        'cache-control': 'no-store, must-revalidate',
+        'transfer-encoding': 'chunked',
+        vary: 'Accept-Encoding',
+        'content-type': 'text/html; charset=utf-8',
+        'x-test': 'success',
+      });
+      exectedPageResponseHeaders.append('set-cookie', 'cookie1');
+      exectedPageResponseHeaders.append('set-cookie', 'cookie2');
       const route = {
         filePath: join(PAGES_DIR, 'index.tsx'),
       } as MatchedBrisaRoute;
       const result = await getPageComponentWithHeaders({ req, route });
+
       expect(result.PageComponent).toBeTypeOf('function');
       expect(result.pageModule.responseHeaders).toBeTypeOf('function');
-      expect(result.pageHeaders).toEqual(
-        new Headers({
-          'cache-control': 'no-store, must-revalidate',
-          'transfer-encoding': 'chunked',
-          vary: 'Accept-Encoding',
-          'content-type': 'text/html; charset=utf-8',
-          ...exectedPageResponseHeaders,
-        }),
-      );
+      expect(result.pageHeaders).toEqual(exectedPageResponseHeaders);
     });
   });
 });

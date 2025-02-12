@@ -42,6 +42,17 @@ export default async function getPageComponentWithHeaders({
     'content-type': 'text/html; charset=utf-8',
   });
 
+  pageHeaders.delete('set-cookie');
+  for (const header of [middlewareResponseHeaders, layoutResponseHeaders, pageResponseHeaders, headers]) {
+    if (Array.isArray(header?.['set-cookie'])) {
+      for (const cookie of header['set-cookie']) {
+        pageHeaders.append('set-cookie', cookie);
+      }
+    } else if (typeof header?.['set-cookie'] === 'string') {
+      pageHeaders.append('set-cookie', header['set-cookie']);
+    }
+  }
+
   return {
     PageComponent: Page,
     pageModule: module,
