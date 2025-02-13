@@ -462,7 +462,7 @@
   {
     "id": "/api-reference/components/web-context#setoptimistic",
     "title": "setOptimistic",
-    "text": "",
+    "text": "Optimistic updates are a strategy used in client-server architectures to enhance the user experience by locally updating the user interface (UI) optimistically before receiving confirmation from the server about the success of an operation. This approach aims to reduce perceived latency and provide a more responsive application. store.setOptimistic(\"some-server-action-name\", \"count\", (value) => value + 1); See the optimistic updates documentation for more details.",
     "titles": [
       "Web Context",
       "store"
@@ -2698,6 +2698,14 @@
     ]
   },
   {
+    "id": "/building-your-application/components-details/reactivity#can-i-use-a-state-store-value-inside-an-effect-without-subscribing",
+    "title": "Can I use a state / store value inside an effect without subscribing?",
+    "text": "Yes, you can use a state / store value inside an effect without subscribing. For the state, you have the .peek() method to get the current value without subscribing: export default function Counter({}, { state, effect }: WebContext) {\n  const count = state<number>(0);\n  const addition = state<number>(1);\n\n  effect(() => {\n    count.value = count.peek() + addition.value;\n  });\n\n  return (\n    <>\n      <button onClick={() => addition.value++}>+</button>\n      <span> Counter: {count.value} </span>\n      <button onClick={() => addition.value--}>-</button>\n    </>\n  );\n} In this example, the count signal is updated by the addition signal without subscribing to count. For the store, you can use the .Map.get method to get the current value without subscribing: export default function Counter({}, { store, effect }: WebContext) {\n  store.set('count', 0);\n  store.set('addition', 1);\n\n  effect(() => {\n    store.set('count', store.Map.get('count') + store.get('addition'));\n  });\n\n  const increment = () => store.set('addition', store.get('addition') + 1);\n  const decrement = () => store.set('addition', store.get('addition') - 1);\n\n  return (\n    <>\n      <button onClick={increment)}>+</button>\n      <span> Counter: {count.value} </span>\n      <button onClick={decrement}>-</button>\n    </>\n  );\n} In this example, the count store field is updated by the addition store field without subscribing to count. The store.Map is used to have the real Map object without the reactivity.",
+    "titles": [
+      "Reactivity"
+    ]
+  },
+  {
     "id": "/building-your-application/components-details/server-components#server-components",
     "title": "Server Components",
     "text": "Remember that everything in Brisa (pages, layout, middleware, api...) runs on the server. The only exception are the web-components folder, so, the rest of Brisa components will be Server Components. Brisa applies Server Side Rendering (SSR) of the server components and does not carry JavaScript code to the client. They should be imported and consumed in JSX, This is how you can distinguish between a server-component and a web-component; Server components will always be consumed in PascalCase in the JSX, while web components are in kebab-case without import, like other HTML Elements. import ServerComponent from \"@/components/server-component\";\n\n// ...\n<body>\n  <ServerComponent />\n  <web-component />\n</body>; It is a way for your server components to have only server code. You can be 100% sure that all the code here runs ONLY on the server. All events that are captured in the Server Components are Server Actions, therefore they are executed on the server without needing JS code on the client: <ServerComponent onClick={e => console.log('This console.log is on the server', e)} />\n<web-component onAction={(e) => console.log('Capturing a web-component event on the server', e)} />\n<button onClick={() => console.log('click handled in the server')}>Click</button>",
@@ -2999,6 +3007,15 @@
     ]
   },
   {
+    "id": "/building-your-application/components-details/web-components#peek",
+    "title": "Peek",
+    "text": "If you want to get the value of a signal without subscribing to an effect, you can use the peek method: const count = state<number>(0);\nconst addition = state<number>(1);\n\neffect(() => {\n  count.value = count.peek() + addition.peek();\n}); In this example, the count state will be updated only when the addition state changes.",
+    "titles": [
+      "Web Components",
+      "State (state method)"
+    ]
+  },
+  {
     "id": "/building-your-application/components-details/web-components#store-store-method",
     "title": "Store (store method)",
     "text": "The difference between state and store is that store is a shared state among all web-components. The store is a reactive Map, where the methods get, has, set and delete are reactive. There is no need to use the .value here. But once the .get is done you may lose reactivity and need to add it to a derived.",
@@ -3010,6 +3027,15 @@
     "id": "/building-your-application/components-details/web-components#example-1",
     "title": "Example:",
     "text": "src/web-components/shared-store.tsx: import { WebContext } from \"brisa\";\n\nexport default function SharedStore({}, { store }: WebContext) {\n  // Setting store\n  store.set(\"user\", { username: \"foo\", displayName: \"Foo\" });\n\n  function updateName() {\n    // Reactive update all web-components that consume the same store entry\n    store.set(\"user\", { username: \"bar\", displayName: \"Bar\" });\n  }\n\n  // Consuming store\n  return (\n    <>\n      Hello {store.get(\"user\").displayName}\n      <button onClick={updateName}>Update name</button>\n    </>\n  );\n}",
+    "titles": [
+      "Web Components",
+      "Store (store method)"
+    ]
+  },
+  {
+    "id": "/building-your-application/components-details/web-components#example-with-no-reactive-store",
+    "title": "Example with no-reactive store:",
+    "text": "effect(() => {\n  store.set('counter', store.Map.get('counter') + store.get('addition'));\n}) In this example, the effect is used to update the store when the addition store entry changes. This is because the store with the .Map is not reactive, is a simple Map object. It's very similar than the .peek() used in the state, but in this case, the store is a Map object.",
     "titles": [
       "Web Components",
       "Store (store method)"

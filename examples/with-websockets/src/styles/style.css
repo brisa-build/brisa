@@ -231,6 +231,12 @@ form button {
   margin: 1rem 10px;
 }
 
+form input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin: 1rem 10px;
+}
+
 dialog {
   border: 1px solid #ccc;
   border-radius: 5px;

@@ -5,9 +5,8 @@ export function open(ws: ServerWebSocket) {
 }
 
 export function message(ws: ServerWebSocket, message: string) {
-  console.log({ message });
   const server = globalThis.brisaServer;
-  if (message) server.publish(message, 'ws-chat');
+  if (message) server.publish('ws-chat', message);
 }
 
 export function close(ws: ServerWebSocket) {
