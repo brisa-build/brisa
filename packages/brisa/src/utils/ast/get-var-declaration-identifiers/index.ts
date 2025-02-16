@@ -38,7 +38,7 @@ export default function getVarDeclarationIdentifiers(node: ESTree.Node) {
         const identifierDeps = identifiers.get(dep)!;
         const all = getIdentifiersDependenciesOn(v);
 
-        // Add all dependencies except the current
+        // Add all dependencies except the current one
         for (const value of all) value !== dep && identifierDeps.add(value);
       }
     }
