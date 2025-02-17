@@ -223,6 +223,14 @@ const pending = indicate('some-server-action-name');
 {pending.value && <span>Pending...</span>}
 ```
 
+Or for errors:
+
+```tsx
+const indicator = indicate('some-server-action-name');
+// ...
+{indicator.error.value && <span>Ops!...</span>}
+```
+
 ### Parameters:
 
 - `string` - Indicator name. It can refer to the server action. The idea is that you can use the same indicator in other components (both server and web) using the same name to relate it to the same server action.
