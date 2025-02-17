@@ -218,7 +218,7 @@ css`
 You can also consume it as a signal to know if the server action is pending and to have more control inside the web component.
 
 ```tsx
-const  = indicate('some-server-action-name');
+const pending = indicate('some-server-action-name');
 // ...
 {pending.value && <span>Pending...</span>}
 ```
