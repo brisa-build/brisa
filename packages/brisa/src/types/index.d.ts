@@ -1472,16 +1472,18 @@ type RemovePlural<Key extends string> = Key extends `${infer Prefix}${
   ? Prefix
   : Key;
 
-type Join<S1, S2> = S1 extends string
+type Join<S1, S2, ReturnObjects extends boolean> = S1 extends string
   ? S2 extends string
-    ? `${S1}.${S2}`
+    ? ReturnObjects extends true
+      ? S1 | `${S1}.${S2}`
+      : `${S1}.${S2}`
     : never
   : never;
 
-export type Paths<T> = RemovePlural<
+export type Paths<T, ReturnObjects extends boolean = true> = RemovePlural<
   {
     [K in Extract<keyof T, string>]: T[K] extends Record<string, unknown>
-      ? Join<K, Paths<T[K]>>
+      ? Join<K, Paths<T[K], ReturnObjects>, ReturnObjects>
       : K;
   }[Extract<keyof T, string>]
 >;
@@ -1496,8 +1498,11 @@ export type WebComponentIntegrations = {
       };
 };
 
-type I18nKey = typeof import('@/i18n').default extends I18nConfig<infer T>
-  ? Paths<T extends object ? T : I18nDictionary>
+type I18nKey<Options extends TranslateOptions> = typeof import('@/i18n').default extends I18nConfig<infer T>
+  ? Paths<
+      T extends object ? T : I18nDictionary,
+      Options['returnObjects'] extends true ? true : false
+    >
   : string;
 
 export type TranslateOptions = {
@@ -1513,10 +1518,13 @@ export type PageModule = {
   Head?: ComponentType;
 };
 
-export type Translate = <T = string>(
-  i18nKey: I18nKey,
+export type Translate = <
+  T = string,
+  Options extends TranslateOptions = TranslateOptions,
+>(
+  i18nKey: I18nKey<Options>,
   query?: TranslationQuery | null,
-  options?: TranslateOptions,
+  options?: Options,
 ) => T;
 
 export type I18n = {
