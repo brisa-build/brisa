@@ -339,6 +339,10 @@ export async function getServeOptions() {
   }
 
   function error404(req: RequestContext) {
+    if (!req.i18n?.defaultLocale) {
+      handleI18n(req);
+    }
+
     if (!route404) {
       return new Response('Not found', {
         status: 404,

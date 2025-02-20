@@ -415,7 +415,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     );
   });
 
-  it('should return 404 page with a valid url but with the param _not-found in the query string', async () => {
+  it('should return 404 page with a valid url but with the param _not-found in the query string and work with i18n', async () => {
     const response = await testRequest(
       new Request(
         `http://localhost:1234${basePath}/es/page-with-web-component?_not-found=1`,
@@ -428,7 +428,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 <web-component></web-component></h1>',
+      '<h1>Page not found 404 es<web-component></web-component></h1>',
     );
     expect(html).toContain(
       `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
