@@ -11,7 +11,11 @@ export default function getVarDeclarationIdentifiers(node: ESTree.Node) {
     const deps = new Set<string>();
 
     JSON.stringify(node, function (k, v) {
-      if (v?.type === 'Identifier' && this?.property !== v) {
+      if (
+        v?.type === 'Identifier' &&
+        this?.property !== v &&
+        v.name !== 'undefined'
+      ) {
         deps.add(v.name);
         if (identifiers.has(v.name)) {
           for (const dep of identifiers.get(v.name)!) {

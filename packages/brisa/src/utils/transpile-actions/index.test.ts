@@ -3195,6 +3195,69 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
+    it('should undefined identifiers not be detected as variables inside a condition #712', () => {
+      const code = `
+        export default async function SomeComponent() {
+          async function onAction() {
+            const json = await foo() || undefined;
+            if (json.success) {}
+          }
+
+          const sessionResponse = await fetchClient().api.v1.enquiry.$get();
+          const sessionJson = await sessionResponse.json();
+          const enquiryForm = sessionJson.success ? sessionJson.data : undefined;
+
+          return <div data-foo={enquiryForm} onClick={onAction}> Click me </div>;
+        }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        async function SomeComponent() {
+          async function onAction() {
+            const json = await foo() || undefined;
+            if (json.success) {}
+          }
+
+          const sessionResponse = await fetchClient().api.v1.enquiry.$get();
+          const sessionJson = await sessionResponse.json();
+          const enquiryForm = sessionJson.success ? sessionJson.data : undefined;
+
+          return jsxDEV("div", {
+            "data-foo": enquiryForm,
+            onClick: (...args) => onAction(...args),
+            children: " Click me ",
+            "data-action-onclick": "a1_1",
+            "data-action": true
+          }, undefined, false, undefined, this);
+        }
+
+        SomeComponent._hasActions = true;
+
+        export async function a1_1({}, req) {
+          try {
+            const __action = (...args) => req._p(onAction(...args));
+            async function onAction() {
+              const json = await foo() || undefined;
+              if (json.success) {}
+            }
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(SomeComponent, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
+
     it.todo(
       'should work mixing elements with element generators and components',
       () => {
