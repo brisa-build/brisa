@@ -476,6 +476,60 @@ describe('utils', () => {
       expectCodeToPurge(codeToPurge).toBe(expectedCode);
     });
 
+    it('should not co-relate "undefined" as identifier #712', () => {
+      const codeToPurge = `
+        function SomeComponent() {
+          let foo = 0 || undefined;
+          const bar = 'hello world';
+
+          function onAction() {
+            const baz = bar || undefined;
+            console.log(baz);
+          }
+
+          return <div onClick={onAction} data-action-onClick="a1_1"> Click me </div>;
+        }`;
+
+      const expectedCode = `
+        function SomeComponent() {
+          const bar = 'hello world';
+
+          function onAction() {
+            const baz = bar || undefined;
+            console.log(baz);
+          }
+        }`;
+
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
+    it('should not co-relate "null" as identifier #712', () => {
+      const codeToPurge = `
+        function SomeComponent() {
+          let foo = 0 || null;
+          const bar = 'hello world';
+
+          function onAction() {
+            const baz = bar || null;
+            console.log(baz);
+          }
+
+          return <div onClick={onAction} data-action-onClick="a1_1"> Click me </div>;
+        }`;
+
+      const expectedCode = `
+        function SomeComponent() {
+          const bar = 'hello world';
+
+          function onAction() {
+            const baz = bar || null;
+            console.log(baz);
+          }
+        }`;
+
+      expectCodeToPurge(codeToPurge).toBe(expectedCode);
+    });
+
     it('should not purge a used variable after a condition of another used variable #712', () => {
       const codeToPurge = `
         function SomeComponent() {
