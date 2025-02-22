@@ -519,7 +519,7 @@
   {
     "id": "/api-reference/components/web-context#indicate",
     "title": "indicate",
-    "text": "indicate(actionName: string): IndicatorSignal The indicate method is used to add it in the indicator HTML extended attribute. This indicator automatically set the brisa-request class while the indicated server action is pending. const pending = indicate('some-server-action-name');\n// ...\ncss`\n span { display: none }\n span.brisa-request { display: inline }\n`\n// ...\n<span indicator={pending}>Pending...</span> You can also consume it as a signal to know if the server action is pending and to have more control inside the web component. const  = indicate('some-server-action-name');\n// ...\n{pending.value && <span>Pending...</span>}",
+    "text": "indicate(actionName: string): IndicatorSignal The indicate method is used to add it in the indicator HTML extended attribute. This indicator automatically set the brisa-request class while the indicated server action is pending. const pending = indicate('some-server-action-name');\n// ...\ncss`\n span { display: none }\n span.brisa-request { display: inline }\n`\n// ...\n<span indicator={pending}>Pending...</span> You can also consume it as a signal to know if the server action is pending and to have more control inside the web component. const pending = indicate('some-server-action-name');\n// ...\n{pending.value && <span>Pending...</span>} Or for errors: const indicator = indicate('some-server-action-name');\n// ...\n{indicator.error.value && <span>Ops!...</span>}",
     "titles": [
       "Web Context"
     ]
