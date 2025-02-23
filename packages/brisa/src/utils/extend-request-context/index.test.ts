@@ -81,6 +81,26 @@ describe('brisa core', () => {
       expect((requestContext as any).webStore.get('foo')).toBe('baz');
     });
 
+    it('should useId increment the request.id by 1 each time', () => {
+      const request = new Request('https://example.com?foo=bar');
+      const webStore = new Map() as RequestContext['store'];
+      const route = { path: '/' } as any;
+      const id = crypto.randomUUID();
+
+      webStore.set('foo', 'baz');
+
+      const requestContext = extendRequestContext({
+        originalRequest: request,
+        route,
+        id,
+        webStore,
+      } as any);
+      expect((requestContext as any).useId()).toBe(`${id}_0`);
+      expect((requestContext as any).useId()).toBe(`${id}_1`);
+      expect((requestContext as any).useId()).toBe(`${id}_2`);
+      expect((requestContext as any).useId()).toBe(`${id}_3`);
+    });
+
     it('should encrypt transferToClient with options "encrypt"', () => {
       const request = new Request('https://example.com');
       const route = {
