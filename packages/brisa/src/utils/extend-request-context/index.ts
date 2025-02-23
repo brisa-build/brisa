@@ -80,6 +80,11 @@ export default function extendRequestContext({
   // id
   originalRequest.id = id ?? originalRequest.id;
 
+  // useId
+  originalRequest.count = originalRequest.count ?? 0;
+  originalRequest.useId = () =>
+    `${originalRequest.id}_${originalRequest.count++}`;
+
   // ws
   originalRequest.ws = globalThis.sockets?.get(originalRequest.id) ?? null;
   globalThis.sockets?.delete(originalRequest.id);

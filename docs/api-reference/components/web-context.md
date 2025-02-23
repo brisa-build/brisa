@@ -276,6 +276,10 @@ return (
 )
 ```
 
+> [!TIP]
+>
+> See [`useId` on Server Components](/api-reference/components/request-context#useId) too.
+
 ## `css`
 
 `css(strings: TemplateStringsArray, ...values: string[]): void`

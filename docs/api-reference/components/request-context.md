@@ -14,6 +14,9 @@ export default function ServerComponent(props, requestContext: RequestContext) {
     // Useful to control pending state in server components
     indicate,
 
+    // Useful to use a unique ID for each invocation
+    useId,
+
     // Data of the current route
     route,
 
@@ -130,7 +133,8 @@ For more details, refer to the [context](/building-your-application/components-d
 The `indicate` method is used to add it in the `indicator` HTML extended attribute. This `indicator` automatically set the `brisa-request` class while the indicated server action is pending.
 
 ```tsx
-const pending = indicate('some-server-action-name');
+const id = useId();
+const pending = indicate(`some-server-action-${id}`);
 // ...
 css`
  span { display: none }
@@ -144,6 +148,33 @@ css`
   <span indicator={pending}>Pending...</span>
 </>
 ```
+
+## `useId`
+
+`useId(): string`
+
+The `useId` method generates a unique identifier for the server component. It is useful for creating unique keys for elements in lists or for other purposes that require unique identifiers, like Server Action IDs to use insie the [`indicate`](#indicate). The generated ID is unique across all server components and after re-renders on the server actions.
+
+Example:
+
+```tsx
+const passwordHintId = useId();
+
+return (
+  <>
+    <input type="password" aria-describedby={passwordHintId} />
+    <p id={passwordHintId}>
+  </>
+)
+```
+
+> [!NOTE]
+>
+> To ensure better performance than `crypto.randomUUID()`, it is an autoincrement number next to the request id.
+
+> [!TIP]
+>
+> See [`useId` on Web Components](/api-reference/components/web-context#useId) too. To ensure the same id value after hydration.
 
 ### Parameters:
 

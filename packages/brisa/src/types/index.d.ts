@@ -197,6 +197,33 @@ export interface RequestContext extends Request {
   /**
    * Description:
    *
+   * The `useId` method will generate a unique identifier for each invocation.
+   *
+   * A common use case for consistent IDs are forms, where <label>-elements use the for attribute
+   * to associate them with a specific <input>-element. The useId hook isn't tied to just forms
+   * though and can be used whenever you need a unique ID, for example Server Action ID to use inside
+   * the [`indicate`](https://brisa.build/api-reference/components/request-context#indicate) method.
+   *
+   * ```js
+   * const passwordHintId = useId();
+   *
+   * return (
+   *   <>
+   *    <input type="password" aria-describedby={passwordHintId} />
+   *    <p id={passwordHintId}>
+   *   </>
+   * )
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `useId`](https://brisa.build/api-reference/components/request-context#useId)
+   */
+  useId(): string;
+
+  /**
+   * Description:
+   *
    * The route is the matched route of the request.
    *
    * You can access to:
@@ -602,6 +629,21 @@ export interface BaseWebContext {
    * A common use case for consistent IDs are forms, where <label>-elements use the for attribute
    * to associate them with a specific <input>-element. The useId hook isn't tied to just forms
    * though and can be used whenever you need a unique ID.
+   *
+   * ```js
+   * const passwordHintId = useId();
+   *
+   * return (
+   *   <>
+   *    <input type="password" aria-describedby={passwordHintId} />
+   *    <p id={passwordHintId}>
+   *   </>
+   * )
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `useId`](https://brisa.build/building-your-application/components-details/web-components#useId)
    */
   useId(): string;
 
