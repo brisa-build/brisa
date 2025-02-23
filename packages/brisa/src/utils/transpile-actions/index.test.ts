@@ -2996,6 +2996,196 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
+    it('should be possible to have i18n variable with params destructuring #712', () => {
+      const code = `
+        export default function SomeComponent({}, {i18n: {t}}) {
+          const i18n = 'foo';
+          const foo = t(i18nKey, null, {
+            returnObjects: true,
+          });
+          const onAction = () => {
+            navigate(t('foo.links.index'));
+            console.log(i18n);
+          }
+
+          return <div onClick={onAction}> Click me </div>;
+        }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function SomeComponent({}, {i18n: {t}}) {
+          const i18n = 'foo';
+          const foo = t(i18nKey, null, {
+            returnObjects: true
+          });
+
+          const onAction = () => {
+            navigate(t('foo.links.index'));
+            console.log(i18n);
+          };
+
+          return jsxDEV("div", {
+            onClick: (...args) => onAction(...args),
+            children: " Click me ",
+            "data-action-onclick": "a1_1",
+            "data-action": true
+          }, undefined, false, undefined, this);
+        }
+
+        SomeComponent._hasActions = true;
+
+        export async function a1_1({}, req) {
+          try {
+            const {i18n: {t}} = req;
+            const __action = (...args) => req._p(onAction(...args));
+            const i18n = 'foo';
+            const onAction = () => {
+              navigate(t('foo.links.index'));
+              console.log(i18n);
+            };
+
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(SomeComponent, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
+
+    it('should not co-relate RequestContext identifiers like i18n inside the action (arrow function) #712', () => {
+      const code = `
+        export default function SomeComponent({}, {i18n}) {
+          const onAction = () => {
+            navigate(i18n.t('foo.links.index'));
+          }
+
+          const i18nKey = 'foo';
+          const foo = i18n.t(i18nKey, null, {
+            returnObjects: true,
+          });
+
+          return <div onClick={onAction}> Click me </div>;
+        }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function SomeComponent({}, {i18n}) {
+          const onAction = () => {
+            navigate(i18n.t('foo.links.index'));
+          };
+
+          const i18nKey = 'foo';
+          const foo = i18n.t(i18nKey, null, {
+            returnObjects: true
+          });
+
+          return jsxDEV("div", {
+            onClick: (...args) => onAction(...args),
+            children: " Click me ",
+            "data-action-onclick": "a1_1",
+            "data-action": true
+          }, undefined, false, undefined, this);
+        }
+
+        SomeComponent._hasActions = true;
+
+        export async function a1_1({}, req) {
+          try {
+            const {i18n} = req;
+            const __action = (...args) => req._p(onAction(...args));
+            const onAction = () => {
+              navigate(i18n.t('foo.links.index'));
+            };
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(SomeComponent, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
+
+    it('should not co-relate RequestContext identifiers like i18n inside the action (function) #712', () => {
+      const code = `
+        export default function SomeComponent({}, {i18n}) {
+          function onAction() {
+            navigate(i18n.t('foo.links.index'));
+          }
+
+          const i18nKey = 'foo';
+          const foo = i18n.t(i18nKey, null, {
+            returnObjects: true,
+          });
+
+          return <div onClick={onAction}> Click me </div>;
+        }`;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from 'brisa/server';
+
+        function SomeComponent({}, {i18n}) {
+          function onAction() {
+            navigate(i18n.t('foo.links.index'));
+          }
+
+          const i18nKey = 'foo';
+          const foo = i18n.t(i18nKey, null, {
+            returnObjects: true
+          });
+
+          return jsxDEV("div", {
+            onClick: (...args) => onAction(...args),
+            children: " Click me ",
+            "data-action-onclick": "a1_1",
+            "data-action": true
+          }, undefined, false, undefined, this);
+        }
+
+        SomeComponent._hasActions = true;
+
+        export async function a1_1({}, req) {
+          try {
+            const {i18n} = req;
+            const __action = (...args) => req._p(onAction(...args));
+            function onAction() {
+              navigate(i18n.t('foo.links.index'));
+            }
+            await __action(...req.store.get('__params:a1_1'));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({
+              req,
+              error,
+              actionId: "a1_1",
+              component: __props => jsxDEV(SomeComponent, {...__props}, undefined, false, undefined, this)
+            });
+          }
+        }`);
+
+      expect(output).toBe(expected);
+    });
+
     it('should be possible to re-define variable inside a condition, inside the action #712', () => {
       const code = `
         export default function SomeComponent() {
