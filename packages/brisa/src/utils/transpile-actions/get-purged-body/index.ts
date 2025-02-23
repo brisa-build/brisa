@@ -111,9 +111,19 @@ export function getAllFunctionIdentifiers(
 function getParamsIdentifiers(params: any) {
   const identifiers = new Set<string>();
 
-  JSON.stringify(params, (k, v) => {
-    if (v?.type === 'Identifier' && v.name !== 'undefined')
+  JSON.stringify(params, function (k, v) {
+    if (
+      v?.type === 'Identifier' &&
+      v.name !== 'undefined' &&
+      !(
+        this.type === 'Property' &&
+        this.key === v &&
+        this.value?.properties?.length > 0
+      )
+    ) {
       identifiers.add(v.name);
+    }
+
     return v;
   });
 
