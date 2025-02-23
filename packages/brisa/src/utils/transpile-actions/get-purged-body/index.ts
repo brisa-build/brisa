@@ -16,6 +16,9 @@ export function getPurgedBody(info: ActionInfo): ESTree.BlockStatement {
   const defaultBody = { type: 'BlockStatement', body: [] };
   const body = (info.componentFnExpression?.body ??
     defaultBody) as ESTree.BlockStatement;
+  const paramsIdentifiers = getParamsIdentifiers(
+    info.componentFnExpression?.params,
+  );
   const bodyIdentifiers = getVarDeclarationIdentifiers(body);
   const actionFn =
     info.actionFnExpression ?? getActionFnFromActionIdentifier(info);
@@ -30,7 +33,8 @@ export function getPurgedBody(info: ActionInfo): ESTree.BlockStatement {
   for (const [bodyIdentifier, deps] of bodyIdentifiers) {
     if (!actionIdentifiers.has(bodyIdentifier)) continue;
     intersectionSet.add(bodyIdentifier);
-    for (const dep of deps) intersectionSet.add(dep);
+    for (const dep of deps)
+      !paramsIdentifiers.has(dep) && intersectionSet.add(dep);
   }
 
   return {
@@ -100,6 +104,18 @@ export function getAllFunctionIdentifiers(
       return v;
     });
   }
+
+  return identifiers;
+}
+
+function getParamsIdentifiers(params: any) {
+  const identifiers = new Set<string>();
+
+  JSON.stringify(params, (k, v) => {
+    if (v?.type === 'Identifier' && v.name !== 'undefined')
+      identifiers.add(v.name);
+    return v;
+  });
 
   return identifiers;
 }
