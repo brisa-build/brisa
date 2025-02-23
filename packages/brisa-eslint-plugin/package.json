@@ -13,7 +13,8 @@
     "@typescript-eslint/utils": "^8.24.1"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "tsc:check": "tsc --noEmit"
   },
   "exports": {
     "./rules": "./index.js"
