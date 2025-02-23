@@ -70,7 +70,7 @@ describe('utils', () => {
 
   describe('renderToReadableStream', () => {
     it('should render a simple JSX element', async () => {
-      const element = <div class="test">Hello World</div>;
+      const element = <div className="test">Hello World</div>;
       const stream = renderToReadableStream(element, {
         ...testOptions,
         isPage: true,
@@ -87,7 +87,7 @@ describe('utils', () => {
     it('should register the server action inside globalThis.REGISTERED_ACTIONS when is defined', async () => {
       globalThis.REGISTERED_ACTIONS = [];
       const element = (
-        <div onClick={() => console.log('Hello Action')} class="test">
+        <div onClick={() => console.log('Hello Action')} className="test">
           Hello World
         </div>
       );
@@ -104,7 +104,7 @@ describe('utils', () => {
 
     it('should NOT register the server action inside globalThis.REGISTERED_ACTIONS when is NOT defined', async () => {
       const element = (
-        <div onClick={() => console.log('Hello Action')} class="test">
+        <div onClick={() => console.log('Hello Action')} className="test">
           Hello World
         </div>
       );
@@ -243,7 +243,7 @@ describe('utils', () => {
     });
 
     it('should not display the "head" tag warning if isPage=false', async () => {
-      const element = <div class="test">Hello World</div>;
+      const element = <div className="test">Hello World</div>;
       const stream = renderToReadableStream(element, {
         ...testOptions,
         isPage: false,
@@ -256,7 +256,7 @@ describe('utils', () => {
     });
 
     it('should render an empty text node', () => {
-      const element = <div class="test">{''}</div>;
+      const element = <div className="test">{''}</div>;
       const stream = renderToReadableStream(element, testOptions);
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toBe(`<div class="test"></div>`);
@@ -273,7 +273,7 @@ describe('utils', () => {
       };
 
       const element = (
-        <div class="test">
+        <div className="test">
           <SlowComponent />
         </div>
       );
@@ -301,7 +301,7 @@ describe('utils', () => {
     });
 
     it('should display the "head" tag warning if isPage=true', async () => {
-      const element = <div class="test">Hello World</div>;
+      const element = <div className="test">Hello World</div>;
       const stream = renderToReadableStream(element, {
         ...testOptions,
         isPage: true,
@@ -624,8 +624,8 @@ describe('utils', () => {
     it('should be possible to render undefined and null', async () => {
       const Component = () => (
         <>
-          <div class="empty">{undefined}</div>
-          <div class="empty">{null}</div>
+          <div className="empty">{undefined}</div>
+          <div className="empty">{null}</div>
         </>
       );
 
@@ -1108,7 +1108,7 @@ describe('utils', () => {
           }
         `;
 
-        return <div class="red">Hello</div>;
+        return <div className="red">Hello</div>;
       };
 
       const stream = renderToReadableStream(<Component />, testOptions);
@@ -1130,7 +1130,7 @@ describe('utils', () => {
           }
         `;
 
-        return <div class="red">Hello</div>;
+        return <div className="red">Hello</div>;
       };
 
       const Component2 = ({}, { css }: RequestContext) => {
@@ -1140,7 +1140,7 @@ describe('utils', () => {
           }
         `;
 
-        return <div class="blue">Hello</div>;
+        return <div className="blue">Hello</div>;
       };
 
       const stream = renderToReadableStream(
@@ -1164,7 +1164,7 @@ describe('utils', () => {
 
     it('should work an async generator component with css', async () => {
       const Component = async function* ({}, { css }: RequestContext) {
-        yield <div class="red">Hello</div>;
+        yield <div className="red">Hello</div>;
 
         css`
           .red {
@@ -1172,7 +1172,7 @@ describe('utils', () => {
           }
         `;
 
-        yield <div class="red">Foo</div>;
+        yield <div className="red">Foo</div>;
       };
 
       const stream = renderToReadableStream(<Component />, testOptions);

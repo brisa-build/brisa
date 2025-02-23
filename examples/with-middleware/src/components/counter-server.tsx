@@ -19,12 +19,12 @@ export default function CounterServer(
   }
 
   return (
-    <div class="counter">
-      <div class="counter-container">
+    <div className="counter">
+      <div className="counter-container">
         <h2>Server counter</h2>
-        <button class="increment-button" onClick={increment}></button>
-        <div class="counter-value">{store.get('count')}</div>
-        <button class="decrement-button" onClick={decrement}></button>
+        <button className="increment-button" onClick={increment}></button>
+        <div className="counter-value">{store.get('count')}</div>
+        <button className="decrement-button" onClick={decrement}></button>
       </div>
     </div>
   );

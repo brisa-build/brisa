@@ -75,7 +75,7 @@ export default function SideBarBtn(
   });
 
   return (
-    <button title="Menu" class="menu-btn" onClick={onToggle}>
+    <button title="Menu" className="menu-btn" onClick={onToggle}>
       <slot name="icon" />
     </button>
   );

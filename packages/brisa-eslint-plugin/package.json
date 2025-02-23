@@ -1,0 +1,26 @@
+{
+  "name": "brisa-eslint-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@typescript-eslint/utils": "^8.24.1",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "eslint": "^9.21.0",
+    "@typescript-eslint/utils": "^8.24.1"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    "./rules": "./index.js"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "brisa"
+    ]
+  }
+}

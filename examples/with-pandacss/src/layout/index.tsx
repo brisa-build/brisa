@@ -10,8 +10,8 @@ export default function Layout({ children }: { children: JSX.Element }) {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <title>Brisa - Tailwind CSS</title>
       </head>
-      <body class="">
-        <main class="">{children}</main>
+      <body className="">
+        <main className="">{children}</main>
       </body>
     </html>
   );

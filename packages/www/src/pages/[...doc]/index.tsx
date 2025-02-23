@@ -53,9 +53,9 @@ export default async function Documentation({}, { store }: RequestContext) {
   return (
     <main>
       <BreadcrumbNav />
-      <div class="docs-content">
+      <div className="docs-content">
         <SideBar />
-        <article class="markdown-content">{element}</article>
+        <article className="markdown-content">{element}</article>
         <HeadingsBar />
       </div>
     </main>

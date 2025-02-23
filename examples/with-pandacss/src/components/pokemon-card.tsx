@@ -4,14 +4,14 @@ import { baseCard, content, image } from '@/styles/styles';
 
 export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   return (
-    <a href={`/pokemon/${pokemon.slug}`} class="block">
-      <article class={baseCard}>
-        <div class={image}>
-          <img src={pokemon.cover} alt={pokemon.name} class="" />
+    <a href={`/pokemon/${pokemon.slug}`} className="block">
+      <article className={baseCard}>
+        <div className={image}>
+          <img src={pokemon.cover} alt={pokemon.name} className="" />
         </div>
-        <div class={content}>
-          <h3 class={css({})}>{pokemon.name}</h3>
-          <p class="">{pokemon.description}</p>
+        <div className={content}>
+          <h3 className={css({})}>{pokemon.name}</h3>
+          <p className="">{pokemon.description}</p>
         </div>
       </article>
     </a>

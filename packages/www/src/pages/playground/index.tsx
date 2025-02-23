@@ -25,7 +25,7 @@ export default function Playground() {
       <play-ground skipSSR defaultValue={defaultValue}>
         <div
           slot="code-editor"
-          class="editor"
+          className="editor"
           style={{
             height: '100%',
             width: '100%',

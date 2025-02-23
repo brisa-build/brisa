@@ -3,9 +3,9 @@ import type { RequestContext } from 'brisa';
 export default function Nav({}, { i18n: { t } }: RequestContext) {
   return (
     <nav>
-      <div class="nav-content">
+      <div className="nav-content">
         <a
-          class="logo"
+          className="logo"
           href="https://brisa.build"
           target="_blank"
           rel="noreferrer"

@@ -1,32 +1,32 @@
-import { describe, it, expect, afterEach } from 'bun:test';
-import path from 'node:path';
-import { transpileActions } from '.';
-import { normalizeHTML } from '@/helpers';
-import { getConstants } from '@/constants';
+import { describe, it, expect, afterEach } from "bun:test";
+import path from "node:path";
+import { transpileActions } from ".";
+import { normalizeHTML } from "@/helpers";
+import { getConstants } from "@/constants";
 import serverComponentPlugin, {
   workaroundText,
-} from '@/utils/server-component-plugin';
+} from "@/utils/server-component-plugin";
 
 function buildActions(code: string) {
   const modifiedCode = serverComponentPlugin(code, {
     allWebComponents: {},
-    fileID: 'a1',
-    path: '',
-  }).code.replace(workaroundText, '');
+    fileID: "a1",
+    path: "",
+  }).code.replace(workaroundText, "");
 
   return normalizeHTML(transpileActions(modifiedCode));
 }
 
 const brisaServerFile = path
-  .join(import.meta.dirname, '..', '..', '..', 'server', 'index.js')
-  .replace(/\\/g, '\\\\');
+  .join(import.meta.dirname, "..", "..", "..", "server", "index.js")
+  .replace(/\\/g, "\\\\");
 
-describe('utils', () => {
+describe("utils", () => {
   afterEach(() => {
     globalThis.mockConstants = undefined;
   });
-  describe('transpileActions', () => {
-    it('should transform a simple component with 1 action', () => {
+  describe("transpileActions", () => {
+    it("should transform a simple component with 1 action", () => {
       const code = `
         export default function Component({text}) {
           return <div onClick={() => console.log('hello world')}>{text}</div>
@@ -61,7 +61,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work without props in the component', () => {
+    it("should work without props in the component", () => {
       const code = `
         export default function Component() {
           return <div onClick={() => console.log('hello world')}>Hello world</div>
@@ -96,7 +96,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with props identifier', () => {
+    it("should work with props identifier", () => {
       const code = `
         export default function Component(props) {
           return <div onClick={() => console.log('hello world')}>{props.text}</div>
@@ -133,7 +133,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with props destructuring', () => {
+    it("should work with props destructuring", () => {
       const code = `
         export default function SomeComponent({foo, ...bar}) {
           return <div onClick={() => console.log('hello world')}>{foo}</div>
@@ -170,7 +170,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple component with 1 action and prop default', () => {
+    it("should transform a simple component with 1 action and prop default", () => {
       const code = `
         export default function Component({initialValue = 0}) {
           return <div onClick={() => console.log('hello world')}>{text}</div>
@@ -205,7 +205,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple component with 1 action and prop with destructuring with default', () => {
+    it("should transform a simple component with 1 action and prop with destructuring with default", () => {
       const code = `
         export default function Component({ text: { value = 'foo' } }) {
           return <div onClick={() => console.log('hello world')}>{value}</div>
@@ -241,7 +241,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple component with 1 function action', () => {
+    it("should transform a simple component with 1 function action", () => {
       const code = `
         export default function Component({text}) {
           return <div onClick={function foo() { console.log('hello world')}}>{text}</div>
@@ -276,7 +276,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple component with 1 action identifier', () => {
+    it("should transform a simple component with 1 action identifier", () => {
       const code = `
         export default function Component({text}, {store}) {
           const onClick = () => console.log('hello world');
@@ -315,7 +315,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple component with 1 action identifier and request identifier', () => {
+    it("should transform a simple component with 1 action identifier and request identifier", () => {
       const code = `
         export default function SomeComponent({text}, requestContext){
           const onClick = () => console.log('hello world');
@@ -353,7 +353,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple arrow function component with 1 action', () => {
+    it("should transform a simple arrow function component with 1 action", () => {
       const code = `
         export default ({foo}) => {
           return <div onClick={() => console.log('hello world')}>{foo}</div>
@@ -388,7 +388,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple async arrow function component with 1 action', () => {
+    it("should transform a simple async arrow function component with 1 action", () => {
       const code = `
         export default async ({foo}) => {
           return <div onClick={() => console.log('hello world')}>{foo}</div>
@@ -423,7 +423,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple arrow function without block statement component with 1 action', () => {
+    it("should transform a simple arrow function without block statement component with 1 action", () => {
       const code = `
         export default ({foo}) => <div onClick={() => console.log('hello world')}>{foo}</div>
       `;
@@ -456,7 +456,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a simple async arrow function without block statement component with 1 action', () => {
+    it("should transform a simple async arrow function without block statement component with 1 action", () => {
       const code = `
         export default async ({foo}) => <div onClick={() => console.log('hello world')}>{foo}</div>
       `;
@@ -489,7 +489,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform an async component with function declaration', () => {
+    it("should transform an async component with function declaration", () => {
       const code = `
         export default async function Component({text}) {
           return <div onClick={() => console.log('hello world')}>{text}</div>
@@ -524,7 +524,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work the action with suspense', () => {
+    it("should work the action with suspense", () => {
       const code = `
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
         
@@ -575,7 +575,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with export default in different line', () => {
+    it("should work with export default in different line", () => {
       const code = `        
         function Component({text}) {
           return <div onClick={() => console.log('hello world')}>{text}</div>
@@ -612,7 +612,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with export default in different line and arrow function', () => {
+    it("should work with export default in different line and arrow function", () => {
       const code = `        
         let Component = ({text}) => {
           return <div onClick={() => console.log('hello world')}>{text}</div>
@@ -649,7 +649,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with export default in different line and arrow function without block statement', () => {
+    it("should work with export default in different line and arrow function without block statement", () => {
       const code = `        
         const Component = ({text}) => <div onClick={() => console.log('hello world')}>{text}</div>;
 
@@ -684,7 +684,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with exports in different lines separated by comma', () => {
+    it("should work with exports in different lines separated by comma", () => {
       const code = `
         function ComponentA({text}) {
           return <div onClick={() => console.log('hello world')}>{text}</div>
@@ -743,7 +743,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform a component with 2 actions', () => {
+    it("should transform a component with 2 actions", () => {
       const code = `
         export default function Component() {
           const onLoad = () => console.log('loaded');
@@ -802,7 +802,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should transform different components with different actions', () => {
+    it("should transform different components with different actions", () => {
       const code = `
         export default () => (
             <button 
@@ -889,7 +889,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should purge an if-ifelse-else with different retuns and actions in each one', () => {
+    it("should purge an if-ifelse-else with different retuns and actions in each one", () => {
       const code = `
         export default function Component({text}) {
           if (text === 'a') {
@@ -965,7 +965,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should purge a switch-case with different retuns and actions in each one', () => {
+    it("should purge a switch-case with different retuns and actions in each one", () => {
       const code = `
         export default function Component({text}) {
           switch (text) {
@@ -1043,7 +1043,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should only remove the return statement inside a if-else statements when are doing more things than returning jsx', () => {
+    it("should only remove the return statement inside a if-else statements when are doing more things than returning jsx", () => {
       const code = `
         export default function Component({text}) {
           let foo;
@@ -1117,7 +1117,7 @@ describe('utils', () => {
 
       expect(output).toEqual(expected);
     });
-    it('should only remove the return statement inside a switch-case statements when are doing more things than returning jsx', () => {
+    it("should only remove the return statement inside a switch-case statements when are doing more things than returning jsx", () => {
       const code = `
         export default function Component({text}) {
           let {foo} = {};
@@ -1195,7 +1195,7 @@ describe('utils', () => {
 
       expect(output).toEqual(expected);
     });
-    it('should generate the jsx code correctly in prod', () => {
+    it("should generate the jsx code correctly in prod", () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_PRODUCTION: true,
@@ -1207,11 +1207,11 @@ describe('utils', () => {
       `;
       expect(normalizeHTML(transpileActions(code))).toContain(
         normalizeHTML(
-          'component: __props => jsx(Component, {text, ...__props})',
+          "component: __props => jsx(Component, {text, ...__props})",
         ),
       );
     });
-    it('should keep variables used inside the action but defined outside', () => {
+    it("should keep variables used inside the action but defined outside", () => {
       const code = `
         const SOME_CONSTANT = 'hello world';
 
@@ -1250,7 +1250,7 @@ describe('utils', () => {
 
       expect(output).toEqual(expected);
     });
-    it('should keep destructuring variables used inside the action but defined outside', () => {
+    it("should keep destructuring variables used inside the action but defined outside", () => {
       const code = `
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world', FOO: 'foo'};
 
@@ -1289,7 +1289,7 @@ describe('utils', () => {
 
       expect(output).toEqual(expected);
     });
-    it('should transform the component to function and keep the constant', () => {
+    it("should transform the component to function and keep the constant", () => {
       const code = `
         const {SOME_CONSTANT, FOO} = {SOME_CONSTANT: 'hello world', FOO: 'foo'};
 
@@ -1330,7 +1330,7 @@ describe('utils', () => {
 
       expect(output).toEqual(expected);
     });
-    it('should work an action inside a function inside the component', () => {
+    it("should work an action inside a function inside the component", () => {
       const code = `
         export default function Component({text}) {
           const getTextEl = () => <div onClick={() => console.log('hello world')}>{text}</div>
@@ -1369,7 +1369,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with an element with an action defined inside the Component', () => {
+    it("should work with an element with an action defined inside the Component", () => {
       const code = `
         export default function Component({text}) {
           const el = <div onClick={() => console.log('hello world')}>{text}</div>
@@ -1405,7 +1405,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with an element with multiple actions defined inside the Component', () => {
+    it("should work with an element with multiple actions defined inside the Component", () => {
       const code = `
         export default function Component({text}) {
           const el = <div 
@@ -1459,7 +1459,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should purge a call expression that is not recovered with a variable and this call has an action identifier', () => {
+    it("should purge a call expression that is not recovered with a variable and this call has an action identifier", () => {
       const code = `
         export default function Component({text}) {
           const hello = 'hello world';
@@ -1515,7 +1515,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should purge an async call expression that is not recovered with a variable and this call has an action identifier', () => {
+    it("should purge an async call expression that is not recovered with a variable and this call has an action identifier", () => {
       const code = `
         export default async function Component({text}) {
           const hello = 'hello world';
@@ -1556,7 +1556,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should keep a call expression that is recovered with a variable and this call has an action identifier', () => {
+    it("should keep a call expression that is recovered with a variable and this call has an action identifier", () => {
       const code = `
         export default function Component({text}) {
           const hello = 'hello world';
@@ -1598,7 +1598,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with action.bind(this)', () => {
+    it("should work with action.bind(this)", () => {
       const code = `
         export default function Component({text}) {
           const handleClick = (world) => console.log("hello"+world);
@@ -1638,7 +1638,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with action.bind(this) defined on the attribute', () => {
+    it("should work with action.bind(this) defined on the attribute", () => {
       const code = `
         export default function Component({text}) {
           const handleClick = (world) => console.log("hello"+world);
@@ -1675,7 +1675,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with currying outside an attribute', () => {
+    it("should work with currying outside an attribute", () => {
       const code = `
         export default function Component({text}) {
           const handleClick = (world) => (world2) => console.log("hello"+world+world2);
@@ -1715,7 +1715,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with currying inside an attribute', () => {
+    it("should work with currying inside an attribute", () => {
       const code = `
         export default function Component({text}) {
           const handleClick = (world) => (world2) => console.log("hello"+world+world2);
@@ -1752,7 +1752,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with an object with a function inside an attribute', () => {
+    it("should work with an object with a function inside an attribute", () => {
       const code = `
         export default function Component({text}) {
           const obj = {
@@ -1801,7 +1801,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with a destructured object with a function inside an attribute', () => {
+    it("should work with a destructured object with a function inside an attribute", () => {
       const code = `
         export default function Component({text}) {
           const obj = {
@@ -1844,7 +1844,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with multiple destructured objecs with a function inside an attribute', () => {
+    it("should work with multiple destructured objecs with a function inside an attribute", () => {
       const code = `
         export default function Component({text}) {
           const foo = {};
@@ -1890,7 +1890,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with logical expression as events', () => {
+    it("should work with logical expression as events", () => {
       const code = `
         export default function Component({text}) {
           const foo = {};
@@ -1927,7 +1927,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should be possible to use destructuring of req', () => {
+    it("should be possible to use destructuring of req", () => {
       const code = `
         export default function Component({text}, {foo, ...req}) {
           return <div onClick={() => console.log(req.store.get('foo'))}>{text}</div>
@@ -1964,7 +1964,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should NOT wrap async calls inside the action with req._p', () => {
+    it("should NOT wrap async calls inside the action with req._p", () => {
       const code = `
         export default function Component({text}) {
           return <div onClick={async () => {await foo();}}>{text}</div>
@@ -2000,7 +2000,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should wrap all sync calls inside the action with req._p', () => {
+    it("should wrap all sync calls inside the action with req._p", () => {
       const code = `
         export default function Component({text}) {
           return <div onClick={() => {const promise = bar(); foo(promise);}}>{text}</div>
@@ -2036,7 +2036,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should be possible to use destructuring of req with different name', () => {
+    it("should be possible to use destructuring of req with different name", () => {
       const code = `
         export default function Component({text}, {foo, ...req2}) {
           return <div onClick={() => console.log(req2.store.get('foo'))}>{text}</div>
@@ -2073,7 +2073,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work rerendering a component with onSubmit and function calls', () => {
+    it("should work rerendering a component with onSubmit and function calls", () => {
       const code = `
       import { renderComponent } from "brisa/server";
 
@@ -2163,7 +2163,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work an action calling a inner function #684', () => {
+    it("should work an action calling a inner function #684", () => {
       const code = `
       import { renderComponent } from "brisa/server";
 
@@ -2276,7 +2276,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work an action calling a inner arrow function #684', () => {
+    it("should work an action calling a inner arrow function #684", () => {
       const code = `
       import { renderComponent } from "brisa/server";
 
@@ -2389,7 +2389,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work rerendering a component with onSubmit and function calls with variables inside', () => {
+    it("should work rerendering a component with onSubmit and function calls with variables inside", () => {
       const code = `
       import { renderComponent } from "brisa/server";
 
@@ -2486,7 +2486,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work rerendering a component with onSubmit and arrow function calls', () => {
+    it("should work rerendering a component with onSubmit and arrow function calls", () => {
       const code = `
       import { renderComponent } from "brisa/server";
 
@@ -2577,7 +2577,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with destructuring and element generator', () => {
+    it("should work with destructuring and element generator", () => {
       const code = `
         const props = {
           onClick: () => console.log('hello world'),
@@ -2652,7 +2652,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with a function jsx generator with an action', () => {
+    it("should work with a function jsx generator with an action", () => {
       const code = `
         const getEl = (text) => <div onClick={() => console.log('hello world')}>{text}</div>;
       
@@ -2700,7 +2700,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with a function jsx generator with multiple actions', () => {
+    it("should work with a function jsx generator with multiple actions", () => {
       const code = `
         const getEl = (text) => (
           <div onClick={() => console.log('hello world')} onInput={() => console.log('hello world')}>
@@ -2768,7 +2768,7 @@ describe('utils', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should work with some elements with multiple actions defined outside the Component', () => {
+    it("should work with some elements with multiple actions defined outside the Component", () => {
       const code = `
         const el = <div onClick={() => console.log('hello world')} onInput={() => console.log('hello world')}> Click me </div>;
         const el2 = <div onClick={() => console.log('hello world')} onInput={() => console.log('hello world')}> Click me </div>;
@@ -2870,7 +2870,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should work with an element with multiple actions defined outside different Components', () => {
+    it("should work with an element with multiple actions defined outside different Components", () => {
       const code = `
         const el = <div onClick={() => console.log('hello world')} onInput={() => console.log('hello world')}> Click me </div>;
 
@@ -2938,7 +2938,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should work with element from an element with JSX used ouside a Component', () => {
+    it("should work with element from an element with JSX used ouside a Component", () => {
       const code = `
         const el = <div onClick={() => console.log('hello world')}> Click me </div>;
         const el2 = <>{el}</>
@@ -2996,7 +2996,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should be possible to have i18n variable with params destructuring #712', () => {
+    it("should be possible to have i18n variable with params destructuring #712", () => {
       const code = `
         export default function SomeComponent({}, {i18n: {t}}) {
           const i18n = 'foo';
@@ -3062,7 +3062,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should not co-relate RequestContext identifiers like i18n inside the action (arrow function) #712', () => {
+    it("should not co-relate RequestContext identifiers like i18n inside the action (arrow function) #712", () => {
       const code = `
         export default function SomeComponent({}, {i18n}) {
           const onAction = () => {
@@ -3124,7 +3124,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should not co-relate RequestContext identifiers like i18n inside the action (function) #712', () => {
+    it("should not co-relate RequestContext identifiers like i18n inside the action (function) #712", () => {
       const code = `
         export default function SomeComponent({}, {i18n}) {
           function onAction() {
@@ -3186,7 +3186,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should be possible to re-define variable inside a condition, inside the action #712', () => {
+    it("should be possible to re-define variable inside a condition, inside the action #712", () => {
       const code = `
         export default function SomeComponent() {
           let foo = 0;
@@ -3251,7 +3251,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should be possible to re-define variable inside a condition, outside the action #712', () => {
+    it("should be possible to re-define variable inside a condition, outside the action #712", () => {
       const code = `
         export default function SomeComponent() {
           let foo = 0;
@@ -3322,7 +3322,7 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
-    it('should member expression identifiers not be detected as variables inside a condition #712', () => {
+    it("should member expression identifiers not be detected as variables inside a condition #712", () => {
       const code = `
         export default async function SomeComponent() {
           async function onAction() {
@@ -3512,7 +3512,7 @@ describe('utils', () => {
     });
 
     it.todo(
-      'should work mixing elements with element generators and components',
+      "should work mixing elements with element generators and components",
       () => {
         const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
@@ -3574,7 +3574,7 @@ describe('utils', () => {
         expect(output).toBe(expected);
       },
     );
-    it.todo('should work mixing element with 2 generators', () => {
+    it.todo("should work mixing element with 2 generators", () => {
       const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
         const generator2 = () => <>{generator()}</>
@@ -3640,7 +3640,7 @@ describe('utils', () => {
     });
 
     it.todo(
-      'should work with an element with 2 generators and the 2nd one with actions',
+      "should work with an element with 2 generators and the 2nd one with actions",
       () => {
         const code = `
         const generator = () => <div onClick={() => console.log('hello world')}> Click me </div>;
@@ -3705,7 +3705,7 @@ describe('utils', () => {
     );
 
     it.todo(
-      'should work el = gen1() + gen2() and the second one with actions',
+      "should work el = gen1() + gen2() and the second one with actions",
       () => {
         const code = `
         const gen1 = () => <></>
@@ -3770,7 +3770,7 @@ describe('utils', () => {
       },
     );
 
-    it.todo('should transform simple HOC with an action', () => {
+    it.todo("should transform simple HOC with an action", () => {
       const code = `
       export default async function AboutUs() {
         return (
@@ -3823,7 +3823,7 @@ describe('utils', () => {
     });
 
     it.todo(
-      'should work with an element with an action defined outside the Component',
+      "should work with an element with an action defined outside the Component",
       () => {
         const code = `
       const el = <div onClick={() => console.log('hello world')} data - action - onClick="a1_1" data - action > Click me < /div>;

@@ -1,7 +1,7 @@
 export default function Page404() {
   return (
-    <main class="hero">
-      <section class="brisa-section">
+    <main className="hero">
+      <section className="brisa-section">
         <hgroup>
           <img
             src="/brisa.svg"

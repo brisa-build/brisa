@@ -7,13 +7,13 @@ export default function Counter(
   const count = state(initialValue);
 
   return (
-    <div class="counter">
-      <div class="counter-container">
+    <div className="counter">
+      <div className="counter-container">
         {/* This is the only translation that is taken to the client */}
         <h2>{i18n.t('home.client-counter')}</h2>
-        <button class="increment-button" onClick={() => count.value++}></button>
-        <div class="counter-value">{count.value}</div>
-        <button class="decrement-button" onClick={() => count.value--}></button>
+        <button className="increment-button" onClick={() => count.value++}></button>
+        <div className="counter-value">{count.value}</div>
+        <button className="decrement-button" onClick={() => count.value--}></button>
       </div>
     </div>
   );

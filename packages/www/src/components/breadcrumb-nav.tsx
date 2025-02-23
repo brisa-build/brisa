@@ -21,9 +21,9 @@ export default function BreadcrumbNav({}, { route }: RequestContext) {
   };
 
   return (
-    <div class="breadcrumb-wrapper">
+    <div className="breadcrumb-wrapper">
       <script type="application/ld+json">{JSON.stringify(ldJson)}</script>
-      <nav aria-label="Breadcrumb" class="breadcrumb">
+      <nav aria-label="Breadcrumb" className="breadcrumb">
         <menu-btn selector=".sidebar" useOverlay>
           <MenuIcon />
           <CrossIcon />
@@ -47,7 +47,7 @@ export default function BreadcrumbNav({}, { route }: RequestContext) {
         </ol>
 
         {next && (
-          <div class="next">
+          <div className="next">
             <HeadingsMapPopOver>
               On this page
               <GreaterIcon

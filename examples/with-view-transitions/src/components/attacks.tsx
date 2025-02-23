@@ -7,11 +7,11 @@ export default function Attacks({
 }) {
   return (
     <div>
-      <h4 class="font-bold text-lg pb-6">Attacks</h4>
+      <h4 className="font-bold text-lg pb-6">Attacks</h4>
       <ul>
         {attacks?.map((attack) => (
           <li>
-            <span class="font-semibold">{attack.name}</span> - {attack.power}
+            <span className="font-semibold">{attack.name}</span> - {attack.power}
           </li>
         ))}
       </ul>

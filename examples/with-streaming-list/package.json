@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "with-streaming-list",
   "module": "src/pages/index.tsx",
@@ -17,3 +18,24 @@
     "typescript": "latest"
   }
 }
+=======
+{
+  "name": "with-streaming-list",
+  "module": "src/pages/index.tsx",
+  "type": "module",
+  "example-category": "basics",
+  "scripts": {
+    "dev": "brisa dev",
+    "dev:debug": "brisa dev --debug",
+    "build": "brisa build",
+    "start": "brisa start"
+  },
+  "dependencies": {
+    "brisa": "0.2.7-canary.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}
+>>>>>>> e81e26ea (feat: add Eslint rule to prevent inappropriate use of e.preventDefault() and e.stopPropagation())

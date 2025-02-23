@@ -5,14 +5,14 @@ export function Head() {
 export default function About() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">About </span>Brisa
+          <span className="h1_addition">About </span>Brisa
         </h1>
-        <p class="edit-note">✏️ Change this page on </p>
+        <p className="edit-note">✏️ Change this page on </p>
         <code>src/pages/about/index.tsx</code>
       </div>
-      <div class="about-sections">
+      <div className="about-sections">
         <section>
           <h2>Curious for more details? Let's dive in!</h2>
 
@@ -100,10 +100,10 @@ export default function About() {
             to try it and contribute to the community.
           </p>
 
-          <p class="CTA-text">
+          <p className="CTA-text">
             Ready to start?{' '}
             <a
-              class="CTA"
+              className="CTA"
               href="https://brisa.build"
               target="_blank"
               data-replace="Read the docs"

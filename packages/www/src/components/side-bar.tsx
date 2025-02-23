@@ -4,7 +4,7 @@ import type { RequestContext } from 'brisa';
 
 export default function SideBar({}, { route }: RequestContext) {
   return (
-    <aside class="sidebar">
+    <aside className="sidebar">
       <b>Content to learn</b>
       {config.sidebar.map(generateList(undefined, route.pathname))}
     </aside>
@@ -14,7 +14,7 @@ export default function SideBar({}, { route }: RequestContext) {
 function generateList(name: string | undefined, pathname: string) {
   return (item: Item) => (
     <details key={item.text} open={isSummaryOpened(item, pathname)} name={name}>
-      <summary class={isActive(item, pathname) ? 'active' : ''}>
+      <summary className={isActive(item, pathname) ? 'active' : ''}>
         {item.link ? (
           <a href={item.link} aria-label={item.text}>
             {item.text}
@@ -30,7 +30,7 @@ function generateList(name: string | undefined, pathname: string) {
               generateList(item.text, pathname)(subItem as unknown as Item)
             ) : (
               <a
-                class={isActive(subItem, pathname) ? 'active' : ''}
+                className={isActive(subItem, pathname) ? 'active' : ''}
                 aria-current={isActive(subItem, pathname) ? true : undefined}
                 aria-label={subItem.text}
                 href={subItem.link}

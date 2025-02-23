@@ -32,5 +32,5 @@ export default function WBadge(
       border: 1px solid #bce8f1;
     }
   `;
-  return <span class={`badge ${type}`}>{text}</span>;
+  return <span className={`badge ${type}`}>{text}</span>;
 }

@@ -1,7 +1,7 @@
 export default function Privacy() {
   return (
-    <main class="landing">
-      <header class="hero">
+    <main className="landing">
+      <header className="hero">
         <h1>Terms & Conditions</h1>
         <p>Effective date: October 1, 2024</p>
       </header>

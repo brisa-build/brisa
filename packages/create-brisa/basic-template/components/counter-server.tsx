@@ -16,18 +16,18 @@ export default function CounterServer({
   }
 
   return (
-    <div class="counter">
-      <div class="counter-container">
+    <div className="counter">
+      <div className="counter-container">
         <h2>Server counter</h2>
         <button
           data-value={initialValue}
-          class="increment-button"
+          className="increment-button"
           onClick={increment}
         ></button>
-        <div class="counter-value">{initialValue}</div>
+        <div className="counter-value">{initialValue}</div>
         <button
           data-value={initialValue}
-          class="decrement-button"
+          className="decrement-button"
           onClick={decrement}
         ></button>
       </div>

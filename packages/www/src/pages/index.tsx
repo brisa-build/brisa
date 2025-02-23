@@ -82,8 +82,8 @@ export default {
 export default function Homepage() {
   return (
     <main>
-      <div class="hero">
-        <section class="brisa-section">
+      <div className="hero">
+        <section className="brisa-section">
           <hgroup>
             <img
               src="/brisa.svg"
@@ -105,16 +105,16 @@ export default function Homepage() {
               justifyContent: 'center',
             }}
           >
-            <a href="/getting-started/quick-start" class="cta">
+            <a href="/getting-started/quick-start" className="cta">
               Get Started
             </a>
             <CopyBox ariaLabel="Copy" text="bun create brisa my-app" />
           </div>
         </section>
       </div>
-      <section class="brisa-section fast-apps odd-section">
-        <div class="code-example">
-          <div class="info sticky">
+      <section className="brisa-section fast-apps odd-section">
+        <div className="code-example">
+          <div className="info sticky">
             <h2>🚀 Build fast apps fast</h2>
             <p>
               Brisa pages are dynamically server-rendered JSX components, with{' '}
@@ -122,16 +122,16 @@ export default function Homepage() {
             </p>
             <p>Simple to write; fast to run.</p>
           </div>
-          <div class="code">
+          <div className="code">
             <RenderCode code={fastAppsCode} />
-            <p class="bytes">0 bytes</p>
+            <p className="bytes">0 bytes</p>
           </div>
         </div>
       </section>
 
-      <section class="brisa-section wc">
-        <div class="code-example">
-          <div class="info sticky">
+      <section className="brisa-section wc">
+        <div className="code-example">
+          <div className="info sticky">
             <h2>🏝️ Web Component island-based</h2>
             <p>
               In Brisa everything runs only on the server by default, except the{' '}
@@ -142,17 +142,17 @@ export default function Homepage() {
             </p>
             <custom-counter start={5} />
           </div>
-          <div class="code">
+          <div className="code">
             <RenderCode code={wc1} />
             <RenderCode code={wc2} />
-            <p class="bytes">+3 KB</p>
+            <p className="bytes">+3 KB</p>
           </div>
         </div>
       </section>
 
-      <section class="brisa-section actions odd-section">
-        <div class="code-example">
-          <div class="info sticky">
+      <section className="brisa-section actions odd-section">
+        <div className="code-example">
+          <div className="info sticky">
             <h2>📲 Browser-events on the server</h2>
             <p>
               Brisa mixes ideas from React's "<b>Server Actions</b>" and HTMX
@@ -167,22 +167,22 @@ export default function Homepage() {
               connection with the server.
             </p>
             <a
-              class="cta"
+              className="cta"
               href="/building-your-application/data-management/server-actions"
             >
               More about Server Actions
             </a>
           </div>
-          <div class="code">
+          <div className="code">
             <RenderCode code={actionsCode} />
-            <p class="bytes">+2 KB (RPC code)</p>
+            <p className="bytes">+2 KB (RPC code)</p>
           </div>
         </div>
       </section>
 
-      <section class="brisa-section i18n">
-        <div class="code-example">
-          <div class="info sticky">
+      <section className="brisa-section i18n">
+        <div className="code-example">
+          <div className="info sticky">
             <h2>🌐 Full i18n support</h2>
             <p>
               Brisa has built-in internationalization support that allows you to{' '}
@@ -190,23 +190,23 @@ export default function Homepage() {
               the used translations.
             </p>
             <a
-              class="cta"
+              className="cta"
               href="/building-your-application/routing/internationalization"
             >
               More about i18n
             </a>
           </div>
-          <div class="code">
+          <div className="code">
             <RenderCode code={i18nCode} />
-            <p class="bytes">+0 B (Server Components)</p>
-            <p class="bytes">+800 B (Web Components)</p>
+            <p className="bytes">+0 B (Server Components)</p>
+            <p className="bytes">+800 B (Web Components)</p>
           </div>
         </div>
       </section>
 
-      <section class="brisa-section multi-platform odd-section inverted">
-        <div class="code-example">
-          <div class="info">
+      <section className="brisa-section multi-platform odd-section inverted">
+        <div className="code-example">
+          <div className="info">
             <h2>📱 Multi-platform</h2>
             <p>
               Brisa is fully integrated with Tauri. This means that with a small
@@ -222,16 +222,16 @@ export default function Homepage() {
               loading="lazy"
             />
           </div>
-          <div class="code sticky">
+          <div className="code sticky">
             <RenderCode code={multiPlatformCode} />
-            <p class="bytes">Web or: .apk, .ipa, .exe, .dmg, .deb</p>
+            <p className="bytes">Web or: .apk, .ipa, .exe, .dmg, .deb</p>
           </div>
         </div>
       </section>
 
-      <section class="brisa-section goal">
-        <div class="code-example">
-          <div class="info">
+      <section className="brisa-section goal">
+        <div className="code-example">
+          <div className="info">
             <h2>🤔 What does Web Platform Framework mean?</h2>
             <p>
               Brisa's mission is to unify server and client using the Web
@@ -277,12 +277,12 @@ export default function Homepage() {
               for <b>future</b> development.
             </p>
           </div>
-          <div class="code sticky" style={{ padding: '0 30px' }}>
+          <div className="code sticky" style={{ padding: '0 30px' }}>
             <a
               style={{ float: 'right' }}
-              class="launch-video"
+              className="launch-video"
               href="https://www.youtube.com/watch?v=dhHbSAsApsk"
-              target="_blank"
+              target="_blank" rel="noreferrer"
             >
               <figure>
                 <img
@@ -301,9 +301,9 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="brisa-section odd-section">
-        <div class="code-example">
-          <div class="info">
+      <section className="brisa-section odd-section">
+        <div className="code-example">
+          <div className="info">
             <h2>🎁 Gift to contributors</h2>
             <p>
               Brisa is an open-source project, and is backed by contributions
@@ -312,7 +312,7 @@ export default function Homepage() {
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <a
-                class="cta"
+                className="cta"
                 href="https://github.com/brisa-build/brisa"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -322,7 +322,7 @@ export default function Homepage() {
               </a>
               <a
                 title="Shop"
-                class="cta"
+                className="cta"
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://brisadotbuild.myspreadshop.es/"
@@ -332,7 +332,7 @@ export default function Homepage() {
               </a>
             </div>
           </div>
-          <div class="code" style={{ padding: '0 80px' }}>
+          <div className="code" style={{ padding: '0 80px' }}>
             <img
               width="300"
               height="325"
@@ -345,9 +345,9 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section class="brisa-section goal">
-        <div class="code-example">
-          <div class="info" style={{ flex: 1 }}>
+      <section className="brisa-section goal">
+        <div className="code-example">
+          <div className="info" style={{ flex: 1 }}>
             <h2>📚 Documentation</h2>
             <p>
               Learn more about Brisa by reading the{' '}
@@ -357,7 +357,7 @@ export default function Homepage() {
               .
             </p>
           </div>
-          <div class="code" style={{ flex: 1, maxWidth: '450px' }}>
+          <div className="code" style={{ flex: 1, maxWidth: '450px' }}>
             <h2>💝 Sponsors</h2>
             <p>
               <i>

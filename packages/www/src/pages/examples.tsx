@@ -21,8 +21,8 @@ export default function Examples() {
 
   return (
     <main>
-      <div class="hero" style={{ padding: '20px 0' }}>
-        <section class="brisa-section">
+      <div className="hero" style={{ padding: '20px 0' }}>
+        <section className="brisa-section">
           <hgroup>
             <img
               src="/brisa.svg"
@@ -47,9 +47,9 @@ export default function Examples() {
           </hgroup>
         </section>
       </div>
-      <div class="examples">
+      <div className="examples">
         <section
-          class="brisa-section"
+          className="brisa-section"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -67,8 +67,8 @@ export default function Examples() {
           </div>
         </section>
       </div>
-      <div class="examples more">
-        <section class="brisa-section">
+      <div className="examples more">
+        <section className="brisa-section">
           <h2>Add your example 👇</h2>
           <p>
             Need an example that isn't here? Or want to add one of your own? We

@@ -1,11 +1,11 @@
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">Welcome to </span>Brisa
+          <span className="h1_addition">Welcome to </span>Brisa
         </h1>
-        <p class="edit-note">✏️ WebSocket Chat Example</p>
+        <p className="edit-note">✏️ WebSocket Chat Example</p>
         <code>src/websockets.ts</code>
         <code>src/web-components/ws-chat.tsx</code>
       </div>

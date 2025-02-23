@@ -7,21 +7,21 @@ export default function Homepage({}, { i18n: { t, locale } }: RequestContext) {
 
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
           {t(
             'home.welcome',
             { name: 'i18n' },
-            { elements: [<span class="h1_addition" />] },
+            { elements: [<span className="h1_addition" />] },
           )}
         </h1>
-        <p class="edit-note">✏️ {t('change-page')}</p>
+        <p className="edit-note">✏️ {t('change-page')}</p>
         <code>src/pages/index.tsx</code>
       </div>
 
-      <section class="counter-section">
+      <section className="counter-section">
         <h2>{t('home.counters')}</h2>
-        <div class="counters" style={{ marginBottom: '20px' }}>
+        <div className="counters" style={{ marginBottom: '20px' }}>
           <counter-client initialValue={42} />
           <CounterServer initialValue={37} />
         </div>

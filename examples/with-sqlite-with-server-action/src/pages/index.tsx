@@ -38,15 +38,15 @@ export default function Homepage({}, { css, indicate }: RequestContext) {
 
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">SQLite </span>Example
+          <span className="h1_addition">SQLite </span>Example
         </h1>
-        <p class="edit-note">✏️ Change the queries on </p>
+        <p className="edit-note">✏️ Change the queries on </p>
         <code>src/pages/index.tsx</code>
       </div>
 
-      <section class="example-section">
+      <section className="example-section">
         <div>
           <h2>Movies</h2>
           {movies.length === 0 && <p>No movies found</p>}

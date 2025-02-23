@@ -235,7 +235,7 @@ export default function ErrorDialog(
   if (!displayDialog.value) {
     return (
       <button
-        class="brisa-error-notification"
+        className="brisa-error-notification"
         onClick={() => (displayDialog.value = true)}
       >
         <svg
@@ -245,9 +245,9 @@ export default function ErrorDialog(
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
@@ -280,9 +280,9 @@ export default function ErrorDialog(
                     <path
                       d="M6.99996 1.16666L1.16663 6.99999L6.99996 12.8333M12.8333 6.99999H1.99996H12.8333Z"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></path>
                   </svg>
                 </button>
@@ -300,9 +300,9 @@ export default function ErrorDialog(
                     <path
                       d="M6.99996 1.16666L12.8333 6.99999L6.99996 12.8333M1.16663 6.99999H12H1.16663Z"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     ></path>
                   </svg>
                 </button>
@@ -324,7 +324,7 @@ export default function ErrorDialog(
           <>
             <button
               disabled={loadingAIResponse.value}
-              class="ask-ai"
+              className="ask-ai"
               style={{ width: 'auto' }}
               onClick={explainMeError}
             >
@@ -338,7 +338,7 @@ export default function ErrorDialog(
         {aiResponse.value && (
           <p style={{ color: '#8d3939' }}>{aiResponse.value}</p>
         )}
-        <button class="close-dialog" onClick={onClose}>
+        <button className="close-dialog" onClick={onClose}>
           Close
         </button>
       </div>
@@ -358,7 +358,7 @@ function renderDocumentation({ docTitle, docLink }: Error) {
 
 function closeElement({ onClose }: { onClose: () => void }) {
   return (
-    <button class="close-svg-btn" onClick={onClose}>
+    <button className="close-svg-btn" onClick={onClose}>
       <svg
         aria-label="Close"
         title="Close"
@@ -368,10 +368,10 @@ function closeElement({ onClose }: { onClose: () => void }) {
         height="24"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="close-error"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="close-error"
       >
         <path d="M18 6 6 18"></path>
         <path d="m6 6 12 12"></path>

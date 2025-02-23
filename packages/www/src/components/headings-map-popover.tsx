@@ -5,7 +5,7 @@ export default function HeadingsMapPopOver({
 }) {
   return (
     <>
-      <button class="headings-map-button" popoverTarget="headings-map-popover">
+      <button className="headings-map-button" popoverTarget="headings-map-popover">
         {children}
       </button>
       <headings-map

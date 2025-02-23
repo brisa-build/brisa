@@ -4,9 +4,9 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer>
-      <div class="footer-content">
+      <div className="footer-content">
         <form
-          class="nl"
+          className="nl"
           method="POST"
           action="https://build.us8.list-manage.com/subscribe/post?u=bc31ee7c9223ccdf6cc63f9d8&id=6878b40d47"
         >
@@ -61,7 +61,7 @@ export default function Footer() {
               <a
                 title="Shop"
                 target="_blank"
-                href="https://brisadotbuild.myspreadshop.es/"
+                href="https://brisadotbuild.myspreadshop.es/" rel="noreferrer"
               >
                 Visit our Shop
               </a>
@@ -131,7 +131,7 @@ export default function Footer() {
           justifyContent: 'space-between',
         }}
       >
-        <p class="copyright">
+        <p className="copyright">
           <a
             href="https://github.com/brisa-build/brisa/blob/main/LICENSE"
             target="_blank"

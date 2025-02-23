@@ -61,14 +61,14 @@ export default async function HeadingsMap(
   if (headings.value.length === 0) return null;
 
   return (
-    <div class={inPopoverClass} style={{ position: 'relative' }}>
-      <div class="outline-marker" style={{ top: top.value }} />
-      <ul class="headings-map">
+    <div className={inPopoverClass} style={{ position: 'relative' }}>
+      <div className="outline-marker" style={{ top: top.value }} />
+      <ul className="headings-map">
         {headings.value.map((heading) => (
           <li
             id={`anchor-to-${heading.id}`}
             key={heading.id}
-            class={heading.tagName.toLowerCase()}
+            className={heading.tagName.toLowerCase()}
             onClick={(e) => {
               top.value = `${e.currentTarget.offsetTop}px`;
               if (popoverTargetAction !== 'hide') return;

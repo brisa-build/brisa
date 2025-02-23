@@ -20,8 +20,8 @@ export default function Blog() {
 
   return (
     <main>
-      <div class="hero" style={{ padding: '20px 0' }}>
-        <section class="brisa-section ">
+      <div className="hero" style={{ padding: '20px 0' }}>
+        <section className="brisa-section ">
           <hgroup>
             <img
               src="/brisa.svg"
@@ -33,10 +33,10 @@ export default function Blog() {
           </hgroup>
         </section>
       </div>
-      <div class="blog-list">
+      <div className="blog-list">
         {posts.map(
           ({ slug, data: { title, created, description, author } }: any) => (
-            <section class="brisa-section">
+            <section className="brisa-section">
               <a href={`/blog/${slug}`}>
                 <article key={slug}>
                   <h2>{title}</h2>

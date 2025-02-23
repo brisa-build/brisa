@@ -1,21 +1,21 @@
-import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
-import fs from 'node:fs';
-import path from 'node:path';
-import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
+import fs from "node:fs";
+import path from "node:path";
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
-import layoutBuild from '.';
-import { getConstants } from '@/constants';
-import getWebComponentsList from '@/utils/get-web-components-list';
+import layoutBuild from ".";
+import { getConstants } from "@/constants";
+import getWebComponentsList from "@/utils/get-web-components-list";
 
-const src = path.join(import.meta.dir, '..', '..', '..', '__fixtures__');
-const webComponentsDir = path.join(src, 'web-components');
+const src = path.join(import.meta.dir, "..", "..", "..", "__fixtures__");
+const webComponentsDir = path.join(src, "web-components");
 const build = path.join(src, `out-${crypto.randomUUID()}}`);
-const brisaInternals = path.join(build, '_brisa');
-const pages = path.join(src, 'pages');
+const brisaInternals = path.join(build, "_brisa");
+const pages = path.join(src, "pages");
 const allWebComponents = await getWebComponentsList(src);
 const pageWebComponents = {
-  'web-component': allWebComponents['web-component'],
-  'native-some-example': allWebComponents['native-some-example'],
+  "web-component": allWebComponents["web-component"],
+  "native-some-example": allWebComponents["native-some-example"],
 };
 
 const i18nCode = 3653;
@@ -28,7 +28,7 @@ const lazyRPCSize = 4308; // TODO: Reduce this size
 // so it's not included in the initial size
 const initialSize = unsuspenseSize + rpcSize;
 
-describe('client-build', () => {
+describe("client-build", () => {
   beforeEach(async () => {
     fs.mkdirSync(build, { recursive: true });
     fs.mkdirSync(brisaInternals, { recursive: true });
@@ -47,16 +47,16 @@ describe('client-build', () => {
     globalThis.mockConstants = undefined;
   });
 
-  describe('layout-build', () => {
-    it('should not return client code in page without web components, without suspense, without server actions', async () => {
-      const layoutPath = path.join(pages, 'somepage.tsx');
+  describe("layout-build", () => {
+    it("should not return client code in page without web components, without suspense, without server actions", async () => {
+      const layoutPath = path.join(pages, "somepage.tsx");
       const output = await layoutBuild({ layoutPath, allWebComponents });
       const expected = {
-        code: '',
-        rpc: '',
-        lazyRPC: '',
-        unsuspense: '',
-        pagePath: path.join(pages, 'somepage.tsx'),
+        code: "",
+        rpc: "",
+        lazyRPC: "",
+        unsuspense: "",
+        pagePath: path.join(pages, "somepage.tsx"),
         size: 0,
         useI18n: false,
         useContextProvider: false,
@@ -66,8 +66,8 @@ describe('client-build', () => {
       expect(output).toEqual(expected);
     });
 
-    it('should return client code size of brisa + 2 web-components in page with web components', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+    it("should return client code size of brisa + 2 web-components in page with web components", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -77,22 +77,22 @@ describe('client-build', () => {
       expect(output).not.toBeNull();
       expect(output!.size).toEqual(brisaSize + i18nCode + webComponents);
       expect(output!.useI18n).toBeTrue();
-      expect(output!.i18nKeys).toEqual(new Set(['hello']));
+      expect(output!.i18nKeys).toEqual(new Set(["hello"]));
     });
 
-    it('should return client code size as 0 when a page does not have web components', async () => {
-      const layoutPath = path.join(pages, 'somepage.tsx');
+    it("should return client code size as 0 when a page does not have web components", async () => {
+      const layoutPath = path.join(pages, "somepage.tsx");
       const output = await layoutBuild({ layoutPath, allWebComponents });
       expect(output!.size).toEqual(0);
     });
 
-    it('should the RPC with IS_STATIC_EXPORT and IS_PRODUCTION be GET for SPA', async () => {
+    it("should the RPC with IS_STATIC_EXPORT and IS_PRODUCTION be GET for SPA", async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_STATIC_EXPORT: true,
         IS_PRODUCTION: true,
       };
-      const layoutPath = path.join(pages, 'index.tsx');
+      const layoutPath = path.join(pages, "index.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -102,13 +102,13 @@ describe('client-build', () => {
       expect(output!.rpc).not.toMatch(/fetch\(.*destination.url,{method.*/gm);
     });
 
-    it('should the RPC with IS_STATIC_EXPORT and IS_DEVELOPMENT be POST for SPA', async () => {
+    it("should the RPC with IS_STATIC_EXPORT and IS_DEVELOPMENT be POST for SPA", async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_STATIC_EXPORT: true,
         IS_PRODUCTION: false,
       };
-      const layoutPath = path.join(pages, 'index.tsx');
+      const layoutPath = path.join(pages, "index.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -120,13 +120,13 @@ describe('client-build', () => {
       );
     });
 
-    it('should the RPC WITHOUT IS_STATIC_EXPORT and IS_PRODUCTION be POST for SPA', async () => {
+    it("should the RPC WITHOUT IS_STATIC_EXPORT and IS_PRODUCTION be POST for SPA", async () => {
       globalThis.mockConstants = {
         ...getConstants(),
         IS_STATIC_EXPORT: false,
         IS_PRODUCTION: true,
       };
-      const layoutPath = path.join(pages, 'index.tsx');
+      const layoutPath = path.join(pages, "index.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -138,8 +138,8 @@ describe('client-build', () => {
       );
     });
 
-    it('should return client code in page with suspense and rpc', async () => {
-      const layoutPath = path.join(pages, 'index.tsx');
+    it("should return client code in page with suspense and rpc", async () => {
+      const layoutPath = path.join(pages, "index.tsx");
       const output = await layoutBuild({ layoutPath, allWebComponents });
 
       expect(output?.unsuspense.length).toBe(unsuspenseSize);
@@ -151,8 +151,8 @@ describe('client-build', () => {
       expect(output?.i18nKeys).toBeEmpty();
     });
 
-    it('should define 2 web components if there is 1 web component and another one inside', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+    it("should define 2 web components if there is 1 web component and another one inside", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -162,13 +162,13 @@ describe('client-build', () => {
       expect(output!.code).toContain('"native-some-example"');
     });
 
-    it('should load lazyRPC in /somepage because it has an hyperlink', async () => {
+    it("should load lazyRPC in /somepage because it has an hyperlink", async () => {
       const webComponentSize = 377;
       const output = await layoutBuild({
-        layoutPath: path.join(pages, 'somepage.tsx'),
+        layoutPath: path.join(pages, "somepage.tsx"),
         allWebComponents,
         pageWebComponents: {
-          'with-link': allWebComponents['with-link'],
+          "with-link": allWebComponents["with-link"],
         },
       });
       expect(output!.code).toContain('"with-link"');
@@ -180,8 +180,8 @@ describe('client-build', () => {
       expect(output?.i18nKeys).toBeEmpty();
     });
 
-    it('should add context-provider if the page has a context-provider without serverOnly attribute', async () => {
-      const layoutPath = path.join(pages, 'somepage-with-context.tsx');
+    it("should add context-provider if the page has a context-provider without serverOnly attribute", async () => {
+      const layoutPath = path.join(pages, "somepage-with-context.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -190,13 +190,13 @@ describe('client-build', () => {
       expect(output!.code).toContain('"context-provider"');
     });
 
-    it('should add brisa-error-dialog when the page is in DEV mode', async () => {
+    it("should add brisa-error-dialog when the page is in DEV mode", async () => {
       globalThis.mockConstants = {
         ...globalThis.mockConstants,
         IS_DEVELOPMENT: true,
         IS_PRODUCTION: false,
       };
-      const layoutPath = path.join(pages, 'somepage.tsx');
+      const layoutPath = path.join(pages, "somepage.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -205,13 +205,13 @@ describe('client-build', () => {
       expect(output!.code).toContain('"brisa-error-dialog"');
     });
 
-    it('should NOT add brisa-error-dialog when the page is in PROD mode', async () => {
+    it("should NOT add brisa-error-dialog when the page is in PROD mode", async () => {
       globalThis.mockConstants = {
         ...globalThis.mockConstants,
         IS_DEVELOPMENT: false,
         IS_PRODUCTION: true,
       };
-      const layoutPath = path.join(pages, 'somepage.tsx');
+      const layoutPath = path.join(pages, "somepage.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -220,8 +220,8 @@ describe('client-build', () => {
       expect(output!.code).not.toContain('"brisa-error-dialog"');
     });
 
-    it('should add context-provider if the page has not a context-provider but layoutHasContextProvider is true', async () => {
-      const layoutPath = path.join(pages, 'somepage.tsx');
+    it("should add context-provider if the page has not a context-provider but layoutHasContextProvider is true", async () => {
+      const layoutPath = path.join(pages, "somepage.tsx");
       const layoutHasContextProvider = true;
       const output = await layoutBuild({
         layoutPath,
@@ -232,13 +232,13 @@ describe('client-build', () => {
       expect(output!.code).toContain('"context-provider"');
     });
 
-    it('should define brisa-error-dialog (1st) and context-provider (2nd) before the rest of web components', async () => {
+    it("should define brisa-error-dialog (1st) and context-provider (2nd) before the rest of web components", async () => {
       globalThis.mockConstants = {
         ...globalThis.mockConstants,
         IS_DEVELOPMENT: true,
         IS_PRODUCTION: false,
       };
-      const layoutPath = path.join(pages, 'somepage.tsx');
+      const layoutPath = path.join(pages, "somepage.tsx");
       const layoutHasContextProvider = true;
       const output = await layoutBuild({
         layoutPath,
@@ -257,8 +257,8 @@ describe('client-build', () => {
       ]);
     });
 
-    it('should not add context-provider if the page has a context-provider with serverOnly attribute', async () => {
-      const layoutPath = path.join(pages, 'somepage.tsx');
+    it("should not add context-provider if the page has a context-provider with serverOnly attribute", async () => {
+      const layoutPath = path.join(pages, "somepage.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -267,20 +267,20 @@ describe('client-build', () => {
       expect(output!.code).not.toContain('"context-provider"');
     });
 
-    it('should allow environment variables in web components with BRISA_PUBLIC_ prefix', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
-      Bun.env.BRISA_PUBLIC_TEST = 'value of test env variable';
+    it("should allow environment variables in web components with BRISA_PUBLIC_ prefix", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
+      Bun.env.BRISA_PUBLIC_TEST = "value of test env variable";
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
         pageWebComponents,
       });
-      expect(output!.code).toContain('value of test env variable');
+      expect(output!.code).toContain("value of test env variable");
     });
 
-    it('should NOT add the integrations web context plugins when there are not plugins', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
-      const integrationsPath = path.join(webComponentsDir, '_integrations.tsx');
+    it("should NOT add the integrations web context plugins when there are not plugins", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
+      const integrationsPath = path.join(webComponentsDir, "_integrations.tsx");
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
@@ -288,16 +288,16 @@ describe('client-build', () => {
         integrationsPath,
       });
       // Declaration
-      expect(output!.code).not.toContain('window._P=');
+      expect(output!.code).not.toContain("window._P=");
       // Brisa element usage
-      expect(output!.code).not.toContain('._P)');
+      expect(output!.code).not.toContain("._P)");
     });
 
-    it('should add the integrations web context plugins when there are plugins', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+    it("should add the integrations web context plugins when there are plugins", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
       const integrationsPath = path.join(
         webComponentsDir,
-        '_integrations2.tsx',
+        "_integrations2.tsx",
       );
       const output = await layoutBuild({
         layoutPath,
@@ -306,35 +306,35 @@ describe('client-build', () => {
         integrationsPath,
       });
       // Declaration
-      expect(output!.code).toContain('window._P=');
+      expect(output!.code).toContain("window._P=");
       // Brisa element usage
-      expect(output!.code).toContain('._P)');
+      expect(output!.code).toContain("._P)");
     });
 
-    it('should add the integrations with emoji-picker as direct import', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+    it("should add the integrations with emoji-picker as direct import", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
       const integrationsPath = path.join(
         webComponentsDir,
-        '_integrations3.tsx',
+        "_integrations3.tsx",
       );
       const output = await layoutBuild({
         layoutPath,
         allWebComponents,
         pageWebComponents: {
           ...pageWebComponents,
-          'emoji-picker':
-            '{"client":"' + path.join(src, 'lib', 'emoji-picker.tsx') + '"}',
+          "emoji-picker":
+            '{"client":"' + path.join(src, "lib", "emoji-picker.tsx") + '"}',
         },
         integrationsPath,
       });
       expect(output!.code).toContain('<div class="emoji-picker">');
     });
 
-    it('should integrate some-lib with web context plugins', async () => {
-      const layoutPath = path.join(pages, 'page-with-web-component.tsx');
+    it("should integrate some-lib with web context plugins", async () => {
+      const layoutPath = path.join(pages, "page-with-web-component.tsx");
       const integrationsPath = path.join(
         webComponentsDir,
-        '_integrations4.tsx',
+        "_integrations4.tsx",
       );
 
       const output = await layoutBuild({
@@ -342,22 +342,22 @@ describe('client-build', () => {
         allWebComponents,
         pageWebComponents: {
           ...pageWebComponents,
-          'some-lib':
-            '{"client":"' + path.join(src, 'lib', 'some-lib.js') + '"}',
+          "some-lib":
+            '{"client":"' + path.join(src, "lib", "some-lib.js") + '"}',
         },
         integrationsPath,
       });
-      const contentOfLib = '()=>`has ${window._P.length} web context plugin`';
+      const contentOfLib = "()=>`has ${window._P.length} web context plugin`";
 
-      expect(output!.code).toContain('window._P=');
+      expect(output!.code).toContain("window._P=");
       expect(output!.code).toContain(contentOfLib);
 
       GlobalRegistrator.register();
 
       document.body.innerHTML = `<some-lib></some-lib>`;
       eval(output!.code);
-      const someLibEl = document.querySelector('some-lib');
-      expect(someLibEl?.shadowRoot?.innerHTML).toBe('has 1 web context plugin');
+      const someLibEl = document.querySelector("some-lib");
+      expect(someLibEl?.shadowRoot?.innerHTML).toBe("has 1 web context plugin");
 
       GlobalRegistrator.unregister();
     });

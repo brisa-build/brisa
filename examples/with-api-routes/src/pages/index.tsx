@@ -1,9 +1,9 @@
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1 style={{ marginBottom: '40px' }}>
-          <span class="h1_addition">Example with </span>API Routes
+          <span className="h1_addition">Example with </span>API Routes
         </h1>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
           <div style={{ width: '400px' }}>
@@ -20,11 +20,11 @@ export default function Homepage() {
               alignItems: 'flex-start',
             }}
           >
-            <p class="edit-note">✏️ Change this page on </p>
+            <p className="edit-note">✏️ Change this page on </p>
             <code>src/pages/about/index.tsx</code>
-            <p class="edit-note">✏️ Change the API on </p>
+            <p className="edit-note">✏️ Change the API on </p>
             <code>src/api/animal</code>
-            <p class="edit-note">✏️ Change the Web Component on </p>
+            <p className="edit-note">✏️ Change the Web Component on </p>
             <code>src/web-components/choose-animal.tsx</code>
           </div>
         </div>

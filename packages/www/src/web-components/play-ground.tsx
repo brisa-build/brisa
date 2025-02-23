@@ -109,12 +109,12 @@ export default async function PlayGround(
   `;
 
   return (
-    <section class="playground">
-      <div class="original-code">
+    <section className="playground">
+      <div className="original-code">
         <slot name="code-editor" />
       </div>
-      <div class="output">
-        <div role="tablist" class="tab-list">
+      <div className="output">
+        <div role="tablist" className="tab-list">
           <button
             id="tab-wc"
             type="button"
@@ -141,14 +141,14 @@ export default async function PlayGround(
 
         <div
           id="tab-wc"
-          class={`tab-content ${activeTab.value === 'tab-wc' ? 'active' : ''}`}
+          className={`tab-content ${activeTab.value === 'tab-wc' ? 'active' : ''}`}
         >
           <slot name="preview-iframe" />
         </div>
 
         <div
           id="tab-compiled"
-          class={`tab-content ${activeTab.value === 'tab-compiled' ? 'active' : ''}`}
+          className={`tab-content ${activeTab.value === 'tab-compiled' ? 'active' : ''}`}
         >
           <textarea disabled>{code.value}</textarea>
         </div>

@@ -3,17 +3,17 @@ import CounterServer from '@/components/counter-server';
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">Welcome to </span>Brisa
+          <span className="h1_addition">Welcome to </span>Brisa
         </h1>
-        <p class="edit-note">✏️ Change this page on </p>
+        <p className="edit-note">✏️ Change this page on </p>
         <code>src/pages/index.tsx</code>
       </div>
 
-      <section class="counter-section">
+      <section className="counter-section">
         <h2>Counters</h2>
-        <div class="counters">
+        <div className="counters">
           <counter-client initialValue={42} />
           <CounterServer initialValue={37} />
         </div>

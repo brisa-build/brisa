@@ -11,12 +11,12 @@ export default function BlogContent({}, { store }: RequestContext) {
     post?.data ?? {};
 
   return (
-    <main class="markdown-content" style={{ margin: '0 auto' }}>
+    <main className="markdown-content" style={{ margin: '0 auto' }}>
       {cover_image && (
         <div
           key={cover_image}
           style={{ '--cover-color': cover_color }}
-          class="cover-image"
+          className="cover-image"
         >
           <img
             loading="eager"
@@ -44,7 +44,7 @@ export default function BlogContent({}, { store }: RequestContext) {
         >
           <small>
             <time dateTime={created}>{formatDate(created)}</time> by{' '}
-            <a href={author_site} title={author} target="_blank">
+            <a href={author_site} title={author} target="_blank" rel="noreferrer">
               {author}
             </a>
           </small>

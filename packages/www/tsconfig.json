@@ -19,7 +19,7 @@
     "allowJs": true,
     "verbatimModuleSyntax": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["brisa"],
+    "types": ["brisa", "node"],
     "paths": {
       "@/*": ["*"]
     }

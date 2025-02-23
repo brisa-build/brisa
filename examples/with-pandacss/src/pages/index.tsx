@@ -6,12 +6,12 @@ import { base, header } from '@/styles/styles';
 export default function Homepage() {
   return (
     <>
-      <div class={base}>
-        <h1 class={header}>Brisa - Poke</h1>
-        <h2 class={css({ height: '10', margin: '10' })}>
+      <div className={base}>
+        <h1 className={header}>Brisa - Poke</h1>
+        <h2 className={css({ height: '10', margin: '10' })}>
           An example using Panda CSS with Brisa.
         </h2>
-        <div class="">
+        <div className="">
           {pokemons.map((pokemon) => (
             <PokemonCard pokemon={pokemon} />
           ))}

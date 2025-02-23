@@ -4,7 +4,7 @@ export default function Footer() {
       <p>
         View on{' '}
         <a
-          class="CTA"
+          className="CTA"
           href="https://github.com/brisa-build/brisa"
           id="github-link"
           target="_blank"

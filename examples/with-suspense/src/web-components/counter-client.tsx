@@ -2,8 +2,8 @@ import type { WebContext } from 'brisa';
 
 function SuspenseState({}, { store }: WebContext) {
   return (
-    <div class="counter">
-      <div class="counter-container" style={{ height: '255px' }}>
+    <div className="counter">
+      <div className="counter-container" style={{ height: '255px' }}>
         {store.get('counter-state')}
       </div>
     </div>
@@ -24,12 +24,12 @@ export default async function Counter(
   store.delete('counter-state');
 
   return (
-    <div class="counter">
-      <div class="counter-container">
+    <div className="counter">
+      <div className="counter-container">
         <h2>Client counter</h2>
-        <button class="increment-button" onClick={() => count.value++}></button>
-        <div class="counter-value">{count.value}</div>
-        <button class="decrement-button" onClick={() => count.value--}></button>
+        <button className="increment-button" onClick={() => count.value++}></button>
+        <div className="counter-value">{count.value}</div>
+        <button className="decrement-button" onClick={() => count.value--}></button>
       </div>
     </div>
   );

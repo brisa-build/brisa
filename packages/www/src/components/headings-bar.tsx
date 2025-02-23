@@ -3,9 +3,9 @@ import type { RequestContext } from 'brisa';
 
 export default function HeadingsBar({}, { route }: RequestContext) {
   return (
-    <aside class="right-bar">
+    <aside className="right-bar">
       <a
-        class="edit"
+        className="edit"
         href={`https://github.com/brisa-build/brisa/tree/main/docs/${route.pathname}.md`}
         target="_blank"
         rel="noopener noreferrer"

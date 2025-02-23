@@ -1,15 +1,15 @@
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">Middleware </span>Example
+          <span className="h1_addition">Middleware </span>Example
         </h1>
-        <p class="edit-note">✏️ Change the middleware on </p>
+        <p className="edit-note">✏️ Change the middleware on </p>
         <code>src/middleware.ts</code>
       </div>
 
-      <section class="example-section">
+      <section className="example-section">
         <h1>Middleware Example: How to Use It</h1>
 
         <p>

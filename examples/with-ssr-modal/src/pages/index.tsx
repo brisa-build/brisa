@@ -35,11 +35,11 @@ function processAnswer(e: MouseEvent, value = 'yes') {
 
   renderComponent({
     element: isCorrect ? (
-      <p id="content" class="correct">
+      <p id="content" className="correct">
         Correct!
       </p>
     ) : (
-      <p id="content" class="incorrect">
+      <p id="content" className="incorrect">
         Incorrect!
       </p>
     ),
@@ -50,11 +50,11 @@ function processAnswer(e: MouseEvent, value = 'yes') {
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">Welcome to </span>Brisa
+          <span className="h1_addition">Welcome to </span>Brisa
         </h1>
-        <p class="edit-note">✏️ SSR Modal example</p>
+        <p className="edit-note">✏️ SSR Modal example</p>
         <code>src/pages/index.tsx</code>
       </div>
 

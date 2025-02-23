@@ -12,24 +12,24 @@ export default function About({}, { i18n: { t } }: RequestContext) {
   );
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          {t('about.heading', {}, { elements: [<span class="h1_addition" />] })}
+          {t('about.heading', {}, { elements: [<span className="h1_addition" />] })}
         </h1>
-        <p class="edit-note">✏️ {t('change-page')}</p>
+        <p className="edit-note">✏️ {t('change-page')}</p>
         <code>src/pages/about/index.tsx</code>
       </div>
-      <div class="about-sections">
+      <div className="about-sections">
         <section>
           <h2>{t('about.content.title')}</h2>
           {parrafs.map((p) => (
             <p>{p}</p>
           ))}
 
-          <p class="CTA-text">
+          <p className="CTA-text">
             {t('about.ready')}{' '}
             <a
-              class="CTA"
+              className="CTA"
               href="https://brisa.build"
               target="_blank"
               data-replace={t('about.more')}

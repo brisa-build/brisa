@@ -59,7 +59,7 @@ for (const [route, filePath] of routes) {
           </radialGradient>
         </defs>
       </g>
-      <text y="50%" font-size="50px" fill="white" text-anchor="start">
+      <text y="50%" fontSize="50px" fill="white" textAnchor="start">
         {splitTitleToLines({ title, maxLineLength: 40 }).map((line, index) => (
           <tspan x="17%" dy={index === 0 ? 0 : '1.2em'}>
             {line}

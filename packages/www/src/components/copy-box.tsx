@@ -16,10 +16,10 @@ export default function CopyBox({
   }
 
   return (
-    <div class="copy-box" title="Copy text">
+    <div className="copy-box" title="Copy text">
       <pre>
         <code>
-          <span class="shell">$</span> {text}
+          <span className="shell">$</span> {text}
         </code>
       </pre>
       <a aria-label={ariaLabel} href={fnToHref(copyText, text)}>

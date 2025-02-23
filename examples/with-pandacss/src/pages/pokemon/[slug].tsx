@@ -10,31 +10,31 @@ export default function PokemonPage({}, { route }: RequestContext) {
   const pokemon = pokemons.find((p) => p.slug === slug) ?? ({} as Pokemon);
 
   return (
-    <div class={base}>
-      <div class={header}>
-        <a class={''} href="/">
+    <div className={base}>
+      <div className={header}>
+        <a className={''} href="/">
           Poke
         </a>
-        <span class={css({ margin: 3 })}>{pokemon.category}</span>
+        <span className={css({ margin: 3 })}>{pokemon.category}</span>
         <span>{pokemon.name}</span>
       </div>
-      <div class={base}>
-        <div class={image}>
-          <img src={pokemon.cover} alt={pokemon.name} class="" />
+      <div className={base}>
+        <div className={image}>
+          <img src={pokemon.cover} alt={pokemon.name} className="" />
         </div>
-        <article class={base}>
-          <div class={css({ width: '3/5', margin: '4' })}>
-            <h1 class="">{pokemon.name}</h1>
-            <p class="">{pokemon.description}</p>
+        <article className={base}>
+          <div className={css({ width: '3/5', margin: '4' })}>
+            <h1 className="">{pokemon.name}</h1>
+            <p className="">{pokemon.description}</p>
           </div>
           <p>
             <Attacks attacks={pokemon.attacks} />
           </p>
         </article>
       </div>
-      <div class=""></div>
-      <h4 class="">More pokemons</h4>
-      <div class="">
+      <div className=""></div>
+      <h4 className="">More pokemons</h4>
+      <div className="">
         {pokemons
           .filter((p) => p.id !== pokemon.id)
           .map((pr) => (

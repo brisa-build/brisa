@@ -3,17 +3,17 @@ import ListInStreaming from '@/components/list-in-streaming';
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">Welcome to </span>Brisa
+          <span className="h1_addition">Welcome to </span>Brisa
         </h1>
-        <p class="edit-note">✏️ Change this list on </p>
+        <p className="edit-note">✏️ Change this list on </p>
         <code>src/components/list-in-streaming.tsx</code>
       </div>
 
-      <section class="counter-section">
+      <section className="counter-section">
         <h2>Streaming Slow List</h2>
-        <div class="counters">
+        <div className="counters">
           <ListInStreaming />
         </div>
       </section>

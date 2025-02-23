@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: JSX.Element }) {
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossorigin="true"
+          crossOrigin="true"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"

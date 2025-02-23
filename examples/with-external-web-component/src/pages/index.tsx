@@ -1,11 +1,11 @@
 export default function Homepage() {
   return (
     <>
-      <div class="hero">
+      <div className="hero">
         <h1>
-          <span class="h1_addition">Example with </span>External WC
+          <span className="h1_addition">Example with </span>External WC
         </h1>
-        <p class="edit-note">✏️ Change WC integrations on </p>
+        <p className="edit-note">✏️ Change WC integrations on </p>
         <code>src/web-components/_integrations.tsx</code>
         <section
           style={{

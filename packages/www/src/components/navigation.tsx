@@ -12,8 +12,8 @@ export default function Nav({}, { route }: RequestContext) {
     names.some((name) => route.name === name) ? 'active' : '';
 
   return (
-    <nav class="nav">
-      <div class="nav-content">
+    <nav className="nav">
+      <div className="nav-content">
         <div
           style={{
             display: 'flex',
@@ -22,7 +22,7 @@ export default function Nav({}, { route }: RequestContext) {
             gap: '20px',
           }}
         >
-          <a class="logo" href="/">
+          <a className="logo" href="/">
             <img
               src="/brisa.svg"
               alt="Brisa Framework logo"
@@ -41,24 +41,24 @@ export default function Nav({}, { route }: RequestContext) {
           <ul>
             <li>
               <a
-                class={getActiveClass('/[...doc]')}
+                className={getActiveClass('/[...doc]')}
                 href="/getting-started/quick-start"
               >
                 Docs
               </a>
             </li>
             <li>
-              <a class={getActiveClass('/playground')} href="/playground">
+              <a className={getActiveClass('/playground')} href="/playground">
                 Playground
               </a>
             </li>
             <li>
-              <a class={getActiveClass('/examples')} href="/examples">
+              <a className={getActiveClass('/examples')} href="/examples">
                 Examples
               </a>
             </li>
             <li>
-              <a class={getActiveClass('/blog', '/blog/[slug]')} href="/blog">
+              <a className={getActiveClass('/blog', '/blog/[slug]')} href="/blog">
                 Blog
               </a>
             </li>
@@ -78,12 +78,12 @@ export default function Nav({}, { route }: RequestContext) {
               </a>
             </li>
           </ul>
-          <ul class="change-theme" style={{ gap: '0.8rem' }}>
+          <ul className="change-theme" style={{ gap: '0.8rem' }}>
             <li>
               <change-theme />
             </li>
           </ul>
-          <ul class="social-media">
+          <ul className="social-media">
             <li>
               <a
                 href="https://github.com/brisa-build/brisa"

@@ -1,35 +1,35 @@
-import type { ServerWebSocket, Serve } from 'bun';
-import fs from 'node:fs';
-import crypto from 'node:crypto';
-import path from 'node:path';
-import process from 'node:process';
+import type { ServerWebSocket, Serve } from "bun";
+import fs from "node:fs";
+import crypto from "node:crypto";
+import path from "node:path";
+import process from "node:process";
 
-import { getConstants } from '@/constants';
-import type { MatchedBrisaRoute, RequestContext } from '@/types';
-import extendRequestContext from '@/utils/extend-request-context';
+import { getConstants } from "@/constants";
+import type { MatchedBrisaRoute, RequestContext } from "@/types";
+import extendRequestContext from "@/utils/extend-request-context";
 import getImportableFilepath, {
   pathToFileURLWhenNeeded,
-} from '@/utils/get-importable-filepath';
-import getRouteMatcher from '@/utils/get-route-matcher';
-import handleI18n from '@/utils/handle-i18n';
-import importFileIfExists from '@/utils/import-file-if-exists';
-import { isNotFoundError } from '@/utils/not-found';
-import redirectTrailingSlash from '@/utils/redirect-trailing-slash';
-import feedbackError from '@/utils/feedback-error';
-import responseAction from '@/utils/response-action';
-import { redirectFromUnnormalizedURL } from '@/utils/redirect';
-import responseRenderedPage from '@/utils/response-rendered-page';
-import { removeBasePathFromStringURL } from '@/utils/base-path';
-import { isNavigateThrowable } from '@/utils/navigate/utils';
-import { Initiator } from '@/public-constants';
-import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
-import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
-import getContentTypeFromPath from '@/utils/get-content-type-from-path';
-import getInitiator from '@/utils/get-initiator';
-import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
+} from "@/utils/get-importable-filepath";
+import getRouteMatcher from "@/utils/get-route-matcher";
+import handleI18n from "@/utils/handle-i18n";
+import importFileIfExists from "@/utils/import-file-if-exists";
+import { isNotFoundError } from "@/utils/not-found";
+import redirectTrailingSlash from "@/utils/redirect-trailing-slash";
+import feedbackError from "@/utils/feedback-error";
+import responseAction from "@/utils/response-action";
+import { redirectFromUnnormalizedURL } from "@/utils/redirect";
+import responseRenderedPage from "@/utils/response-rendered-page";
+import { removeBasePathFromStringURL } from "@/utils/base-path";
+import { isNavigateThrowable } from "@/utils/navigate/utils";
+import { Initiator } from "@/public-constants";
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
+import getReadableStreamFromPath from "@/utils/get-readable-stream-from-path";
+import getContentTypeFromPath from "@/utils/get-content-type-from-path";
+import getInitiator from "@/utils/get-initiator";
+import { handleSPARedirects } from "@/utils/hard-to-soft-redirect";
 import transferStoreService, {
   type RequestContent,
-} from '@/utils/transfer-store-service';
+} from "@/utils/transfer-store-service";
 
 export async function getServeOptions() {
   setUpEnvVars();
@@ -54,8 +54,8 @@ export async function getServeOptions() {
   }
 
   if (!fs.existsSync(PAGES_DIR)) {
-    const path = IS_PRODUCTION ? 'build/pages' : 'src/pages';
-    const cli = IS_PRODUCTION ? 'brisa start' : 'brisa dev';
+    const path = IS_PRODUCTION ? "build/pages" : "src/pages";
+    const cli = IS_PRODUCTION ? "brisa start" : "brisa dev";
 
     throw new Error(
       `Not exist ${path}" directory. It\'s required to run "${cli}"`,
@@ -65,15 +65,15 @@ export async function getServeOptions() {
   let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
   let rootRouter = getRouteMatcher(BUILD_DIR);
 
-  const HOT_RELOAD_TOPIC = 'hot-reload';
-  const PUBLIC_CLIENT_PAGE_SUFFIX = '/_brisa/pages/';
-  const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
+  const HOT_RELOAD_TOPIC = "hot-reload";
+  const PUBLIC_CLIENT_PAGE_SUFFIX = "/_brisa/pages/";
+  const WEBSOCKET_PATH = getImportableFilepath("websocket", BUILD_DIR);
   const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
   const route404 = pagesRouter.reservedRoutes[PAGE_404];
-  const middlewareModule = await importFileIfExists('middleware', BUILD_DIR);
+  const middlewareModule = await importFileIfExists("middleware", BUILD_DIR);
   const customMiddleware = middlewareModule?.default;
   const tls = CONFIG?.tls;
-  const basePath = CONFIG?.basePath ?? '';
+  const basePath = CONFIG?.basePath ?? "";
 
   // Options to start server
   return {
@@ -83,7 +83,7 @@ export async function getServeOptions() {
     async fetch(req: Request, server) {
       const requestId = crypto.randomUUID();
       const attachedData = wsModule?.attach
-        ? ((await wsModule.attach(req)) ?? {})
+        ? (await wsModule.attach(req)) ?? {}
         : {};
 
       if (server.upgrade(req, { data: { id: requestId, ...attachedData } })) {
@@ -99,25 +99,25 @@ export async function getServeOptions() {
       // Dev tool to open file in editor
       if (
         IS_DEVELOPMENT &&
-        url.pathname === '/__brisa_dev_file__' &&
-        req.method === 'POST'
+        url.pathname === "/__brisa_dev_file__" &&
+        req.method === "POST"
       ) {
-        if (JS_RUNTIME !== 'bun') {
+        if (JS_RUNTIME !== "bun") {
           // Note: This only happens on development, and we use
           // the Bun runtime in development. Other runtimes like
           // Node.js / Deno for now are only supported in production.
           return new Response(null, { status: 404 });
         }
 
-        let file = url.searchParams.get('file');
-        const line = url.searchParams.get('line');
-        const column = url.searchParams.get('column');
-        const brisaPages = path.sep + '_brisa' + path.sep + 'pages';
+        let file = url.searchParams.get("file");
+        const line = url.searchParams.get("line");
+        const column = url.searchParams.get("column");
+        const brisaPages = path.sep + "_brisa" + path.sep + "pages";
 
         if (file?.startsWith(brisaPages)) {
           file = path.join(
             BUILD_DIR,
-            file.replace(brisaPages, path.sep + 'pages-client'),
+            file.replace(brisaPages, path.sep + "pages-client"),
           );
         }
 
@@ -129,7 +129,7 @@ export async function getServeOptions() {
 
       if (
         // This parameter is added after "notFound" function call, during the stream
-        url.searchParams.get('_not-found') ||
+        url.searchParams.get("_not-found") ||
         // Ignore requests that are not from the basePath
         !url.pathname.startsWith(basePath)
       ) {
@@ -149,8 +149,8 @@ export async function getServeOptions() {
       if (isClientPage) {
         const clientPagePath = path.join(
           BUILD_DIR,
-          'pages-client',
-          url.pathname.replace(PUBLIC_CLIENT_PAGE_SUFFIX, ''),
+          "pages-client",
+          url.pathname.replace(PUBLIC_CLIENT_PAGE_SUFFIX, ""),
         );
         return serveAsset(clientPagePath, request);
       }
@@ -250,7 +250,7 @@ export async function getServeOptions() {
     const { route, isReservedPathname } = pagesRouter.match(req);
     const isApi = initiator === Initiator.API_REQUEST;
     const api = isApi ? rootRouter.match(req) : null;
-    const isPOST = req.method === 'POST';
+    const isPOST = req.method === "POST";
     let reqContent: RequestContent | undefined;
 
     req.initiator = initiator;
@@ -277,7 +277,7 @@ export async function getServeOptions() {
     if (!isApi && route && !isReservedPathname) {
       if (isPOST) {
         const isFormCallWithoutRPC = new URL(req.finalURL).searchParams.has(
-          '_aid',
+          "_aid",
         );
 
         if (!isFormCallWithoutRPC) {
@@ -307,24 +307,24 @@ export async function getServeOptions() {
   }
 
   function serveAsset(path: string, req: RequestContext) {
-    const encoding = req.headers.get('accept-encoding') || '';
+    const encoding = req.headers.get("accept-encoding") || "";
     const isCompressionEnable = IS_PRODUCTION && CONFIG.assetCompression;
-    let compressionFormat = '';
+    let compressionFormat = "";
 
-    if (isCompressionEnable && encoding.includes('br')) {
-      compressionFormat = 'br';
-    } else if (isCompressionEnable && encoding.includes('gzip')) {
-      compressionFormat = 'gz';
+    if (isCompressionEnable && encoding.includes("br")) {
+      compressionFormat = "br";
+    } else if (isCompressionEnable && encoding.includes("gzip")) {
+      compressionFormat = "gz";
     }
 
     const responseOptions = {
       headers: {
-        'content-type': getContentTypeFromPath(path),
-        'cache-control': CACHE_CONTROL,
+        "content-type": getContentTypeFromPath(path),
+        "cache-control": CACHE_CONTROL,
         ...(compressionFormat
           ? {
-              'content-encoding': compressionFormat === 'br' ? 'br' : 'gzip',
-              vary: 'Accept-Encoding',
+              "content-encoding": compressionFormat === "br" ? "br" : "gzip",
+              vary: "Accept-Encoding",
             }
           : {}),
       },
@@ -344,9 +344,9 @@ export async function getServeOptions() {
     }
 
     if (!route404) {
-      return new Response('Not found', {
+      return new Response("Not found", {
         status: 404,
-        headers: { 'cache-control': CACHE_CONTROL },
+        headers: { "cache-control": CACHE_CONTROL },
       });
     }
 
@@ -357,18 +357,18 @@ export async function getServeOptions() {
 }
 
 function detectAsset(url: URL, assetsDir: string) {
-  const isHome = url.pathname === '/';
+  const isHome = url.pathname === "/";
   const assetPath = path.join(assetsDir, url.pathname);
   if (isHome) return null;
   if (fs.existsSync(assetPath)) return assetPath;
-  if (fs.existsSync(assetPath + '.js')) return assetPath + '.js';
+  if (fs.existsSync(assetPath + ".js")) return assetPath + ".js";
   return null;
 }
 
 export function setUpEnvVars(
   isCLI: boolean = Boolean(
     process.argv[1]?.includes(
-      path.join('brisa', 'out', 'cli', 'serve', 'index.js'),
+      path.join("brisa", "out", "cli", "serve", "index.js"),
     ) ?? false,
   ),
 ) {
@@ -376,15 +376,15 @@ export function setUpEnvVars(
   // the Brisa environment, otherwise this is set from the CLI.
   if (!isCLI) {
     if (!process.env.__CRYPTO_KEY__) {
-      process.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString('hex');
+      process.env.__CRYPTO_KEY__ = crypto.randomBytes(32).toString("hex");
     }
     if (!process.env.__CRYPTO_IV__) {
-      process.env.__CRYPTO_IV__ = crypto.randomBytes(8).toString('hex');
+      process.env.__CRYPTO_IV__ = crypto.randomBytes(8).toString("hex");
     }
   }
   // This is necessary always to allow "prebuild" folder to be used
   if (!process.env.BRISA_BUILD_FOLDER) {
-    process.env.BRISA_BUILD_FOLDER = path.join(process.cwd(), 'build');
+    process.env.BRISA_BUILD_FOLDER = path.join(process.cwd(), "build");
   }
 }
 

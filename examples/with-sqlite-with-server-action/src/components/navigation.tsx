@@ -1,9 +1,9 @@
 export default function Nav() {
   return (
     <nav>
-      <div class="nav-content">
+      <div className="nav-content">
         <a
-          class="logo"
+          className="logo"
           href="https://brisa.build"
           target="_blank"
           rel="noreferrer"

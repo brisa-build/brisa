@@ -12,7 +12,7 @@ export default function MarkdownTabs(
 
   return (
     <>
-      <div class="tablist" role="tablist">
+      <div className="tablist" role="tablist">
         {tabLabels.map((tabLabel) => (
           <button
             id={`tab-${tabLabel}`}
@@ -20,9 +20,9 @@ export default function MarkdownTabs(
             role="tab"
             title={tabLabel}
             aria-label={tabLabel}
-            class={tabLabel === store.get(label) ? 'active' : ''}
+            className={tabLabel === store.get(label) ? 'active' : ''}
             aria-selected={tabLabel === store.get(label)}
-            tabindex={tabLabel === store.get(label) ? 0 : -1}
+            tabIndex={tabLabel === store.get(label) ? 0 : -1}
             onClick={() => {
               const currentRect = self.getBoundingClientRect();
               const currentScrollY = window.scrollY;
