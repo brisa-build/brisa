@@ -243,6 +243,17 @@ export function responseHeaders(request, { headersSnapshot, responseStatus }) {
 
 :::
 
+You can also pass the `HeadersInit` to the snapshot, to call `.append` in each new entry:
+
+```ts
+export function responseHeaders(request, { headersSnapshot, responseStatus }) {
+  return headersSnapshot({
+    "Cache-Control": "public, max-age=3600",
+    "X-Example": "This header is added from middleware"
+  });
+}
+```
+
 ## Share data between `middleware` → `responseHeaders` → `layout` → `page` → `component`
 
 You can share data between different parts of the application using the [`store`](/api-reference/components/request-context#store).

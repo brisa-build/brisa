@@ -188,6 +188,18 @@ export function responseHeaders(request, { headersSnapshot, responseStatus }) {
 }
 ```
 
+You can also pass the `HeadersInit` to the snapshot in order to call the `.append` of each entry:
+
+```ts
+export function responseHeaders(request, { headersSnapshot, responseStatus }) {
+  return headersSnapshot({
+    "Cache-Control": "public, max-age=3600",
+    "Content-Security-Policy": "script-src 'self' 'unsafe-inline';",
+    "X-Example": "This header is added from layout"
+  });
+}
+```
+
 > [!IMPORTANT]
 >
 > As in Brisa we render the server components in streaming, the headers are **ALWAYS sent before rendering the page**. It is very important to keep this in mind.
