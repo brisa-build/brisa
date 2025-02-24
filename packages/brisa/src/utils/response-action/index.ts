@@ -8,6 +8,7 @@ import { logError } from '@/utils/log/log-build';
 import { pathToFileURLWhenNeeded } from '../get-importable-filepath';
 import importFileIfExists from '../import-file-if-exists';
 import { getConstants } from '@/constants';
+import createResponseHeadersContext from '@/utils/create-response-headers-context';
 
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
 
@@ -177,12 +178,16 @@ export default async function responseAction(
   const module = req.route
     ? await import(pathToFileURLWhenNeeded(req.route.filePath))
     : {};
-  const pageResponseHeaders =
-    (await module.responseHeaders?.(req, response.status)) ?? {};
 
-  // Transfer page response headers
-  for (const [key, value] of Object.entries(pageResponseHeaders)) {
-    response.headers.set(key, value);
+  const pageResponseHeaders = await module.responseHeaders?.(
+    req,
+    createResponseHeadersContext(response.headers, response.status),
+  );
+
+  if (pageResponseHeaders) {
+    for (const [key, value] of pageResponseHeaders.entries()) {
+      response.headers.set(key, value);
+    }
   }
 
   // Reset form after use e.target.reset() in server action

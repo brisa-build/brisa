@@ -10,8 +10,8 @@ export default async function SomePage() {
   );
 }
 
-export function responseHeaders() {
-  return {
+export function responseHeaders(_, { headersSnapshot }) {
+  return headersSnapshot({
     'x-test': 'test',
-  };
+  });
 }

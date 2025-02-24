@@ -14,8 +14,11 @@ Home.suspense = () => {
   );
 };
 
-export async function responseHeaders() {
-  return {
+export async function responseHeaders(
+  _: RequestContext,
+  { headersSnapshot }: ResponseHeaders,
+) {
+  return headersSnapshot({
     'x-test': 'test',
-  };
+  });
 }

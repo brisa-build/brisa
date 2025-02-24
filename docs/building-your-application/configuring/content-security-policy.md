@@ -25,7 +25,7 @@ Every time a page is viewed, a fresh nonce should be generated. This means that 
 For example:
 
 ```ts filename="src/middleware.ts"
-import type { RequestContext } from "brisa";
+import type { RequestContext, ResponseHeaders } from "brisa";
 
 export default function middleware(request: RequestContext) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -51,10 +51,12 @@ export default function middleware(request: RequestContext) {
   );
 }
 
-export function responseHeaders(request: RequestContext) {
-  return {
-    "Content-Security-Policy": request.headers.get("Content-Security-Policy"),
-  };
+export function responseHeaders(request: RequestContext, { headersSnapshot }: ResponseHeaders) {
+  const headers = headersSnapshot();
+
+  headers.append("Content-Security-Policy", request.headers.get("Content-Security-Policy"));
+  
+  return headers;
 }
 ```
 

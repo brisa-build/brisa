@@ -15,8 +15,13 @@ Home.suspense = () => {
   });
 };
 
-export async function responseHeaders(req, status) {
-  return {
-    'x-test': status === 500 ? 'fail' : 'success',
-  };
+export async function responseHeaders(
+  req,
+  { headersSnapshot, responseStatus },
+) {
+  const headers = headersSnapshot();
+
+  headers.append('x-test', responseStatus === 500 ? 'fail' : 'success');
+
+  return headers;
 }

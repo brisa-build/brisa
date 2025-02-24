@@ -213,33 +213,37 @@ All responseHeaders will be mixed in this order:
 ==TypeScript
 
 ```ts
-import { type RequestContext } from "brisa";
+import type { RequestContext, ResponseHeaders } from "brisa";
 
 export function responseHeaders(
   request: RequestContext,
-  responseStatus: number,
+  { headersSnapshot, responseStatus }: ResponseHeaders,
 ) {
-  return {
-    "Cache-Control": "public, max-age=3600",
-    "X-Example": "This header is added from middleware",
-  };
+  const headers = headersSnapshot();
+  
+  headers.append("Cache-Control", "public, max-age=3600");
+  headers.append("X-Example", "This header is added from middleware");
+
+  return headers;
 }
 ```
 
 ==JavaScript
 
 ```js
-export function responseHeaders(request, responseStatus) {
-  return {
-    "Cache-Control": "public, max-age=3600",
-    "X-Example": "This header is added from middleware",
-  };
+export function responseHeaders(request, { headersSnapshot, responseStatus }) {
+  const headers = headersSnapshot();
+  
+  headers.append("Cache-Control", "public, max-age=3600");
+  headers.append("X-Example", "This header is added from middleware");
+  
+  return headers;
 }
 ```
 
 :::
 
-## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders`
+## Share data between `middleware` → `responseHeaders` → `layout` → `page` → `component`
 
 You can share data between different parts of the application using the [`store`](/api-reference/components/request-context#store).
 
