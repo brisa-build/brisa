@@ -352,4 +352,4 @@ export default function SomeComponent({}, { after }: RequestContext) {
 
 > [!NOTE]
 >
-> **Good to know**:  `after` is not a Dynamic API and calling it does not cause a route to become dynamic. If it's used within a static page, the callback will execute at build time.
+> **Good to know**: `after` is not a Dynamic API and calling it does not cause a route to become dynamic. If it's used within a static page, the callback will execute at build time.

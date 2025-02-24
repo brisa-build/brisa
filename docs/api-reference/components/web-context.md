@@ -218,17 +218,21 @@ css`
 You can also consume it as a signal to know if the server action is pending and to have more control inside the web component.
 
 ```tsx
-const pending = indicate('some-server-action-name');
+const pending = indicate("some-server-action-name");
 // ...
-{pending.value && <span>Pending...</span>}
+{
+  pending.value && <span>Pending...</span>;
+}
 ```
 
 Or for errors:
 
 ```tsx
-const indicator = indicate('some-server-action-name');
+const indicator = indicate("some-server-action-name");
 // ...
-{indicator.error.value && <span>Ops!...</span>}
+{
+  indicator.error.value && <span>Ops!...</span>;
+}
 ```
 
 ### Parameters:
