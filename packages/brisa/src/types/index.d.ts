@@ -970,10 +970,24 @@ export type ReactiveMap = {
 
 type Props<T extends Record<string, unknown> = Record<string, unknown>> = T;
 
-export type ResponseHeaders = (
+export type ResponseHeaders = {
+  /**
+   * Useful to get an snapshot of the current headers, modify some headers and return it.
+   *
+   * These headers are propagated between the `responseHeaders` of the middleware to the
+   * `responseHeaders` of the layout, to finally the `responseHeaders` of the page.
+   */
+  headersSnapshot: (init?: HeadersInit) => Headers;
+  /**
+   * Status of the response (200, 404, 500, etc)
+   */
+  responseStatus: number;
+};
+
+export type ResponseHeadersFunction = (
   req: RequestContext,
-  status: number,
-) => HeadersInit;
+  responseHeadersContext: ResponseHeaders,
+) => Headers;
 
 export type Primitives = symbol | string | number | boolean | undefined | null;
 
@@ -1556,7 +1570,7 @@ export type TranslateOptions = {
 
 export type PageModule = {
   default: (props: { error?: Error }) => JSX.Element;
-  responseHeaders?: (req: Request, status: number) => HeadersInit;
+  responseHeaders?: ResponseHeadersFunction;
   Head?: ComponentType;
 };
 
