@@ -976,10 +976,26 @@ export type ResponseHeaders = {
    *
    * These headers are propagated between the `responseHeaders` of the middleware to the
    * `responseHeaders` of the layout, to finally the `responseHeaders` of the page.
+   * 
+   * Example:
+   * 
+   * ```ts
+   * export function responseHeaders(request: RequestContext, { headersSnapshot }: ResponseHeaders) {
+   *  const headers = headersSnapshot();
+   *
+   *  headers.append("Content-Security-Policy", request.headers.get("Content-Security-Policy"));
+   *
+   * return headers;
+   * }
+   * ```
+   * 
+   * Docs: https://brisa.build/building-your-application/routing/pages-and-layouts##response-headers-in-layouts-and-pages
    */
   headersSnapshot: (init?: HeadersInit) => Headers;
   /**
    * Status of the response (200, 404, 500, etc)
+   * 
+   * Docs: https://brisa.build/building-your-application/routing/pages-and-layouts##response-headers-in-layouts-and-pages
    */
   responseStatus: number;
 };
