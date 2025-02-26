@@ -1,5 +1,5 @@
 // @ts-nocheck
-import type { RequestContext } from '@/types';
+import type { RequestContext, ResponseHeaders } from '@/types';
 
 export default async function Home({}, { i18n }: RequestContext) {
   return (
@@ -15,8 +15,11 @@ Home.suspense = () => {
   );
 };
 
-export async function responseHeaders(req: RequestContext, status: number) {
-  return {
-    'x-test': status === 500 ? 'fail' : 'success',
-  };
+export async function responseHeaders(
+  req: RequestContext,
+  { responseStatus, headersSnapshot }: ResponseHeaders,
+) {
+  return headersSnapshot({
+    'x-test': responseStatus === 500 ? 'fail' : 'success',
+  });
 }

@@ -157,29 +157,45 @@ All `responseHeaders` will be mixed in this order:
 ==TypeScript
 
 ```ts
-import { type RequestContext } from "brisa";
+import type { RequestContext, ResponseHeaders } from "brisa";
 
 export function responseHeaders(
   request: RequestContext,
-  responseStatus: number,
+  { headersSnapshot, responseStatus }: ResponseHeaders,
 ) {
-  return {
-    "Cache-Control": "public, max-age=3600",
-    "Content-Security-Policy": "script-src 'self' 'unsafe-inline';",
-    "X-Example": "This header is added from layout",
-  };
+  const headers = headersSnapshot();
+
+  headers.append("Cache-Control", "public, max-age=3600");
+  headers.append("Content-Security-Policy", "script-src 'self' 'unsafe-inline';");
+  headers.append("X-Example", "This header is added from layout");
+
+  return headers;
 }
 ```
 
 ==JavaScript
 
 ```js
-export function responseHeaders(request, responseStatus) {
-  return {
+export function responseHeaders(request, { headersSnapshot, responseStatus }) {
+  const headers = headersSnapshot();
+
+  headers.append("Cache-Control", "public, max-age=3600");
+  headers.append("Content-Security-Policy", "script-src 'self' 'unsafe-inline';");
+  headers.append("X-Example", "This header is added from layout");
+
+  return headers;
+}
+```
+
+You can also pass the `HeadersInit` to the snapshot in order to call the `.append` of each entry:
+
+```ts
+export function responseHeaders(request, { headersSnapshot, responseStatus }) {
+  return headersSnapshot({
     "Cache-Control": "public, max-age=3600",
     "Content-Security-Policy": "script-src 'self' 'unsafe-inline';",
-    "X-Example": "This header is added from layout",
-  };
+    "X-Example": "This header is added from layout"
+  });
 }
 ```
 
@@ -214,7 +230,7 @@ export default function AboutUsPage() {
 >
 > If you want to mash existing head fields (title, link, meta, etc) because you already have them defined in the layout, you must use the `id` attribute in both parts, and only this one will be rendered. On pages that do not overwrite it, the one in the layout will be rendered.
 
-## Share data between `middleware` → `layout` → `page` → `component` → `responseHeaders` → `Head` → `web-components`
+## Share data between `middleware` → `responseHeaders` → `layout` → `page` → `component` → `Head` → `web-components`
 
 You can share data between different parts of the application using the [`request context`](/api-reference/components/request-context).
 

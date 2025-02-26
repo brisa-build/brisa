@@ -418,7 +418,7 @@ export async function createPost(id: string) {
 You can access to the request inside the server action to read cookies from headers, then you can communicate via request store to the [`responseHeaders`](/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages) of the page:
 
 ```tsx
-import type { RequestContext } from "brisa";
+import type { RequestContext, ResponseHeaders } from "brisa";
 
 export default function Login({}, req: RequestContext) {
   return (
@@ -436,13 +436,12 @@ export default function Login({}, req: RequestContext) {
   );
 }
 
-export function responseHeaders(req: RequestContext) {
-  // Read the stored data:
-  const newCookies = req.store.get("new-cookies");
+export function responseHeaders(req: RequestContext, { headersSnapshot }: ResponseHeaders) {
+  const headers = headersSnapshot();
 
-  return {
-    "Set-Cookie": newCookies,
-  };
+  headers.append('Set-Cookies', req.store.get("new-cookies"))
+
+  return headers;
 }
 ```
 
