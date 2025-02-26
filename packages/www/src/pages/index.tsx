@@ -282,7 +282,8 @@ export default function Homepage() {
               style={{ float: 'right' }}
               className="launch-video"
               href="https://www.youtube.com/watch?v=dhHbSAsApsk"
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               <figure>
                 <img

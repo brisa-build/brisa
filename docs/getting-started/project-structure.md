@@ -10,7 +10,7 @@ This page provides an overview of the file and folder structure of a Brisa proje
 ## `src`-level folders
 
 |                                                                                  |                                             |
-| -------------------------------------------------------------------------------- | ------------------------------------------- |
+| -------------------------------------------------------------------------------- | ------------------------------------------- | --- |
 | [`pages`](/building-your-application/routing/pages-and-layouts)                  | Pages Router                                |
 | [`api`](/building-your-application/routing/api-routes)                           | Api Router                                  |
 | [`public`](/building-your-application/routing/static-assets)                     | Static assets to be served                  |
@@ -18,8 +18,8 @@ This page provides an overview of the file and folder structure of a Brisa proje
 | [`layout`](/building-your-application/routing/pages-and-layouts#layout)          | Layout / Layouts                            |
 | [`websocket`](/building-your-application/routing/websockets)                     | Websocket                                   |
 | [`i18n`](/building-your-application/routing/internationalization)                | Internationalization routing & translations |
-| [`web-components`](/building-your-application/components-details/web-components) | Client components                           |                                      |
-| [`sitemap`](/building-your-application/routing/sitemap)                    | Specify a Sitemap in an easy way                          |
+| [`web-components`](/building-your-application/components-details/web-components) | Client components                           |     |
+| [`sitemap`](/building-your-application/routing/sitemap)                          | Specify a Sitemap in an easy way            |
 
 ## Top-level files
 

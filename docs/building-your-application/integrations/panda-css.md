@@ -44,7 +44,7 @@ And then, in your package.json add the following to the `scripts` section:
 ```json
 {
   "scripts": {
-    "prepare": "panda codegen",
+    "prepare": "panda codegen"
   }
 }
 ```
@@ -52,7 +52,7 @@ And then, in your package.json add the following to the `scripts` section:
 And then, create a `.css` file and add the following code:
 
 ```css
-@layer reset, base, tokens, recipes, utilities; 
+@layer reset, base, tokens, recipes, utilities;
 ```
 
 Then import the file in `layout.tsx` file
@@ -67,9 +67,9 @@ And you are ready to use PandaCSS in your Brisa project.
 You can use PandaCSS classes in your Brisa project as you would in a regular TSX file:
 
 ```tsx
-import { css } from './styled-system/css'
- 
+import { css } from "./styled-system/css";
+
 export function App() {
-  return <div className={css({ bg: 'red.400' })} />
+  return <div className={css({ bg: "red.400" })} />;
 }
 ```

@@ -106,7 +106,7 @@ export default {
 
 It **only do SSR** in the case of **Brisa web components without any transpilation**, not in the case of native web components or transpiled Brisa web components.
 
-However, there is a solution. 
+However, there is a solution.
 
 Brisa is more than a framework, it is also a [tool to create Web Component libraries](/building-your-application/building/web-component-compiler), so all web components created with this Brisa tool can be used in any framework or VanillaJS, and apart, you can use the file with the suffix `.server.js` to do SSR of the web components. So all web components made with Brisa can be imported with this other declaration:
 
@@ -135,7 +135,7 @@ Using this declaration:
 import type { WebComponentIntegrations } from "brisa";
 
 export default {
-  "custom-element": '<library-path>',
+  "custom-element": "<library-path>",
   // Add more mappings as needed
 } satisfies WebComponentIntegrations;
 ```
@@ -161,7 +161,11 @@ And create a file with the name `<library-path>.types.d.ts` with the types of th
 Example of types for a web component:
 
 ```ts
-export default function CustomCounter({ start }: { start?: number }): JSX.Element;
+export default function CustomCounter({
+  start,
+}: {
+  start?: number;
+}): JSX.Element;
 ```
 
 > [!NOTE]
@@ -205,7 +209,7 @@ export default function BrisaElement() {
 }
 ```
 
-So then, you don't need **any transpilation** and with only this declaration: `"brisa-element": "<library-path>"`, it works for SSR and types. 
+So then, you don't need **any transpilation** and with only this declaration: `"brisa-element": "<library-path>"`, it works for SSR and types.
 
 However, you can use [transpilation](/api-reference/brisa-cli/brisa-build#web-component-build) to allow the same code to be used in any framework or VanillaJS. Doing this, it's converted to native web components, so then you need to load the `.client.js` file in the client-side and the `.server.js` file in the server-side:
 

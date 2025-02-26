@@ -14,14 +14,11 @@ Take a look at the following example of a custom server:
 import { getServeOptions, serve } from "brisa/server";
 
 const { server, port, hostname } = serve({
-  ...await getServeOptions(),
+  ...(await getServeOptions()),
   port: 3001,
 });
 
-console.log(
-  "Server ready 🥳",
-  `listening on http://${hostname}:${port}...`,
-);
+console.log("Server ready 🥳", `listening on http://${hostname}:${port}...`);
 ```
 
 If you want a custom handler, you can use the following:
@@ -81,7 +78,7 @@ By default (without custom server) is:
 
 > [!CAUTION]
 >
-> If you use a different runtime than Bun, like Node.js, you need to handle the WebSockets, HTTP/2, and other features yourself re-using the  `serveOptions`.
+> If you use a different runtime than Bun, like Node.js, you need to handle the WebSockets, HTTP/2, and other features yourself re-using the `serveOptions`.
 
 ## Node.js Custom Server
 
@@ -97,10 +94,11 @@ const server = http.createServer(handler).listen(3001);
 > [!NOTE]
 >
 > You can use the `serve` function from `brisa/server/node` for the same behavior:
+>
 > ```tsx
 > import { serve } from "brisa/server/node";
 >
-> const {server, port, hostname} = serve({ port: 3001 });
+> const { server, port, hostname } = serve({ port: 3001 });
 > ```
 
 If you want to use a custom handler, you can use the Brisa `handler` function after your custom handler:
@@ -113,15 +111,17 @@ const customHandler = (req, res) => {
   res.end("Hello World");
 };
 
-const server = http.createServer((req, res) => {
-  customHandler(req, res);
-  handler(req, res);
-}).listen(3001);
+const server = http
+  .createServer((req, res) => {
+    customHandler(req, res);
+    handler(req, res);
+  })
+  .listen(3001);
 ```
 
 > [!CAUTION]
 >
-> If you use a Custom Server you need to handle the WebSockets, HTTP/2, and other features yourself re-using the  `serveOptions`.
+> If you use a Custom Server you need to handle the WebSockets, HTTP/2, and other features yourself re-using the `serveOptions`.
 
 To use the `serveOptions` you can use the following:
 

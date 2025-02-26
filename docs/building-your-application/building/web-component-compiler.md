@@ -48,24 +48,24 @@ brisa build -w path/to/your/web-component.tsx
 Once built, you can integrate your Web Component into any HTML page or JavaScript application. Here’s an example of how to use these components in a vanilla JavaScript environment:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brisa Web Component Example</title>
-  <script type="importmap">
-    {
-      "imports": {
-        "brisa/client": "https://unpkg.com/brisa@latest/client-simplified/index.js"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brisa Web Component Example</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "brisa/client": "https://unpkg.com/brisa@latest/client-simplified/index.js"
+        }
       }
-    }
-  </script>
-  <script type="module" src="path/to/web-component.client.js"></script>
-</head>
-<body>
-  <custom-counter></custom-counter>
-</body>
+    </script>
+    <script type="module" src="path/to/web-component.client.js"></script>
+  </head>
+  <body>
+    <custom-counter></custom-counter>
+  </body>
 </html>
 ```
 
@@ -78,8 +78,8 @@ Once built, you can integrate your Web Component into any HTML page or JavaScrip
 For server-side rendering, Brisa's components integrate smoothly with other JSX frameworks. Here’s how you can render a Brisa Web Component on the server:
 
 ```jsx
-import { renderToString } from 'brisa/server';
-import CustomCounter from './path/to/web-component.server.js';
+import { renderToString } from "brisa/server";
+import CustomCounter from "./path/to/web-component.server.js";
 
 const html = await renderToString(<CustomCounter start={10} />);
 ```
@@ -87,9 +87,9 @@ const html = await renderToString(<CustomCounter start={10} />);
 If you encounter compatibility issues with the JSX runtime, Brisa offers a jsx function to help resolve these:
 
 ```jsx
-import { renderToString } from 'brisa/server';
-import { jsx } from 'brisa/jsx-runtime';
-import CustomCounter from './path/to/web-component.server.js';
+import { renderToString } from "brisa/server";
+import { jsx } from "brisa/jsx-runtime";
+import CustomCounter from "./path/to/web-component.server.js";
 
 const html = await renderToString(jsx(CustomCounter, { start: 10 }));
 ```
@@ -119,7 +119,11 @@ export default {
 When using Brisa Web Components that require TypeScript types, you can create a `.d.ts` file with the necessary type definitions. This file should be named `<library-path>.types.d.ts` and exported using an `export default` statement.
 
 ```ts
-export default function CustomCounter({ start }: { start?: number }): JSX.Element;
+export default function CustomCounter({
+  start,
+}: {
+  start?: number;
+}): JSX.Element;
 ```
 
 By following these guidelines, you can ensure that your Brisa Web Components are fully typed and compatible with TypeScript.

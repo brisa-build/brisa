@@ -105,7 +105,7 @@ export default async function PlayGround(
       .output {
         width: 100%;
       }
-     }
+    }
   `;
 
   return (

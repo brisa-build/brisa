@@ -24,7 +24,8 @@ brisa dev
 
 > [!IMPORTANT]
 >
-> **Prerequisites**: 
+> **Prerequisites**:
+>
 > 1. You need to have [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) installed.
 > 2. You need to download iOS targets and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#ios).
 

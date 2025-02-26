@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import { getConstants } from '@/constants';
 import layoutBuild from '@/utils/client-build/layout-build';
-import { getEntrypointsRouter } from '@/utils/get-entrypoints';
+import type { getEntrypointsRouter } from '@/utils/get-entrypoints';
 import getI18nClientMessages from '@/utils/get-i18n-client-messages';
 import generateDynamicTypes from '@/utils/generate-dynamic-types';
 import clientPageBuild from '@/utils/client-build/pages-build';

@@ -10,10 +10,10 @@ One option in Brisa is to integrate your app with [Panda CSS](https://panda-css.
 Then you can use in your `.tsx`:
 
 ```tsx
-import { css } from './styled-system/css'
- 
+import { css } from "./styled-system/css";
+
 export function App() {
-  return <div className={css({ bg: 'red.400' })} />
+  return <div className={css({ bg: "red.400" })} />;
 }
 ```
 

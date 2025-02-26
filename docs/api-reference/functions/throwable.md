@@ -107,7 +107,6 @@ catch (error) {
 
 - A `boolean` indicating whether the provided error is an instance of the `notFound` throwable.
 
-
 ## Types
 
 ```ts

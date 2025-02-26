@@ -13,11 +13,7 @@ To add CSS styles to an element in JSX, use the `style` attribute and pass an ob
 
 ```tsx
 const MyComponent = () => {
-  return (
-    <div style={{ backgroundColor: "red" }}>
-      Hello, world!
-    </div>
-  );
+  return <div style={{ backgroundColor: "red" }}>Hello, world!</div>;
 };
 ```
 

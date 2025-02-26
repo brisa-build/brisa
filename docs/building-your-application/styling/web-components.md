@@ -104,14 +104,13 @@ The shadow DOM is adapted to be possible to use Panda CSS in your elements.
 
 ```tsx
 import type { WebContext } from "brisa";
-import { css } from './styled-system/css'
- 
+import { css } from "./styled-system/css";
+
 export default function MyWebComponent() {
-  return <div className={css({ bg: 'red.400' })} />
+  return <div className={css({ bg: "red.400" })} />;
 }
 ```
 
 > [!NOTE]
 >
 > Read more about how to integrate Panda CSS in your Brisa project in the [Panda CSS](/building-your-application/integrations/panda-css) page.
-

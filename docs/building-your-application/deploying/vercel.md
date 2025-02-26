@@ -22,13 +22,13 @@ Then, add the adapter to your `brisa.config.ts`:
 
 ```ts
 /// file: brisa.config.ts
-import vercel from 'brisa-adapter-vercel';
+import vercel from "brisa-adapter-vercel";
 
 export default {
-  output: 'node', // or 'static'
+  output: "node", // or 'static'
   outputAdapter: vercel({
     // see below for options that can be set here
-  })
+  }),
 };
 ```
 
@@ -54,4 +54,4 @@ Vercel makes a set of [deployment-specific environment variables](https://vercel
 
 ## Skew protection
 
-[Skew protection](https://vercel.com/docs/deployments/skew-protection) is a Vercel feature that routes client requests to their original deployment. When a user visits your app, a cookie is set with the deployment ID, and any subsequent requests will be routed to that deployment for as long as skew protection is active. When they reload the page, they will get the newest deployment. 
+[Skew protection](https://vercel.com/docs/deployments/skew-protection) is a Vercel feature that routes client requests to their original deployment. When a user visits your app, a cookie is set with the deployment ID, and any subsequent requests will be routed to that deployment for as long as skew protection is active. When they reload the page, they will get the newest deployment.

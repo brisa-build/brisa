@@ -19,7 +19,9 @@ By the way, glad **Brisa** is in one of the [**conclusions** of the **state of J
 ## 🆕 New Features
 
 ### **1. Enhanced Rendering on Server Actions**
+
 The `rerenderInAction` function has been replaced with more flexible APIs:
+
 - [**`renderPage`**](/api-reference/server-apis/renderPage): Re-renders the full page.
 - [**`renderComponent`**](/api-reference/server-apis/renderComponent): Re-renders the target component or a specific component to a specific location.
 
@@ -29,12 +31,11 @@ The `rerenderInAction` function has been replaced with more flexible APIs:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/7kwT1oshUJA" title="Server-Side Dialog Management: No Browser JavaScript Required" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
 
-Apart from replacing it, as a novelty, any component can be rendered in any location. 
+Apart from replacing it, as a novelty, any component can be rendered in any location.
 
 The YouTube video demonstrates how to render and manage a modal's open/close actions using server-side functionality exclusively ([See code example](https://github.com/brisa-build/brisa/tree/canary/examples/with-ssr-modal)). Our goal is to enable the creation of a single-page application (SPA) without adding client-side code, keeping your project lightweight with just the 2KB required for the RPC communication.
 
 This feature gives much more power, besides it works with streaming, you can use an [async generator](/building-your-application/data-management/fetching#async-generators) to control better the stream chunks if you want:
-
 
 ```tsx
 import { Database } from "bun:sqlite";
@@ -56,7 +57,7 @@ export default function LoadMovies() {
       </button>
       <ul />
     </>
-  )
+  );
 }
 
 const db = new Database("db.sqlite");
@@ -107,14 +108,12 @@ import { encrypt, decrypt } from "brisa/server";
 <button
   onClick={(e) => {
     // Decrypt on the server action:
-    console.log(
-      decrypt(e.target.dataset.encrypted)
-    )
+    console.log(decrypt(e.target.dataset.encrypted));
   }}
   data-encrypted={encrypt("some sensible data")}
 >
   Click to recover sensible data on the server
-</button>
+</button>;
 ```
 
 ## 🐞 Bug Fixes
@@ -122,8 +121,6 @@ import { encrypt, decrypt } from "brisa/server";
 - **`navigate`**: Fixed navigation to the current locale.
 - **`userEvent.select` and `deselect`**: Fixed to work in new versions of Happy DOM.
 - **`build`**: Fixed transpilation of actions with nested inner function dependencies.
-
-
 
 ## 📝 What's Changed
 
@@ -151,7 +148,6 @@ import { encrypt, decrypt } from "brisa/server";
 ---
 
 **Support Us:** [Visit our shop](https://brisadotbuild.myspreadshop.es/) for Brisa swag! 🛍️
-
 
 <div align="center">
 <a href="https://brisadotbuild.myspreadshop.es/" alt="Brisa Shop" target="_blank">

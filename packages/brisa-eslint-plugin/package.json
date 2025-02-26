@@ -6,7 +6,7 @@
   "devDependencies": {
     "@types/bun": "latest",
     "@typescript-eslint/utils": "^8.24.1",
-    "typescript": "^5"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "eslint": "^9.21.0",
@@ -20,8 +20,6 @@
     "./rules": "./index.js"
   },
   "eslintConfig": {
-    "plugins": [
-      "brisa"
-    ]
+    "plugins": ["brisa"]
   }
 }

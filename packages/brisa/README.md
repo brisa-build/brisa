@@ -1,3 +1,3 @@
 # Brisa
 
-Your next JSX Web Framework. Fast, tiny and easy. 
+Your next JSX Web Framework. Fast, tiny and easy.

@@ -68,4 +68,3 @@ To upload assets to your S3 bucket, you can follow these steps:
 1. **Create an S3 bucket**: Create an S3 bucket to store your assets. You can create an S3 bucket using the AWS Management Console or the AWS CLI.
 2. **Upload assets**: Upload your assets to the S3 bucket using the AWS Management Console, the AWS CLI, or an S3 client.
 3. **Configure assets from CDN**: You need to modify the [`brisa.config.ts`](/building-your-application/configuring/brisa-config-js) to add an [`assetPrefix`](/building-your-application/configuring/asset-prefix), pointing to the CDN URL of your S3 bucket. This ensures that your Brisa application loads assets from the CDN.
-

@@ -44,7 +44,12 @@ export default function BlogContent({}, { store }: RequestContext) {
         >
           <small>
             <time dateTime={created}>{formatDate(created)}</time> by{' '}
-            <a href={author_site} title={author} target="_blank" rel="noreferrer">
+            <a
+              href={author_site}
+              title={author}
+              target="_blank"
+              rel="noreferrer"
+            >
               {author}
             </a>
           </small>

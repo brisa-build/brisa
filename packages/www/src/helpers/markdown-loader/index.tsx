@@ -116,7 +116,10 @@ export function loadMarkdownFromPath(filePath: string) {
 export function RenderCode({
   code,
   format = 'tsx',
-}: { code: string; format?: string }) {
+}: {
+  code: string;
+  format?: string;
+}) {
   return dangerHTML(md.render(`\`\`\`${format} ${code}`));
 }
 

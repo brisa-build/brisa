@@ -1,13 +1,12 @@
 #!/usr/bin/env bun
 
-
 const fs = require('node:fs');
 const path = require('node:path');
 const { version } = require('./package.json');
 const { execSync } = require('node:child_process');
 const readline = require('node:readline');
 const BRISA_VERSION = version;
-const EXAMPLES_FOLDER = path.join(import.meta.dirname, 'examples');
+const EXAMPLES_FOLDER = path.join(__dirname, 'examples');
 const isPowerShell = process.env.PSModulePath !== undefined;
 const and = isPowerShell ? ';' : ' &&';
 let PROJECT_NAME = process.argv[2];

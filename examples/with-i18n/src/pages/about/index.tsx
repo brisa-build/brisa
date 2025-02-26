@@ -14,7 +14,11 @@ export default function About({}, { i18n: { t } }: RequestContext) {
     <>
       <div className="hero">
         <h1>
-          {t('about.heading', {}, { elements: [<span className="h1_addition" />] })}
+          {t(
+            'about.heading',
+            {},
+            { elements: [<span className="h1_addition" />] },
+          )}
         </h1>
         <p className="edit-note">✏️ {t('change-page')}</p>
         <code>src/pages/about/index.tsx</code>

@@ -7,13 +7,11 @@ author_site: https://x.com/aralroca
 cover_image: /images/blog-images/release-0.2.5.webp
 ---
 
-> [!IMPORTANT]
-> **Notice**: This release includes a critical regression in Server Actions, which was promptly fixed in [v0.2.6](https://github.com/brisa-build/brisa/releases/tag/0.2.6) the following day.
+> [!IMPORTANT] > **Notice**: This release includes a critical regression in Server Actions, which was promptly fixed in [v0.2.6](https://github.com/brisa-build/brisa/releases/tag/0.2.6) the following day.
 
 **Brisa v0.2.5 is here!** 🎉
 
 This release brings critical fixes, enhanced stability, and improved performance. We've also made important updates to the diffing algorithm, middleware behavior, and build process. Let’s dive into what's new!
-
 
 ## 🐞 Bug Fixes
 
@@ -29,7 +27,6 @@ This release brings critical fixes, enhanced stability, and improved performance
 - **Bun Upgrade:** Upgraded to the latest Bun version for better stability and performance. – [@aralroca](https://github.com/aralroca) in [#736](https://github.com/brisa-build/brisa/pull/736), [#742](https://github.com/aralroca) in [#742](https://github.com/brisa-build/brisa/pull/742)
 - **Tailwind v4 Support:** Updated TailwindCSS to v4 stable, ensuring full compatibility. – [@AlbertSabate](https://github.com/AlbertSabate) in [#721](https://github.com/brisa-build/brisa/pull/721)
 - **Dependency Updates:** Various dependency upgrades to improve website performance. – [@aralroca](https://github.com/aralroca) in [#745](https://github.com/brisa-build/brisa/pull/745)
-
 
 ## 📖 Documentation Updates
 

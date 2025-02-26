@@ -19,7 +19,7 @@ import { SSRWebComponent } from "brisa/server";
 import MyComponent from "@/web-components/my-component";
 
 export function MyComponent() {
-  // It's the same than: <my-component someProp="foo" /> 
+  // It's the same than: <my-component someProp="foo" />
   // but without compilation process:
   return (
     <SSRWebComponent
@@ -43,7 +43,10 @@ export function MyComponent() {
 
 ```tsx
 export function SSRWebComponent<T>(
-  props: T & { 'ssr-selector': string, 'ssr-Component': ComponentType<T>, children?: JSX.Element },
+  props: T & {
+    "ssr-selector": string;
+    "ssr-Component": ComponentType<T>;
+    children?: JSX.Element;
+  },
 ): JSX.Element;
 ```
-

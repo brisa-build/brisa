@@ -1,11 +1,11 @@
 ---
 description: Learn how to deploy your Brisa app to production
 prev:
-  text: 'iOS App'
-  link: '/building-your-application/building/ios-app'
+  text: "iOS App"
+  link: "/building-your-application/building/ios-app"
 next:
-  text: 'Fly.io'
-  link: '/building-your-application/deploying/fly-io'
+  text: "Fly.io"
+  link: "/building-your-application/deploying/fly-io"
 ---
 
 # Deploying
@@ -14,7 +14,7 @@ Congratulations, it's time to ship to production.
 
 In this section, you will learn how to deploy your Brisa application to production. Choose your hosting provider and follow the instructions to deploy your application.
 
-## Static Site App / Web Service App with Docker 
+## Static Site App / Web Service App with Docker
 
 **_Bun runtime compatible_**
 
@@ -22,13 +22,13 @@ In this section, you will learn how to deploy your Brisa application to producti
 - [Deploy Brisa app to **AWS**](/building-your-application/deploying/aws)
 - [Deploy Brisa app to **Render.com**](/building-your-application/deploying/render-com)
 
-## Static Site App / Web Service App with Adapters 
+## Static Site App / Web Service App with Adapters
 
 **_Non-Bun runtime compatible_**
 
 - [Deploy Brisa app to **Vercel**](/building-your-application/deploying/vercel)
-- *Netlify* - Coming soon
-- *Cloudflare Pages* - Coming soon
+- _Netlify_ - Coming soon
+- _Cloudflare Pages_ - Coming soon
 
 ## Custom Adapters
 

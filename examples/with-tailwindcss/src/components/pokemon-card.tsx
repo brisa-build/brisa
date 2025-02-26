@@ -13,7 +13,9 @@ export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
         </div>
         <div className="p-6">
           <h3 className="font-semibold truncate">{pokemon.name}</h3>
-          <p className="text-gray-600 text-sm truncate">{pokemon.description}</p>
+          <p className="text-gray-600 text-sm truncate">
+            {pokemon.description}
+          </p>
         </div>
       </article>
     </a>

@@ -16,7 +16,7 @@ export default async function clientPageBuild(
 
   log(LOG_PREFIX.WAIT, 'analyzing and preparing client build...');
 
-  let clientBuildDetails = await getClientBuildDetails(pages, options);
+  const clientBuildDetails = await getClientBuildDetails(pages, options);
 
   const entrypointsData = clientBuildDetails.filter((p) => p.entrypoint);
   const entrypoints = entrypointsData.map((p) => p.entrypoint!);

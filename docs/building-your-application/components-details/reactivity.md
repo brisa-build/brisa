@@ -235,7 +235,7 @@ And modifying the value on server actions, is reflected in a reactive way on the
 
 ## Can I use a `state` / `store` value inside an effect without subscribing?
 
-Yes, you can use a `state` / `stor`e value inside an effect without subscribing. 
+Yes, you can use a `state` / `stor`e value inside an effect without subscribing.
 
 For the `state`, you have the [`.peek()`](/building-your-application/components-details/web-components#peek) method to get the current value without subscribing:
 

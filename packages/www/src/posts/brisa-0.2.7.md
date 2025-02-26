@@ -41,11 +41,9 @@ In this example, the `count` state will be updated only when the `addition` stat
 - **New Example:** Added a **WebSocket chat example** to showcase real-time communication. – [@aralroca](https://github.com/aralroca) in [#755](https://github.com/brisa-build/brisa/pull/755)
 - **Docs Fixes:** Fixed minor variable issues and improved consistency. – [@aralroca](https://github.com/aralroca) in [#759](https://github.com/brisa-build/brisa/pull/759)
 
-
 ## 🔄 Maintenance
 
 - **Dependency Upgrades:** Updated dependencies for better stability and performance. – [@aralroca](https://github.com/aralroca) in [#754](https://github.com/brisa-build/brisa/pull/754)
-
 
 ## **Full Changelog**
 

@@ -11,9 +11,15 @@ export default function Counter(
       <div className="counter-container">
         {/* This is the only translation that is taken to the client */}
         <h2>{i18n.t('home.client-counter')}</h2>
-        <button className="increment-button" onClick={() => count.value++}></button>
+        <button
+          className="increment-button"
+          onClick={() => count.value++}
+        ></button>
         <div className="counter-value">{count.value}</div>
-        <button className="decrement-button" onClick={() => count.value--}></button>
+        <button
+          className="decrement-button"
+          onClick={() => count.value--}
+        ></button>
       </div>
     </div>
   );

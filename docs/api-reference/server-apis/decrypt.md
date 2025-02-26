@@ -21,14 +21,12 @@ import { encrypt, decrypt } from "brisa/server";
 <button
   onClick={(e: Event) => {
     // Decrypt on the server action:
-    console.log(
-      decrypt((e.target as HTMLButtonElement).dataset.encrypted!)
-    )
+    console.log(decrypt((e.target as HTMLButtonElement).dataset.encrypted!));
   }}
   data-encrypted={encrypt("some sensible data")}
 >
   Click to recover sensible data on the server
-</button>
+</button>;
 ```
 
 In this example, the [`encrypt`](/api-reference/server-apis/encrypt) function secures the data before it is stored in a `data-encrypted` attribute. The `decrypt` function is then used on the server to recover the original value.

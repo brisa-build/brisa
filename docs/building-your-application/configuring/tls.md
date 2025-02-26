@@ -105,7 +105,7 @@ Theses fields are passed directly to the `https.createServer` method, so you can
 
 Example:
 
-```ts 
+```ts
 import { readFileSync } from "node:fs";
 
 export default {

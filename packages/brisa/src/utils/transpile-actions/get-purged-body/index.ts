@@ -1,8 +1,8 @@
-import type { ESTree } from "meriyah";
-import type { ActionInfo } from "@/utils/transpile-actions/get-actions-info";
-import removeAllReturns from "@/utils/ast/remove-all-returns";
-import containsIdentifiers from "@/utils/ast/contains-identifiers";
-import getVarDeclarationIdentifiers from "@/utils/ast/get-var-declaration-identifiers";
+import type { ESTree } from 'meriyah';
+import type { ActionInfo } from '@/utils/transpile-actions/get-actions-info';
+import removeAllReturns from '@/utils/ast/remove-all-returns';
+import containsIdentifiers from '@/utils/ast/contains-identifiers';
+import getVarDeclarationIdentifiers from '@/utils/ast/get-var-declaration-identifiers';
 
 /**
  * This process of purging the body is necessary to remove all the code
@@ -13,7 +13,7 @@ import getVarDeclarationIdentifiers from "@/utils/ast/get-var-declaration-identi
  * rest of the code is purged.
  */
 export function getPurgedBody(info: ActionInfo): ESTree.BlockStatement {
-  const defaultBody = { type: "BlockStatement", body: [] };
+  const defaultBody = { type: 'BlockStatement', body: [] };
   const body = (info.componentFnExpression?.body ??
     defaultBody) as ESTree.BlockStatement;
   const paramsIdentifiers = getParamsIdentifiers(
@@ -80,11 +80,11 @@ export function getAllFunctionIdentifiers(
   if (!node) return identifiers;
 
   JSON.stringify(fnNode, (k, v) => {
-    if (v?.type === "Identifier") {
+    if (v?.type === 'Identifier') {
       identifiers.add(v.name);
     }
 
-    if (v?.type === "CallExpression") {
+    if (v?.type === 'CallExpression') {
       callExpressions.add(v.callee.name);
       identifiers.add(v.callee.name);
     }
@@ -96,7 +96,7 @@ export function getAllFunctionIdentifiers(
     JSON.stringify(node, (k, v) => {
       // This helper is used for (non-arrow) functions
       // (they are already transformed from arrow to function)
-      if (v?.type === "FunctionDeclaration" && callExpressions.has(v.id.name)) {
+      if (v?.type === 'FunctionDeclaration' && callExpressions.has(v.id.name)) {
         identifiers = identifiers.union(getAllFunctionIdentifiers(node, v));
         return null;
       }
@@ -113,10 +113,10 @@ function getParamsIdentifiers(params: any) {
 
   JSON.stringify(params, function (k, v) {
     if (
-      v?.type === "Identifier" &&
-      v.name !== "undefined" &&
+      v?.type === 'Identifier' &&
+      v.name !== 'undefined' &&
       !(
-        this.type === "Property" &&
+        this.type === 'Property' &&
         this.key === v &&
         this.value?.properties?.length > 0
       )

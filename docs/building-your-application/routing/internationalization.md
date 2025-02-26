@@ -200,11 +200,9 @@ export default function Home({ name }, requestContext) {
 
 In `src/i18n`:
 
-
 :::tabs key:file
 
 ==TypeScript
-
 
 ```ts
 import { I18nConfig } from "brisa";
@@ -219,7 +217,6 @@ export default {
 ```
 
 ==src/i18n/messages/en.json
-
 
 ```json filename="src/i18n/messages/en.json" switcher
 {
@@ -689,11 +686,11 @@ Returns:
 >
 > ```ts
 > function format(value: number, format: string, lang: string) {
->   if (typeof window !== 'undefined') {
+>   if (typeof window !== "undefined") {
 >     if (format === "uppercase") return value.toUpperCase();
 >     return value;
 >   }
->   
+>
 >   // Only runs on the server
 >   return serverFormat(value, format, lang);
 > }
@@ -931,6 +928,7 @@ const i18nConfig = {
 
 export default i18nConfig;
 ```
+
 :::
 
 Now `t('hello')` returns `"hello"` instead of an empty string `""`.
@@ -964,7 +962,7 @@ It will automatically be taken into account in redirects, navigation and the `hr
 > [!IMPORTANT]
 >
 > Brisa automatically corrects links in the HTML of Server Components to solve these page translations, this means that you can use `/about-us` in the `href` of the `a` tag and it will be automatically corrected to `/es/sobre-nosotros` if the user is in the `es` locale.
-However, this automatic correction **does not apply to Web Components** by default, you have to activate it via [configuration](#activate-page-pathname-translation-in-web-components).
+> However, this automatic correction **does not apply to Web Components** by default, you have to activate it via [configuration](#activate-page-pathname-translation-in-web-components).
 
 ### Activate page pathname translation in Web Components
 
@@ -1015,13 +1013,11 @@ export default {
 > Changing the page's language setting (`locale`) won’t automatically update the `href` links that have already been rendered, as these links don’t react to `locale` changes. To properly change the language, you have two options:
 >
 > 1. **Use `renderMode="native"`**: This method ensures that the page is rendered in the new language, updating all the content including the links. For more details, refer to the [Native Rendering](/building-your-application/routing/linking-and-navigating#navigation-in-native-way) documentation.
->
 > 2. **Update the `key` Attribute**: If you update the `key` attribute of the web component, it will force the component to be recreated with the new language setting. For more information on how to use the `key` attribute, see the [Key Property](/building-your-application/components-details/web-components#key-property) documentation.
 
 > [!CAUTION]
 >
 > Activating this feature is going to **increase the client bundle size** because it needs to include the page translations and the logic to correct the links (_~630 bytes_).
-
 
 ### Types:
 
@@ -1048,7 +1044,7 @@ The fact of not adding the locale Brisa takes care of transforming the link:
 ==TypeScript
 
 ```tsx
-import type { RequestContext } from 'brisa';
+import type { RequestContext } from "brisa";
 
 function MyComponent({}, { i18n: { t } }: RequestContext) {
   return <a href="/about-us">{t("about-us")}</a>;

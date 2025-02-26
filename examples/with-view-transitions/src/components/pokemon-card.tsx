@@ -2,7 +2,11 @@ import type { Pokemon } from '@/data';
 
 export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
   return (
-    <a href={`/pokemon/${pokemon.slug}`} renderMode="transition" className="block">
+    <a
+      href={`/pokemon/${pokemon.slug}`}
+      renderMode="transition"
+      className="block"
+    >
       <article className="group bg-flex flex-col sm:w-64 w-1/4 bg-white shadow-sm rounded-lg overflow-hidden hover:shadow-xl hover:shadow-gray-100 transition-all">
         <div className="sm:w-64 w-1/4 overflow-hidden">
           <img

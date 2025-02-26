@@ -24,6 +24,7 @@ To create the `sitemap.xml` file during the build process, you can create this f
 > ```sh
 > Sitemap: https://example.com/sitemap.xml
 > ```
+>
 > **Note:** Replace `https://example.com` with your domain.
 
 ## Example of `src/sitemap.ts`
@@ -31,19 +32,21 @@ To create the `sitemap.xml` file during the build process, you can create this f
 ```ts
 import type { Sitemap } from "brisa";
 
-export default [{
-  loc: "https://example.com",
-  lastmod: "2021-10-01T00:00:00.000Z",
-  changefreq: "daily",
-  priority: 1.0,
-  images: [
-    {
-      loc: "https://example.com/image.jpg",
-      title: "Image title",
-      caption: "Image caption",
-    },
-  ],
-}] as Sitemap;
+export default [
+  {
+    loc: "https://example.com",
+    lastmod: "2021-10-01T00:00:00.000Z",
+    changefreq: "daily",
+    priority: 1.0,
+    images: [
+      {
+        loc: "https://example.com/image.jpg",
+        title: "Image title",
+        caption: "Image caption",
+      },
+    ],
+  },
+] as Sitemap;
 ```
 
 The generated `sitemap.xml` will be:
@@ -76,8 +79,8 @@ import path from "node:path";
 import type { Sitemap } from "brisa";
 import { fileSystemRouter } from "brisa/server";
 
-const { routes } = fileSystemRouter({ dir: 
-  path.join(import.meta.dirname, "pages") 
+const { routes } = fileSystemRouter({
+  dir: path.join(import.meta.dirname, "pages"),
 });
 
 console.log(routes);
@@ -100,15 +103,17 @@ import path from "node:path";
 import type { Sitemap } from "brisa";
 import { fileSystemRouter } from "brisa/server";
 
-const { routes } = fileSystemRouter({ 
-  dir: path.join(import.meta.dirname, "pages") 
+const { routes } = fileSystemRouter({
+  dir: path.join(import.meta.dirname, "pages"),
 });
 
 async function sitemap(): Promise<Sitemap> {
-  return Promise.all(routes.map(async ([pathname, filePath]) => ({
-    loc: `https://example.com${pathname}`,
-    ...((await import(filePath)).sitemap ?? {}),
-  })));
+  return Promise.all(
+    routes.map(async ([pathname, filePath]) => ({
+      loc: `https://example.com${pathname}`,
+      ...((await import(filePath)).sitemap ?? {}),
+    })),
+  );
 }
 
 export default sitemap();
@@ -136,28 +141,29 @@ export const sitemap = {
 In the case that your dynamic pages are linked to `.md` files, for example `/blog/[slug].tsx` that is linked to the content of `src/posts/*.md`, you can use the `fileSystemRouter` to point directly to `posts` and change the extension:
 
 ```ts
-import type { Sitemap } from 'brisa';
-import path from 'node:path';
-import { fileSystemRouter } from 'brisa/server';
+import type { Sitemap } from "brisa";
+import path from "node:path";
+import { fileSystemRouter } from "brisa/server";
 
-const origin = 'https://example.com';
+const origin = "https://example.com";
 
-const pagesDir = path.join(import.meta.dirname, 'pages');
-const postsDir = path.join(import.meta.dirname, 'posts');
+const pagesDir = path.join(import.meta.dirname, "pages");
+const postsDir = path.join(import.meta.dirname, "posts");
 
 const pages = fileSystemRouter({ dir: pagesDir });
 const posts = fileSystemRouter({
-	dir: postsDir,
-	// Change the extension to .md
-	fileExtensions: ['.md'],
+  dir: postsDir,
+  // Change the extension to .md
+  fileExtensions: [".md"],
 });
 
 const staticPages = pages.routes
-	.filter(([pathname]) => pathname !== '/blog/[slug]')
-	.map(([pathname]) => ({	loc: origin + pathname }))
+  .filter(([pathname]) => pathname !== "/blog/[slug]")
+  .map(([pathname]) => ({ loc: origin + pathname }));
 
-const dynamicPages = posts.routes
-	.map(([pathname]) => ({ loc: origin + '/blog' + pathname }));
+const dynamicPages = posts.routes.map(([pathname]) => ({
+  loc: origin + "/blog" + pathname,
+}));
 
 export default [...staticPages, ...dynamicPages] satisfies Sitemap;
 ```
@@ -171,13 +177,13 @@ type SitemapItem = {
   loc: string;
   lastmod?: string;
   changefreq?:
-    | 'always'
-    | 'hourly'
-    | 'daily'
-    | 'weekly'
-    | 'monthly'
-    | 'yearly'
-    | 'never';
+    | "always"
+    | "hourly"
+    | "daily"
+    | "weekly"
+    | "monthly"
+    | "yearly"
+    | "never";
   priority?: number;
   images?: {
     loc: string;
@@ -197,8 +203,8 @@ type SitemapItem = {
     publication_date?: string;
     family_friendly?: string;
     tag?: string;
-    live?: 'yes' | 'no';
-    requires_subscription?: 'yes' | 'no';
+    live?: "yes" | "no";
+    requires_subscription?: "yes" | "no";
     restriction?: string;
     platform?: string;
     uploader?: string;

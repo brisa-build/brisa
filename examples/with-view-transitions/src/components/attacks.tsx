@@ -1,17 +1,14 @@
 import type { Pokemon } from '@/data';
 
-export default function Attacks({
-  attacks,
-}: {
-  attacks: Pokemon['attacks'];
-}) {
+export default function Attacks({ attacks }: { attacks: Pokemon['attacks'] }) {
   return (
     <div>
       <h4 className="font-bold text-lg pb-6">Attacks</h4>
       <ul>
         {attacks?.map((attack) => (
           <li>
-            <span className="font-semibold">{attack.name}</span> - {attack.power}
+            <span className="font-semibold">{attack.name}</span> -{' '}
+            {attack.power}
           </li>
         ))}
       </ul>

@@ -1,21 +1,21 @@
-import type { WebContext } from "brisa";
+import type { WebContext } from 'brisa';
 
-const isBrowser = typeof window !== "undefined";
+const isBrowser = typeof window !== 'undefined';
 
 export default function ChangeTheme({}, { state, css }: WebContext) {
   const isDark = state(
-    isBrowser ? document.body.classList.contains("dark") : false,
+    isBrowser ? document.body.classList.contains('dark') : false,
   );
 
   function changeColor() {
-    const theme = isDark.value ? "light" : "dark";
-    localStorage.setItem("theme", theme);
-    document.body.classList.remove("dark");
-    document.body.classList.remove("light");
+    const theme = isDark.value ? 'light' : 'dark';
+    localStorage.setItem('theme', theme);
+    document.body.classList.remove('dark');
+    document.body.classList.remove('light');
     document.body.classList.add(theme);
-    if ("changeTheme" in window) {
+    if ('changeTheme' in window) {
       // @ts-expect-error
-      window.changeTheme(theme === "dark" ? "vs-dark" : "vs-light");
+      window.changeTheme(theme === 'dark' ? 'vs-dark' : 'vs-light');
     }
     isDark.value = !isDark.value;
   }
@@ -46,7 +46,7 @@ export default function ChangeTheme({}, { state, css }: WebContext) {
     <button
       aria-label="Change theme"
       onClick={() => {
-        "startViewTransition" in document
+        'startViewTransition' in document
           ? // @ts-expect-error
             document.startViewTransition(changeColor)
           : changeColor();

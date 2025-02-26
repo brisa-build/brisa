@@ -24,9 +24,10 @@ brisa dev
 
 > [!IMPORTANT]
 >
-> **Prerequisits**: 
+> **Prerequisits**:
+>
 > 1. You need to have [`cargo`](https://doc.rust-lang.org/cargo/getting-started/installation.html) installed.
-> 2. You need to download [Android Studio](https://developer.android.com/studio) and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#android). 
+> 2. You need to download [Android Studio](https://developer.android.com/studio) and follow these [steps from Tauri documentation](https://tauri.app/guides/prerequisites/#android).
 
 Executing this command launches a android app, integrating your web application. The development environment supports hot-reloading, mirroring the behavior of a browser. Notably, the integration creates a `src-tauri` folder, representing the fusion of Brisa with Tauri.
 

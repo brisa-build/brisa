@@ -11,7 +11,7 @@ Open the `brisa.config.ts` file and add the `assetPrefix` configuration:
 ```ts filename="brisa.config.ts"
 import type { Configuration } from "brisa";
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === "production";
 
 export default {
   assetPrefix: isProd ? "https://your-cdn-url.com" : undefined,

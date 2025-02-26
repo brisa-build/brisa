@@ -10,9 +10,15 @@ export default function Counter(
     <div className="counter">
       <div className="counter-container">
         <h2>Client counter</h2>
-        <button className="increment-button" onClick={() => count.value++}></button>
+        <button
+          className="increment-button"
+          onClick={() => count.value++}
+        ></button>
         <div className="counter-value">{count.value}</div>
-        <button className="decrement-button" onClick={() => count.value--}></button>
+        <button
+          className="decrement-button"
+          onClick={() => count.value--}
+        ></button>
       </div>
     </div>
   );

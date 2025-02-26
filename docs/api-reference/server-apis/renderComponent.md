@@ -19,7 +19,7 @@ export default function MyComponent({ text = "foo" }: { text: string }) {
     renderComponent();
 
     // Trigger a component rerender with new props
-    renderComponent({ element: <MyComponent text="bar" />});
+    renderComponent({ element: <MyComponent text="bar" /> });
 
     // Render a specific component on target location
     renderComponent({
@@ -52,7 +52,7 @@ function renderComponent<PropsType>(
 type RenderComponentProps = {
   element?: JSX.Element;
   target?: string;
-  placement?: 'replace' | 'before' | 'after' | 'append' | 'prepend';
+  placement?: "replace" | "before" | "after" | "append" | "prepend";
   withTransition?: boolean;
 };
 ```
@@ -74,7 +74,7 @@ type RenderComponentProps = {
 
 > [!TIP]
 >
-> Updating [`Action Signals`](/building-your-application/data-management/server-actions#action-signals) by default is going to use a `renderComponent`  without you having to specify it. If you specify it, it will fulfill only the `renderComponent` you specify.
+> Updating [`Action Signals`](/building-your-application/data-management/server-actions#action-signals) by default is going to use a `renderComponent` without you having to specify it. If you specify it, it will fulfill only the `renderComponent` you specify.
 
 ### Support
 

@@ -23,11 +23,11 @@
   html {
     @apply antialiased scroll-smooth break-words;
   }
-  
+
   body {
     background-color: theme("colors.gray.50");
   }
-  
+
   .animate-in {
     animation: animate-in 0.5s ease-in-out;
   }
@@ -36,16 +36,16 @@
     scrollbar-width: auto;
     scrollbar-color: #c7c7c7 #ededed;
   }
-  
+
   /* Chrome, Edge, and Safari */
   *::-webkit-scrollbar {
     width: 15px;
   }
-  
+
   *::-webkit-scrollbar-track {
     background: #ededed;
   }
-  
+
   *::-webkit-scrollbar-thumb {
     background-color: #c7c7c7;
     border-radius: 5px;

@@ -53,7 +53,7 @@ import { RequestContext } from "brisa";
 
 export default function Layout(
   { children }: { children: JSX.Element },
-  { route }: RequestContext
+  { route }: RequestContext,
 ) {
   return (
     <html>
@@ -74,7 +74,6 @@ All the components of Brisa (pages and layouts included), apart from the props, 
 > [!NOTE]
 >
 > Once you have defined the layout, you don't have to import it into your pages, it will automatically be applied to all pages. To apply different layouts to different pages, take a look at [multi-layouts](#example-of-multi-layouts).
-
 
 ### Example of multi-layouts
 
@@ -106,7 +105,7 @@ import { RequestContext } from "brisa";
 
 export default async function Layout(
   { children }: { children: JSX.Element },
-  { route }: RequestContext
+  { route }: RequestContext,
 ) {
   const data = await fetch(/* data url */).then((r) => r.json());
 
@@ -269,7 +268,7 @@ export default async function Layout({}, request: RequestContext) {
 
   request.store.set("data", data);
 
-  // Transfer "data" from store to client  
+  // Transfer "data" from store to client
   // You extend the life of the store from request-time:
   //  render (server) → 💀
   // to:

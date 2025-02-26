@@ -213,14 +213,14 @@ Example:
 ```tsx 4,7
 import type { WebContext } from "brisa";
 
-export default function SomeDynamicInput({ }, { self }: WebContext) {
+export default function SomeDynamicInput({}, { self }: WebContext) {
   const internals = self.attachInternals();
 
   function onInput(e) {
     internals.setFormValue(e.target.value);
   }
 
-  return <input type="text" onInput={onInput} />
+  return <input type="text" onInput={onInput} />;
 }
 ```
 
@@ -235,7 +235,7 @@ Think when you are using `self.attachInternals()` you are extending a default [E
 ```tsx 13-14
 import type { WebContext } from "brisa";
 
-export default function WebComponent({ }, { self }: WebContext) {
+export default function WebComponent({}, { self }: WebContext) {
   const internals = self.attachInternals();
 
   return (
@@ -246,7 +246,7 @@ export default function WebComponent({ }, { self }: WebContext) {
         const input = e.currentTarget;
         // Updates the validation of the internal element (input)
         internals.setValidity(input.validity, input.validationMessage);
-        console.log('isValid', internals.checkValidity());
+        console.log("isValid", internals.checkValidity());
       }}
     />
   );
@@ -266,11 +266,13 @@ Example of usage on a Server Component:
 ```tsx 12
 export default function Page() {
   return (
-    <form onSubmit={(e) => {
-      console.log("Username:", e,formData.get("username"));
-      // The dynamic field is included in the FormData
-      console.log("Dynamic:", e.formData.get("dynamic"));
-    }}>
+    <form
+      onSubmit={(e) => {
+        console.log("Username:", e, formData.get("username"));
+        // The dynamic field is included in the FormData
+        console.log("Dynamic:", e.formData.get("dynamic"));
+      }}
+    >
       <label>
         Username:
         <input type="text" name="username" />

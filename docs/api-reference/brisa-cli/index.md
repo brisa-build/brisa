@@ -1,11 +1,11 @@
 ---
 description: The Brisa CLI allows you to develop, build, start your application, and more.
-next: 
-    text: 'brisa dev'
-    link: '/api-reference/brisa-cli/brisa-dev'
-prev: 
-    text: 'fileSystemRouter'
-    link: '/api-reference/server-apis/fileSystemRouter'
+next:
+  text: "brisa dev"
+  link: "/api-reference/brisa-cli/brisa-dev"
+prev:
+  text: "fileSystemRouter"
+  link: "/api-reference/server-apis/fileSystemRouter"
 ---
 
 # Brisa CLI
@@ -29,7 +29,7 @@ Commands:
  build         Build for production
  start         Start production server
  add           Add integrations (e.g., mdx, tailwindcss, pandacss)
- ```
+```
 
 # Commands
 
@@ -37,4 +37,3 @@ Commands:
 - [Building (`brisa build`)](/api-reference/brisa-cli/brisa-build)
 - [Starting (`brisa start`)](/api-reference/brisa-cli/brisa-start)
 - [Adding integrations (`brisa add`)](/api-reference/brisa-cli/brisa-add)
-

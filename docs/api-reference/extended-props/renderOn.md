@@ -33,9 +33,9 @@ Imagine we have this component that makes an external request for static resourc
 
 ```tsx
 export default async function SomeComponent() {
-   const res = await fetch(/* some external service */);
+  const res = await fetch(/* some external service */);
 
-   return <div>Result: {await res.json()}</div>
+  return <div>Result: {await res.json()}</div>;
 }
 ```
 
@@ -48,7 +48,7 @@ return <SomeComponent renderOn="build" />;
 Then, it will be automatically transformed at build-time to a `return` similar to this:
 
 ```tsx
-return dangerHTML('<div>Result: foo</div>')
+return dangerHTML("<div>Result: foo</div>");
 ```
 
 You can also use it in Web Components, for example:
@@ -60,7 +60,9 @@ return <web-component renderOn="build" />;
 And it will be transformed to:
 
 ```tsx
-return dangerHTML('<web-component><template shadowroot="open">Result: foo</template></web-component>')
+return dangerHTML(
+  '<web-component><template shadowroot="open">Result: foo</template></web-component>',
+);
 ```
 
 > [!CAUTION]
@@ -74,7 +76,6 @@ return dangerHTML('<web-component><template shadowroot="open">Result: foo</templ
 > [!NOTE]
 >
 > The attribute in the web components is stripped and will not be visible in the DOM.
-
 
 ### Support
 

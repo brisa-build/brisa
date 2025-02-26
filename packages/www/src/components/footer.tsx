@@ -61,7 +61,8 @@ export default function Footer() {
               <a
                 title="Shop"
                 target="_blank"
-                href="https://brisadotbuild.myspreadshop.es/" rel="noreferrer"
+                href="https://brisadotbuild.myspreadshop.es/"
+                rel="noreferrer"
               >
                 Visit our Shop
               </a>

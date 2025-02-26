@@ -58,7 +58,10 @@ export default function Nav({}, { route }: RequestContext) {
               </a>
             </li>
             <li>
-              <a className={getActiveClass('/blog', '/blog/[slug]')} href="/blog">
+              <a
+                className={getActiveClass('/blog', '/blog/[slug]')}
+                href="/blog"
+              >
                 Blog
               </a>
             </li>

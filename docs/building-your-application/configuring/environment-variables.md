@@ -45,7 +45,7 @@ Using [API Routes](/building-your-application/routing/api-routes):
 
 **src/api/hello.ts**:
 
-```ts 
+```ts
 import { type RequestContext } from "brisa";
 
 export function GET(request: RequestContext) {
@@ -86,6 +86,7 @@ This will tell Brisa to replace all references to `process.env.BRISA_PUBLIC_ANAL
 > After being built, your app will no longer respond to changes to these environment variables. For instance, if you build and deploy a single Docker image to multiple environments, all `BRISA_PUBLIC_` variables will be frozen with the value evaluated at build time, so these values need to be set appropriately when the project is built. If you need access to runtime environment values, you'll have to setup your own API to provide them to the client (either on demand or during initialization).
 
 **src/web-components/web-component.tsx**:
+
 ```tsx
 import { type WebContext } from "brisa";
 import setupAnalyticsService from "@/lib/my-analytics-service";
@@ -177,7 +178,7 @@ Environment variables are automatically _expanded_. This means you can reference
 
 **.env**:
 
-```sh 
+```sh
 FOO=world
 BAR=hello$FOO
 ```

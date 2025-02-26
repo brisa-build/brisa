@@ -14,7 +14,6 @@ The `external` configuration property in `brisa.config.ts` allows you to define 
 
 In the next example, we are importing the `lightningcss` library as an external dependency. This means that the library will not be included in the final bundle, but will be resolved at runtime.
 
-
 ```ts 4
 import type { Configuration } from "brisa";
 

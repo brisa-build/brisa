@@ -51,7 +51,7 @@ brisa add tailwindcss
 The Panda CSS integration allows you to use Panda CSS in your project. To add the Panda CSS integration to your project, run the following command inside your project directory:
 
 ```sh
-brisa add pandacss 
+brisa add pandacss
 ```
 
 > [!NOTE]

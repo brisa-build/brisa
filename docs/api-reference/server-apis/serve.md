@@ -30,10 +30,7 @@ const { server, port, hostname } = serve({
   port: 3001,
 });
 
-console.log(
-  "Server ready 🥳",
-  `listening on http://${hostname}:${port}...`,
-);
+console.log("Server ready 🥳", `listening on http://${hostname}:${port}...`);
 ```
 
 > [!CAUTION]

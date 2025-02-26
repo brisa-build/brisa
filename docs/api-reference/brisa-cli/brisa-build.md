@@ -10,15 +10,15 @@ description: The Brisa CLI to build.
 [ info ]   Route                           | JS server | JS client (gz)
 [ info ]   ---------------------------------------------------------------
 [ info ]   λ /pages/index                  | 41 kB     | 12 kB
-[ info ]   λ /pages/about-us               | 1 kB      | 7 kB 
-[ info ]   λ /pages/user/[username]        | 244 B     | 2 kB 
-[ info ]   λ /api/user/[username]          | 105 B     |               
-[ info ]   ƒ /middleware                   | 401 B     |               
-[ info ]   Δ /layout/index                 | 759 B     |               
-[ info ]   Ω /i18n                         | 737 B     |               
-[ info ]   Ψ /websocket                    | 8 B       |               
-[ info ]   Θ /web-components/_integrations | 528 B     |               
-[ info ]  
+[ info ]   λ /pages/about-us               | 1 kB      | 7 kB
+[ info ]   λ /pages/user/[username]        | 244 B     | 2 kB
+[ info ]   λ /api/user/[username]          | 105 B     |
+[ info ]   ƒ /middleware                   | 401 B     |
+[ info ]   Δ /layout/index                 | 759 B     |
+[ info ]   Ω /i18n                         | 737 B     |
+[ info ]   Ψ /websocket                    | 8 B       |
+[ info ]   Θ /web-components/_integrations | 528 B     |
+[ info ]
 [ info ]   λ  Server entry-points
 [ info ]   Δ  Layout
 [ info ]   ƒ  Middleware
@@ -27,9 +27,9 @@ description: The Brisa CLI to build.
 [ info ]   Θ  Web components integrations
 [ info ]        - client code already included in each page
 [ info ]        - server code is used for SSR
-[ info ]  
+[ info ]
 [ info ]   Φ  JS shared by all
-[ info ]  
+[ info ]
 [ info ]   ✓   Compiled successfully!
 [ info ]   ✨  Done in 253.72ms.
 ```
@@ -67,7 +67,7 @@ If you want to build your application for [different outputs](/building-your-app
 - [**android**](/building-your-application/building/android-app): Generates an Android application.
 - [**ios**](/building-your-application/building/ios-app): Generates an iOS application.
 
-If you want to make a desktop app for Windows, another one for Mac, also android and ios, all at the same time. We recommend you do this in an array inside a pipeline and use an environment variable to decide the output. 
+If you want to make a desktop app for Windows, another one for Mac, also android and ios, all at the same time. We recommend you do this in an array inside a pipeline and use an environment variable to decide the output.
 
 The good thing is that if you are on Windows, it will use the native Windows stuff for the Desktop app build, the same with Linux and Mac.
 
@@ -83,8 +83,8 @@ Brisa is more than a framework; it is a [Web Component Compiler](/building-your-
 
 > [!IMPORTANT]
 >
-> The name of the web component is going to be the name of the file. For example, if your file is 
-`custom-counter.tsx`, the name of the web component will be `custom-counter`.
+> The name of the web component is going to be the name of the file. For example, if your file is
+> `custom-counter.tsx`, the name of the web component will be `custom-counter`.
 
 The output will be:
 
@@ -120,8 +120,8 @@ After running the command, you will have a `web-component1.client.js`, `web-comp
 
 **Why theses files?**
 
-- ***.client.js**: The client-side code of the web component.
-- ***.server.ts**: The server-side code of the web component, used for SSR.
+- **\*.client.js**: The client-side code of the web component.
+- **\*.server.ts**: The server-side code of the web component, used for SSR.
 
 > [!IMPORTANT]
 >
@@ -132,26 +132,26 @@ After running the command, you will have a `web-component1.client.js`, `web-comp
 Example using these web components in Vanilla JavaScript:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Example</title>
-   <script type="importmap">
-    {
-      "imports": {
-        "brisa/client": "https://unpkg.com/brisa@latest/client-simplified/index.js"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Example</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "brisa/client": "https://unpkg.com/brisa@latest/client-simplified/index.js"
+        }
       }
-    }
-  </script>
-  <script type="module" src="web-component1.client.js"></script>
-  <script type="module" src="web-component2.client.js"></script>
-</head>
-<body>
-  <web-component1></web-component1>
-  <web-component2></web-component2>
-</body>
+    </script>
+    <script type="module" src="web-component1.client.js"></script>
+    <script type="module" src="web-component2.client.js"></script>
+  </head>
+  <body>
+    <web-component1></web-component1>
+    <web-component2></web-component2>
+  </body>
 </html>
 ```
 
@@ -164,9 +164,9 @@ Example using these web components in Vanilla JavaScript:
 Example server-side rendering these web components in a different JSX framework:
 
 ```tsx
-import { renderToString } from 'brisa/server';
-import WebComponent1 from './web-component1.server.ts';
-import WebComponent2 from './web-component1.server.ts';
+import { renderToString } from "brisa/server";
+import WebComponent1 from "./web-component1.server.ts";
+import WebComponent2 from "./web-component1.server.ts";
 
 const htmlWC1 = await renderToString(<WebComponent1 foo="bar" />);
 const htmlWC2 = await renderToString(<WebComponent2 foo="bar" />);
@@ -175,10 +175,10 @@ const htmlWC2 = await renderToString(<WebComponent2 foo="bar" />);
 In the case of incompatibilities with the jsx-runtime, you can use the `jsx` function:
 
 ```tsx
-import { renderToString } from 'brisa/server';
-import { jsx } from 'brisa/jsx-runtime';
-import WebComponent1 from './web-component1.server.ts';
-import WebComponent2 from './web-component1.server.ts';
+import { renderToString } from "brisa/server";
+import { jsx } from "brisa/jsx-runtime";
+import WebComponent1 from "./web-component1.server.ts";
+import WebComponent2 from "./web-component1.server.ts";
 
 const htmlWC1 = await renderToString(jsx(WebComponent1, { foo: "bar" }));
 const htmlWC2 = await renderToString(jsx(WebComponent2, { foo: "bar" }));
@@ -224,8 +224,8 @@ After running the command, you will have a `component1.server.ts` and a `compone
 Example using this server component in a different framework:
 
 ```tsx
-import { renderToString } from 'brisa/server';
-import { Component } from 'path/component.server.ts';
+import { renderToString } from "brisa/server";
+import { Component } from "path/component.server.ts";
 
 const html = await renderToString(<Component foo="bar" />);
 ```
@@ -233,10 +233,10 @@ const html = await renderToString(<Component foo="bar" />);
 In the case of incompatibilities with the jsx-runtime, you can use the `jsx` function:
 
 ```tsx
-import { renderToString } from 'brisa/server';
-import { jsx } from 'brisa/jsx-runtime';
+import { renderToString } from "brisa/server";
+import { jsx } from "brisa/jsx-runtime";
 
-const html = await renderToString(jsx(Component, { foo: 'bar' }));
+const html = await renderToString(jsx(Component, { foo: "bar" }));
 ```
 
 > [!WARNING]
@@ -255,4 +255,3 @@ When the `output` is set to `desktop`, `ios`, or `android` in `brisa.config.ts`,
 > [!NOTE]
 >
 > Learn more about the app strategy (`server`, `static`, `desktop`, `android`, `ios`) [here](/building-your-application/building/#app-strategy-static-server-desktop-android-ios).
-

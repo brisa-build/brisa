@@ -33,7 +33,7 @@ brisa dev -p 8080
 
 ## Debug mode
 
-`brisa dev -d` enables debug mode. 
+`brisa dev -d` enables debug mode.
 
 > [!NOTE]
 >
@@ -46,4 +46,3 @@ brisa dev -p 8080
 > [!NOTE]
 >
 > Learn more about the app strategy (`server`, `static`, `desktop`, `android`, `ios`) [here](/building-your-application/building/#app-strategy-static-server-desktop-android-ios).
-

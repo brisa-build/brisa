@@ -323,7 +323,9 @@ export default function brisaElement(
           let insertedNodes: ChildNode[] | undefined;
 
           const insertOrUpdate = (nodes: ChildNode[]) => {
-            let anchorIndex = insertedNodes?.findIndex((n) => el.contains(n))!;
+            const anchorIndex = insertedNodes?.findIndex((n) =>
+              el.contains(n),
+            )!;
             let oldNode: ChildNode | null | undefined =
               insertedNodes?.[anchorIndex];
 

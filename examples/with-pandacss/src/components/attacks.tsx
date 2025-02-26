@@ -1,10 +1,6 @@
 import type { Pokemon } from '@/data';
 
-export default function Attacks({
-  attacks,
-}: {
-  attacks: Pokemon['attacks'];
-}) {
+export default function Attacks({ attacks }: { attacks: Pokemon['attacks'] }) {
   return (
     <div>
       <h4 className="">Attacks</h4>

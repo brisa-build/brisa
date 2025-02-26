@@ -87,7 +87,7 @@ function splitTitleToLines({
   const lines = [];
   let currentLine = '';
 
-  for (let word of words) {
+  for (const word of words) {
     if ((currentLine + word).length > maxLineLength) {
       lines.push(currentLine.trim());
       currentLine = '';

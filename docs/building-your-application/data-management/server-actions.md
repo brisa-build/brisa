@@ -712,14 +712,12 @@ import { encrypt, decrypt } from "brisa/server";
 <button
   onClick={(e: Event) => {
     // Decrypt on the server action:
-    console.log(
-      decrypt((e.target as HTMLButtonElement).dataset.encrypted!)
-    )
+    console.log(decrypt((e.target as HTMLButtonElement).dataset.encrypted!));
   }}
   data-encrypted={encrypt("some sensible data")}
 >
   Click to recover sensible data on the server
-</button>
+</button>;
 ```
 
 ### Using the store

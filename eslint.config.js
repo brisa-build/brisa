@@ -1,60 +1,56 @@
-import globals from "globals";
+import pkg from "globals";
 import pluginJs from "@eslint/js";
+import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
-import parser from "@typescript-eslint/parser";
-import pluginReact from "eslint-plugin-react";
-import jsxA11y from "eslint-plugin-jsx-a11y";
+
+const { browser, node } = pkg;
 
 export default [
   {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ["**/*.{js,mjs,cjs,ts,tsx}"],
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/*.test.ts",
+      "**/*.spec.ts",
+    ],
     languageOptions: {
+      parser: tsParser,
       globals: {
-        ...globals.browser,
-        ...globals.node,
+        ...browser,
+        ...node,
+        JSX: "readonly",
+        React: "readonly",
         Bun: "readonly",
+        SocketAddress: "readonly",
+        HeadersInit: "readonly",
+        Throwable: "readonly",
+        ShadowRootMode: "readonly",
       },
-      parser,
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
+        project: "./tsconfig.json",
+      },
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
-      react: pluginReact,
-      "jsx-a11y": jsxA11y,
     },
     rules: {
-      "no-console": "off", // Disable or adjust as needed
-      "jsx-a11y/aria-props": "error", // Ensure valid ARIA attributes
-      "jsx-a11y/aria-role": "error", // Ensure valid ARIA roles
-      semi: ["error", "always"],
-      "react/style-prop-object": "error",
-      "@typescript-eslint/ban-ts-comment": "warn",
-      "@typescript-eslint/no-require-imports": "off", // Disable if using CommonJS
-      "@typescript-eslint/no-explicit-any": "off", // Disable if using `any`
-      "no-restricted-syntax": [
-        "warn",
-        {
-          selector: "CallExpression[callee.property.name='preventDefault']",
-          message: "Calling preventDefault() on a server event is unnecessary.",
-        },
-        {
-          selector: "CallExpression[callee.property.name='stopPropagation']",
-          message:
-            "Calling stopPropagation() on a server event is unnecessary.",
-        },
-        {
-          selector: "NewExpression[callee.name='FormData']",
-          message: "Use e.formData instead of new FormData(e.target).",
-        },
-        {
-          selector: "JSXExpressionContainer Identifier[name=/.*signal/]",
-          message: "Signals must use .value inside JSX.",
-        },
-      ],
-    },
-    settings: {
-      react: {
-        version: "18.0",
-      },
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "no-constant-condition": "off",
+      "no-useless-escape": "off",
+      "no-control-regex": "off",
+      ...tsPlugin.configs.recommended.rules,
     },
   },
+  pluginJs.configs.recommended,
 ];

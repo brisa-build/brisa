@@ -22,12 +22,10 @@ This release brings a series of critical fixes and improvements, ensuring better
 - **BigInt Serialization:** Added proper handling for `bigint` values during build analysis, avoiding potential errors. – [@aralroca](https://github.com/aralroca) in [#727](https://github.com/brisa-build/brisa/pull/727)
 - **Fix external CSS Parsers like Tailwind:** Fixed external CSS parsers (e.g., TailwindCSS, PandaCSS) to avoid conflicts with Bun CSS Parser on Bun 1.2. – [@aralroca](https://github.com/aralroca) in [#729](https://github.com/brisa-build/brisa/pull/729)
 
-
 ## 📖 Documentation Updates
 
 - **TailwindCSS Docs:** Enhanced the documentation for better clarity on TailwindCSS integration. – [@rohits-web03](https://github.com/rohits-web03) in [#730](https://github.com/brisa-build/brisa/pull/730)
 - **Improvements:** Multiple small fixes and improvements to documentation for accuracy and consistency. – [@0xflotus](https://github.com/0xflotus) in [#718](https://github.com/brisa-build/brisa/pull/718), [#722](https://github.com/brisa-build/brisa/pull/722), [#724](https://github.com/brisa-build/brisa/pull/724), [#725](https://github.com/brisa-build/brisa/pull/725), [#728](https://github.com/brisa-build/brisa/pull/728)
-
 
 ## 🎉 New Contributors
 
@@ -37,7 +35,6 @@ A warm welcome to our new contributors:
 - **[@rohits-web03](https://github.com/rohits-web03)** made their first contribution in [#730](https://github.com/brisa-build/brisa/pull/730)
 
 Thank you for helping improve Brisa!
-
 
 ## **Full Changelog**
 

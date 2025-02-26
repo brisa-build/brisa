@@ -11,9 +11,7 @@ Then you can use in your `.tsx`:
 
 ```tsx
 export default function Home() {
-  return (
-    <div className="text-lg">Hello, world!</div>
-  );
+  return <div className="text-lg">Hello, world!</div>;
 }
 ```
 

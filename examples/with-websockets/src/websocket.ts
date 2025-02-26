@@ -1,4 +1,4 @@
-import { ServerWebSocket } from 'bun';
+import type { ServerWebSocket } from 'bun';
 
 export function open(ws: ServerWebSocket) {
   ws.subscribe('ws-chat');

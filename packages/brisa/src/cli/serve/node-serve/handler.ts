@@ -94,7 +94,10 @@ function get_raw_body(req: http.IncomingMessage) {
 export async function getRequest({
   request,
   base,
-}: { request: http.IncomingMessage; base: string }) {
+}: {
+  request: http.IncomingMessage;
+  base: string;
+}) {
   return new Request(base + request.url, {
     duplex: 'half',
     method: request.method,

@@ -34,32 +34,35 @@ Brisa every time is more JS runtime agnostic, and we are excited to see how you 
 
 <img width="775" height="461" src="/images/blog-images/build-time-performance.webp" alt="Brisa Build Time improvement" />
 
-- **Improved Compatibility:** 
+- **Improved Compatibility:**
   - Added a polyfill for `Promise.try` to ensure working in Node.js and Deno.
   - Fixed HTTP response issues with uncoded `ReadableStream`.
   - Resolved locale-changing issues in navigation for i18n.
-- **CLI Improvements:** 
+- **CLI Improvements:**
   - Fixed `brisa start` to correctly load `brisa.config.ts` for all outputs.
   - Enhanced build consistency across output types.
 
 ## 🛠️ Recap: Key Features from 0.1.x Releases
 
 ### **Development Tools**
+
 - **PandaCSS Integration** (0.1.1): Seamlessly use PandaCSS within Brisa for robust styling options.
 - **Hot Reload Enhancements** (0.1.6, 0.1.7): Improved hot-reload for multi-save scenarios, making your development workflows faster and more reliable.
 - **`idleTimeout` Configuration** (0.1.2): Fine-tune connection handling with the `idleTimeout` property for more predictable server behavior.
 
 ### **Routing & Middleware**
+
 - **Route Rewrite Support** (0.1.3): Dynamically rewrite routes with middleware, enabling flexible routing scenarios.
 - **Improved SPA Middleware** (0.1.3): Added support for transforming hard redirects into soft redirects in SPA navigation, streamlining client-side transitions.
 
 ### **Server-Side Rendering**
+
 - **SSR Support for Web Components** (0.1.5): Extended support for `self` in Web Components during SSR, enabling advanced interactions with attributes, styles, and events at the server level.
 
 ### **API Utilities**
+
 - **`getServer` API** (0.1.3): Access the Brisa server instance directly to extend its functionality or introspect runtime details.
 - **Streaming HTML from Async Generators** (0.1.2): Combine SQLite queries with async generators for streaming HTML content directly to the client, unlocking performance benefits for large datasets.
-
 
 ## What's Changed
 

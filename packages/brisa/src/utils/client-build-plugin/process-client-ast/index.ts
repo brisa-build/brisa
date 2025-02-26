@@ -8,7 +8,7 @@ const { generateCodeFromAST } = AST('tsx');
 const brisaClientPath = join('brisa', 'client', 'index.js');
 
 export default function processClientAst(ast: ESTree.Program, path = '') {
-  let i18nKeys = new Set<string>();
+  const i18nKeys = new Set<string>();
   let useI18n = false;
   const logs: any[] = [];
   const isBrisaClient = path.endsWith(brisaClientPath);

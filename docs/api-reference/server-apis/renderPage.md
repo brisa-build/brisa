@@ -36,7 +36,6 @@ function handleEvent() {
 
 - `withTransition` (optional): A boolean value that indicates whether the rerender should be done with [start view transition](https://developer.mozilla.org/en-US/docs/Web/API/Document/startViewTransition). Default is `false`.
 
-
 #### Types:
 
 ```ts

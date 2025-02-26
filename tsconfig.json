@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
@@ -20,12 +18,8 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "brisa",
+    "jsxImportSource": "brisa"
   },
-  "include": [
-    "scripts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["scripts", "src/**/*", "packages/**/*"],
+  "exclude": ["node_modules", "dist", "build"]
 }

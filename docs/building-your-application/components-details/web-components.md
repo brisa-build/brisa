@@ -314,10 +314,10 @@ export default ParentComponentUsingSlots;
 ### Props as JSX
 
 You can pass JSX elements as props to a component:
-  
+
 ```tsx
 export default function Home() {
-  return <web-component someProp={<h1>Server Title</h1>} /> // ✅
+  return <web-component someProp={<h1>Server Title</h1>} />; // ✅
 }
 ```
 
@@ -325,14 +325,13 @@ Using Server components as props is also valid:
 
 ```tsx
 export default function Home() {
-  return <web-component someProp={<ServerComp />} /> // ✅
+  return <web-component someProp={<ServerComp />} />; // ✅
 }
 ```
 
 > [!NOTE]
 >
 > It's just an alternative to `slots` and `children`, but `slots` and `children` have better performance because it is not necessary to deserialize and render inside the Web Component.
-
 
 ## Events
 
@@ -521,8 +520,8 @@ export default function SharedStore({}, { store }: WebContext) {
 
 ```tsx
 effect(() => {
-  store.set('counter', store.Map.get('counter') + store.get('addition'));
-})
+  store.set("counter", store.Map.get("counter") + store.get("addition"));
+});
 ```
 
 In this example, the `effect` is used to update the store when the `addition` store entry changes. This is because the store with the `.Map` is not reactive, is a simple `Map` object.
@@ -580,7 +579,10 @@ This would be an example using a prop called `foo`. The props are signals readon
 You can also use async-await in effects:
 
 ```tsx
-export default async ({ foo }: { foo: string }, { state, effect }: WebContext) => {
+export default async (
+  { foo }: { foo: string },
+  { state, effect }: WebContext,
+) => {
   const bar = state<any>();
 
   await effect(async () => {
@@ -1013,9 +1015,9 @@ export function ServerComponent({ name }, requestContext) {
 > [!IMPORTANT]
 >
 > There are cases where the compiler may not detect the web component well, either because it is injected with [`dangerHTML`](/api-reference/functions/dangerHTML) or for any other reason. In these cases, you can export a variable with web-components on your page to help the compiler:
-> 
+>
 > ```tsx
-> export const webComponents = [<some-example />]
+> export const webComponents = [<some-example />];
 > ```
 
 ## Using Server Components in Web Components
