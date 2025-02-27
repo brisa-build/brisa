@@ -9,7 +9,7 @@ import {
 } from 'bun:test';
 import { injectRPCCode, injectRPCLazyCode } from '.' with { type: 'macro' };
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { waitFor } from '@/core/test/api'
+import { waitFor } from '@/core/test/api';
 import { serialize } from '../serialization';
 
 const rpcCode = injectRPCCode() as unknown as string;
@@ -55,7 +55,7 @@ async function simulateRPC({
   eval(rpcCode);
 
   await Bun.sleep(0);
-  
+
   // Simulate some actions after the RPC code is loaded and executed
   callbackAfterRPC();
 
@@ -631,7 +631,7 @@ describe('utils', () => {
       // Should remove data-action attribute after register the action after the mutation
       await waitFor(() => {
         expect(document.body.innerHTML).toBe('<div></div>');
-      })
+      });
     });
 
     it('should skip SPA navigation using "replace" as "navigationType" (history.replaceState)', async () => {
