@@ -328,7 +328,7 @@
   {
     "id": "/api-reference/components/request-context#request-context",
     "title": "Request Context",
-    "text": "The RequestContext is a set of utilities provided by Brisa to facilitate the development of server components. It is a Request with some extra functionalities such as managing store, handling context, i18n, and more. import type { RequestContext } from \"brisa\";\n\nexport default function ServerComponent(props, requestContext: RequestContext) {\n  const {\n    // Shared data across server/web components\n    store,\n    useContext,\n\n    // Useful to control pending state in server components\n    indicate,\n\n    // Data of the current route\n    route,\n\n    // Consume translations and control internationalization\n    i18n,\n\n    // Access to websockets\n    ws,\n\n    // Get the user IP\n    getIp,\n\n    // The `finalURL` is the path of your page file\n    finalURL,\n\n    // Request id\n    id,\n\n    // The initiator of the request (\"SERVER_ACTION\", \"SPA_NAVIGATION\", \"INITIAL_REQUEST\", \"API_REQUEST\")\n    initiator,\n\n    // Add styles\n    css,\n\n    // Run tasks after the response is sent\n    after,\n  } = requestContext;\n  // ... Server component implementation ...\n} Being an extension of the Request, you also have access to all fields of the Request. In contrast to other frameworks that necessitate imports, our methodology incorporates all these properties directly within each server component.",
+    "text": "The RequestContext is a set of utilities provided by Brisa to facilitate the development of server components. It is a Request with some extra functionalities such as managing store, handling context, i18n, and more. import type { RequestContext } from \"brisa\";\n\nexport default function ServerComponent(props, requestContext: RequestContext) {\n  const {\n    // Shared data across server/web components\n    store,\n    useContext,\n\n    // Useful to control pending state in server components\n    indicate,\n\n    // Useful to use a unique ID for each invocation\n    useId,\n\n    // Data of the current route\n    route,\n\n    // Consume translations and control internationalization\n    i18n,\n\n    // Access to websockets\n    ws,\n\n    // Get the user IP\n    getIp,\n\n    // The `finalURL` is the path of your page file\n    finalURL,\n\n    // Request id\n    id,\n\n    // The initiator of the request (\"SERVER_ACTION\", \"SPA_NAVIGATION\", \"INITIAL_REQUEST\", \"API_REQUEST\")\n    initiator,\n\n    // Add styles\n    css,\n\n    // Run tasks after the response is sent\n    after,\n  } = requestContext;\n  // ... Server component implementation ...\n} Being an extension of the Request, you also have access to all fields of the Request. In contrast to other frameworks that necessitate imports, our methodology incorporates all these properties directly within each server component.",
     "titles": []
   },
   {
@@ -359,7 +359,15 @@
   {
     "id": "/api-reference/components/request-context#indicate",
     "title": "indicate",
-    "text": "indicate(actionName: string): IndicatorSignal The indicate method is used to add it in the indicator HTML extended attribute. This indicator automatically set the brisa-request class while the indicated server action is pending. const pending = indicate('some-server-action-name');\n// ...\ncss`\n span { display: none }\n span.brisa-request { display: inline }\n`\n// ...\n<>\n  <button onClick={someAction} indicateClick={pending}>\n    Run some action\n  </button>\n  <span indicator={pending}>Pending...</span>\n</>",
+    "text": "indicate(actionName: string): IndicatorSignal The indicate method is used to add it in the indicator HTML extended attribute. This indicator automatically set the brisa-request class while the indicated server action is pending. const id = useId();\nconst pending = indicate(`some-server-action-${id}`);\n// ...\ncss`\n span { display: none }\n span.brisa-request { display: inline }\n`\n// ...\n<>\n  <button onClick={someAction} indicateClick={pending}>\n    Run some action\n  </button>\n  <span indicator={pending}>Pending...</span>\n</>",
+    "titles": [
+      "Request Context"
+    ]
+  },
+  {
+    "id": "/api-reference/components/request-context#useid",
+    "title": "useId",
+    "text": "useId(): string The useId method generates a unique identifier for the server component. It is useful for creating unique keys for elements in lists or for other purposes that require unique identifiers, like Server Action IDs to use insie the indicate. The generated ID is unique across all server components and after re-renders on the server actions. Example: const passwordHintId = useId();\n\nreturn (\n  <>\n    <input type=\"password\" aria-describedby={passwordHintId} />\n    <p id={passwordHintId}>\n  </>\n) To ensure better performance than crypto.randomUUID(), it is an autoincrement number next to the request id. See useId on Web Components too. To ensure the same id value after hydration.",
     "titles": [
       "Request Context"
     ]
@@ -370,7 +378,7 @@
     "text": "string - Indicator name. It can refer to the server action. The idea is that you can use the same indicator in other components (both server and web) using the same name to relate it to the same server action. For more details, take a look to: indicate in web components, similar method but from WebContext.\nindicate[Event] HTML extended attribute to use it in server components to register the server action indicator.\nindicator HTML extended attribute to use it in any element of server/web components.",
     "titles": [
       "Request Context",
-      "indicate"
+      "useId"
     ]
   },
   {
@@ -544,7 +552,7 @@
   {
     "id": "/api-reference/components/web-context#useid",
     "title": "useId",
-    "text": "useId(): string The useId method generates a unique identifier for the web component. It is useful for creating unique keys for elements in lists or for other purposes that require unique identifiers. The generated ID is unique across all web components and the generation is the same on the server and client. Example: const passwordHintId = useId();\n\nreturn (\n  <>\n    <input type=\"password\" aria-describedby={passwordHintId} />\n    <p id={passwordHintId}>\n  </>\n)",
+    "text": "useId(): string The useId method generates a unique identifier for the web component. It is useful for creating unique keys for elements in lists or for other purposes that require unique identifiers. The generated ID is unique across all web components and the generation is the same on the server and client. Example: const passwordHintId = useId();\n\nreturn (\n  <>\n    <input type=\"password\" aria-describedby={passwordHintId} />\n    <p id={passwordHintId}>\n  </>\n) See useId on Server Components too.",
     "titles": [
       "Web Context"
     ]
@@ -3381,7 +3389,7 @@
   {
     "id": "/building-your-application/configuring/content-security-policy#adding-a-nonce-with-middleware",
     "title": "Adding a nonce with Middleware",
-    "text": "Middleware enables you to add headers and generate nonces before the page renders. Every time a page is viewed, a fresh nonce should be generated. This means that you must use dynamic rendering to add nonces. For example: import type { RequestContext } from \"brisa\";\n\nexport default function middleware(request: RequestContext) {\n  const nonce = Buffer.from(crypto.randomUUID()).toString(\"base64\");\n\n  request.headers.set(\"x-nonce\", nonce);\n  request.headers.set(\n    \"Content-Security-Policy\",\n    `\n    default-src 'self';\n    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';\n    style-src 'self' 'nonce-${nonce}';\n    img-src 'self' blob: data:;\n    font-src 'self';\n    object-src 'none';\n    base-uri 'self';\n    form-action 'self';\n    frame-ancestors 'none';\n    block-all-mixed-content;\n    upgrade-insecure-requests;\n  `\n      .replace(/\\s{2,}/g, \" \")\n      .trim(),\n  );\n}\n\nexport function responseHeaders(request: RequestContext) {\n  return {\n    \"Content-Security-Policy\": request.headers.get(\"Content-Security-Policy\"),\n  };\n} By default, Middleware runs on all requests. You can filter Middleware using the url or the route of the Request Context. We recommend ignoring these: api (API routes)\nall request that route is null (files inside public folder) import type { RequestContext } from \"brisa\";\n\nexport default function middleware(req: RequestContext) {\n  // Early return\n  if (!req.route || req.route.name.startsWith(\"/api/\")) return;\n  // ...\n}",
+    "text": "Middleware enables you to add headers and generate nonces before the page renders. Every time a page is viewed, a fresh nonce should be generated. This means that you must use dynamic rendering to add nonces. For example: import type { RequestContext, ResponseHeaders } from \"brisa\";\n\nexport default function middleware(request: RequestContext) {\n  const nonce = Buffer.from(crypto.randomUUID()).toString(\"base64\");\n\n  request.headers.set(\"x-nonce\", nonce);\n  request.headers.set(\n    \"Content-Security-Policy\",\n    `\n    default-src 'self';\n    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';\n    style-src 'self' 'nonce-${nonce}';\n    img-src 'self' blob: data:;\n    font-src 'self';\n    object-src 'none';\n    base-uri 'self';\n    form-action 'self';\n    frame-ancestors 'none';\n    block-all-mixed-content;\n    upgrade-insecure-requests;\n  `\n      .replace(/\\s{2,}/g, \" \")\n      .trim(),\n  );\n}\n\nexport function responseHeaders(request: RequestContext, { headersSnapshot }: ResponseHeaders) {\n  const headers = headersSnapshot();\n\n  headers.append(\"Content-Security-Policy\", request.headers.get(\"Content-Security-Policy\"));\n  \n  return headers;\n} By default, Middleware runs on all requests. You can filter Middleware using the url or the route of the Request Context. We recommend ignoring these: api (API routes)\nall request that route is null (files inside public folder) import type { RequestContext } from \"brisa\";\n\nexport default function middleware(req: RequestContext) {\n  // Early return\n  if (!req.route || req.route.name.startsWith(\"/api/\")) return;\n  // ...\n}",
     "titles": [
       "Content Security Policy",
       "Nonces"
@@ -4074,7 +4082,7 @@
   {
     "id": "/building-your-application/data-management/server-actions#cookies",
     "title": "Cookies",
-    "text": "You can access to the request inside the server action to read cookies from headers, then you can communicate via request store to the responseHeaders of the page: import type { RequestContext } from \"brisa\";\n\nexport default function Login({}, req: RequestContext) {\n  return (\n    <form\n      onSubmit={(e) => {\n        const username = e.formData.get(\"username\");\n        // Read the cookies\n        const cookies = req.headers.get(\"cookie\");\n        // Store data inside the request:\n        req.store.set(\"new-cookies\", \"foo=bar;\");\n      }}\n    >\n      {/* ... */}\n    </form>\n  );\n}\n\nexport function responseHeaders(req: RequestContext) {\n  // Read the stored data:\n  const newCookies = req.store.get(\"new-cookies\");\n\n  return {\n    \"Set-Cookie\": newCookies,\n  };\n}",
+    "text": "You can access to the request inside the server action to read cookies from headers, then you can communicate via request store to the responseHeaders of the page: import type { RequestContext, ResponseHeaders } from \"brisa\";\n\nexport default function Login({}, req: RequestContext) {\n  return (\n    <form\n      onSubmit={(e) => {\n        const username = e.formData.get(\"username\");\n        // Read the cookies\n        const cookies = req.headers.get(\"cookie\");\n        // Store data inside the request:\n        req.store.set(\"new-cookies\", \"foo=bar;\");\n      }}\n    >\n      {/* ... */}\n    </form>\n  );\n}\n\nexport function responseHeaders(req: RequestContext, { headersSnapshot }: ResponseHeaders) {\n  const headers = headersSnapshot();\n\n  headers.append('Set-Cookies', req.store.get(\"new-cookies\"))\n\n  return headers;\n}",
     "titles": [
       "Server Actions"
     ]
@@ -4314,7 +4322,7 @@
   {
     "id": "/building-your-application/deploying/docker#containerize-with-docker",
     "title": "Containerize with Docker",
-    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.2.2\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
+    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.2.4\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
     "titles": [
       "Docker"
     ]
@@ -4513,7 +4521,7 @@
   {
     "id": "/building-your-application/integrations/panda-css#usage",
     "title": "Usage",
-    "text": "You can use PandaCSS classes in your Brisa project as you would in a regular TSX file: import { css } from './styled-system/css'\n \nexport function App() {\n  return <div className={css({ bg: 'red.400' })} />\n}",
+    "text": "You can use PandaCSS classes in your Brisa project as you would in a regular TSX file: import { css } from './styled-system/css'\n \nexport function App() {\n  return <div class={css({ bg: 'red.400' })} />\n}",
     "titles": [
       "Integrating Panda CSS"
     ]
@@ -4586,7 +4594,7 @@
   {
     "id": "/building-your-application/integrations/tailwind-css#usage",
     "title": "Usage",
-    "text": "You can use TailwindCSS classes in your Brisa project as you would in a regular TSX file: export default function Home() {\n  return (\n    <div className=\"bg-gray-100\">\n      <h1 className=\"text-2xl font-bold text-gray-800\">Hello, world!</h1>\n    </div>\n  );\n}",
+    "text": "You can use TailwindCSS classes in your Brisa project as you would in a regular TSX file: export default function Home() {\n  return (\n    <div class=\"bg-gray-100\">\n      <h1 class=\"text-2xl font-bold text-gray-800\">Hello, world!</h1>\n    </div>\n  );\n}",
     "titles": [
       "Integrating Tailwind CSS v4"
     ]
@@ -5262,15 +5270,15 @@
   {
     "id": "/building-your-application/routing/middleware#on-response",
     "title": "On Response",
-    "text": "The responseHeaders function can be exported in the middleware, in the same way that you can do it inside layout and pages. All responseHeaders will be mixed in this order: middleware response headers\nlayout response headers (can crush the middleware response headers)\npage response headers (both middleware and layout response headers can be mixed). import { type RequestContext } from \"brisa\";\n\nexport function responseHeaders(\n  request: RequestContext,\n  responseStatus: number,\n) {\n  return {\n    \"Cache-Control\": \"public, max-age=3600\",\n    \"X-Example\": \"This header is added from middleware\",\n  };\n}\n\n\n\nexport function responseHeaders(request, responseStatus) {\n  return {\n    \"Cache-Control\": \"public, max-age=3600\",\n    \"X-Example\": \"This header is added from middleware\",\n  };\n}",
+    "text": "The responseHeaders function can be exported in the middleware, in the same way that you can do it inside layout and pages. All responseHeaders will be mixed in this order: middleware response headers\nlayout response headers (can crush the middleware response headers)\npage response headers (both middleware and layout response headers can be mixed). import type { RequestContext, ResponseHeaders } from \"brisa\";\n\nexport function responseHeaders(\n  request: RequestContext,\n  { headersSnapshot, responseStatus }: ResponseHeaders,\n) {\n  const headers = headersSnapshot();\n  \n  headers.append(\"Cache-Control\", \"public, max-age=3600\");\n  headers.append(\"X-Example\", \"This header is added from middleware\");\n\n  return headers;\n}\n\n\n\nexport function responseHeaders(request, { headersSnapshot, responseStatus }) {\n  const headers = headersSnapshot();\n  \n  headers.append(\"Cache-Control\", \"public, max-age=3600\");\n  headers.append(\"X-Example\", \"This header is added from middleware\");\n  \n  return headers;\n} You can also pass the HeadersInit to the snapshot, to call .append in each new entry: export function responseHeaders(request, { headersSnapshot, responseStatus }) {\n  return headersSnapshot({\n    \"Cache-Control\": \"public, max-age=3600\",\n    \"X-Example\": \"This header is added from middleware\"\n  });\n}",
     "titles": [
       "Middleware",
       "Cookies & Headers"
     ]
   },
   {
-    "id": "/building-your-application/routing/middleware#share-data-between-middleware-layout-page-component-responseheaders",
-    "title": "Share data between middleware → layout → page → component → responseHeaders",
+    "id": "/building-your-application/routing/middleware#share-data-between-middleware-responseheaders-layout-page-component",
+    "title": "Share data between middleware → responseHeaders → layout → page → component",
     "text": "You can share data between different parts of the application using the store. import { type RequestContext } from \"brisa\";\n\nexport default async function middleware(request: RequestContext) {\n  const data = await getData(request);\n\n  request.store.set(\"data\", data);\n} import { type RequestContext } from \"brisa\";\n\ntype Props = {\n  name: string;\n};\n\nexport default function SomeComponent(props: Props, request: RequestContext) {\n  const data = request.store.get(\"data\");\n\n  return <h1>Hello {data[props.name]}</h1>;\n} If you want to know more check this out.",
     "titles": [
       "Middleware"
@@ -5334,7 +5342,7 @@
   {
     "id": "/building-your-application/routing/pages-and-layouts#response-headers-in-layouts-and-pages",
     "title": "Response headers in layouts and pages",
-    "text": "The responseHeaders function can be exported inside the layout and inside any page. In the same way that is possible to export it also in the middleware. All responseHeaders will be mixed in this order: middleware response headers\nlayout response headers (can crush the middleware response headers)\npage response headers (both middleware and layout response headers can be mixed). import { type RequestContext } from \"brisa\";\n\nexport function responseHeaders(\n  request: RequestContext,\n  responseStatus: number,\n) {\n  return {\n    \"Cache-Control\": \"public, max-age=3600\",\n    \"Content-Security-Policy\": \"script-src 'self' 'unsafe-inline';\",\n    \"X-Example\": \"This header is added from layout\",\n  };\n}\n\n\n\nexport function responseHeaders(request, responseStatus) {\n  return {\n    \"Cache-Control\": \"public, max-age=3600\",\n    \"Content-Security-Policy\": \"script-src 'self' 'unsafe-inline';\",\n    \"X-Example\": \"This header is added from layout\",\n  };\n}\n\n\n\nAs in Brisa we render the server components in streaming, the headers are ALWAYS sent before rendering the page. It is very important to keep this in mind.",
+    "text": "The responseHeaders function can be exported inside the layout and inside any page. In the same way that is possible to export it also in the middleware. All responseHeaders will be mixed in this order: middleware response headers\nlayout response headers (can crush the middleware response headers)\npage response headers (both middleware and layout response headers can be mixed). import type { RequestContext, ResponseHeaders } from \"brisa\";\n\nexport function responseHeaders(\n  request: RequestContext,\n  { headersSnapshot, responseStatus }: ResponseHeaders,\n) {\n  const headers = headersSnapshot();\n\n  headers.append(\"Cache-Control\", \"public, max-age=3600\");\n  headers.append(\"Content-Security-Policy\", \"script-src 'self' 'unsafe-inline';\");\n  headers.append(\"X-Example\", \"This header is added from layout\");\n\n  return headers;\n}\n\n\n\nexport function responseHeaders(request, { headersSnapshot, responseStatus }) {\n  const headers = headersSnapshot();\n\n  headers.append(\"Cache-Control\", \"public, max-age=3600\");\n  headers.append(\"Content-Security-Policy\", \"script-src 'self' 'unsafe-inline';\");\n  headers.append(\"X-Example\", \"This header is added from layout\");\n\n  return headers;\n}\n\nYou can also pass the HeadersInit to the snapshot in order to call the .append of each entry:\nexport function responseHeaders(request, { headersSnapshot, responseStatus }) {\n  return headersSnapshot({\n    \"Cache-Control\": \"public, max-age=3600\",\n    \"Content-Security-Policy\": \"script-src 'self' 'unsafe-inline';\",\n    \"X-Example\": \"This header is added from layout\"\n  });\n}\n\n\n\nAs in Brisa we render the server components in streaming, the headers are ALWAYS sent before rendering the page. It is very important to keep this in mind.",
     "titles": [
       "Pages and Layouts"
     ]
@@ -5348,8 +5356,8 @@
     ]
   },
   {
-    "id": "/building-your-application/routing/pages-and-layouts#share-data-between-middleware-layout-page-component-responseheaders-head-web-components",
-    "title": "Share data between middleware → layout → page → component → responseHeaders → Head → web-components",
+    "id": "/building-your-application/routing/pages-and-layouts#share-data-between-middleware-responseheaders-layout-page-component-head-web-components",
+    "title": "Share data between middleware → responseHeaders → layout → page → component → Head → web-components",
     "text": "You can share data between different parts of the application using the request context. src/layout/index.tsx import { type RequestContext } from \"brisa\";\n\nexport default async function Layout({}, request: RequestContext) {\n  const data = await getData(request);\n\n  request.store.set(\"data\", data);\n\n  return (\n    <html>\n      <head>\n        <title>My page</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} src/components/some-component.tsx import { type RequestContext } from \"brisa\";\n\ntype Props = {\n  name: string;\n};\n\nexport default function SomeComponent(props: Props, { store }: RequestContext) {\n  const data = store.get(\"data\");\n\n  return <h1>Hello {data[props.name]}</h1>;\n}",
     "titles": [
       "Pages and Layouts"
@@ -5361,7 +5369,7 @@
     "text": "This data is only available on the server. So you can store sensitive data without worrying. However, you can transfer certain data to the client side (web-components) using store.transferToClient method. import { type RequestContext } from \"brisa\";\n\nexport default async function Layout({}, request: RequestContext) {\n  const data = await getData(request);\n\n  request.store.set(\"data\", data);\n\n  // Transfer \"data\" from store to client  \n  // You extend the life of the store from request-time:\n  //  render (server) → 💀\n  // to:\n  //  render (server) → client → action (server) → rerender (server) → client → ...\n  request.store.transferToClient([\"data\"]);\n\n  return (\n    <html>\n      <head>\n        <title>My page</title>\n        <link rel=\"icon\" href=\"favicon.ico\" />\n      </head>\n      <body>{children}</body>\n    </html>\n  );\n} This allows access to these values from the web components store. This setup also enables subsequent server actions to access the same store, as the communication flows through the client: server render → client → server action → client It is a way to modify in a reactive way from a server action the web components that consume this store. You can encrypt store data if you want to transfer sensitive data to the server actions so that it cannot be accessed from the client.",
     "titles": [
       "Pages and Layouts",
-      "Share data between middleware → layout → page → component → responseHeaders → Head → web-components"
+      "Share data between middleware → responseHeaders → layout → page → component → Head → web-components"
     ]
   },
   {
@@ -5370,7 +5378,7 @@
     "text": "In the web-components instead of the RequestContext, there is the WebContext, where you have a different store, but if you have transferred the data from the RequestContext store, you will be able to consume it from the WebContext store. import { WebContext } from \"brisa\";\n\nexport default function WebComponent({}, { store }: WebContext) {\n  return <button onClick={() => alert(store.get(\"example\"))}>Click</button>;\n} If you want to know more about store check this out.",
     "titles": [
       "Pages and Layouts",
-      "Share data between middleware → layout → page → component → responseHeaders → Head → web-components"
+      "Share data between middleware → responseHeaders → layout → page → component → Head → web-components"
     ]
   },
   {
@@ -5720,13 +5728,13 @@
   {
     "id": "/building-your-application/styling/panda-css#panda-css",
     "title": "Panda CSS",
-    "text": "One option in Brisa is to integrate your app with Panda CSS, a CSS framework that lets you create atomic compiled styles like tailwind. You might find it easier to write and maintain your styles using this. Then you can use in your .tsx: import { css } from './styled-system/css'\n \nexport function App() {\n  return <div className={css({ bg: 'red.400' })} />\n} To integrate Panda CSS into your Brisa project, take a look at the integration with Panda CSS in the integrations section.",
+    "text": "One option in Brisa is to integrate your app with Panda CSS, a CSS framework that lets you create atomic compiled styles like tailwind. You might find it easier to write and maintain your styles using this. Then you can use in your .tsx: import { css } from './styled-system/css'\n \nexport function App() {\n  return <div class={css({ bg: 'red.400' })} />\n} To integrate Panda CSS into your Brisa project, take a look at the integration with Panda CSS in the integrations section.",
     "titles": []
   },
   {
     "id": "/building-your-application/styling/tailwind-css#tailwind-css",
     "title": "Tailwind CSS",
-    "text": "One option in Brisa is to integrate your app with Tailwind CSS, a CSS framework that lets you use utility classes instead of writing CSS. These utility classes are mostly one-to-one with a certain CSS property setting: for example, adding the text-lg to an element is equivalent to setting font-size: 1.125rem in CSS. You might find it easier to write and maintain your styles using these predefined utility classes! Then you can use in your .tsx: export default function Home() {\n  return (\n    <div className=\"text-lg\">Hello, world!</div>\n  );\n} To integrate Tailwind CSS into your Brisa project, take a look at the integration with Tailwind CSS in the integrations section.",
+    "text": "One option in Brisa is to integrate your app with Tailwind CSS, a CSS framework that lets you use utility classes instead of writing CSS. These utility classes are mostly one-to-one with a certain CSS property setting: for example, adding the text-lg to an element is equivalent to setting font-size: 1.125rem in CSS. You might find it easier to write and maintain your styles using these predefined utility classes! Then you can use in your .tsx: export default function Home() {\n  return (\n    <div class=\"text-lg\">Hello, world!</div>\n  );\n} To integrate Tailwind CSS into your Brisa project, take a look at the integration with Tailwind CSS in the integrations section.",
     "titles": []
   },
   {
@@ -5754,7 +5762,7 @@
   {
     "id": "/building-your-application/styling/web-components#tailwind-css",
     "title": "Tailwind CSS",
-    "text": "The shadow DOM is adapted to be possible to use Tailwind CSS classes in your elements. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent() {\n  return <div className=\"bg-gray-100\">Hello World</div>;\n} Read more about how to integrate Tailwind CSS in your Brisa project in the Tailwind CSS page.",
+    "text": "The shadow DOM is adapted to be possible to use Tailwind CSS classes in your elements. import type { WebContext } from \"brisa\";\n\nexport default function MyWebComponent() {\n  return <div class=\"bg-gray-100\">Hello World</div>;\n} Read more about how to integrate Tailwind CSS in your Brisa project in the Tailwind CSS page.",
     "titles": [
       "Styling Web Components"
     ]
@@ -5762,7 +5770,7 @@
   {
     "id": "/building-your-application/styling/web-components#panda-css",
     "title": "Panda CSS",
-    "text": "The shadow DOM is adapted to be possible to use Panda CSS in your elements. import type { WebContext } from \"brisa\";\nimport { css } from './styled-system/css'\n \nexport default function MyWebComponent() {\n  return <div className={css({ bg: 'red.400' })} />\n} Read more about how to integrate Panda CSS in your Brisa project in the Panda CSS page.",
+    "text": "The shadow DOM is adapted to be possible to use Panda CSS in your elements. import type { WebContext } from \"brisa\";\nimport { css } from './styled-system/css'\n \nexport default function MyWebComponent() {\n  return <div class={css({ bg: 'red.400' })} />\n} Read more about how to integrate Panda CSS in your Brisa project in the Panda CSS page.",
     "titles": [
       "Styling Web Components"
     ]

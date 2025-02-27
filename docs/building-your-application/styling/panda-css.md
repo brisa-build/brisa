@@ -13,7 +13,7 @@ Then you can use in your `.tsx`:
 import { css } from './styled-system/css'
  
 export function App() {
-  return <div className={css({ bg: 'red.400' })} />
+  return <div class={css({ bg: 'red.400' })} />
 }
 ```
 
