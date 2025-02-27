@@ -8,7 +8,6 @@ const $window = window;
 const method = 'POST';
 const $Promise = Promise;
 let controller = new AbortController();
-let isReady = 0;
 
 const bodyWithStore = (args?: unknown[], isFormData?: boolean) => {
   // @ts-ignore
@@ -85,7 +84,6 @@ async function rpc(
     // Although !res.ok, we still want to resolve the server action to update signals,
     // like the error signal to display the error message in dev mode.
     await $window._rpc(res, dataSet, args);
-    registerActions(rpc);
   } catch (e: any) {
     store?.set(errorIndicator, e.message);
   } finally {
@@ -136,7 +134,6 @@ function spaNavigation(event: any) {
         await loadRPCResolver();
         await $window._rpc(res, null, renderMode);
         $window.scrollTo(0, 0);
-        registerActions(rpc);
       },
     });
   }
@@ -162,18 +159,20 @@ function querySelectorAll(query: string) {
   return $document.querySelectorAll(query);
 }
 
-function initActionRegister() {
+function init() {
   registerActions(rpc);
-  if (!isReady) requestAnimationFrame(initActionRegister);
 }
 
-initActionRegister();
+const observer = new MutationObserver(init);
+
+observer.observe($document.body, {
+  childList: true,
+  attributes: true,
+  subtree: true,
+});
+
+init();
 
 if ('navigation' in $window) {
   $window.navigation.addEventListener('navigate', spaNavigation);
 }
-
-$document.addEventListener('DOMContentLoaded', () => {
-  isReady = 1;
-  registerActions(rpc);
-});

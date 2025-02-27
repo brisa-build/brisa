@@ -15,7 +15,6 @@ export default async function transferStoreService(req: RequestContext) {
   const bodyAvailable = req.method === 'POST' && !req.bodyUsed;
   const isFormData = contentType?.includes('multipart/form-data');
   const formData = isFormData && bodyAvailable ? await req.formData() : null;
-  const encryptedKeys = new Set<string>();
   const body =
     !isFormData && bodyAvailable
       ? await reqClone.json().catch(() => null)
@@ -45,7 +44,6 @@ export default async function transferStoreService(req: RequestContext) {
             (value.startsWith(ENCRYPT_PREFIX) ||
               value.startsWith(ENCRYPT_NONTEXT_PREFIX))
           ) {
-            encryptedKeys.add(key);
             storeValue = decrypt(value);
             encrypt = true;
           }
