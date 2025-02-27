@@ -9,12 +9,12 @@ import {
 } from 'bun:test';
 import { injectRPCCode, injectRPCLazyCode } from '.' with { type: 'macro' };
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
+import { waitFor } from '@/core/test/api'
 import { serialize } from '../serialization';
 
 const rpcCode = injectRPCCode() as unknown as string;
 const lazyRPCCode = injectRPCLazyCode() as unknown as string;
 const INDICATOR_ID = '__ind:action';
-const requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 0);
 let mockFetch: ReturnType<typeof spyOn>;
 
 async function simulateRPC({
@@ -54,10 +54,8 @@ async function simulateRPC({
   eval(lazyRPCCode);
   eval(rpcCode);
 
-  // Simulate the document to be loaded to stop registering the actions
-  document.dispatchEvent(new Event('DOMContentLoaded'));
   await Bun.sleep(0);
-
+  
   // Simulate some actions after the RPC code is loaded and executed
   callbackAfterRPC();
 
@@ -95,13 +93,11 @@ async function simulateRPC({
 describe('utils', () => {
   beforeEach(() => {
     GlobalRegistrator.register();
-    window.requestAnimationFrame = requestAnimationFrame;
   });
   afterEach(() => {
     window._S = window._s = undefined;
     mockFetch?.mockRestore();
     GlobalRegistrator.unregister();
-    globalThis.requestAnimationFrame = requestAnimationFrame;
   });
 
   describe('rpc', () => {
@@ -149,8 +145,7 @@ describe('utils', () => {
 
       expect(mockTimeout).toHaveBeenCalled();
       expect(mockFetch).not.toHaveBeenCalled();
-      // The first timeout is to register the event during streaming
-      expect(mockTimeout.mock.calls[1][1]).toBe(100);
+      expect(mockTimeout.mock.calls[0][1]).toBe(100);
     });
 
     it('should send FormData when the event is onSubmit in a form', async () => {
@@ -631,9 +626,12 @@ describe('utils', () => {
       await handler();
 
       expect(location.href).toBe('http://localhost/some-page');
+      expect(document.body.innerHTML).toBe('<div data-action=""></div>');
 
-      // Should remove data-action attribute after register the action
-      expect(document.body.querySelector('[data-action]')).toBeNull();
+      // Should remove data-action attribute after register the action after the mutation
+      await waitFor(() => {
+        expect(document.body.innerHTML).toBe('<div></div>');
+      })
     });
 
     it('should skip SPA navigation using "replace" as "navigationType" (history.replaceState)', async () => {
