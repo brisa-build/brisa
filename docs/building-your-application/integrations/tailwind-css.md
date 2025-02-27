@@ -105,8 +105,8 @@ You can use TailwindCSS classes in your Brisa project as you would in a regular 
 ```tsx
 export default function Home() {
   return (
-    <div className="bg-gray-100">
-      <h1 className="text-2xl font-bold text-gray-800">Hello, world!</h1>
+    <div class="bg-gray-100">
+      <h1 class="text-2xl font-bold text-gray-800">Hello, world!</h1>
     </div>
   );
 }

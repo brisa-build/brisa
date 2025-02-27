@@ -90,7 +90,7 @@ The shadow DOM is adapted to be possible to use Tailwind CSS classes in your ele
 import type { WebContext } from "brisa";
 
 export default function MyWebComponent() {
-  return <div className="bg-gray-100">Hello World</div>;
+  return <div class="bg-gray-100">Hello World</div>;
 }
 ```
 
@@ -107,7 +107,7 @@ import type { WebContext } from "brisa";
 import { css } from './styled-system/css'
  
 export default function MyWebComponent() {
-  return <div className={css({ bg: 'red.400' })} />
+  return <div class={css({ bg: 'red.400' })} />
 }
 ```
 

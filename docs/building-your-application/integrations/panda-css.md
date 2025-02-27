@@ -70,6 +70,6 @@ You can use PandaCSS classes in your Brisa project as you would in a regular TSX
 import { css } from './styled-system/css'
  
 export function App() {
-  return <div className={css({ bg: 'red.400' })} />
+  return <div class={css({ bg: 'red.400' })} />
 }
 ```
