@@ -1,0 +1,20 @@
+{
+  "name": "with-api-routes",
+  "module": "src/pages/index.tsx",
+  "type": "module",
+  "webTitle": "API Routes",
+  "example-category": "basics",
+  "scripts": {
+    "dev": "brisa dev",
+    "dev:debug": "brisa dev --debug",
+    "build": "brisa build",
+    "start": "brisa start"
+  },
+  "dependencies": {
+    "brisa": "0.2.7-canary.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}

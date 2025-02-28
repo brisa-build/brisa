@@ -39,7 +39,6 @@
     "test:deno": "deno test --allow-all \"**/*.deno-test.js\"",
     "test:coverage": "bun run --cwd packages/brisa --coverage",
     "test:node": "node --test \"**/*.node-test.js\"",
-    "tsc:check": "bun run --cwd packages/brisa-eslint-plugin tsc --noEmit",
     "update-version": "bun run scripts/update-brisa-version.ts",
     "upgrade": "bun run scripts/upgrade-bun.ts",
     "validate-urls": "bun run scripts/validate-urls.ts",
@@ -56,13 +55,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@eslint/js": "^9.21.0",
     "@types/bun": "latest",
-    "eslint": "^9.21.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-formatter-compact": "^8.40.0",
-    "eslint-parallel": "^1.2.1",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
     "globals": "^16.0.0",
     "husky": "9.1.7"
   },
@@ -71,9 +64,6 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^8.25.0",
-    "@typescript-eslint/parser": "^8.25.0",
-    "eslint-plugin-react": "^7.37.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }

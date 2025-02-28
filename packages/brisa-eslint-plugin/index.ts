@@ -9,24 +9,25 @@ export const rules = {
       type: 'problem',
       docs: {
         description:
-          'Disallow preventDefault() and stopPropagation() on server events',
+          'Disallow preventDefault() and stopPropagation() outside the web-components folder.',
       },
       schema: [],
       messages: {
-        preventUsage: 'Avoid using {{ method }} on server events.',
+        preventUsage:
+          'Avoid using {{ method }} outside the web-components folder.',
       },
     },
     defaultOptions: [],
     create(context) {
-      const SERVER_EVENTS = new Set([
-        'load',
-        'DOMContentLoaded',
-        'beforeunload',
-        'unload',
-      ]);
+      const filename = context.getFilename();
+      const isWebComponent = filename.includes('web-components');
 
       return {
         CallExpression(node: TSESTree.CallExpression) {
+          // Skip if the file is inside the web-components folder
+          if (isWebComponent) return;
+
+          // Check for preventDefault() or stopPropagation()
           if (
             node.callee.type === 'MemberExpression' &&
             node.callee.object.type === 'Identifier' &&
@@ -34,32 +35,13 @@ export const rules = {
             (node.callee.property.name === 'preventDefault' ||
               node.callee.property.name === 'stopPropagation')
           ) {
-            const parent = node.parent;
-            if (
-              parent &&
-              parent.type === 'CallExpression' &&
-              parent.callee.type === 'MemberExpression' &&
-              parent.callee.object.type === 'Identifier' &&
-              parent.callee.property.type === 'Identifier' &&
-              parent.callee.property.name === 'addEventListener'
-            ) {
-              const args = parent.arguments;
-              if (args.length >= 2 && args[0].type === 'Literal') {
-                const eventType = args[0].value;
-                if (
-                  typeof eventType === 'string' &&
-                  SERVER_EVENTS.has(eventType)
-                ) {
-                  context.report({
-                    node,
-                    messageId: 'preventUsage',
-                    data: {
-                      method: node.callee.property.name,
-                    },
-                  });
-                }
-              }
-            }
+            context.report({
+              node,
+              messageId: 'preventUsage',
+              data: {
+                method: node.callee.property.name,
+              },
+            });
           }
         },
       };

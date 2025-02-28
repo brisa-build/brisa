@@ -1,1 +1,25 @@
-["lightningcss-darwin-x64","lightningcss-linux-x64-gnu","lightningcss-win32-x64-msvc","lightningcss-win32-arm64-msvc","lightningcss-darwin-arm64","lightningcss-linux-arm64-gnu","lightningcss-linux-arm-gnueabihf","lightningcss-linux-arm64-musl","lightningcss-linux-x64-musl","lightningcss-freebsd-x64","@alloc","@tailwindcss","detect-libc","enhanced-resolve","graceful-fs","jiti","lightningcss","nanoid","picocolors","postcss","source-map-js","tailwindcss","tapable"]
+[
+  "lightningcss-darwin-x64",
+  "lightningcss-linux-x64-gnu",
+  "lightningcss-win32-x64-msvc",
+  "lightningcss-win32-arm64-msvc",
+  "lightningcss-darwin-arm64",
+  "lightningcss-linux-arm64-gnu",
+  "lightningcss-linux-arm-gnueabihf",
+  "lightningcss-linux-arm64-musl",
+  "lightningcss-linux-x64-musl",
+  "lightningcss-freebsd-x64",
+  "@alloc",
+  "@tailwindcss",
+  "detect-libc",
+  "enhanced-resolve",
+  "graceful-fs",
+  "jiti",
+  "lightningcss",
+  "nanoid",
+  "picocolors",
+  "postcss",
+  "source-map-js",
+  "tailwindcss",
+  "tapable"
+]
