@@ -8,7 +8,7 @@ export default {
   actions: null,
 
   // This is going to be augmented in project build-time to include the actual modules.
-  // Ex: { apiRoutes: { 'api/hello': [Function: hello] }, pages: { '/': [Function: Home] } }
+  // Ex: { apiRoutes: { 'api/hello': module }, pages: { '/': module } }
   apiRoutes: {},
   pages: {},
 };
