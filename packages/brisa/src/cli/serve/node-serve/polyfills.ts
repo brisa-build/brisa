@@ -19,6 +19,7 @@ if (!Promise.try) {
   // @ts-ignore
   Promise.try = (fn) => {
     try {
+      // @ts-ignore
       return Promise.resolve(fn());
     } catch (e) {
       return Promise.reject(e);

@@ -139,7 +139,7 @@
     "brisa": "latest",
     "@types/mime-types": "2.1.4",
     "mime-types": "2.1.35",
-    "typescript": "5.7.3",
+    "typescript": "5.8.2",
     "brisa-tailwindcss": "workspace:*",
     "brisa-pandacss": "workspace:*"
   },
