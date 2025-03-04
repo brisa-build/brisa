@@ -124,7 +124,10 @@ async function handleCSSInsidePublic(dir: string, outDir: string) {
     const hash = Bun.hash(await Bun.file(filePath).arrayBuffer());
     const newFilename = `style-${hash}.css`;
 
-    fs.copyFileSync(filePath, path.join(outDir, newFilename));
+    if (!fs.existsSync(path.join(outDir, newFilename))) {
+      fs.copyFileSync(filePath, path.join(outDir, newFilename));
+    }
+
     files.push(newFilename);
   }
 
