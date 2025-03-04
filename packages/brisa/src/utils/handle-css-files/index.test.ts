@@ -286,6 +286,22 @@ describe('utils/handle-css-files', () => {
       'style-111111.css',
     ]);
   });
+
+  it('should NOT override existing .css files in /public #780', async () => {
+    fs.writeFileSync(path.join(BUILD_DIR, 'test.css'), 'body { color: red; }');
+    fs.mkdirSync(path.join(BUILD_DIR, 'public'));
+    fs.writeFileSync(path.join(BUILD_DIR, 'public', 'style-123456.css'), 'OK');
+    mockHash.mockReturnValueOnce(123456);
+
+    await expect(handleCSSFiles()).resolves.toBeUndefined();
+
+    expect(
+      fs.readFileSync(
+        path.join(BUILD_DIR, 'public', 'style-123456.css'),
+        'utf-8',
+      ),
+    ).toBe('OK');
+  });
 });
 
 describe('getCSSLoader', () => {
