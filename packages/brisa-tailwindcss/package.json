@@ -1,6 +1,6 @@
 {
   "name": "brisa-tailwindcss",
-  "version": "0.2.8",
+  "version": "0.2.9-canary.1",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
