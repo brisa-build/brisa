@@ -3918,11 +3918,46 @@
     "titles": []
   },
   {
-    "id": "/building-your-application/data-management/fetching#fetching-data-with-fetch",
-    "title": "Fetching Data with fetch",
-    "text": "Brisa recommend to use the native fetch Web API. We don't make any modifications to the native implementation to handle caching, revalidation, or anything magical, the fetch works as fetch, because it is the native one. We believe that adding cache and extending the native fetch is a sign of an incorrect design of how to fetch data. So to fix this we have improved the way to share this data in your application. As all components (server/web) can be async/await and are rendered only once, you can do this without problems: export default async function ServerComponent() {\n  const res = await fetch(/* */);\n\n  // Your server component logic\n} or export default async function WebComponent() {\n  const res = await fetch(/* */);\n\n  // Your web component logic\n} In the same way, you can fetch data in the middleware, layout, responseHeaders, Head, suspense phase, etc, and share the data with the rest of the application.",
+    "id": "/building-your-application/data-management/fetching#fetching-external-data-with-fetch",
+    "title": "Fetching external data with fetch",
+    "text": "Brisa recommend to use the native fetch Web API to get external data. We don't make any modifications to the native implementation to handle caching, revalidation, or anything magical, the fetch works as fetch, because it is the native one. We believe that adding cache and extending the native fetch is a sign of an incorrect design of how to fetch data. So to fix this we have improved the way to share this data in your application. As all components (server/web) can be async/await and are rendered only once, you can do this without problems: export default async function ServerComponent() {\n  const res = await fetch(/* */);\n\n  // Your server component logic\n} or export default async function WebComponent() {\n  const res = await fetch(/* */);\n\n  // Your web component logic\n} In the same way, you can fetch data in the middleware, layout, responseHeaders, Head, suspense phase, etc, and share the data with the rest of the application.",
     "titles": [
       "Data Fetching"
+    ]
+  },
+  {
+    "id": "/building-your-application/data-management/fetching#fetching-internal-data",
+    "title": "Fetching internal data",
+    "text": "Unlike external data, internal data is readily available within your server environment, eliminating the need for fetch calls. In Brisa, you can directly access your database or any internal data source from a server component and then pass it as a prop to a web component or transfer it via the store mechanism.",
+    "titles": [
+      "Data Fetching"
+    ]
+  },
+  {
+    "id": "/building-your-application/data-management/fetching#direct-database-access",
+    "title": "Direct database access",
+    "text": "Since server components are only rendered once, you can safely query your database and return the data without worrying about redundant requests: import { db } from \"@/lib/db\";\n\nexport default async function ServerComponent() {\n  const user = await db.getUser();\n\n  return <UserProfile user={user} />;\n}",
+    "titles": [
+      "Data Fetching",
+      "Fetching internal data"
+    ]
+  },
+  {
+    "id": "/building-your-application/data-management/fetching#pass-data-via-props-to-a-web-component-recommended",
+    "title": "Pass data via props to a web component (Recommended)",
+    "text": "The simplest and most efficient way to pass internal data to a web component is through props: export default async function ServerComponent() {\n  const user = await db.getUser();\n\n  return <user-profile name={user.name} age={user.age} />;\n} On the web component side: export default function UserProfile({ name, age }: { name: string; age: number }) {\n  return <div>Hello {name}, you are {age} years old.</div>;\n} Passing data via props ensures better performance and avoids unnecessary requests to the server.",
+    "titles": [
+      "Data Fetching",
+      "Fetching internal data"
+    ]
+  },
+  {
+    "id": "/building-your-application/data-management/fetching#transfer-data-to-web-components-using-store",
+    "title": "Transfer data to web components using store",
+    "text": "Another way to transfer this data from the server to the client dynamically is using the store and transferToClient methods: import { type RequestContext } from \"brisa\";\n\nexport async function ServerComponent({}: Props, { store }: RequestContext) {\n  const user = await db.getUser();\n  store.set(\"user\", user);\n  store.transferToClient([\"user\"]);\n\n  return <user-profile />;\n} On the web component side: export function UserProfile({}: Props, { store }: WebContext) {\n  return <div>Hello {store.get(\"user\").name}</div>;\n} This allows all web components to have access to it, and update it as a signal with store.set('user', newUser).",
+    "titles": [
+      "Data Fetching",
+      "Fetching internal data"
     ]
   },
   {
