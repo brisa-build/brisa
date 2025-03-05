@@ -439,7 +439,7 @@ export default function Login({}, req: RequestContext) {
 export function responseHeaders(req: RequestContext, { headersSnapshot }: ResponseHeaders) {
   const headers = headersSnapshot();
 
-  headers.append('Set-Cookies', req.store.get("new-cookies"))
+  headers.append('Set-Cookie', req.store.get("new-cookies"))
 
   return headers;
 }

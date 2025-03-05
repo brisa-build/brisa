@@ -66,7 +66,7 @@ We've introduced `headersSnapshot()`, which **returns an immutable clone** of th
 export function responseHeaders(request: RequestContext, { headersSnapshot, responseStatus }: ResponseHeaders) {
   const headers = headersSnapshot();
 
-  headers.append('Set-Cookies', request.store.get("new-cookies"))
+  headers.append('Set-Cookie', request.store.get("new-cookies"))
 
   return headers;
 }
@@ -79,7 +79,7 @@ You can pass a `HeadersInit` object to `headersSnapshot()` for convenience, auto
 ```ts
 export function responseHeaders(request, { headersSnapshot, responseStatus }) {
   return headersSnapshot({
-    "Set-Cookies": request.store.get("new-cookies"),
+    "Set-Cookie": request.store.get("new-cookies"),
   });
 }
 ```
