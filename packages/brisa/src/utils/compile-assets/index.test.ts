@@ -6,7 +6,7 @@ import { getConstants } from '@/constants';
 import { toInline } from '@/helpers';
 
 const SRC_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
-const BUILD_DIR = path.join(SRC_DIR, 'build');
+const BUILD_DIR = path.join(SRC_DIR, `out-${crypto.randomUUID()}`);
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 const CLIENT_PAGES = path.join(BUILD_DIR, 'pages-client');
@@ -76,10 +76,12 @@ describe('compileAssets', () => {
     const log = spyOn(console, 'log');
     globalThis.mockConstants!.IS_PRODUCTION = false;
     await compileAssets();
-    expect(fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted()).toEqual(
-      ['favicon.ico', 'some-dir', 'user'].toSorted(),
-    );
-    expect(log).not.toHaveBeenCalled();
+    expect(
+      await fs.readdirSync(path.join(BUILD_DIR, 'public')).toSorted(),
+    ).toEqual(['favicon.ico', 'some-dir', 'user', 'sitemap.xml'].toSorted());
+
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(log.mock.calls.toString()).toContain('sitemap.xml generated in');
     log.mockClear();
   });
 
@@ -98,7 +100,36 @@ describe('compileAssets', () => {
     await compileAssets();
 
     expect(fs.existsSync(sitemapFilepath)).toBeTrue();
-    expect(toInline(fs.readFileSync(sitemapFilepath, 'utf-8'))).toEqual(
+    expect(toInline(await Bun.file(sitemapFilepath).text())).toEqual(
+      toInline(`<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+          <url>
+            <loc>https://example.com</loc>
+            <lastmod>2021-10-01T00:00:00.000Z</lastmod>
+            <changefreq>daily</changefreq>
+            <priority>1.0</priority>
+            <image:image>
+              <image:loc>https://example.com/image.jpg</image:loc>
+              <image:title>Image title</image:title>
+              <image:caption>Image caption</image:caption>
+            </image:image>
+          </url>
+        </urlset>
+      `),
+    );
+    expect(log.mock.calls.toString()).toContain('sitemap.xml generated in');
+    log.mockClear();
+  });
+
+  it('should create the sitemap.xml asset file according src/sitemap.ts file in Development', async () => {
+    const log = spyOn(console, 'log');
+    globalThis.mockConstants!.IS_PRODUCTION = false;
+    const sitemapFilepath = path.join(BUILD_DIR, 'public', 'sitemap.xml');
+
+    await compileAssets();
+
+    expect(fs.existsSync(sitemapFilepath)).toBeTrue();
+    expect(toInline(await Bun.file(sitemapFilepath).text())).toEqual(
       toInline(`<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
           <url>
