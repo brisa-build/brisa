@@ -2063,6 +2063,32 @@
     ]
   },
   {
+    "id": "/building-your-application/authentication/authentication#using-csrf-tokens-with-bun",
+    "title": "Using CSRF Tokens with Bun",
+    "text": "To further secure authentication requests against Cross-Site Request Forgery (CSRF) attacks, Brisa can integrate with Bun.CSRF to generate and verify secure CSRF tokens. Here’s an example of how to implement it:",
+    "titles": [
+      "Authentication"
+    ]
+  },
+  {
+    "id": "/building-your-application/authentication/authentication#generating-a-csrf-token",
+    "title": "Generating a CSRF Token",
+    "text": "import { CSRF } from \"bun\";\n\nconst secret = \"your-secret-key\";\nconst token = CSRF.generate({\n  secret,\n  encoding: \"hex\",\n  expiresIn: 60 * 1000 // 1 minute\n});",
+    "titles": [
+      "Authentication",
+      "Using CSRF Tokens with Bun"
+    ]
+  },
+  {
+    "id": "/building-your-application/authentication/authentication#verifying-a-csrf-token",
+    "title": "Verifying a CSRF Token",
+    "text": "When handling authentication requests, verify the token before processing login credentials: const isValid = CSRF.verify(token, { secret });\nif (!isValid) {\n  throw new Error(\"Invalid CSRF token\");\n} This ensures that only requests with a valid CSRF token are processed, mitigating the risk of unauthorized actions on behalf of authenticated users. By incorporating Bun.CSRF, Brisa enhances security in authentication flows, preventing malicious CSRF attacks while maintaining a seamless user experience. The Bun.CSRF API is exclusive to the Bun runtime. If you are using Node.js or Deno, you will need an alternative library for CSRF token management. Some recommended options are:\n\nFor Node.js: csrf\nFor Deno: djwt",
+    "titles": [
+      "Authentication",
+      "Using CSRF Tokens with Bun"
+    ]
+  },
+  {
     "id": "/building-your-application/authentication/authorization#authorization",
     "title": "Authorization",
     "text": "Once a user is authenticated, you'll need to ensure the user is allowed to visit certain routes, and perform operations such as mutating data with Server Actions and calling Route Handlers.",

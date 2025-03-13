@@ -78,3 +78,43 @@ renderPage();
 > [!IMPORTANT]
 >
 > Both `navigate` and `renderPage` throw an exception returning a [Never](https://www.typescriptlang.org/docs/handbook/basic-types.html#never) type, therefore the code after is not executed so there is no need to put an `else` conditional. It is important to keep this in mind because if it is put in a `try-catch` they would stop working unless from the catch you throw again these actions.
+
+## Using CSRF Tokens with Bun
+
+To further secure authentication requests against **Cross-Site Request Forgery (CSRF)** attacks, Brisa can integrate with **Bun.CSRF** to generate and verify secure CSRF tokens. Here’s an example of how to implement it:
+
+### Generating a CSRF Token
+
+```ts
+import { CSRF } from "bun";
+
+const secret = "your-secret-key";
+const token = CSRF.generate({
+  secret,
+  encoding: "hex",
+  expiresIn: 60 * 1000 // 1 minute
+});
+```
+
+### Verifying a CSRF Token
+
+When handling authentication requests, verify the token before processing login credentials:
+
+```ts
+const isValid = CSRF.verify(token, { secret });
+if (!isValid) {
+  throw new Error("Invalid CSRF token");
+}
+```
+
+This ensures that only requests with a valid CSRF token are processed, mitigating the risk of unauthorized actions on behalf of authenticated users.
+
+By incorporating **Bun.CSRF**, Brisa enhances security in authentication flows, preventing malicious CSRF attacks while maintaining a seamless user experience.
+
+> [!NOTE]
+> 
+> The `Bun.CSRF` API is exclusive to the Bun runtime. If you are using **Node.js** or **Deno**, you will need an alternative library for CSRF token management. Some recommended options are:
+> 
+> - **For Node.js**: [`csrf`](https://www.npmjs.com/package/csrf)
+> - **For Deno**: [`djwt`](https://deno.land/x/djwt)
+>
