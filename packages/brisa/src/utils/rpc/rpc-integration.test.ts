@@ -254,6 +254,7 @@ describe('utils', () => {
 
       const element = document.body.firstChild as HTMLElement;
 
+      await Bun.sleep(1);
       expect(element.classList.contains('brisa-request')).toBeTrue();
       // Simulate the script to be loaded
       document.head.querySelector('script')?.dispatchEvent(new Event('load'));
@@ -278,6 +279,7 @@ describe('utils', () => {
 
       const element = document.body.firstChild as HTMLElement;
 
+      await Bun.sleep(1);
       expect(element.classList.contains('brisa-request')).toBeTrue();
       await Bun.sleep(1);
       expect(element.classList.contains('brisa-request')).toBeFalse();
@@ -303,6 +305,7 @@ describe('utils', () => {
 
       const element = document.body.firstChild as HTMLElement;
 
+      await Bun.sleep(1);
       expect(element.classList.contains('brisa-request')).toBeTrue();
       await Bun.sleep(1);
       expect(element.classList.contains('brisa-request')).toBeFalse();
@@ -326,6 +329,7 @@ describe('utils', () => {
         debounceMs: 1,
       });
 
+      await Bun.sleep(1);
       expect(window._s.get(INDICATOR_ID)).toBeTrue();
       // Simulate the script to be loaded
       document.head.querySelector('script')?.dispatchEvent(new Event('load'));
