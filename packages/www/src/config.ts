@@ -136,6 +136,10 @@ export default {
               link: '/building-your-application/styling/css-template-literal',
             },
             {
+              text: 'CSS Modules',
+              link: '/building-your-application/styling/css-modules',
+            },
+            {
               text: 'CSS inlined in JSX',
               link: '/building-your-application/styling/css-inlined-in-jsx',
             },

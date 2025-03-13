@@ -4357,7 +4357,7 @@
   {
     "id": "/building-your-application/deploying/docker#containerize-with-docker",
     "title": "Containerize with Docker",
-    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.2.4\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
+    "text": "This guide assumes you already have Docker Desktop installed. Docker is a platform for packaging and running an application as a lightweight, portable container that encapsulates all the necessary dependencies. To containerize our application, we define a Dockerfile. This file contains a list of instructions to initialize the container, copy our local project files into it, install dependencies, and start the application. # Adjust BUN_VERSION as desired\nARG BUN_VERSION=1.2.5\nFROM oven/bun:${BUN_VERSION}-slim AS base\n\n# Brisa app lives here\nWORKDIR /app\n\n# Set production environment\nENV NODE_ENV=\"production\"\n\n# Throw-away build stage to reduce the size of the final image\nFROM base AS build\n\n# Install node modules\nCOPY --link bun.lockb package.json ./\nRUN bun install --ci\n\n# Copy Brisa application code\nCOPY --link . .\n\n# Build Brisa application\nRUN bun run build\n\n# Final stage for app image\nFROM base\n\n# Copy built Brisa application\nCOPY --from=build /app /app\n\n# Start the Brisa server on port 3000\nEXPOSE 3000\nCMD [ \"bun\", \"run\", \"start\" ] Now that you have your docker image, let's look at .dockerignore which has the same syntax as .gitignore; here, you need to specify the files/directories that must not go in any stage of the docker build. An example of a ignore file is: dockerignore: .vscode\nnode_modules\n.DS_Store\nbuild If you want to be more strict, you can also invert the .dockerignore and use it as an allowed file. An example of how this would work is: dockerignore: # Ignore all files from your repo\n*\n\n# Allow specific files or folders\n!bun.lockb\n!package.json\n!src Making the .dockerignore an allowed file becomes very handy to prevent trash on your image, or sensitive information. For example secrets, coverage files or another dev on your team using a different IDE. We'll now use docker build to convert this Dockerfile into a Docker image. The result will be a self-contained template containing all the dependencies and configurations required to run the application on any platform. docker build -t my-app . The -t flag lets us specify a name for the image. We've built a new Docker image. Now let's use that image to spin up an actual, running container. docker run -p 3000:3000 my-app We'll use docker run to start a new container using the my-app image. We'll map the container's port 3000 to our local machine's port 3000 (-p 3000:3000). The run command prints a string representing the container ID. The container is now running in the background. Visit localhost:3000. You should see your homepage. Optional: the flag -d flag to run in detached mode to run the container in the background. To stop the container, we'll use docker stop <container-id>. If you can't find the container ID, you can use docker ps to list all running containers. That's it! Refer to the Docker documentation for more advanced usage.",
     "titles": [
       "Docker"
     ]
@@ -5715,7 +5715,7 @@
   {
     "id": "/building-your-application/styling#styling",
     "title": "Styling",
-    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Template literal\nCSS inlined in JSX\nTailwind CSS\nPanda CSS\nCSS Modules (coming soon) In addition, you can also style your web components and server components: Styling web components",
+    "text": "Brisa supports different ways of styling your application, including: Global styles\nCSS Template literal\nCSS Modules\nCSS inlined in JSX\nTailwind CSS\nPanda CSS In addition, you can also style your web components and server components: Styling web components",
     "titles": []
   },
   {
@@ -5730,6 +5730,56 @@
     "text": "To add CSS styles to an element in JSX, use the style attribute and pass an object with the desired styles. For example, you can add a red background color to a <div> element like this: const MyComponent = () => {\n  return (\n    <div style={{ backgroundColor: \"red\" }}>\n      Hello, world!\n    </div>\n  );\n}; In the example above, the style attribute is set to an object with the backgroundColor property set to \"red\". This will apply a red background color to the <div> element. Using TypeScript with inline styles is a great way to ensure type safety and avoid common CSS errors.",
     "titles": [
       "CSS Inlined in JSX"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#css-modules",
+    "title": "CSS Modules",
+    "text": "In Brisa, you can style your components (server & web components) using CSS Modules, which provide a scoped and modular approach to styling. This helps prevent global CSS conflicts by ensuring styles are isolated to individual components.",
+    "titles": []
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#adding-css-modules",
+    "title": "Adding CSS Modules",
+    "text": "To use CSS Modules in Brisa, create a .module.css file with your styles and import it into your component. Each class name is automatically transformed into a unique identifier to avoid conflicts.",
+    "titles": [
+      "CSS Modules"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#example-usage",
+    "title": "Example Usage",
+    "text": "Create a CSS file named styles.module.css: /* styles.module.css */\n.container {\n  background-color: red;\n  padding: 16px;\n  border-radius: 8px;\n} Then, import and use it in your component: import styles from \"./styles.module.css\";\n\nexport default function MyComponent() {\n  return (\n    <div class={styles.container}>\n      Hello, world!\n    </div>\n  );\n}",
+    "titles": [
+      "CSS Modules",
+      "Adding CSS Modules"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#scoped-styles",
+    "title": "Scoped Styles",
+    "text": "CSS Modules ensure that styles are scoped to the component where they are imported. This means that styles defined in styles.module.css will not affect other components, preventing unintentional style overrides.",
+    "titles": [
+      "CSS Modules",
+      "Adding CSS Modules"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#using-dynamic-class-names",
+    "title": "Using Dynamic Class Names",
+    "text": "If you need to apply dynamic class names, you can use JavaScript string interpolation: import styles from \"./styles.module.css\";\n\nexport default function DynamicComponent({ isActive }) {\n  return (\n    <div class={`${styles.container} ${isActive ? styles.active : \"\"}`}>\n      Dynamic Styles\n    </div>\n  );\n}",
+    "titles": [
+      "CSS Modules",
+      "Adding CSS Modules"
+    ]
+  },
+  {
+    "id": "/building-your-application/styling/css-modules#benefits-of-css-modules",
+    "title": "Benefits of CSS Modules",
+    "text": "Scoped Styles: Avoids conflicts with other components.\nStatic Analysis: Helps catch unused styles in your codebase.\nPerformance: CSS Modules are compiled and optimized at build time. Using CSS Modules in Brisa, you can write maintainable and encapsulated styles without worrying about global conflicts.",
+    "titles": [
+      "CSS Modules",
+      "Adding CSS Modules"
     ]
   },
   {
