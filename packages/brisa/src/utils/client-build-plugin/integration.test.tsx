@@ -1198,7 +1198,7 @@ describe('integration', () => {
         'async-component',
       ) as HTMLElement;
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(asyncComponent?.shadowRoot?.innerHTML).toBe('<div>42</div>');
     });
@@ -3805,7 +3805,7 @@ describe('integration', () => {
 
       const myComponent = document.querySelector('my-component') as HTMLElement;
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>SUSPENSE: 0</div>');
 
@@ -3813,7 +3813,7 @@ describe('integration', () => {
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>SUSPENSE: 1</div>');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>REAL: 0</div>');
 
@@ -3845,11 +3845,11 @@ describe('integration', () => {
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('Not loading yet');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('Loading');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>Loaded</div>');
     });
@@ -3881,19 +3881,19 @@ describe('integration', () => {
 
       const myComponent = document.querySelector('my-component') as HTMLElement;
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('Loading ...');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('Loading step 1 ...');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('Loading step 2 ...');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>Loaded</div>');
     });
@@ -3956,12 +3956,12 @@ describe('integration', () => {
 
       const myComponent = document.querySelector('my-component') as HTMLElement;
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(window.mockCleanup).toHaveBeenCalledTimes(0);
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>SUSPENSE</div>');
 
-      await Bun.sleep(0);
+      await Bun.sleep(1);
 
       expect(window.mockCleanup).toHaveBeenCalledTimes(2);
       expect(window.mockCleanup.mock.calls[0][0]).toBe('suspense');
