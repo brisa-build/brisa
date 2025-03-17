@@ -3867,4 +3867,88 @@ describe('utils', () => {
       );
     });
   });
+
+  it('should register actions with a button #793', () => {
+    function ParentComponent() {
+      function onAction() {
+        console.log('this works in the server');
+      }
+
+      return (
+        <ChildComponent
+          data-action
+          data-action-onaction="a1"
+          onAction={onAction}
+        />
+      );
+    }
+
+    function ChildComponent({ onAction }: { onAction: () => void }) {
+      return (
+        <button data-action data-action-onclick="a2" onClick={onAction}>
+          Run the action
+        </button>
+      );
+    }
+
+    ChildComponent._hasActions = ParentComponent._hasActions = true;
+
+    const stream = renderToReadableStream(<ParentComponent />, {
+      request: testRequest,
+    });
+    const result = Bun.readableStreamToText(stream);
+
+    expect(result).resolves.toBe(
+      toInline(`
+        <!--o:0--><!--o:1-->
+        <button data-action data-action-onclick="a1" data-cid="1" key="1:2" data-actions='[[["onAction","a1","0"]]]'>
+          Run the action
+        </button>
+        <!--c:1--><!--c:0-->
+    `),
+    );
+  });
+
+  it('should register actions with a fragment #793', () => {
+    function ParentComponent() {
+      function onAction() {
+        console.log('this works in the server');
+      }
+
+      return (
+        <ChildComponent
+          data-action
+          data-action-onaction="a1"
+          onAction={onAction}
+        />
+      );
+    }
+
+    function ChildComponent({ onAction }: { onAction: () => void }) {
+      return (
+        <>
+          <button data-action data-action-onclick="a2" onClick={onAction}>
+            Run the action
+          </button>
+        </>
+      );
+    }
+
+    ChildComponent._hasActions = ParentComponent._hasActions = true;
+
+    const stream = renderToReadableStream(<ParentComponent />, {
+      request: testRequest,
+    });
+    const result = Bun.readableStreamToText(stream);
+
+    expect(result).resolves.toBe(
+      toInline(`
+        <!--o:0--><!--o:1-->
+        <button data-action data-action-onclick="a1" data-cid="1" key="1:3" data-actions='[[["onAction","a1","0"]]]'>
+          Run the action
+        </button>
+        <!--c:1--><!--c:0-->
+    `),
+    );
+  });
 });

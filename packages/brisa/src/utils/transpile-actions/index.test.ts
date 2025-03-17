@@ -3511,6 +3511,135 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
+    it('should transpile a child component with an action prop, with a button #793', () => {
+      const code = `
+       export function ParentComponent() {
+          function onAction() {
+            console.log("this works in the server");
+          }
+
+          return <ChildComponent onAction={onAction} />;
+        }
+
+        function ChildComponent({ onAction }: { onAction: () => void }) {
+          return (
+              <button onClick={onAction}>Run the action</button>
+          );
+        }
+      `;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+          import {resolveAction as __resolveAction} from "brisa/server";
+          
+          function ParentComponent() {
+            function onAction() {
+              console.log("this works in the server");
+            }
+            
+            return jsxDEV(ChildComponent, {onAction,"data-action-onaction": "a1_1","data-action": true}, undefined, false, undefined, this);
+          }
+            
+          function ChildComponent({onAction}) {
+            return jsxDEV("button", {onClick: (...args) => onAction(...args),children: "Run the action","data-action-onclick": "a1_2","data-action": true}, undefined, false, undefined, this);
+          }
+            
+          ParentComponent._hasActions = true;
+          ChildComponent._hasActions = true;
+          
+          export async function a1_1({}, req) {
+            try {
+              function onAction() {
+                console.log("this works in the server");
+              }
+              await onAction(...req.store.get("__params:a1_1"));
+              await req._waitActionCallPromises("a1_1");
+            } catch (error) {
+             return __resolveAction({
+              req,error,actionId: "a1_1",component: __props => jsxDEV(ParentComponent, {...__props}, undefined, false, undefined, this)});
+            }
+          }
+            
+         export async function a1_2({onAction}, req) {
+            try {
+              const __action = (...args) => req._p(onAction(...args));
+              await __action(...req.store.get("__params:a1_2"));
+              await req._waitActionCallPromises("a1_2");
+            } catch (error) {
+              return __resolveAction({req,error,actionId: "a1_2",component: __props => jsxDEV(ChildComponent, {onAction, ...__props}, undefined, false, undefined, this)});
+            }
+          }
+      `);
+
+      expect(output).toBe(expected);
+    });
+
+    it('should transpile a child component with an action prop, with a fragment #793', () => {
+      const code = `
+       export function ParentComponent() {
+          function onAction() {
+            console.log("this works in the server");
+          }
+
+          return <ChildComponent onAction={onAction} />;
+        }
+
+        function ChildComponent({ onAction }: { onAction: () => void }) {
+        return (
+            <>
+              <button onClick={onAction}>Run the action</button>
+            </>
+          );
+        }
+      `;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+          import {resolveAction as __resolveAction} from "brisa/server";
+          
+          function ParentComponent() {
+            function onAction() {
+              console.log("this works in the server");
+            }
+            
+            return jsxDEV(ChildComponent, {onAction,"data-action-onaction": "a1_1","data-action": true}, undefined, false, undefined, this);
+          }
+            
+          function ChildComponent({onAction}) {
+            return jsxDEV(Fragment, {children: jsxDEV("button", {onClick: (...args) => onAction(...args),children: "Run the action","data-action-onclick": "a1_2","data-action": true}, undefined, false, undefined, this)}, undefined, false, undefined, this);
+          }
+            
+          ParentComponent._hasActions = true;
+          ChildComponent._hasActions = true;
+          
+          export async function a1_1({}, req) {
+            try {
+              function onAction() {
+                console.log("this works in the server");
+              }
+              await onAction(...req.store.get("__params:a1_1"));
+              await req._waitActionCallPromises("a1_1");
+            } catch (error) {
+             return __resolveAction({req,error,actionId: "a1_1",component: __props => jsxDEV(ParentComponent, {...__props}, undefined, false, undefined, this)});
+            }
+          }
+            
+         export async function a1_2({onAction}, req) {
+            try {
+              const __action = (...args) => req._p(onAction(...args));
+              await __action(...req.store.get("__params:a1_2"));
+              await req._waitActionCallPromises("a1_2");
+            } catch (error) {
+              return __resolveAction({req,error,actionId: "a1_2",component: __props => jsxDEV(ChildComponent, {onAction, ...__props}, undefined, false, undefined, this)});
+            }
+          }
+      `);
+
+      expect(output).toBe(expected);
+    });
+
     it.todo(
       'should work mixing elements with element generators and components',
       () => {

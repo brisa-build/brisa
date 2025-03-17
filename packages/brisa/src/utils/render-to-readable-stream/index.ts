@@ -627,9 +627,8 @@ function getValueOfComponent(
   props: Props,
   request: RequestContext,
 ) {
-  return Promise.resolve()
-    .then(() => componentFn(props, request) ?? '')
-    .catch((error: Error) => {
+  return Promise.try(() => componentFn(props, request) ?? '').catch(
+    (error: Error) => {
       if (isNotFoundError(error) || isNavigateThrowable(error)) {
         throw error;
       }
@@ -658,7 +657,8 @@ function getValueOfComponent(
         return '';
       }
       return componentFn.error({ error, ...props }, request);
-    });
+    },
+  );
 }
 
 function enqueueCSSFiles(controller: Controller, suspenseId?: number) {
