@@ -47,6 +47,10 @@ export function isDangerHTML(content: unknown[]): boolean {
   );
 }
 
+// This is needed during server rendering to know that it is a fragment
+// function. #793
+Fragment._F = true;
+
 export {
   createNode as jsx,
   createNode as jsxs,

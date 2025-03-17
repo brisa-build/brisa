@@ -150,7 +150,7 @@ async function enqueueDuringRendering(
 
   const { BUILD_DIR, VERSION, CONFIG, IS_DEVELOPMENT, IS_SERVE_PROCESS } =
     getConstants();
-  const basePath = CONFIG.basePath || '';
+  const basePath = CONFIG.basePath ?? '';
   const compiledPagesPath = basePath + '/_brisa/pages';
 
   for (const elementContent of elements) {
@@ -172,7 +172,7 @@ async function enqueueDuringRendering(
     const [type, propsWithoutChildren, children] = elementContent as any;
     const props = { ...propsWithoutChildren, children };
     const isServerProvider = type === CONTEXT_PROVIDER && props.serverOnly;
-    const isFragment = type === null;
+    const isFragment = type === null || type?._F;
     const isTagToIgnore = isFragment || isServerProvider;
     const isWebComponent = props?.['ssr-Component'] || props?.__isWebComponent;
     const isElement = typeof type === 'string';
@@ -627,9 +627,8 @@ function getValueOfComponent(
   props: Props,
   request: RequestContext,
 ) {
-  return Promise.resolve()
-    .then(() => componentFn(props, request) ?? '')
-    .catch((error: Error) => {
+  return Promise.try(() => componentFn(props, request) ?? '').catch(
+    (error: Error) => {
       if (isNotFoundError(error) || isNavigateThrowable(error)) {
         throw error;
       }
@@ -658,12 +657,13 @@ function getValueOfComponent(
         return '';
       }
       return componentFn.error({ error, ...props }, request);
-    });
+    },
+  );
 }
 
 function enqueueCSSFiles(controller: Controller, suspenseId?: number) {
   const { CONFIG, CSS_FILES } = getConstants();
-  const basePath = (CONFIG.basePath || '').replace(/\/$/, '');
+  const basePath = (CONFIG.basePath ?? '').replace(/\/$/, '');
 
   if (!CSS_FILES?.length) return;
 
