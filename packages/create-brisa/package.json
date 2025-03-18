@@ -1,6 +1,6 @@
 {
   "name": "create-brisa",
-  "version": "0.2.9-canary.4",
+  "version": "0.2.9",
   "license": "MIT",
   "type": "module",
   "scripts": {
