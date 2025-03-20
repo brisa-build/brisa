@@ -3,9 +3,7 @@ import path from 'node:path';
 const src = path.join(import.meta.dirname, '..', 'src');
 const outdir = path.join(import.meta.dirname, '..', 'compiler');
 
-const output = await Bun.build({
-  // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-  throw: false,
+await Bun.build({
   outdir,
   entrypoints: [path.join(src, 'core', 'compiler', 'index.ts')],
   minify: true,
@@ -30,9 +28,7 @@ const output = await Bun.build({
       },
     },
   ],
-});
-
-if (!output.success) {
-  console.error(output.logs);
+}).catch((e) => {
+  console.error(e);
   process.exit(1);
-}
+});
