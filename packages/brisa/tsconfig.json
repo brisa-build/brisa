@@ -5,6 +5,7 @@
     "jsxImportSource": "brisa",
     "baseUrl": "./src",
     "paths": {
+      "brisa-project-internals/*": ["src/brisa-project-internals.ts"],
       "@/*": ["*"]
     }
   },

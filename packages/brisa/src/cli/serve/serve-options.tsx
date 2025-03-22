@@ -12,7 +12,6 @@ import getImportableFilepath, {
 } from '@/utils/get-importable-filepath';
 import getRouteMatcher from '@/utils/get-route-matcher';
 import handleI18n from '@/utils/handle-i18n';
-import importFileIfExists from '@/utils/import-file-if-exists';
 import { isNotFoundError } from '@/utils/not-found';
 import redirectTrailingSlash from '@/utils/redirect-trailing-slash';
 import feedbackError from '@/utils/feedback-error';
@@ -25,6 +24,7 @@ import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
+import { middleware } from 'brisa-project-internals';
 import getInitiator from '@/utils/get-initiator';
 import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
 import transferStoreService, {
@@ -70,8 +70,6 @@ export async function getServeOptions() {
   const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
   const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
   const route404 = pagesRouter.reservedRoutes[PAGE_404];
-  const middlewareModule = await importFileIfExists('middleware', BUILD_DIR);
-  const customMiddleware = middlewareModule?.default;
   const tls = CONFIG?.tls;
   const basePath = CONFIG?.basePath ?? '';
 
@@ -263,10 +261,8 @@ export async function getServeOptions() {
     }
 
     // Middleware
-    if (customMiddleware) {
-      // @ts-ignore TODO: Remove this comment when TypeScript adds Promise.try
-      const middlewareResponse = await Promise.try(() => customMiddleware(req));
-
+    if (middleware) {
+      const middlewareResponse = await Promise.try(() => middleware(req));
       if (middlewareResponse) return middlewareResponse;
     }
 

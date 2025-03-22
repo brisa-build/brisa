@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logBuildError } from '../log/log-build';
 import getImportableFilepath from '../get-importable-filepath';
+import attachBrisaProjectInternalsPlugin from '@/utils/attach-brisa-project-internals';
 
 const SERVER_OUTPUTS = new Set(['bun', 'node', 'deno']);
 const NO_SERVER_EXPORTS = new Set([
@@ -82,6 +83,7 @@ export default async function compileServeInternalsIntoBuild() {
       entry: '[name].[ext]',
     },
     external: CONFIG.external,
+    plugins: [attachBrisaProjectInternalsPlugin()],
     // Note: for Deno we need "node" as target too
     target: isBun ? 'bun' : 'node',
     banner: [

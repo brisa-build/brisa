@@ -1,4 +1,4 @@
-import type { BunFile } from 'bun';
+import type { BunFile, ServerWebSocket } from 'bun';
 import {
   afterEach,
   beforeEach,
@@ -12,7 +12,6 @@ import {
 import { brotliDecompressSync, gunzipSync } from 'node:zlib';
 import path from 'node:path';
 import { getConstants } from '@/constants';
-import type { ServerWebSocket } from 'bun';
 import type { RequestContext } from '@/types';
 import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
@@ -23,6 +22,9 @@ import {
   encrypt,
   ENCRYPT_PREFIX,
 } from '@/utils/crypto';
+
+// @ts-ignore
+import middleware from '../../__fixtures__/middleware.ts';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -51,6 +53,8 @@ const __CRYPTO_IV__ = process.env.__CRYPTO_IV__;
 
 describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
+    mock.module('brisa-project-internals', () => ({ middleware }));
+
     // @ts-ignore - We need to test real server scenarios
     if (typeof window !== 'undefined') window = undefined;
     globalThis.mockConstants = {
