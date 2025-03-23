@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import path from 'node:path';
+import { normalizeHTML } from '@/helpers';
 import { getConstants } from '@/constants';
 import attachBrisaProjectInternalsPlugin from '.';
 
@@ -13,18 +14,21 @@ describe('attach-brisa-project-internals', () => {
     };
   });
 
-  it('should export the middleware', () => {
+  it('should export the middleware & i18n', () => {
     const plugin = attachBrisaProjectInternalsPlugin();
     const onLoad = mock(() => {});
 
     plugin.setup({ onLoad } as any);
 
     const [filter, pluginFn] = onLoad.mock.calls[0] as any;
+    const pluginContent = pluginFn({ loader: 'ts' });
 
     expect(filter).toEqual({ filter: /brisa-project-internals/ });
-    expect(pluginFn({ loader: 'ts' })).toEqual({
-      contents: `export { default as middleware } from '${BUILD_DIR}/middleware.ts';`,
-      loader: 'ts',
-    });
+    expect(normalizeHTML(pluginContent.contents)).toBe(
+      normalizeHTML(`
+      export { default as middleware } from '${BUILD_DIR}/middleware.ts';
+      export { default as i18n } from '${BUILD_DIR}/i18n.ts';
+    `),
+    );
   });
 });
