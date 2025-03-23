@@ -1,6 +1,7 @@
 import { describe, expect, it, spyOn, afterEach, mock } from 'bun:test';
 import path from 'node:path';
-import { internalConstants, loadProjectConstants } from '.';
+import { internalConstants } from '.';
+import { loadProjectConstants } from './load-project-constants';
 
 let mockPathJoin: ReturnType<typeof spyOn>;
 

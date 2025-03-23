@@ -1,8 +1,6 @@
-import type { BrisaConstants, I18nConfig } from './types';
-import {
-  internalConstants,
-  loadProjectConstants,
-} from './utils/load-constants';
+import type { BrisaConstants } from './types';
+import { internalConstants } from '@/utils/load-constants';
+import { loadProjectConstants } from '@/utils/load-constants/load-project-constants';
 
 const internal = internalConstants();
 

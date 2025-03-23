@@ -15,12 +15,17 @@ export default function attachBrisaProjectInternalsPlugin() {
     ? `export { default as middleware } from '${middlewarePath}';`
     : 'export const middleware = null;';
 
+  const i18nPath = getImportableFilepath('i18n', BUILD_DIR);
+  const i18nExport = i18nPath
+    ? `export { default as i18n } from '${i18nPath}';`
+    : 'export const i18n = null;';
+
   return {
     name: 'attach-brisa-project-internals',
     setup(build) {
       build.onLoad({ filter: /brisa-project-internals/ }, ({ loader }) => {
         return {
-          contents: middlewareExport,
+          contents: `${middlewareExport}${i18nExport}`,
           loader,
         };
       });
