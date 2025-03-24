@@ -23,7 +23,7 @@ export default function attachBrisaProjectInternalsPlugin() {
   const configPath = getImportableFilepath('brisa.config', ROOT_DIR);
   const configExport = configPath
     ? `export { default as config } from '${configPath}';`
-    : 'export const config = null;';
+    : 'export const config = {};';
 
   return {
     name: 'attach-brisa-project-internals',
