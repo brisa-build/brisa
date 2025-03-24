@@ -11,6 +11,7 @@ describe('attach-brisa-project-internals', () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       BUILD_DIR,
+      ROOT_DIR: BUILD_DIR,
     };
   });
 
@@ -28,6 +29,7 @@ describe('attach-brisa-project-internals', () => {
       normalizeHTML(`
       export { default as middleware } from '${BUILD_DIR}/middleware.ts';
       export { default as i18n } from '${BUILD_DIR}/i18n.ts';
+      export { default as config } from '${BUILD_DIR}/brisa.config.ts';
     `),
     );
   });

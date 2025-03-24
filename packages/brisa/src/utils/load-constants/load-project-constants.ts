@@ -1,6 +1,6 @@
 import path from 'node:path';
 import importFileIfExists from '../import-file-if-exists';
-import { i18n } from 'brisa-project-internals';
+import { i18n, config } from 'brisa-project-internals';
 import type { InternalConstants, ProjectConstants } from '@/types';
 import type { BunPlugin } from 'bun';
 
@@ -45,7 +45,7 @@ export async function loadProjectConstants({
   const I18N_CONFIG = i18n;
   const CONFIG = {
     ...defaultConfig,
-    ...((await importFileIfExists('brisa.config', ROOT_DIR))?.default ?? {}),
+    ...config,
   };
   const IS_STATIC_EXPORT = staticExportOutputOption.has(CONFIG?.output);
 
