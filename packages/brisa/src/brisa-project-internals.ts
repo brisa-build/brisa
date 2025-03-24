@@ -1,11 +1,11 @@
 import importFileIfExists from '@/utils/import-file-if-exists';
 import { internalConstants } from '@/utils/load-constants';
-import type { I18nConfig } from "brisa";
+import type { I18nConfig } from 'brisa';
 
 // All this is temporal to work in DEV (brisa dev), in the future DEV is going to work
 // in the same way that PROD works (without dynamic imports and these constants would
 // be needed only in build-time, inside attach-brisa-project-internals)
-const { BUILD_DIR, WORKSPACE } = internalConstants();
+const { BUILD_DIR, WORKSPACE, ROOT_DIR } = internalConstants();
 
 /**
  * WIP https://github.com/brisa-build/brisa/issues/628
@@ -20,9 +20,10 @@ export const middleware = (await importFileIfExists('middleware', BUILD_DIR))
   ?.default;
 export const i18n = (await importFileIfExists('i18n', WORKSPACE))
   ?.default as I18nConfig;
+export const config =
+  (await importFileIfExists('brisa.config', ROOT_DIR))?.default ?? {};
 
 // TODO:
-export const config = null;
 export const integrations = null;
 export const cssFiles = [];
 export const api = [];
