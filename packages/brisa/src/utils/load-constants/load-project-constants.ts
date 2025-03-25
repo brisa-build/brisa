@@ -1,6 +1,6 @@
 import path from 'node:path';
 import importFileIfExists from '../import-file-if-exists';
-import { i18n, config } from 'brisa-project-internals';
+import { i18n, config, integrations } from 'brisa-project-internals';
 import type { InternalConstants, ProjectConstants } from '@/types';
 import type { BunPlugin } from 'bun';
 
@@ -37,10 +37,6 @@ export async function loadProjectConstants({
     : [];
   const CSS_FILES =
     (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
-  const integrations = await importFileIfExists(
-    '_integrations',
-    path.resolve(BUILD_DIR, 'web-components'),
-  );
   const WEB_CONTEXT_PLUGINS = integrations?.webContextPlugins ?? [];
   const I18N_CONFIG = i18n;
   const CONFIG = {

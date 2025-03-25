@@ -1,4 +1,5 @@
 import type { BunPlugin } from 'bun';
+import { resolve } from 'node:path';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { getConstants } from '@/constants';
 
@@ -25,12 +26,20 @@ export default function attachBrisaProjectInternalsPlugin() {
     ? `export { default as config } from '${configPath}';`
     : 'export const config = {};';
 
+  const webIntegrationsPath = getImportableFilepath(
+    '_integrations',
+    resolve(BUILD_DIR, 'web-components'),
+  );
+  const webIntegrationsExport = webIntegrationsPath
+    ? `export { default as integrations } from '${webIntegrationsPath}';`
+    : 'export const integrations = null;';
+
   return {
     name: 'attach-brisa-project-internals',
     setup(build) {
       build.onLoad({ filter: /brisa-project-internals/ }, ({ loader }) => {
         return {
-          contents: `${middlewareExport}${i18nExport}${configExport}`,
+          contents: `${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}`,
           loader,
         };
       });
