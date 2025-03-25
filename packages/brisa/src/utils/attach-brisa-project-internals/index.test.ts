@@ -30,6 +30,7 @@ describe('attach-brisa-project-internals', () => {
       export { default as middleware } from '${BUILD_DIR}/middleware.ts';
       export { default as i18n } from '${BUILD_DIR}/i18n.ts';
       export { default as config } from '${BUILD_DIR}/brisa.config.ts';
+      export { default as integrations } from '${BUILD_DIR}/web-components/_integrations.tsx';
     `),
     );
   });
