@@ -39,7 +39,7 @@ const TAILWINDCSS_PATH = path.join(
 );
 const PANDACSS_PATH = path.join(INTEGRATIONS_PATH, 'pandacss', 'index.js');
 const BUILD_PATH = path.join(OUT_PATH, 'cli', 'build.js');
-const SERVE_PATH = path.join(OUT_PATH, 'cli', 'serve', 'index.js');
+const SERVE_PATH = path.join(OUT_PATH, 'cli-dev', 'index.js');
 const SERVE_PATH_PROD = path.join(process.cwd(), 'build', 'server.js');
 
 let originalArgv: string[];

@@ -37,12 +37,16 @@ export default function attachBrisaProjectInternalsPlugin() {
   return {
     name: 'attach-brisa-project-internals',
     setup(build) {
-      build.onLoad({ filter: /brisa-project-internals/ }, ({ loader }) => {
-        return {
+      build.onResolve({ filter: /brisa-project-internals/ }, () => ({
+        path: import.meta.filename,
+      }));
+      build.onLoad(
+        { filter: new RegExp(import.meta.filename) },
+        ({ loader }) => ({
           contents: `${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}`,
           loader,
-        };
-      });
+        }),
+      );
     },
   } satisfies BunPlugin;
 }
