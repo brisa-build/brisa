@@ -4,7 +4,8 @@ import { normalizeHTML } from '@/helpers';
 import { getConstants } from '@/constants';
 import attachBrisaProjectInternalsPlugin from '.';
 
-const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
+const BUILD_DIR = path.join(import.meta.dirname, '..', '..', '__fixtures__');
+const DIR = path.join(import.meta.dirname, 'index.ts');
 
 describe('attach-brisa-project-internals', () => {
   beforeEach(() => {
@@ -18,13 +19,14 @@ describe('attach-brisa-project-internals', () => {
   it('should export the middleware & i18n', () => {
     const plugin = attachBrisaProjectInternalsPlugin();
     const onLoad = mock(() => {});
+    const onResolve = mock(() => {});
 
-    plugin.setup({ onLoad } as any);
+    plugin.setup({ onLoad, onResolve } as any);
 
     const [filter, pluginFn] = onLoad.mock.calls[0] as any;
     const pluginContent = pluginFn({ loader: 'ts' });
 
-    expect(filter).toEqual({ filter: /brisa-project-internals/ });
+    expect(filter).toEqual({ filter: new RegExp(DIR) });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
       export { default as middleware } from '${BUILD_DIR}/middleware.ts';

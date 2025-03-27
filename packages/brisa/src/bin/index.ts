@@ -41,7 +41,7 @@ const buildStandaloneFilePath = path.join(
   'build-standalone',
   'index.js',
 );
-const serveFilepath = path.join(outPath, 'cli', 'serve', 'index.js');
+const serveFilepath = path.join(outPath, 'cli-dev', 'index.js');
 const serveFilepathProd = path.resolve(process.cwd(), 'build', 'server.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
