@@ -106,7 +106,9 @@
     "test",
     "index.js"
   ],
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test && bun run build:core-compiler",
     "build:bin": "bun build --minify --target=bun --outdir=./ src/bin/index.ts && bun run build:cli-utils",
@@ -143,9 +145,9 @@
     "brisa-tailwindcss": "workspace:*",
     "brisa-pandacss": "workspace:*"
   },
-  "packageManager": "bun@1.2.6",
+  "packageManager": "bun@1.2.7",
   "engines": {
-    "bun": ">= 1.2.6",
+    "bun": ">= 1.2.7",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
