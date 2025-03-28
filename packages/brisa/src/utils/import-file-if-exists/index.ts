@@ -7,6 +7,7 @@ export default async function importFileIfExists(
     | 'i18n'
     | 'brisa.config'
     | '_integrations'
+    | 'layout'
     | 'css-files'
     | 'actions',
   dir = path.join(process.cwd(), 'build'),

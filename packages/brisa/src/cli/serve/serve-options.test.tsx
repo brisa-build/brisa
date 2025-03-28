@@ -25,6 +25,8 @@ import {
 
 // @ts-ignore
 import middleware from '../../__fixtures__/middleware.ts';
+// @ts-ignore
+import * as layoutModule from '../../__fixtures__/layout.tsx';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -53,7 +55,10 @@ const __CRYPTO_IV__ = process.env.__CRYPTO_IV__;
 
 describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
-    mock.module('brisa-project-internals', () => ({ middleware }));
+    mock.module('brisa-project-internals', () => ({
+      middleware,
+      layoutModule,
+    }));
 
     // @ts-ignore - We need to test real server scenarios
     if (typeof window !== 'undefined') window = undefined;
