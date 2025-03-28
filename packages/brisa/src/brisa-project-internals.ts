@@ -31,10 +31,11 @@ export const integrations = await importFileIfExists(
   resolve(BUILD_DIR, 'web-components'),
 );
 
+export const layoutModule = await importFileIfExists('layout', BUILD_DIR);
+
 // TODO:
 export const cssFiles = [];
 export const api = [];
-export const layout = null;
 export const websockets = null;
 export const actions = null;
 export const pages = [];

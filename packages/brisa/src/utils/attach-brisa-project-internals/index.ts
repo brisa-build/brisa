@@ -34,6 +34,12 @@ export default function attachBrisaProjectInternalsPlugin() {
     ? `export { default as integrations } from '${webIntegrationsPath}';`
     : 'export const integrations = null;';
 
+  const layoutPath = getImportableFilepath('layout', BUILD_DIR);
+
+  const layoutExport = layoutPath
+    ? `export * as layoutModule from '${layoutPath}';`
+    : 'export const layoutModule = null;';
+
   return {
     name: 'attach-brisa-project-internals',
     setup(build) {
@@ -43,7 +49,7 @@ export default function attachBrisaProjectInternalsPlugin() {
       build.onLoad(
         { filter: new RegExp(import.meta.filename) },
         ({ loader }) => ({
-          contents: `${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}`,
+          contents: `${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}`,
           loader,
         }),
       );

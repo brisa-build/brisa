@@ -1,4 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach,
+  jest,
+  mock,
+} from 'bun:test';
 import path from 'node:path';
 
 import type { MatchedBrisaRoute, Translate } from '@/types';
@@ -7,12 +15,21 @@ import responseRenderedPage, { routeToPrerenderedPagePath } from '.';
 import { getConstants } from '@/constants';
 import { Initiator } from '@/public-constants';
 
+// @ts-ignore
+import middleware from '../../__fixtures__/middleware.ts';
+// @ts-ignore
+import * as layoutModule from '../../__fixtures__/layout.tsx';
+
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 
 describe('utils', () => {
   beforeEach(async () => {
+    mock.module('brisa-project-internals', () => ({
+      middleware,
+      layoutModule,
+    }));
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
@@ -29,6 +46,7 @@ describe('utils', () => {
 
   afterEach(() => {
     globalThis.mockConstants = undefined;
+    jest.restoreAllMocks();
   });
 
   describe('response-rendered-page', () => {
