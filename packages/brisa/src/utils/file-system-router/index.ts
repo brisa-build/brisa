@@ -153,10 +153,12 @@ function resolveRoutes({
   fileExtensions = DEFAULT_EXTENSIONS,
 }: FileSystemRouterOptions) {
   const routes: Record<string, string> = {};
-  const files = fs.readdirSync(dir, {
-    withFileTypes: true,
-    recursive: true,
-  });
+  const files = fs.existsSync(dir)
+    ? fs.readdirSync(dir, {
+        withFileTypes: true,
+        recursive: true,
+      })
+    : [];
 
   for (const file of files) {
     if (file.isDirectory() || isTestFile(file.name, true)) continue;
