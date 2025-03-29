@@ -1,6 +1,7 @@
 import { resolve } from 'node:path';
 import importFileIfExists from '@/utils/import-file-if-exists';
 import { internalConstants } from '@/utils/load-constants';
+import { pathToFileURLWhenNeeded } from '@/utils/get-importable-filepath';
 import type { I18nConfig } from 'brisa';
 
 // All this is temporal to work in DEV (brisa dev), in the future DEV is going to work
@@ -33,9 +34,15 @@ export const integrations = await importFileIfExists(
 
 export const layoutModule = await importFileIfExists('layout', BUILD_DIR);
 
+// All dynamic pages (for dev)
+export const pages = new Proxy({} as Record<string, Promise<any>>, {
+  get(target, filePath: string) {
+    return import(pathToFileURLWhenNeeded(filePath));
+  },
+});
+
 // TODO:
 export const cssFiles = [];
 export const api = [];
 export const websockets = null;
 export const actions = null;
-export const pages = [];

@@ -2,6 +2,7 @@ import type { BunPlugin } from 'bun';
 import { resolve } from 'node:path';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { getConstants } from '@/constants';
+import { fileSystemRouter } from '@/utils/file-system-router';
 
 /**
  * This plugin substitute the dynamic imports of packages/brisa/src/brisa-project-internals.ts to
@@ -40,6 +41,8 @@ export default function attachBrisaProjectInternalsPlugin() {
     ? `export * as layoutModule from '${layoutPath}';`
     : 'export const layoutModule = null;';
 
+  const pages = getPagesExport();
+
   return {
     name: 'attach-brisa-project-internals',
     setup(build) {
@@ -49,10 +52,28 @@ export default function attachBrisaProjectInternalsPlugin() {
       build.onLoad(
         { filter: new RegExp(import.meta.filename) },
         ({ loader }) => ({
-          contents: `${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}`,
+          contents: `${pages.imports}${pages.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}`,
           loader,
         }),
       );
     },
   } satisfies BunPlugin;
+}
+
+function getPagesExport() {
+  const { PAGES_DIR } = getConstants();
+  const { routes } = fileSystemRouter({ dir: PAGES_DIR });
+  let count = 0;
+  let imports = '';
+  let objectCreation = 'const allPages = {};';
+
+  for (const [, filePath] of routes) {
+    imports += `import * as p${++count} from "${filePath}";\n`;
+    objectCreation += `allPages["${filePath}"] = p${count};\n`;
+  }
+
+  return {
+    imports,
+    exports: `${objectCreation}export const pages = allPages;`,
+  };
 }

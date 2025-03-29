@@ -2,29 +2,16 @@ import { getConstants } from '@/constants';
 import dangerHTML from '@/utils/danger-html';
 import { LiveReloadScript } from '@/cli/dev-live-reload';
 import LoadLayout from '@/utils/load-layout';
-import type { MatchedBrisaRoute, PageModule } from '@/types';
-import { layoutModule } from 'brisa-project-internals';
-import { pathToFileURLWhenNeeded } from '@/utils/get-importable-filepath';
-
-export const cache = new Map<string, any>();
+import type { MatchedBrisaRoute } from '@/types';
+import { layoutModule, pages } from 'brisa-project-internals';
 
 export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
-  const { BUILD_DIR, IS_PRODUCTION } = getConstants();
-
-  // This cache improves the req/sec 575%
-  // https://github.com/brisa-build/brisa/pull/604
-  if (IS_PRODUCTION && cache.has(route.filePath)) {
-    return cache.get(route.filePath);
-  }
-
-  const module = (await import(
-    pathToFileURLWhenNeeded(route.filePath)
-  )) as PageModule;
+  // TODO: Remove async-await after finish #628
+  const module = await pages[route.filePath];
   const PageComponent = module.default;
-
   const Page = () => (
     <>
       {dangerHTML('<!DOCTYPE html>')}
@@ -34,11 +21,7 @@ export default async function processPageRoute(
     </>
   );
 
-  const res = { Page, module, layoutModule } as const;
-
-  cache.set(route.filePath, res);
-
-  return res;
+  return { Page, module, layoutModule } as const;
 }
 
 function PageLayout({

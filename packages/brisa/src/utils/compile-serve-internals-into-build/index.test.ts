@@ -14,9 +14,11 @@ import compileBrisaInternalsToDoBuildPortable from '.';
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
 const BRISA_DIR = path.join(import.meta.dirname, '..', '..', '..');
 const CONFIG_DIR = path.join(import.meta.dirname, 'brisa.config.js');
+const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const mockConstants = {
   BUILD_DIR,
   BRISA_DIR,
+  PAGES_DIR,
   VERSION: 'x.y.z',
   WORKSPACE: BUILD_DIR,
   LOG_PREFIX: { INFO: 'INFO' } as any,
