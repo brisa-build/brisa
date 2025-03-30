@@ -27,6 +27,8 @@ import {
 import middleware from '../../__fixtures__/middleware.ts';
 // @ts-ignore
 import * as layoutModule from '../../__fixtures__/layout.tsx';
+// @ts-ignore
+import * as websocket from '../../__fixtures__/websocket.ts';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -57,6 +59,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
     mock.module('brisa-project-internals', () => ({
       middleware,
+      websocket,
       layoutModule,
     }));
 

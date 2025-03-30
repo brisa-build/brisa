@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 import importFileIfExists from '@/utils/import-file-if-exists';
+import getImportableFilepath from '@/utils/get-importable-filepath';
 import { internalConstants } from '@/utils/load-constants';
 import { pathToFileURLWhenNeeded } from '@/utils/get-importable-filepath';
 import type { I18nConfig } from 'brisa';
@@ -41,8 +42,10 @@ export const pages = new Proxy({} as Record<string, Promise<any>>, {
   },
 });
 
+const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
+export const websocket = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
+
 // TODO:
 export const cssFiles = [];
 export const api = [];
-export const websockets = null;
 export const actions = null;

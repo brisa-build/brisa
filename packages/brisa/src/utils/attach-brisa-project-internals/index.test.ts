@@ -66,6 +66,7 @@ describe('attach-brisa-project-internals', () => {
       export { default as config } from '${BUILD_DIR}/brisa.config.ts';
       export { default as integrations } from '${BUILD_DIR}/web-components/_integrations.tsx';
       export * as layoutModule from '${BUILD_DIR}/layout.tsx';
+      export * as websocket from '${BUILD_DIR}/websocket.ts';
     `),
     );
   });
