@@ -24,7 +24,7 @@ import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
-import { middleware } from 'brisa-project-internals';
+import { middleware, websocket } from 'brisa-project-internals';
 import getInitiator from '@/utils/get-initiator';
 import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
 import transferStoreService, {
@@ -67,8 +67,6 @@ export async function getServeOptions() {
 
   const HOT_RELOAD_TOPIC = 'hot-reload';
   const PUBLIC_CLIENT_PAGE_SUFFIX = '/_brisa/pages/';
-  const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
-  const wsModule = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
   const route404 = pagesRouter.reservedRoutes[PAGE_404];
   const tls = CONFIG?.tls;
   const basePath = CONFIG?.basePath ?? '';
@@ -80,8 +78,8 @@ export async function getServeOptions() {
     idleTimeout: CONFIG.idleTimeout,
     async fetch(req: Request, server) {
       const requestId = crypto.randomUUID();
-      const attachedData = wsModule?.attach
-        ? ((await wsModule.attach(req)) ?? {})
+      const attachedData = websocket?.attach
+        ? ((await websocket.attach(req)) ?? {})
         : {};
 
       if (server.upgrade(req, { data: { id: requestId, ...attachedData } })) {
@@ -220,19 +218,19 @@ export async function getServeOptions() {
         const { id } = ws.data as unknown as { id: string };
         globalThis.sockets.set(id, ws);
         if (!IS_PRODUCTION) ws.subscribe(HOT_RELOAD_TOPIC);
-        wsModule?.open?.(ws);
+        websocket?.open?.(ws);
       },
       close: (ws) => {
         const { id } = ws.data as unknown as { id: string };
         globalThis.sockets?.delete?.(id);
         if (!IS_PRODUCTION) ws.unsubscribe(HOT_RELOAD_TOPIC);
-        wsModule?.close?.(ws);
+        websocket?.close?.(ws);
       },
       message: (ws, message: string) => {
-        wsModule?.message?.(ws, message);
+        websocket?.message?.(ws, message);
       },
       drain: (ws) => {
-        wsModule?.drain?.(ws);
+        websocket?.drain?.(ws);
       },
     },
   } satisfies Serve;

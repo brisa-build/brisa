@@ -36,10 +36,14 @@ export default function attachBrisaProjectInternalsPlugin() {
     : 'export const integrations = null;';
 
   const layoutPath = getImportableFilepath('layout', BUILD_DIR);
-
   const layoutExport = layoutPath
     ? `export * as layoutModule from '${layoutPath}';`
     : 'export const layoutModule = null;';
+
+  const websocketPath = getImportableFilepath('websocket', BUILD_DIR);
+  const websocketExport = websocketPath
+    ? `export * as websocket from '${websocketPath}';`
+    : 'export const websocket = null;';
 
   const pages = getPagesExport();
 
@@ -52,7 +56,7 @@ export default function attachBrisaProjectInternalsPlugin() {
       build.onLoad(
         { filter: new RegExp(import.meta.filename) },
         ({ loader }) => ({
-          contents: `${pages.imports}${pages.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}`,
+          contents: `${pages.imports}${pages.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}`,
           loader,
         }),
       );
