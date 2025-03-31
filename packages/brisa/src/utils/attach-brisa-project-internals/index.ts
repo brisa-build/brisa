@@ -32,7 +32,7 @@ export default function attachBrisaProjectInternalsPlugin() {
     resolve(BUILD_DIR, 'web-components'),
   );
   const webIntegrationsExport = webIntegrationsPath
-    ? `export { default as integrations } from '${webIntegrationsPath}';`
+    ? `export * as integrations from '${webIntegrationsPath}';`
     : 'export const integrations = null;';
 
   const layoutPath = getImportableFilepath('layout', BUILD_DIR);
