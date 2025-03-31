@@ -607,7 +607,9 @@ describe('utils', () => {
       const res = new Response('<div id="some-id"></div>', {
         headers: { 'content-type': 'text/html' },
       });
-      mockFetch = spyOn(window, 'fetch').mockImplementation((async () => res) as any);
+      mockFetch = spyOn(window, 'fetch').mockImplementation(
+        (async () => res) as any,
+      );
       await simulateSPANavigation('http://localhost/some-page');
       expect(mockNavigationIntercept).toHaveBeenCalled();
       const handler = mockNavigationIntercept.mock.calls[0][0];
@@ -625,7 +627,9 @@ describe('utils', () => {
         headers: { 'content-type': 'text/html' },
       });
 
-      mockFetch = spyOn(window, 'fetch').mockImplementation((async () => res) as any);
+      mockFetch = spyOn(window, 'fetch').mockImplementation(
+        (async () => res) as any,
+      );
       const handler = mockNavigationIntercept.mock.calls[0][0];
       await handler();
 
