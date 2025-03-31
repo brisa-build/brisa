@@ -24,7 +24,7 @@ import {
 } from '@/utils/crypto';
 
 // @ts-ignore
-import middleware from '../../__fixtures__/middleware.ts';
+import * as middleware from '../../__fixtures__/middleware.ts';
 // @ts-ignore
 import * as layoutModule from '../../__fixtures__/layout.tsx';
 // @ts-ignore

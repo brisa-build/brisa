@@ -259,8 +259,10 @@ export async function getServeOptions() {
     }
 
     // Middleware
-    if (middleware) {
-      const middlewareResponse = await Promise.try(() => middleware(req));
+    if (middleware?.default) {
+      const middlewareResponse = await Promise.try(() =>
+        middleware.default(req),
+      );
       if (middlewareResponse) return middlewareResponse;
     }
 

@@ -19,8 +19,7 @@ const { BUILD_DIR, WORKSPACE, ROOT_DIR } = internalConstants();
  * Useful to avoid dynamic imports. Being possible to compile the app into binary to
  * improve memory in runtime.
  */
-export const middleware = (await importFileIfExists('middleware', BUILD_DIR))
-  ?.default;
+export const middleware = await importFileIfExists('middleware', BUILD_DIR);
 
 export const i18n = (await importFileIfExists('i18n', WORKSPACE))
   ?.default as I18nConfig;
