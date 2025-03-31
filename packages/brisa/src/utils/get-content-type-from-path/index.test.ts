@@ -12,7 +12,7 @@ const BATTERY_TESTS = [
   },
   {
     input: 'test.js',
-    output: 'application/javascript;charset=utf-8',
+    output: 'text/javascript;charset=utf-8',
   },
   {
     input: 'test.json',
@@ -32,7 +32,7 @@ const BATTERY_TESTS = [
   },
   {
     input: 'test.mp4',
-    output: 'video/mp4',
+    output: 'application/mp4',
   },
   {
     input: 'test.mp3',
