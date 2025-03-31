@@ -3,7 +3,6 @@ import importFileIfExists from '@/utils/import-file-if-exists';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { internalConstants } from '@/utils/load-constants';
 import { pathToFileURLWhenNeeded } from '@/utils/get-importable-filepath';
-import type { I18nConfig } from 'brisa';
 
 // All this is temporal to work in DEV (brisa dev), in the future DEV is going to work
 // in the same way that PROD works (without dynamic imports and these constants would
@@ -20,12 +19,8 @@ const { BUILD_DIR, WORKSPACE, ROOT_DIR } = internalConstants();
  * improve memory in runtime.
  */
 export const middleware = await importFileIfExists('middleware', BUILD_DIR);
-
-export const i18n = (await importFileIfExists('i18n', WORKSPACE))
-  ?.default as I18nConfig;
-
-export const config =
-  (await importFileIfExists('brisa.config', ROOT_DIR))?.default ?? {};
+export const i18n = await importFileIfExists('i18n', WORKSPACE);
+export const config = await importFileIfExists('brisa.config', ROOT_DIR);
 
 export const integrations = await importFileIfExists(
   '_integrations',

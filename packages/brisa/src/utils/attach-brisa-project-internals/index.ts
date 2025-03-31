@@ -19,12 +19,12 @@ export default function attachBrisaProjectInternalsPlugin() {
 
   const i18nPath = getImportableFilepath('i18n', BUILD_DIR);
   const i18nExport = i18nPath
-    ? `export { default as i18n } from '${i18nPath}';`
+    ? `export * as i18n from '${i18nPath}';`
     : 'export const i18n = null;';
 
   const configPath = getImportableFilepath('brisa.config', ROOT_DIR);
   const configExport = configPath
-    ? `export { default as config } from '${configPath}';`
+    ? `export * as config from '${configPath}';`
     : 'export const config = {};';
 
   const webIntegrationsPath = getImportableFilepath(
