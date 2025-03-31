@@ -1463,7 +1463,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toBe(
-      'application/javascript;charset=utf-8',
+      'text/javascript;charset=utf-8',
     );
     expect(response.text()).resolves.toContain("console.log('from public')");
   });
@@ -1479,7 +1479,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('content-type')).toBe(
-      'application/javascript;charset=utf-8',
+      'text/javascript;charset=utf-8',
     );
     expect(response.text()).resolves.toContain("console.log('from public')");
   });
