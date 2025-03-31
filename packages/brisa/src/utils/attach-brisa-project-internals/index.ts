@@ -14,7 +14,7 @@ export default function attachBrisaProjectInternalsPlugin() {
   const { BUILD_DIR, ROOT_DIR } = getConstants();
   const middlewarePath = getImportableFilepath('middleware', BUILD_DIR);
   const middlewareExport = middlewarePath
-    ? `export { default as middleware } from '${middlewarePath}';`
+    ? `export * as middleware from '${middlewarePath}';`
     : 'export const middleware = null;';
 
   const i18nPath = getImportableFilepath('i18n', BUILD_DIR);

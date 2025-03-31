@@ -16,7 +16,7 @@ import { getConstants } from '@/constants';
 import { Initiator } from '@/public-constants';
 
 // @ts-ignore
-import middleware from '../../__fixtures__/middleware.ts';
+import * as middleware from '../../__fixtures__/middleware.ts';
 // @ts-ignore
 import * as layoutModule from '../../__fixtures__/layout.tsx';
 
