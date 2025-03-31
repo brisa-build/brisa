@@ -38,10 +38,10 @@ export async function loadProjectConstants({
   const CSS_FILES =
     (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
   const WEB_CONTEXT_PLUGINS = integrations?.webContextPlugins ?? [];
-  const I18N_CONFIG = i18n;
+  const I18N_CONFIG = i18n?.default;
   const CONFIG = {
     ...defaultConfig,
-    ...config,
+    ...(config?.default ?? {}),
   };
   const IS_STATIC_EXPORT = staticExportOutputOption.has(CONFIG?.output);
 

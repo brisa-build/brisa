@@ -62,8 +62,8 @@ describe('attach-brisa-project-internals', () => {
       export const pages = allPages;
 
       export * as middleware from '${BUILD_DIR}/middleware.ts';
-      export { default as i18n } from '${BUILD_DIR}/i18n.ts';
-      export { default as config } from '${BUILD_DIR}/brisa.config.ts';
+      export * as i18n from '${BUILD_DIR}/i18n.ts';
+      export * as config from '${BUILD_DIR}/brisa.config.ts';
       export * as integrations from '${BUILD_DIR}/web-components/_integrations.tsx';
       export * as layoutModule from '${BUILD_DIR}/layout.tsx';
       export * as websocket from '${BUILD_DIR}/websocket.ts';
