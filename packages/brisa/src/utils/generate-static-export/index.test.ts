@@ -87,6 +87,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         expect(generateStaticExport()).resolves.toEqual([
           new Map([
             [formatPath('pages', '_404.tsx'), [formatPath('_404.html')]],
+            [formatPath('pages', 'empty.tsx'), [formatPath('empty.html')]],
             [formatPath('pages', '_500.tsx'), [formatPath('_500.html')]],
             [formatPath('pages', 'foo.tsx'), [formatPath('foo.html')]],
             [
@@ -153,6 +154,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
             [
               formatPath('pages', '_404.tsx'),
               [formatPath('en', '_404.html'), formatPath('pt', '_404.html')],
+            ],
+            [
+              formatPath('pages', 'empty.tsx'),
+              [formatPath('en', 'empty.html'), formatPath('pt', 'empty.html')],
             ],
             [
               formatPath('pages', '_500.tsx'),
@@ -224,7 +229,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         </html>
       `);
 
-        testGeneratedContentByIndex(16, expectedSoftRedirectCode);
+        testGeneratedContentByIndex(18, expectedSoftRedirectCode);
       });
 
       it('should generate static export with trailingSlash', () => {
@@ -246,6 +251,10 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
             [
               formatPath('pages', '_404.tsx'),
               [formatPath('_404', 'index.html')],
+            ],
+            [
+              formatPath('pages', 'empty.tsx'),
+              [formatPath('empty', 'index.html')],
             ],
             [
               formatPath('pages', '_500.tsx'),
@@ -335,7 +344,7 @@ describe.each(BASE_PATHS)('utils', (basePath) => {
         await generateStaticExport();
 
         // All are correct logs withouth the warning
-        expect(mockLog).toHaveBeenCalledTimes(9);
+        expect(mockLog).toHaveBeenCalledTimes(10);
         const allLog = mockLog.mock.calls.flat().join();
         expect(allLog).toContain('/index.html prerendered in ');
         expect(allLog).toContain('/foo.html prerendered in ');

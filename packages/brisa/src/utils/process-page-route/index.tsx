@@ -5,13 +5,15 @@ import LoadLayout from '@/utils/load-layout';
 import type { MatchedBrisaRoute } from '@/types';
 import { layoutModule, pages } from 'brisa-project-internals';
 
+const Empty = () => null;
+
 export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
   // TODO: Remove async-await after finish #628
   const module = await pages[route.filePath];
-  const PageComponent = module.default;
+  const PageComponent = module?.default ?? Empty;
   const Page = () => (
     <>
       {dangerHTML('<!DOCTYPE html>')}
