@@ -23,6 +23,7 @@ describe('utils', () => {
       const entrypoints = getEntrypoints(pagesDir);
       const expected = [
         path.sep + 'index.tsx',
+        path.sep + 'empty.tsx',
         'foo.tsx',
         'page-with-web-component.tsx',
         'somepage.tsx',

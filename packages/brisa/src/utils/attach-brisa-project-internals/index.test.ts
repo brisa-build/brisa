@@ -9,14 +9,17 @@ const PAGES_DIR = join(BUILD_DIR, 'pages');
 const DIR = join(import.meta.dirname, 'index.ts');
 
 // Pages
-const p1 = join(PAGES_DIR, 'index.tsx');
-const p2 = join(PAGES_DIR, 'foo.tsx');
-const p3 = join(PAGES_DIR, 'page-with-web-component.tsx');
-const p4 = join(PAGES_DIR, 'somepage.tsx');
-const p5 = join(PAGES_DIR, 'somepage-with-context.tsx');
-const p6 = join(PAGES_DIR, 'user', '[username].tsx');
-const p7 = join(PAGES_DIR, '_404.tsx');
-const p8 = join(PAGES_DIR, '_500.tsx');
+const pagesPath = [
+  join(PAGES_DIR, 'index.tsx'),
+  join(PAGES_DIR, 'empty.tsx'),
+  join(PAGES_DIR, 'foo.tsx'),
+  join(PAGES_DIR, 'page-with-web-component.tsx'),
+  join(PAGES_DIR, 'somepage.tsx'),
+  join(PAGES_DIR, 'somepage-with-context.tsx'),
+  join(PAGES_DIR, 'user', '[username].tsx'),
+  join(PAGES_DIR, '_404.tsx'),
+  join(PAGES_DIR, '_500.tsx'),
+];
 
 describe('attach-brisa-project-internals', () => {
   beforeEach(() => {
@@ -41,24 +44,10 @@ describe('attach-brisa-project-internals', () => {
     expect(filter).toEqual({ filter: new RegExp(DIR) });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
-      import * as p1 from "${p1}";
-      import * as p2 from "${p2}";
-      import * as p3 from "${p3}";
-      import * as p4 from "${p4}";
-      import * as p5 from "${p5}";
-      import * as p6 from "${p6}";
-      import * as p7 from "${p7}";
-      import * as p8 from "${p8}";
+      ${pagesPath.map((route, i) => `import * as p${i + 1} from "${route}";`).join('\n')}
 
       const allPages = {};
-      allPages["${p1}"] = p1;
-      allPages["${p2}"] = p2;
-      allPages["${p3}"] = p3;
-      allPages["${p4}"] = p4;
-      allPages["${p5}"] = p5;
-      allPages["${p6}"] = p6;
-      allPages["${p7}"] = p7;
-      allPages["${p8}"] = p8;
+      ${pagesPath.map((route, i) => `allPages["${route}"] = p${i + 1};`).join('\n')}
       export const pages = allPages;
 
       export * as middleware from '${BUILD_DIR}/middleware.ts';

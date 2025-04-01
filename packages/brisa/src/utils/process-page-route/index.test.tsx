@@ -11,6 +11,7 @@ import type { MatchedBrisaRoute, RequestContext } from '@/types';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const HOMEPAGE = path.join(FIXTURES, 'pages', 'index.tsx');
+const EMPTY_PAGE = path.join(FIXTURES, 'pages', 'empty.tsx');
 const I18N = path.join(FIXTURES, 'i18n.ts');
 const i18nConfig = (await import.meta.require(I18N)).default;
 
@@ -69,6 +70,42 @@ describe('utils', () => {
               </body>
             </html>
             <template id="U:1"><div data-action>Hello world!</div></template><script id="R:1">u$('1')</script>
+          `),
+      );
+    });
+
+    it('should return a page with only the layout when the page is empty (no default export)', async () => {
+      globalThis.mockConstants = {
+        ...(getConstants() ?? {}),
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+      };
+
+      const { Page } = await processPageRoute({
+        filePath: EMPTY_PAGE,
+      } as unknown as MatchedBrisaRoute);
+
+      // Rendered html
+      const stream = renderToReadableStream(Page(), {
+        request: extendRequestContext({
+          originalRequest: new Request('http://localhost:3000/empty'),
+        }),
+      });
+      const result = await Bun.readableStreamToText(stream);
+
+      expect(result).toBe(
+        toInline(`
+          <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="UTF-8"></meta>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+                <meta name="theme-color" content="#317EFB"></meta>
+                <title>Brisa</title>
+              </head>
+              <body>
+              </body>
+            </html>
           `),
       );
     });
