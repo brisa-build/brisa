@@ -10,8 +10,9 @@ import translateCore from '@/utils/translate-core';
 import type { MatchedBrisaRoute, RequestContext } from '@/types';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
-const HOMEPAGE = path.join(FIXTURES, 'pages', 'index.tsx');
-const EMPTY_PAGE = path.join(FIXTURES, 'pages', 'empty.tsx');
+const PAGES_DIR = path.join(FIXTURES, 'pages');
+const HOMEPAGE = path.join(PAGES_DIR, 'index.tsx');
+const EMPTY_PAGE = path.join(PAGES_DIR, 'empty.tsx');
 const I18N = path.join(FIXTURES, 'i18n.ts');
 const i18nConfig = (await import.meta.require(I18N)).default;
 
@@ -30,11 +31,17 @@ const testOptions = {
   request,
 };
 
-const routeHomepage = { filePath: HOMEPAGE } as unknown as MatchedBrisaRoute;
+const routeHomepage = {
+  filePath: HOMEPAGE,
+  name: '/',
+} as unknown as MatchedBrisaRoute;
 
 describe('utils', () => {
   beforeEach(() => {
-    globalThis.mockConstants = getConstants() ?? {};
+    globalThis.mockConstants = {
+      ...(getConstants() ?? {}),
+      PAGES_DIR,
+    };
   });
 
   afterEach(() => {
@@ -83,6 +90,7 @@ describe('utils', () => {
 
       const { Page } = await processPageRoute({
         filePath: EMPTY_PAGE,
+        name: '/empty',
       } as unknown as MatchedBrisaRoute);
 
       // Rendered html

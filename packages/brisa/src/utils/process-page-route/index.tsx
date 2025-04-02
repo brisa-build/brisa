@@ -12,7 +12,7 @@ export default async function processPageRoute(
   error?: Error,
 ) {
   // TODO: Remove async-await after finish #628
-  const module = await pages[route.filePath];
+  const module = await pages[route.name];
   const PageComponent = module?.default ?? Empty;
   const Page = () => (
     <>

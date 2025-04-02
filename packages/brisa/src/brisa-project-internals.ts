@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import importFileIfExists from '@/utils/import-file-if-exists';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { internalConstants } from '@/utils/load-constants';
-import { pathToFileURLWhenNeeded } from '@/utils/get-importable-filepath';
+import { getConstants } from '@/constants';
 
 // All this is temporal to work in DEV (brisa dev), in the future DEV is going to work
 // in the same way that PROD works (without dynamic imports and these constants would
@@ -30,9 +30,11 @@ export const integrations = await importFileIfExists(
 export const layoutModule = await importFileIfExists('layout', BUILD_DIR);
 
 // All dynamic pages (for dev)
+// TODO: This is going to be removed to be replaced as static also in DEV
+// (for now it's only static in PROD)
 export const pages = new Proxy({} as Record<string, Promise<any>>, {
-  get(target, filePath: string) {
-    return import(pathToFileURLWhenNeeded(filePath));
+  get(target, name: string) {
+    return importFileIfExists(name as any, getConstants().PAGES_DIR);
   },
 });
 

@@ -10,15 +10,15 @@ const DIR = join(import.meta.dirname, 'index.ts');
 
 // Pages
 const pagesPath = [
-  join(PAGES_DIR, 'index.tsx'),
-  join(PAGES_DIR, 'empty.tsx'),
-  join(PAGES_DIR, 'foo.tsx'),
-  join(PAGES_DIR, 'page-with-web-component.tsx'),
-  join(PAGES_DIR, 'somepage.tsx'),
-  join(PAGES_DIR, 'somepage-with-context.tsx'),
-  join(PAGES_DIR, 'user', '[username].tsx'),
-  join(PAGES_DIR, '_404.tsx'),
-  join(PAGES_DIR, '_500.tsx'),
+  ['/', join(PAGES_DIR, 'index.tsx')],
+  ['/empty', join(PAGES_DIR, 'empty.tsx')],
+  ['/foo', join(PAGES_DIR, 'foo.tsx')],
+  ['/page-with-web-component', join(PAGES_DIR, 'page-with-web-component.tsx')],
+  ['/somepage', join(PAGES_DIR, 'somepage.tsx')],
+  ['/somepage-with-context', join(PAGES_DIR, 'somepage-with-context.tsx')],
+  ['/user/[username]', join(PAGES_DIR, 'user', '[username].tsx')],
+  ['/_404', join(PAGES_DIR, '_404.tsx')],
+  ['/_500', join(PAGES_DIR, '_500.tsx')],
 ];
 
 describe('attach-brisa-project-internals', () => {
@@ -44,10 +44,10 @@ describe('attach-brisa-project-internals', () => {
     expect(filter).toEqual({ filter: new RegExp(DIR) });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
-      ${pagesPath.map((route, i) => `import * as p${i + 1} from "${route}";`).join('\n')}
+      ${pagesPath.map(([name, route], i) => `import * as p${i + 1} from "${route}";`).join('\n')}
 
       const allPages = {};
-      ${pagesPath.map((route, i) => `allPages["${route}"] = p${i + 1};`).join('\n')}
+      ${pagesPath.map(([name, route], i) => `allPages["${name}"] = p${i + 1};`).join('\n')}
       export const pages = allPages;
 
       export * as middleware from '${BUILD_DIR}/middleware.ts';

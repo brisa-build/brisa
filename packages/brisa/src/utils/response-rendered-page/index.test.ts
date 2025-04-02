@@ -68,6 +68,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'page-with-web-component.tsx'),
+          name: '/page-with-web-component',
         } as MatchedBrisaRoute,
         headers: {
           'X-Mode': 'reactivity',
@@ -90,6 +91,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
+          name: '/foo',
           pathname: '/foo',
         } as MatchedBrisaRoute,
         headers: {
@@ -118,6 +120,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
+          name: '/foo',
           pathname: '/foo/',
         } as MatchedBrisaRoute,
         headers: {
@@ -147,6 +150,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
+          name: '/foo',
           pathname: '/foo',
         } as MatchedBrisaRoute,
         headers: {
@@ -183,6 +187,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'foo.tsx'),
+          name: '/foo',
           pathname: '/foo/',
         } as MatchedBrisaRoute,
         headers: {
@@ -213,6 +218,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'somepage.tsx'),
+          name: '/somepage',
         } as MatchedBrisaRoute,
       });
 
@@ -233,6 +239,7 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'somepage.tsx'),
+          name: '/somepage',
         } as MatchedBrisaRoute,
       });
 
@@ -247,6 +254,8 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'index.tsx'),
+          name: '/',
+          pathname: '/',
         } as MatchedBrisaRoute,
       });
 
@@ -267,6 +276,8 @@ describe('utils', () => {
         req,
         route: {
           filePath: path.join(PAGES_DIR, 'index.tsx'),
+          name: '/',
+          pathname: '/',
         } as MatchedBrisaRoute,
       });
 
