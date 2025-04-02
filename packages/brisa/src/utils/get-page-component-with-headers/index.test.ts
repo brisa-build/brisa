@@ -38,6 +38,7 @@ describe('utils', () => {
     it('should return PageComponent, pageModule and pageHeaders', async () => {
       const route = {
         filePath: join(PAGES_DIR, 'foo.tsx'),
+        name: '/foo',
       } as MatchedBrisaRoute;
       const error = new Error('error');
       const headers = { header: 'value' };
@@ -64,6 +65,7 @@ describe('utils', () => {
       const exectedPageResponseHeaders = { 'x-test': 'fail' };
       const route = {
         filePath: join(PAGES_DIR, 'index.tsx'),
+        name: '/',
       } as MatchedBrisaRoute;
       const error = new Error('error');
       const status = 500;
@@ -93,6 +95,7 @@ describe('utils', () => {
       const exectedPageResponseHeaders = { 'x-test': 'success' };
       const route = {
         filePath: join(PAGES_DIR, 'index.tsx'),
+        name: '/',
       } as MatchedBrisaRoute;
       const result = await getPageComponentWithHeaders({ req, route });
       expect(result.PageComponent).toBeTypeOf('function');

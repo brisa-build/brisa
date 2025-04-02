@@ -71,9 +71,9 @@ function getPagesExport() {
   let imports = '';
   let objectCreation = 'const allPages = {};';
 
-  for (const [, filePath] of routes) {
+  for (const [name, filePath] of routes) {
     imports += `import * as p${++count} from "${filePath}";\n`;
-    objectCreation += `allPages["${filePath}"] = p${count};\n`;
+    objectCreation += `allPages["${name}"] = p${count};\n`;
   }
 
   return {
