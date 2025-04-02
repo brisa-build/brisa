@@ -1,6 +1,6 @@
 {
   "name": "brisa-pandacss",
-  "version": "0.2.10-canary.10",
+  "version": "0.2.10-canary.11",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
