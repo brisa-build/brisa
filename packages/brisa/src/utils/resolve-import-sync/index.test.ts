@@ -30,6 +30,20 @@ describe('utils/resolve-import-sync', () => {
     ).toBe(path.resolve(import.meta.dir, 'index.ts'));
   });
 
+  it('should resolve a .mjs extension', () => {
+    expect(resolveImportSync('@/__fixtures__/js/pages/foo')).toBe(
+      path.resolve(
+        import.meta.dir,
+        '..',
+        '..',
+        '__fixtures__',
+        'js',
+        'pages',
+        'foo.mjs',
+      ),
+    );
+  });
+
   it('should resolve a relative file', () => {
     expect(resolveImportSync('./index', import.meta.url)).toBe(
       path.resolve(import.meta.dir, 'index.ts'),
