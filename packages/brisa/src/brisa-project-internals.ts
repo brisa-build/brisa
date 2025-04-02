@@ -2,8 +2,6 @@ import { resolve, join } from 'node:path';
 import importFileIfExists from '@/utils/import-file-if-exists';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { internalConstants } from '@/utils/load-constants';
-import { pathToFileURLWhenNeeded } from '@/utils/get-importable-filepath';
-import { fileSystemRouter } from '@/utils/file-system-router';
 import { getConstants } from '@/constants';
 
 // All this is temporal to work in DEV (brisa dev), in the future DEV is going to work
@@ -34,16 +32,9 @@ export const layoutModule = await importFileIfExists('layout', BUILD_DIR);
 // All dynamic pages (for dev)
 // TODO: This is going to be removed to be replaced as static also in DEV
 // (for now it's only static in PROD)
-let routes: any;
 export const pages = new Proxy({} as Record<string, Promise<any>>, {
   get(target, name: string) {
-    const { PAGES_DIR } = getConstants();
-
-    if (!routes) {
-      routes = fileSystemRouter({ dir: PAGES_DIR }).routes;
-    }
-
-    return importFileIfExists(name as any, PAGES_DIR);
+    return importFileIfExists(name as any, getConstants().PAGES_DIR);
   },
 });
 
