@@ -1,4 +1,4 @@
-import { resolve, join } from 'node:path';
+import { resolve } from 'node:path';
 import importFileIfExists from '@/utils/import-file-if-exists';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { internalConstants } from '@/utils/load-constants';
