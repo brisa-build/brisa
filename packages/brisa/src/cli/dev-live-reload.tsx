@@ -59,7 +59,7 @@ export async function activateHotReload() {
     // https://github.com/brisa-build/brisa/issues/404
     currentProcess = cp.spawn(
       process.execPath,
-      [path.join(process.argv[1], '..', '..', 'build.js')],
+      [path.join(constants.BRISA_DIR, 'out', 'cli', 'build.js')],
       {
         env: Object.assign(process.env, { QUIET_MODE: 'true' }),
         stdio: ['inherit', 'inherit', 'pipe'],

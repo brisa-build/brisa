@@ -17,7 +17,6 @@ const PAGE_500 = '/_500';
 export function internalConstants(): InternalConstants {
   const currentScript = process.argv[1] ?? '';
   const { NODE_ENV } = process.env;
-  const CLI_DIR = path.join('brisa', 'out', 'cli');
   // Note: process.env.IS_PROD is to be defined in the build process
   const IS_PRODUCTION =
     Boolean(process.env.IS_PROD) ||
@@ -25,9 +24,20 @@ export function internalConstants(): InternalConstants {
     process.argv.some((t) => t === 'PROD');
   const IS_DEVELOPMENT =
     process.argv.some((t) => t === 'DEV') || NODE_ENV === 'development';
+
+  const OUT_FOLDER = path.join('brisa', 'out');
+  const CLI_DIR = path.join(OUT_FOLDER, 'cli');
+
   const IS_SERVE_PROCESS =
     Boolean(process.env.IS_SERVE_PROCESS) ||
-    Boolean(currentScript.endsWith(path.join(CLI_DIR, 'serve', 'index.js')));
+    Boolean(
+      currentScript.endsWith(
+        path.join(
+          OUT_FOLDER,
+          IS_DEVELOPMENT ? 'cli-dev/index.js' : 'cli/serve/index.js',
+        ),
+      ),
+    );
 
   const ROOT_DIR = process.env.BRISA_ROOT_DIR ?? process.cwd();
 

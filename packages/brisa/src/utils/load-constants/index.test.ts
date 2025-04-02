@@ -1,4 +1,12 @@
-import { describe, expect, it, spyOn, afterEach, mock } from 'bun:test';
+import {
+  describe,
+  expect,
+  it,
+  spyOn,
+  afterEach,
+  mock,
+  beforeEach,
+} from 'bun:test';
 import path from 'node:path';
 import { internalConstants } from '.';
 import { loadProjectConstants } from './load-project-constants';
@@ -21,12 +29,21 @@ describe('utils -> load-constants', () => {
   describe('internalConstants', () => {
     it('should return IS_SERVE_PROCESS as true and IS_BUILD_PROCESS as false', () => {
       process.argv[1] = 'brisa/out/cli/serve/index.js';
+      process.env.NODE_ENV = 'production';
+      const result = internalConstants();
+      expect(result.IS_SERVE_PROCESS).toBeTrue();
+      expect(result.IS_BUILD_PROCESS).toBeFalse();
+    });
+    it('should return IS_SERVE_PROCESS as true and IS_BUILD_PROCESS as false in cli-dev', () => {
+      process.argv[1] = 'brisa/out/cli-dev/index.js';
+      process.env.NODE_ENV = 'development';
       const result = internalConstants();
       expect(result.IS_SERVE_PROCESS).toBeTrue();
       expect(result.IS_BUILD_PROCESS).toBeFalse();
     });
     it('should return IS_SERVE_PROCESS as false and IS_BUILD_PROCESS as true', () => {
       process.argv[1] = 'brisa/out/cli/build.js';
+      process.env.NODE_ENV = 'production';
       const result = internalConstants();
       expect(result.IS_SERVE_PROCESS).toBeFalse();
       expect(result.IS_BUILD_PROCESS).toBeTrue();
@@ -35,6 +52,7 @@ describe('utils -> load-constants', () => {
       mockPathJoin = spyOn(path, 'join').mockImplementation((...args) =>
         path.win32.join(...args),
       );
+      process.env.NODE_ENV = 'production';
       process.argv[1] = 'brisa\\out\\cli\\serve\\index.js';
       const result = internalConstants();
       expect(result.IS_SERVE_PROCESS).toBeTrue();
@@ -44,13 +62,14 @@ describe('utils -> load-constants', () => {
       mockPathJoin = spyOn(path, 'join').mockImplementation((...args) =>
         path.win32.join(...args),
       );
+      process.env.NODE_ENV = 'production';
       process.argv[1] = 'brisa\\out\\cli\\build.js';
       const result = internalConstants();
       expect(result.IS_SERVE_PROCESS).toBeFalse();
       expect(result.IS_BUILD_PROCESS).toBeTrue();
     });
-
     it('should return BRISA_DIR', () => {
+      process.env.NODE_ENV = 'production';
       process.argv[1] = 'brisa/out/cli/serve/index.js';
       const result = internalConstants();
       expect(result.BRISA_DIR).toBe('brisa');
@@ -60,6 +79,7 @@ describe('utils -> load-constants', () => {
       mockPathJoin = spyOn(path, 'join').mockImplementation((...args) =>
         path.win32.join(...args),
       );
+      process.env.NODE_ENV = 'production';
       process.argv[1] = 'brisa\\out\\cli\\serve\\index.js';
       const result = internalConstants();
       expect(result.BRISA_DIR).toBe('brisa');
