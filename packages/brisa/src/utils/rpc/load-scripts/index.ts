@@ -4,6 +4,9 @@ let scriptLoaded: Promise<void>;
 
 export function registerCurrentScripts() {
   for (const script of document.scripts) {
+    // Avoid caching scripts with data-run attribute
+    if ('run' in script.dataset) continue;
+
     const hasValidID = script.id && !/R:\d+/.test(script.id);
     if (hasValidID || script.hasAttribute('src')) {
       scripts.add(script.id || script.getAttribute('src'));
