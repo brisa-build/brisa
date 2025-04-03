@@ -1,6 +1,6 @@
 {
   "name": "www",
-  "version": "0.2.10-canary.12",
+  "version": "0.2.10-canary.13",
   "module": "src/pages/index.tsx",
   "type": "module",
   "scripts": {
