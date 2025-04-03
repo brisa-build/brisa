@@ -28,13 +28,25 @@ describe('utils', () => {
       scripts.clear();
     });
 
-    function createScript(src: string, content?: string, id = '') {
-      document.head.innerHTML = content
+    function createScript(
+      src: string,
+      content?: string,
+      id = '',
+      withDataRun = false,
+    ) {
+      let html = content
         ? `<script id="${id}">${content}</script>`
         : `<script src=${src}></script>`;
+
+      if (withDataRun) {
+        html = html.replace('<script', '<script data-run');
+      }
+
+      document.head.innerHTML = html;
       const script = document.createElement('script')!;
       if (src) script.src = src;
       if (id) script.id = id;
+      if (withDataRun) script.dataset.run = '';
       if (content) script.innerHTML = content;
       return script;
     }
@@ -86,6 +98,18 @@ describe('utils', () => {
 
       expect(scripts.size).toBe(0);
       expect(mockLog).toHaveBeenCalledWith('hello');
+    });
+
+    it('should not register script with data-run attribute #822', async () => {
+      const src = `data:text/javascript;base64,${btoa(`console.log('first')`)}`;
+      const withDataRun = true;
+      const script = createScript(src, '', 'some-id', withDataRun);
+
+      await loadScripts(script);
+      registerCurrentScripts();
+
+      expect(scripts.size).toBe(0);
+      expect(mockLog).toHaveBeenCalledWith('first');
     });
 
     it('should execute the scripts in order', async () => {

@@ -450,9 +450,8 @@ async function enqueueDuringRendering(
           );
 
           if (fs.existsSync(pathPageI18n)) {
-            // Note: is necessary a different `id` each time (useId uses the request id) to ensure
-            // to re-execute this script during SPA navigation #822
-            let script = `<script id="i18n-${request.useId()}" data-cfasync="false" src="${compiledPagesPath}/${filenameI18n}"></script>`;
+            // Note: "data-run" is necessary to ensure to re-execute this script during SPA navigation #822
+            let script = `<script data-run data-cfasync="false" src="${compiledPagesPath}/${filenameI18n}"></script>`;
 
             // Script to override client translations caused by "overrideMessages" function
             if (request.store.has('_messages')) {
