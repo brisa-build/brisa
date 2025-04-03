@@ -859,6 +859,7 @@ describe('utils', () => {
 
       const request = extendRequestContext({
         originalRequest: extendRequestContext({
+          id: '123456',
           originalRequest: new Request('http://test.com/en'),
         }),
         route: {
@@ -891,7 +892,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head></head>
             <body>
-              <script data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script id="i18n-123456_0" data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
               <script data-cfasync="false" async fetchpriority="high" src="/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>
@@ -921,6 +922,7 @@ describe('utils', () => {
 
       const request = extendRequestContext({
         originalRequest: extendRequestContext({
+          id: '123456',
           originalRequest: new Request('http://test.com/en'),
         }),
         route: {
@@ -953,7 +955,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head basepath="/test"></head>
             <body>
-              <script data-cfasync="false" src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script id="i18n-123456_0" data-cfasync="false" src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
               <script data-cfasync="false" async fetchpriority="high" src="/test/_brisa/pages/page-with-web-component-hash.js"></script>
             </body>

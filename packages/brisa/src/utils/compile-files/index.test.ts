@@ -246,7 +246,7 @@ describe('utils', () => {
         await Bun.file(path.join(pagesClientPath, `_404-${HASH}-en.js`)).text(),
       ).toBe(
         toInline(`
-          window.i18nMessages={...window.i18nMessages,...({"hello":"Hello {{name}}"})};
+          window.i18nMessages={"hello":"Hello {{name}}"};
       `),
       );
 
@@ -254,7 +254,7 @@ describe('utils', () => {
         await Bun.file(path.join(pagesClientPath, `_404-${HASH}-pt.js`)).text(),
       ).toBe(
         toInline(`
-          window.i18nMessages={...window.i18nMessages,...({"hello":"Olá {{name}}"})};
+          window.i18nMessages={"hello":"Olá {{name}}"};
       `),
       );
 
@@ -575,13 +575,13 @@ describe('utils', () => {
       // Check i18n content depending the locale
       expect(await englishFile.text()).toBe(
         toInline(`
-          window.i18nMessages={...window.i18nMessages,...({"client-key":"Hello client!"})};
+          window.i18nMessages={"client-key":"Hello client!"};
       `),
       );
 
       expect(await frenchFile.text()).toBe(
         toInline(`
-          window.i18nMessages={...window.i18nMessages,...({"client-key":"Bonjour client !"})};
+          window.i18nMessages={"client-key":"Bonjour client !"};
       `),
       );
 
