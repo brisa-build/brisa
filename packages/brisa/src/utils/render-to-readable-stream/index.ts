@@ -27,6 +27,7 @@ import get404ClientScript from '@/utils/not-found/client-script';
 import escapeHTML from '@/utils/escape-html';
 import { isArrawOfJSXContent } from '@/jsx-runtime';
 import isInPathList from '@/utils/is-in-path-list';
+import getClientFilesFromRequest from '@/utils/get-client-file-from-request';
 
 type ProviderType = ReturnType<typeof contextProvider>;
 
@@ -316,6 +317,8 @@ async function enqueueDuringRendering(
       componentProps,
       componentID: controller.getComponentId(),
     });
+    const { pathPageI18n, clientFile, filenameI18n, filename } =
+      getClientFilesFromRequest(request);
     const isContextProvider = type === CONTEXT_PROVIDER;
     let ctx: ProviderType | undefined;
 
@@ -398,6 +401,14 @@ async function enqueueDuringRendering(
           suspenseId,
         );
       }
+      if (filenameI18n && pathPageI18n) {
+        // Script to load the i18n page content (messages and translated pages to navigate)
+        // Note: "data-run" is necessary to ensure to re-execute this script during SPA navigation #822
+        controller.enqueue(
+          `<script data-run data-cfasync="false" src="${compiledPagesPath}/${filenameI18n}"></script>`,
+          suspenseId,
+        );
+      }
     }
 
     // StyleSheets: save to use it inside Declarative Shadow DOM of Web Components
@@ -421,17 +432,11 @@ async function enqueueDuringRendering(
         );
       }
 
-      const clientFile = request.route?.filePath
-        ?.replace(path.sep + 'pages', path.sep + 'pages-client')
-        ?.replace('.js', '.txt');
-
       // Transfer store to client
       controller.transferStoreToClient(suspenseId);
 
       // Client file
-      if (fs.existsSync(clientFile!)) {
-        const hash = fs.readFileSync(clientFile, 'utf8');
-        const filename = request.route.src.replace('.js', `-${hash}.js`);
+      if (filename) {
         const { locale } = request.i18n;
         const route = JSON.stringify({
           name: request.route?.name,
@@ -440,37 +445,28 @@ async function enqueueDuringRendering(
           params: request.route?.params,
         });
 
-        // Script to load the i18n page content (messages and translated pages to navigate)
-        if (locale) {
-          const filenameI18n = filename.replace('.js', `-${locale}.js`);
-          const pathPageI18n = path.join(
-            BUILD_DIR,
-            'pages-client',
-            filenameI18n,
+        // Script to override client translations caused by "overrideMessages" function
+        if (
+          filenameI18n &&
+          pathPageI18n &&
+          fs.existsSync(pathPageI18n) &&
+          request.store.has('_messages')
+        ) {
+          const clientI18nMessagesCode = fs
+            .readFileSync(pathPageI18n, 'utf-8')
+            .replace(/^window.i18nMessages ?=/, 'return ');
+
+          const scriptContent = JSON.stringify(
+            overrideClientTranslations(
+              new Function(clientI18nMessagesCode)(),
+              request.store.get('_messages'),
+            ),
           );
 
-          if (fs.existsSync(pathPageI18n)) {
-            // Note: "data-run" is necessary to ensure to re-execute this script during SPA navigation #822
-            let script = `<script data-run data-cfasync="false" src="${compiledPagesPath}/${filenameI18n}"></script>`;
-
-            // Script to override client translations caused by "overrideMessages" function
-            if (request.store.has('_messages')) {
-              const clientI18nMessagesCode = fs
-                .readFileSync(pathPageI18n, 'utf-8')
-                .replace(/^window.i18nMessages ?=/, 'return ');
-
-              const scriptContent = JSON.stringify(
-                overrideClientTranslations(
-                  new Function(clientI18nMessagesCode)(),
-                  request.store.get('_messages'),
-                ),
-              );
-
-              script = `<script>window.i18nMessages={...window.i18nMessages,...(${scriptContent})}</script>`;
-            }
-
-            controller.enqueue(script, suspenseId);
-          }
+          controller.enqueue(
+            `<script>window.i18nMessages={...window.i18nMessages,...(${scriptContent})}</script>`,
+            suspenseId,
+          );
         }
 
         controller.areSignalsInjected = true;
