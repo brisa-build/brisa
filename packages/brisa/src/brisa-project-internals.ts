@@ -38,10 +38,18 @@ export const pages = new Proxy({} as Record<string, Promise<any>>, {
   },
 });
 
+// All dynamic API endpoints (for dev)
+// TODO: This is going to be removed to be replaced as static also in DEV
+// (for now it's only static in PROD)
+export const apiEndpoints = new Proxy({} as Record<string, Promise<any>>, {
+  get(target, name: string) {
+    return importFileIfExists(name as any, getConstants().WORKSPACE);
+  },
+});
+
 const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
 export const websocket = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 
 // TODO:
 export const cssFiles = [];
-export const api = [];
 export const actions = null;

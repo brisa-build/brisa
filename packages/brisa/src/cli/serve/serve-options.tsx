@@ -7,9 +7,7 @@ import process from 'node:process';
 import { getConstants } from '@/constants';
 import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
-import getImportableFilepath, {
-  pathToFileURLWhenNeeded,
-} from '@/utils/get-importable-filepath';
+import getImportableFilepath from '@/utils/get-importable-filepath';
 import getRouteMatcher from '@/utils/get-route-matcher';
 import handleI18n from '@/utils/handle-i18n';
 import { isNotFoundError } from '@/utils/not-found';
@@ -24,7 +22,7 @@ import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
-import { middleware, websocket } from 'brisa-project-internals';
+import { middleware, websocket, apiEndpoints } from 'brisa-project-internals';
 import getInitiator from '@/utils/get-initiator';
 import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
 import transferStoreService, {
@@ -291,7 +289,7 @@ export async function getServeOptions() {
 
     // API
     if (isApi && api?.route && !api?.isReservedPathname) {
-      const module = await import(pathToFileURLWhenNeeded(api.route.filePath));
+      const module = await apiEndpoints[api.route.name];
       const method = req.method.toUpperCase();
       const response = module[method]?.(req);
 

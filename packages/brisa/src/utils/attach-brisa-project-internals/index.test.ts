@@ -5,6 +5,7 @@ import { getConstants } from '@/constants';
 import attachBrisaProjectInternalsPlugin from '.';
 
 const BUILD_DIR = join(import.meta.dirname, '..', '..', '__fixtures__');
+const API_DIR = join(BUILD_DIR, 'api');
 const PAGES_DIR = join(BUILD_DIR, 'pages');
 const DIR = join(import.meta.dirname, 'index.ts');
 
@@ -19,6 +20,11 @@ const pagesPath = [
   ['/user/[username]', join(PAGES_DIR, 'user', '[username].tsx')],
   ['/_404', join(PAGES_DIR, '_404.tsx')],
   ['/_500', join(PAGES_DIR, '_500.tsx')],
+];
+
+const apiEndpointsPath = [
+  ['/api', join(API_DIR, 'index.ts')],
+  ['/api/example', join(API_DIR, 'example.ts')],
 ];
 
 describe('attach-brisa-project-internals', () => {
@@ -45,10 +51,15 @@ describe('attach-brisa-project-internals', () => {
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
       ${pagesPath.map(([name, route], i) => `import * as p${i + 1} from "${route}";`).join('\n')}
+      ${apiEndpointsPath.map(([name, route], i) => `import * as a${i + 1} from "${route}";`).join('\n')}
 
       const allPages = {};
       ${pagesPath.map(([name, route], i) => `allPages["${name}"] = p${i + 1};`).join('\n')}
       export const pages = allPages;
+
+      const allApiEndpoints = {};
+      ${apiEndpointsPath.map(([name, route], i) => `allApiEndpoints["${name}"] = a${i + 1};`).join('\n')}
+      export const apiEndpoints = allApiEndpoints;
 
       export * as middleware from '${BUILD_DIR}/middleware.ts';
       export * as i18n from '${BUILD_DIR}/i18n.ts';
