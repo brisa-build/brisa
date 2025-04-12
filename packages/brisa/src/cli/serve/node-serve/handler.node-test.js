@@ -247,6 +247,7 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
+      WORKSPACE: path.join(FIXTURES_DIR, 'js'),
       BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
       PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),

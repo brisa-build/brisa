@@ -291,7 +291,7 @@ export async function getServeOptions() {
     if (isApi && api?.route && !api?.isReservedPathname) {
       const module = await apiEndpoints[api.route.name];
       const method = req.method.toUpperCase();
-      const response = module[method]?.(req);
+      const response = module?.[method]?.(req);
 
       if (response) return response;
     }
