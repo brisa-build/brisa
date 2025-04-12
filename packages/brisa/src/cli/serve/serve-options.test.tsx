@@ -12,6 +12,7 @@ import {
 import { brotliDecompressSync, gunzipSync } from 'node:zlib';
 import path from 'node:path';
 import { getConstants } from '@/constants';
+import importFileIfExists from '@/utils/import-file-if-exists';
 import type { RequestContext } from '@/types';
 import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
@@ -34,6 +35,12 @@ const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 const BASE_PATHS = ['', '/some-dir', '/es', '/some/dir'];
+
+const apiEndpoints = new Proxy({} as Record<string, Promise<any>>, {
+  get(target, name: string) {
+    return importFileIfExists(name as any, BUILD_DIR);
+  },
+});
 
 async function testRequest(
   request: Request,
@@ -61,6 +68,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       middleware,
       websocket,
       layoutModule,
+      apiEndpoints,
     }));
 
     // @ts-ignore - We need to test real server scenarios

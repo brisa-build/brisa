@@ -1,5 +1,5 @@
 import type { BunPlugin } from 'bun';
-import { resolve } from 'node:path';
+import { resolve, join } from 'node:path';
 import getImportableFilepath from '@/utils/get-importable-filepath';
 import { getConstants } from '@/constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
@@ -46,6 +46,7 @@ export default function attachBrisaProjectInternalsPlugin() {
     : 'export const websocket = null;';
 
   const pages = getPagesExport();
+  const apiEndpoints = getApiEndpointsExport();
 
   return {
     name: 'attach-brisa-project-internals',
@@ -56,7 +57,7 @@ export default function attachBrisaProjectInternalsPlugin() {
       build.onLoad(
         { filter: new RegExp(import.meta.filename) },
         ({ loader }) => ({
-          contents: `${pages.imports}${pages.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}`,
+          contents: `${pages.imports}${apiEndpoints.imports}${pages.exports}${apiEndpoints.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}`,
           loader,
         }),
       );
@@ -79,5 +80,24 @@ function getPagesExport() {
   return {
     imports,
     exports: `${objectCreation}export const pages = allPages;`,
+  };
+}
+
+function getApiEndpointsExport() {
+  const { BUILD_DIR } = getConstants();
+  const { routes } = fileSystemRouter({ dir: join(BUILD_DIR, 'api') });
+  let count = 0;
+  let imports = '';
+  let objectCreation = 'const allApiEndpoints = {};';
+
+  for (const [name, filePath] of routes) {
+    const endpointName = name === '/' ? '/api' : `/api${name}`;
+    imports += `import * as a${++count} from "${filePath}";\n`;
+    objectCreation += `allApiEndpoints["${endpointName}"] = a${count};\n`;
+  }
+
+  return {
+    imports,
+    exports: `${objectCreation}export const apiEndpoints = allApiEndpoints;`,
   };
 }
