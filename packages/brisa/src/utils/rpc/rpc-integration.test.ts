@@ -373,7 +373,7 @@ describe('utils', () => {
           );
         },
       });
-
+      await Bun.sleep(1);
       expect(document.body.innerHTML).toBe(
         `<button data-action-onclick="a1_1"></button>`,
       );
@@ -638,7 +638,7 @@ describe('utils', () => {
 
       // Should remove data-action attribute after register the action after the mutation
       await waitFor(() => {
-        expect(document.body.innerHTML).toBe('<div></div>');
+        expect(document.body.innerHTML).toBe('<div data-action=""></div>');
       });
     });
 

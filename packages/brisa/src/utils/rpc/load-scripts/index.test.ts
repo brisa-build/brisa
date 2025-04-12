@@ -100,16 +100,17 @@ describe('utils', () => {
       expect(mockLog).toHaveBeenCalledWith('hello');
     });
 
-    it('should not register script with data-run attribute #822', async () => {
-      const src = `data:text/javascript;base64,${btoa(`console.log('first')`)}`;
+    it('should run script with data-run attribute although is registered #822', async () => {
+      const src = `data:text/javascript;base64,${btoa(`console.log('foo')`)}`;
       const withDataRun = true;
       const script = createScript(src, '', 'some-id', withDataRun);
 
       await loadScripts(script);
       registerCurrentScripts();
+      await loadScripts(script);
 
-      expect(scripts.size).toBe(0);
-      expect(mockLog).toHaveBeenCalledWith('first');
+      expect(scripts.size).toBe(1);
+      expect(mockLog).toHaveBeenCalledTimes(2);
     });
 
     it('should execute the scripts in order', async () => {
