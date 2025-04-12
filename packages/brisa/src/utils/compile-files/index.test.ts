@@ -276,7 +276,7 @@ describe('utils', () => {
     ${info}Ω /i18n                          | 162 B     |
     ${info}Ψ /websocket                     | 207 B     |
     ${info}Θ /web-components/_integrations  | 67 B      |
-    ${info}λ /pages/index                   | 860 B     | ${greenLog('3 kB')}
+    ${info}λ /pages/index                   | 860 B     | ${greenLog('4 kB')}
     ${info}λ /pages/page-with-web-component | 769 B     | ${greenLog('5 kB')}
     ${info}λ /pages/somepage                | 1 kB      | ${greenLog('0 B')}
     ${info}λ /pages/somepage-with-context   | 1 kB      | ${greenLog('0 B')}  
