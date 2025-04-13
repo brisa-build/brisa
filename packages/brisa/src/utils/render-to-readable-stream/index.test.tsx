@@ -886,11 +886,13 @@ describe('utils', () => {
 
       const stream = renderToReadableStream(element, { request });
       const result = Bun.readableStreamToText(stream);
+      // Note: RPC script should be at the end (important to manipulate with async the document.body)
       expect(result).resolves.toBe(
         toInline(`
           <html lang="en" dir="ltr">
             <head>
               <script data-run data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script data-cfasync="false" src="/_brisa/pages/_rpc-0.2.11-canary.2.js" async></script>
             </head>
             <body>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
@@ -913,17 +915,14 @@ describe('utils', () => {
             },
           },
         },
-        PAGES_DIR: path.join(FIXTURES_PATH, 'pages'),
-        BUILD_DIR: FIXTURES_PATH,
+        BUILD_DIR: path.join(FIXTURES_PATH, 'fakeBuild'),
         CONFIG: {
           basePath: '/test',
         },
       };
 
       const request = extendRequestContext({
-        originalRequest: extendRequestContext({
-          originalRequest: new Request('http://test.com/en'),
-        }),
+        originalRequest: new Request(testRequest),
         route: {
           src: 'page-with-web-component.js',
           filePath: path.join(
@@ -947,7 +946,9 @@ describe('utils', () => {
 
       handleI18n(request);
 
-      const stream = renderToReadableStream(element, { request });
+      const stream = renderToReadableStream(element, {
+        request,
+      });
       const result = Bun.readableStreamToText(stream);
       expect(result).resolves.toBe(
         toInline(`
@@ -1020,6 +1021,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head>
               <script data-run data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script data-cfasync="false" src="/_brisa/pages/_rpc-0.2.11-canary.2.js" async></script>
             </head>
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
@@ -1090,6 +1092,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head basepath="/test">
               <script data-run data-cfasync="false" src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
+              <script data-cfasync="false" src="/test/_brisa/pages/_rpc-0.2.11-canary.2.js" async></script>
             </head>
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
