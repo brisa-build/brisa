@@ -388,6 +388,14 @@ async function enqueueDuringRendering(
       controller.hasHeadTag = true;
       controller.insideHeadTag = false;
 
+      // Script to unsuspense all suspense components
+      if (controller.hasUnsuspense) {
+        controller.enqueue(
+          `<script data-cfasync="false" src="${compiledPagesPath}/_unsuspense-${VERSION}.js"></script>`,
+          suspenseId,
+        );
+      }
+
       if (filenameI18n && pathPageI18n) {
         // Script to load the i18n page content (messages and translated pages to navigate)
         // Note: "data-run" is necessary to ensure to re-execute this script during SPA navigation #822
@@ -397,13 +405,6 @@ async function enqueueDuringRendering(
         );
       }
 
-      // Script to unsuspense all suspense components
-      if (controller.hasUnsuspense) {
-        controller.enqueue(
-          `<script data-cfasync="false" src="${compiledPagesPath}/_unsuspense-${VERSION}.js"></script>`,
-          suspenseId,
-        );
-      }
       if (controller.hasActionRPC) {
         controller.enqueue(
           `<script data-cfasync="false" src="${compiledPagesPath}/_rpc-${VERSION}.js" async></script>`,
