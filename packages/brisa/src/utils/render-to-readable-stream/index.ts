@@ -404,7 +404,6 @@ async function enqueueDuringRendering(
           suspenseId,
         );
       }
-
       if (controller.hasActionRPC) {
         controller.enqueue(
           `<script data-cfasync="false" src="${compiledPagesPath}/_rpc-${VERSION}.js" async></script>`,
