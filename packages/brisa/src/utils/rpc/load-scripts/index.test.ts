@@ -143,6 +143,41 @@ describe('utils', () => {
       expect(mockLog).toHaveBeenCalledWith('third');
     });
 
+    it('should execute the scripts in order between src and injected', async () => {
+      const append = document.head.appendChild.bind(document.head);
+
+      // @ts-ignore
+      document.head.appendChild = mock(async (script) => {
+        // Await the second script to be appended
+        if (script.src.endsWith('cp')) await Bun.sleep(1);
+        append(script);
+      });
+
+      const script1 = createScript(
+        `data:text/javascript;base64,${btoa(`console.log('first')`)}`,
+      );
+      const script2 = createScript('', "console.log('second')", 'R:1');
+      const script3 = createScript(
+        `data:text/javascript;base64,${btoa(`console.log('third')`)}`,
+      );
+      const script4 = createScript(
+        `data:text/javascript;base64,${btoa(`console.log('fourth')`)}`,
+      );
+
+      await loadScripts(script1);
+      await loadScripts(script2);
+      await loadScripts(script3);
+      await loadScripts(script4);
+      await Bun.sleep(1);
+
+      registerCurrentScripts();
+
+      expect(mockLog).toHaveBeenCalledWith('first');
+      expect(mockLog).toHaveBeenCalledWith('second');
+      expect(mockLog).toHaveBeenCalledWith('third');
+      expect(mockLog).toHaveBeenCalledWith('fourth');
+    });
+
     it('should copy the script with the "type" attribute', async () => {
       const content =
         "console.log(!!document.querySelector('script[type=text/javascript]'))";
