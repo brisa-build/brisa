@@ -14,7 +14,7 @@ const bridgeWithKeysAndFormatter = await build({
 
 export function processI18n(code: string) {
   const rawAst = parseCodeToAST(code);
-  const i18nKeys = new Set<string>();
+  let i18nKeys = new Set<string | RegExp>();
   let useI18n = false;
 
   const ast = JSON.parse(JSON.stringify(rawAst), (key, value) => {
@@ -22,9 +22,12 @@ export function processI18n(code: string) {
       isWindowProperty(value, 'i18nKeys') &&
       value.expression?.right?.type === 'ArrayExpression'
     ) {
-      for (const element of value.expression.right.elements ?? []) {
-        i18nKeys.add(element.value);
+      if (Array.isArray(value.expression.right.elements)) {
+        i18nKeys = i18nKeys.union(
+          new Set(eval(generateCodeFromAST(value.expression.right))),
+        );
       }
+
       return null;
     }
 
@@ -57,7 +60,7 @@ function isWindowProperty(value: any, property: string) {
   );
 }
 
-function astToI18nCode(ast: ESTree.Program, i18nKeys: Set<string>) {
+function astToI18nCode(ast: ESTree.Program, i18nKeys: Set<string | RegExp>) {
   const { I18N_CONFIG } = getConstants();
   const usei18nKeysLogic = i18nKeys.size > 0;
   const i18nConfig = JSON.stringify({
