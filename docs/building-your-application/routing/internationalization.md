@@ -1296,6 +1296,32 @@ For more precision, utilize `RegExp`:
 Item.i18nKeys = [/item.*(title|description)/];
 ```
 
+> [!IMPORTANT]
+> 
+> The values are extracted at build-time to generate the i18n file for each language that each page needs. It's important to keep this in mind, since the evaluation happens at build-time rather than runtime - only literals will work, not identifiers.
+> 
+> #### Incorrect Usage Example:
+> 
+> ```tsx
+> // ❌ WRONG: Using variables/identifiers won't work at build-time
+> const prefix = 'item';
+> Item.i18nKeys = [`${prefix}.title`];  // ❌ This will fail extraction
+>
+> // ❌ WRONG: Dynamic construction won't be evaluated
+> function getKey(suffix) {
+>   return `item.${suffix}`;
+> }
+> Item.i18nKeys = [getKey('title')];  // ❌ This won't work
+> ```
+>
+> #### Always use string literals or regular expressions directly:
+> 
+> ```tsx
+> // ✅ CORRECT:
+> Item.i18nKeys = ["item.title"];  // ✅ Literal string works
+> Item.i18nKeys = [/item\.title/];  // ✅ Regular expression works
+>```
+
 ### Plurals
 
 Brisa seamlessly manages the importation of all plural rules associated with a translation key. The following translations exemplify the pluralization handling:

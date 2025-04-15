@@ -101,7 +101,10 @@ export async function clientBuild(
       useI18n = layoutCode.useI18n;
     }
     if (layoutCode?.i18nKeys.size) {
-      i18nKeys = new Set([...i18nKeys, ...layoutCode.i18nKeys]);
+      i18nKeys = new Set<string | RegExp>([
+        ...i18nKeys,
+        ...layoutCode.i18nKeys,
+      ]);
     }
 
     clientSizesPerPage[route] = size;

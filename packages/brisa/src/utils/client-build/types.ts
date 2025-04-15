@@ -16,7 +16,7 @@ export type EntryPointData = {
   lazyRPC: string;
   size: number;
   useI18n: boolean;
-  i18nKeys: Set<string>;
+  i18nKeys: Set<string | RegExp>;
   code: string;
   entrypoint?: string;
   useWebContextPlugins?: boolean;

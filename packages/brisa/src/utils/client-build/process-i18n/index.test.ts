@@ -72,6 +72,33 @@ describe('utils', () => {
       expect(resCode).not.toContain('messages()');
     });
 
+    it('should return i18nKeys with a regex', () => {
+      const code = `  
+        export default function Component({i18n}) {
+          const { t } = i18n;
+          return <div>{t("foo")}</div>
+        }
+       
+        window.useI18n = true;
+        window.i18nKeys = [/admin.experiences.(edit|create)..*/]
+      `;
+
+      const res = processI18n(code);
+      const resCode = normalizeHTML(res.code);
+
+      expect(resCode).toEndWith(
+        out(`
+         export default function Component({i18n}) {
+          const { t } = i18n;
+          return <div>{t("foo")}</div>
+        }  
+      `),
+      );
+      expect(res.i18nKeys).toEqual(
+        new Set([/admin.experiences.(edit|create)..*/]),
+      );
+    });
+
     it('should return useI18n and i18nKeys + cleanup', () => {
       const code = `  
         export default function Component({i18n}) {
