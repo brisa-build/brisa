@@ -10,21 +10,21 @@
     },
     "packages/adapter-vercel": {
       "name": "brisa-adapter-vercel",
-      "version": "0.2.10",
+      "version": "0.2.11-canary.4",
       "devDependencies": {
         "brisa": "workspace:*",
       },
     },
     "packages/brisa": {
       "name": "brisa",
-      "version": "0.2.10",
+      "version": "0.2.11-canary.4",
       "bin": {
         "brisa": "./index.js",
       },
       "dependencies": {
         "astring": "1.9.0",
         "csstype": "3.1.3",
-        "diff-dom-streaming": "0.6.5",
+        "diff-dom-streaming": "0.6.6",
         "meriyah": "6.0.6",
       },
       "devDependencies": {
@@ -40,7 +40,7 @@
     },
     "packages/brisa-pandacss": {
       "name": "brisa-pandacss",
-      "version": "0.2.10",
+      "version": "0.2.11-canary.4",
       "dependencies": {
         "@pandacss/dev": "0.47.0",
         "postcss": "8.4.47",
@@ -48,7 +48,7 @@
     },
     "packages/brisa-tailwindcss": {
       "name": "brisa-tailwindcss",
-      "version": "0.2.10",
+      "version": "0.2.11-canary.4",
       "devDependencies": {
         "@tailwindcss/postcss": "4.0.12",
         "postcss": "8.5.3",
@@ -62,7 +62,7 @@
     },
     "packages/create-brisa": {
       "name": "create-brisa",
-      "version": "0.2.10",
+      "version": "0.2.11-canary.4",
       "bin": {
         "create-brisa": "./create-brisa.cjs",
       },
@@ -72,7 +72,7 @@
     },
     "packages/www": {
       "name": "www",
-      "version": "0.2.10",
+      "version": "0.2.11-canary.4",
       "dependencies": {
         "@swc/wasm-web": "1.11.8",
         "brisa": "workspace:*",
@@ -424,7 +424,7 @@
 
     "detect-libc": ["detect-libc@2.0.3", "", {}, "sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw=="],
 
-    "diff-dom-streaming": ["diff-dom-streaming@0.6.5", "", {}, "sha512-S6a7AVm5S0cwOkIYLTg+ilPaCnHM4/QoPol11PLYRKYqud/MfW+wW54+K2zBFqNY3DoNZZXO8yaF3iwFeJkz+A=="],
+    "diff-dom-streaming": ["diff-dom-streaming@0.6.6", "", {}, "sha512-K217pR/h/UEQv3J0PXu0sshkW49PbyM/Il9pqXaoLLqHU/KaApdujPr0LfzobqqjEdfmSA+EYmHWHsnE9c7+NQ=="],
 
     "dunder-proto": ["dunder-proto@1.0.1", "", { "dependencies": { "call-bind-apply-helpers": "^1.0.1", "es-errors": "^1.3.0", "gopd": "^1.2.0" } }, "sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A=="],
 
@@ -826,7 +826,11 @@
 
     "@pandacss/core/lightningcss/lightningcss-win32-x64-msvc": ["lightningcss-win32-x64-msvc@1.25.1", "", { "os": "win32", "cpu": "x64" }, "sha512-9KZZkmmy9oGDSrnyHuxP6iMhbsgChUiu/NSgOx+U1I/wTngBStDf2i2aGRCHvFqj19HqqBEI4WuGVQBa2V6e0A=="],
 
+    "brisa/brisa/diff-dom-streaming": ["diff-dom-streaming@0.6.5", "", {}, "sha512-S6a7AVm5S0cwOkIYLTg+ilPaCnHM4/QoPol11PLYRKYqud/MfW+wW54+K2zBFqNY3DoNZZXO8yaF3iwFeJkz+A=="],
+
     "brisa/brisa/meriyah": ["meriyah@6.0.5", "", {}, "sha512-SrMqQCox7TTwtftWKHy/ZaVe+ZRpRl20pAgDo+PS9hzcAJrMjYsBJQPPiLXTnjztrqdfGS+Zz99r6Bwvydta1w=="],
+
+    "create-brisa/brisa/diff-dom-streaming": ["diff-dom-streaming@0.6.5", "", {}, "sha512-S6a7AVm5S0cwOkIYLTg+ilPaCnHM4/QoPol11PLYRKYqud/MfW+wW54+K2zBFqNY3DoNZZXO8yaF3iwFeJkz+A=="],
 
     "create-brisa/brisa/meriyah": ["meriyah@6.0.5", "", {}, "sha512-SrMqQCox7TTwtftWKHy/ZaVe+ZRpRl20pAgDo+PS9hzcAJrMjYsBJQPPiLXTnjztrqdfGS+Zz99r6Bwvydta1w=="],
 
