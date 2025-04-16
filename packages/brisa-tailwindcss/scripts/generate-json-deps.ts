@@ -12,6 +12,7 @@ fs.writeFileSync(
     dependencies: {
       tailwindcss: TAILWIND_VERSION,
       '@tailwindcss/postcss': TAILWIND_VERSION,
+      '@tailwindcss/oxide': TAILWIND_VERSION,
     },
   }),
 );
