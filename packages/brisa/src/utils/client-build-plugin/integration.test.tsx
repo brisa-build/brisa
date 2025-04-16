@@ -4000,6 +4000,33 @@ describe('integration', () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>Barbara</div>');
     });
 
+    it.only('should work with snake_case and kebab-case props', async () => {
+      const Component = `
+        export default function MyComponent(props) {
+          return <div>{props['snake_case']+" "+props['kebab-case']}</div>
+        }
+      `;
+
+      document.body.innerHTML = normalizeHTML(`
+        <try-case snake_case="Aral" kebab-case="Roca"></try-case>
+      `);
+
+      const res = defineBrisaWebComponent(
+        Component,
+        'src/web-components/try-case.tsx',
+      );
+
+      expect(res).toContain('MyComponent, ["snake_case", "kebab-case"])');
+
+      const wc = document.querySelector('try-case') as HTMLElement;
+
+      expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Roca</div>');
+
+      wc.setAttribute('kebab-case', 'Test');
+
+      expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Test</div>');
+    });
+
     it('should be possible to use reactive props without the .value inside the "suspense" component', async () => {
       const Component = `
         export default async function MyComponent() {

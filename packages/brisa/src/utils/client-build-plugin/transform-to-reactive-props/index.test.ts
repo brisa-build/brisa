@@ -155,6 +155,23 @@ describe('utils', () => {
         expect(out.vars).toEqual(new Set(['foo', 'console', 'props']));
       });
 
+      it('should transform all props in kebab-case', () => {
+        const code = `
+          export default (props) => console.log(props['kebab-case']);
+        `;
+        const ast = parseCodeToAST(code);
+        const out = transformToReactiveProps(ast);
+        const outputCode = normalizeHTML(generateCodeFromAST(out.ast));
+
+        const expectedCode = normalizeHTML(`
+          export default props => console.log(props['kebab-case'].value);
+        `);
+
+        expect(outputCode).toBe(expectedCode);
+        expect(out.observedAttributes).toEqual(new Set(['kebab-case']));
+        expect(out.vars).toEqual(new Set(['kebab-case', 'console']));
+      });
+
       it('should transform all destructured props from arrow function with block statement', () => {
         const code = `
           export default ({ foo, ...rest }) => foo === "Test" && rest.bar && <div>{rest.baz}</div>;

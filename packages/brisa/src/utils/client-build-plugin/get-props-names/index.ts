@@ -139,6 +139,17 @@ function getPropsNamesFromIdentifier(
       standaloneProps.add(value?.init?.property?.name);
     }
 
+    // props['foo'] / props['snake_case'] / props['kebab-case']
+    else if (
+      value?.type === 'MemberExpression' &&
+      value?.property?.value &&
+      identifiers.has(value.object.name)
+    ) {
+      propsNames.add(value.property.value);
+      renamedPropsNames.add(value.property.value);
+      standaloneProps.add(value.property.value);
+    }
+
     return value;
   });
 
