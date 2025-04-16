@@ -4000,7 +4000,7 @@ describe('integration', () => {
       expect(myComponent?.shadowRoot?.innerHTML).toBe('<div>Barbara</div>');
     });
 
-    it.only('should work with snake_case and kebab-case props', async () => {
+    it('should work with snake_case and kebab-case props', async () => {
       const Component = `
         export default function MyComponent(props) {
           return <div>{props['snake_case']+" "+props['kebab-case']}</div>
