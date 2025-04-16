@@ -180,17 +180,20 @@ export function transformComponentToReactiveProps(
     // Avoid adding .value if there is a variable "const foo = props.foo"
     const isMemberExpressionProperty =
       this?.property === value && this?.type === 'MemberExpression';
+    const isLiteral = value?.property?.type === 'Literal';
+    const name = value?.name ?? value?.property?.value;
+    const isIdentifier = value?.type === 'Identifier';
     const isInitialVariable =
-      !isMemberExpressionProperty && firstLevelVars.has(value?.name);
+      !isMemberExpressionProperty && firstLevelVars.has(name);
 
     if (
-      value?.type === 'Identifier' &&
+      (isLiteral || isIdentifier) &&
       !value?._force_skip &&
       !isPropFromObjectExpression &&
       !isInitialVariable &&
-      propsNamesAndRenamesSet.has(value?.name) &&
-      !value?.name?.startsWith('on') &&
-      !value?._skip?.includes(value?.name)
+      propsNamesAndRenamesSet.has(name) &&
+      !name?.startsWith('on') &&
+      !value?._skip?.includes(name)
     ) {
       // allow: console.log({ propName })
       // transforming to: console.log({ propName: propName.value })
