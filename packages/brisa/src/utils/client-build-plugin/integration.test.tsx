@@ -4027,6 +4027,61 @@ describe('integration', () => {
       expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Test</div>');
     });
 
+    it('should work with snake_case and kebab-case props + destructuring', async () => {
+      const Component = `
+        export default function MyComponent({ 'snake_case': snakeCase, 'kebab-case': kebabCase }) {
+          return <div>{snakeCase+" "+kebabCase}</div>
+        }
+      `;
+
+      document.body.innerHTML = normalizeHTML(`
+        <try-case snake_case="Aral" kebab-case="Roca"></try-case>
+      `);
+
+      const res = defineBrisaWebComponent(
+        Component,
+        'src/web-components/try-case.tsx',
+      );
+
+      expect(res).toContain('MyComponent, ["snake_case", "kebab-case"])');
+
+      const wc = document.querySelector('try-case') as HTMLElement;
+
+      expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Roca</div>');
+
+      wc.setAttribute('kebab-case', 'Test');
+
+      expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Test</div>');
+    });
+
+    it('should work with snake_case and kebab-case props + destructuring in a var', async () => {
+      const Component = `
+        export default function MyComponent(props) {
+          const { 'snake_case': snakeCase, 'kebab-case': kebabCase } = props;
+          return <div>{snakeCase+" "+kebabCase}</div>
+        }
+      `;
+
+      document.body.innerHTML = normalizeHTML(`
+        <try-case snake_case="Aral" kebab-case="Roca"></try-case>
+      `);
+
+      const res = defineBrisaWebComponent(
+        Component,
+        'src/web-components/try-case.tsx',
+      );
+
+      expect(res).toContain('MyComponent, ["snake_case", "kebab-case"])');
+
+      const wc = document.querySelector('try-case') as HTMLElement;
+
+      expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Roca</div>');
+
+      wc.setAttribute('kebab-case', 'Test');
+
+      expect(wc?.shadowRoot?.innerHTML).toBe('<div>Aral Test</div>');
+    });
+
     it('should be possible to use reactive props without the .value inside the "suspense" component', async () => {
       const Component = `
         export default async function MyComponent() {

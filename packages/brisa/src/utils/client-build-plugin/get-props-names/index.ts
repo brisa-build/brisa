@@ -29,7 +29,7 @@ export default function getPropsNames(
         continue;
       }
 
-      const name = prop.key.name;
+      const name = prop.key.name ?? prop.key.value;
       const renamedPropName = prop.value.left?.name ?? prop.value.name ?? name;
 
       if (renamedPropName === CHILDREN && name === CHILDREN) {
@@ -107,23 +107,24 @@ function getPropsNamesFromIdentifier(
       identifiers.has(value?.init?.name)
     ) {
       for (const prop of value.id.properties) {
-        const isProp = prop?.key?.name && prop.key.name !== CHILDREN;
+        const name = prop?.key?.name || prop?.key?.value;
+        const isProp = name && name !== CHILDREN;
         const isRest = prop?.type === 'RestElement';
-        const isRenamed = prop?.value?.name;
+        const renamed = prop?.value?.name;
 
         // destructured props like: const { name, ...rest } = props
-        if (isProp) propsNames.add(prop.key.name);
+        if (isProp) propsNames.add(name);
 
         // add as identifier the rest props like: const { ...rest } = props
         if (isRest) identifiers.add(prop.argument.name);
 
         // renamed props like: const { name: renamedName } = props
-        if (isRenamed) renamedPropsNames.add(prop.value.name);
+        if (renamed) renamedPropsNames.add(renamed);
 
         // standalone props like: const { name } = props
-        if (isProp && !isRenamed) standaloneProps.add(prop.key.name);
-        else if (isRest && !isRenamed) standaloneProps.add(prop.argument.name);
-        else if (isRenamed) standaloneProps.add(prop.value.name);
+        if (isProp && !renamed) standaloneProps.add(name);
+        else if (isRest && !renamed) standaloneProps.add(prop.argument.name);
+        else if (renamed) standaloneProps.add(renamed);
       }
     }
 
