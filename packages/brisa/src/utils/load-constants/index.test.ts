@@ -111,7 +111,7 @@ describe('utils -> load-constants', () => {
       expect(result.CONFIG.external).toBeEmpty();
     });
 
-    it('should lightningcss as CONFIG.external', async () => {
+    it('should lightningcss and @tailwindcss/oxide as CONFIG.external', async () => {
       process.env.npm_package_json = undefined;
       const result = await loadProjectConstants({
         IS_PRODUCTION: false,
@@ -120,10 +120,13 @@ describe('utils -> load-constants', () => {
         ROOT_DIR: 'root',
         IS_BUILD_PROCESS: true,
       } as any);
-      expect(result.CONFIG.external).toEqual(['lightningcss']);
+      expect(result.CONFIG.external).toEqual([
+        'lightningcss',
+        '@tailwindcss/oxide',
+      ]);
     });
 
-    it('should return the devDependencies keys with lightningcss if the package.json file exists at the specified path', async () => {
+    it('should return the devDependencies keys with lightningcss + @tailwindcss/oxide if the package.json file exists at the specified path', async () => {
       process.env.npm_package_json = 'package.json';
       const result = await loadProjectConstants({
         IS_PRODUCTION: true,
@@ -135,6 +138,7 @@ describe('utils -> load-constants', () => {
       expect(result.CONFIG.external).toEqual([
         ...Object.keys(mockPackageJson.devDependencies),
         'lightningcss',
+        '@tailwindcss/oxide',
       ]);
     });
   });

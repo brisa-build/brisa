@@ -33,7 +33,7 @@ export async function loadProjectConstants({
   };
 
   const defaultExternalDeps = IS_BUILD_PROCESS
-    ? [...getDevDeps(), 'lightningcss']
+    ? [...getDevDeps(), 'lightningcss', '@tailwindcss/oxide']
     : [];
   const CSS_FILES =
     (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
