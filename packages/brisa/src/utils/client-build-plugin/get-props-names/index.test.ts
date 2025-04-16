@@ -52,6 +52,38 @@ describe('utils', () => {
         expect(propNames).toEqual(expected);
         expect(renamedOutput).toEqual(expected);
       });
+
+      it('should return the props names if the props in kebab or snake case + destructuring', () => {
+        const [input] = inputCode(`
+          export default function MyComponent({ 'snake_case': snakeCase, 'kebab-case': kebabCase }) {
+            return <div>{snakeCase+kebabCase}</div>
+          }
+        `);
+        const [propNames, renamedOutput] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = new Set(['snake_case', 'kebab-case']);
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(new Set(['snakeCase', 'kebabCase']));
+      });
+
+      it('should return the props names if the props in kebab or snake case + destructuring in a var', () => {
+        const [input] = inputCode(`
+          export default function MyComponent(props) {
+            const { 'snake_case': snakeCase, 'kebab-case': kebabCase } = props;
+            return <div>{snakeCase+kebabCase}</div>
+          }
+        `);
+        const [propNames, renamedOutput] = getPropsNames(
+          input as unknown as ESTree.FunctionDeclaration,
+        );
+        const expected = new Set(['snake_case', 'kebab-case']);
+
+        expect(propNames).toEqual(expected);
+        expect(renamedOutput).toEqual(new Set(['snakeCase', 'kebabCase']));
+      });
+
       it('should return the props names if the props are an identifier', () => {
         const [input] = inputCode(`
           export default function MyComponent(props) {
