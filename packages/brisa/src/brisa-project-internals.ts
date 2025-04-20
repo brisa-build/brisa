@@ -50,6 +50,8 @@ export const apiEndpoints = new Proxy({} as Record<string, Promise<any>>, {
 const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
 export const websocket = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 
+export const cssFiles =
+  (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
+
 // TODO:
-export const cssFiles = [];
 export const actions = null;

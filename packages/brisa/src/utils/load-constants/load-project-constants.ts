@@ -1,6 +1,6 @@
 import path from 'node:path';
 import importFileIfExists from '../import-file-if-exists';
-import { i18n, config, integrations } from 'brisa-project-internals';
+import { i18n, config, integrations, cssFiles } from 'brisa-project-internals';
 import type { InternalConstants, ProjectConstants } from '@/types';
 import type { BunPlugin } from 'bun';
 
@@ -35,8 +35,6 @@ export async function loadProjectConstants({
   const defaultExternalDeps = IS_BUILD_PROCESS
     ? [...getDevDeps(), 'lightningcss', '@tailwindcss/oxide']
     : [];
-  const CSS_FILES =
-    (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
   const WEB_CONTEXT_PLUGINS = integrations?.webContextPlugins ?? [];
   const I18N_CONFIG = i18n?.default;
   const CONFIG = {
@@ -71,7 +69,7 @@ export async function loadProjectConstants({
   globalThis.__BASE_PATH__ = CONFIG.basePath;
 
   return {
-    CSS_FILES,
+    CSS_FILES: cssFiles,
     CONFIG,
     I18N_CONFIG,
     WEB_CONTEXT_PLUGINS,
