@@ -45,6 +45,11 @@ export default function attachBrisaProjectInternalsPlugin() {
     ? `export * as websocket from '${websocketPath}';`
     : 'export const websocket = null;';
 
+  const cssPath = getImportableFilepath('css-files', BUILD_DIR);
+  const cssExport = cssPath
+    ? `export { default as cssFiles } from '${cssPath}';`
+    : 'export const cssFiles = [];';
+
   const pages = getPagesExport();
   const apiEndpoints = getApiEndpointsExport();
 
@@ -57,7 +62,7 @@ export default function attachBrisaProjectInternalsPlugin() {
       build.onLoad(
         { filter: new RegExp(import.meta.filename) },
         ({ loader }) => ({
-          contents: `${pages.imports}${apiEndpoints.imports}${pages.exports}${apiEndpoints.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}`,
+          contents: `${pages.imports}${apiEndpoints.imports}${pages.exports}${apiEndpoints.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}${cssExport}`,
           loader,
         }),
       );
