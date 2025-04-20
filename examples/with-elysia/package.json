@@ -11,7 +11,7 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "0.2.11",
+    "brisa": "0.2.12-canary.1",
     "elysia": "latest"
   },
   "devDependencies": {
