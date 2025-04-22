@@ -8,6 +8,7 @@ import { logError } from '@/utils/log/log-build';
 import { pathToFileURLWhenNeeded } from '../get-importable-filepath';
 import importFileIfExists from '../import-file-if-exists';
 import { getConstants } from '@/constants';
+import { actions as actionModule } from 'brisa-project-internals';
 import createResponseHeadersContext from '@/utils/create-response-headers-context';
 
 const DEPENDENCIES = Symbol.for('DEPENDENCIES');
@@ -17,7 +18,6 @@ export default async function responseAction(
   { formData, body }: RequestContent,
 ) {
   const { BUILD_DIR } = getConstants();
-  const actionModule = await importFileIfExists('actions', BUILD_DIR);
   const url = new URL(req.url);
   const action =
     req.headers.get('x-action') ?? url.searchParams.get('_aid') ?? '';

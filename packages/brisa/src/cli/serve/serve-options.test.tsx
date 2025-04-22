@@ -25,6 +25,8 @@ import {
 } from '@/utils/crypto';
 
 // @ts-ignore
+import * as actions from '../../__fixtures__/actions/index.tsx';
+// @ts-ignore
 import * as middleware from '../../__fixtures__/middleware.ts';
 // @ts-ignore
 import * as layoutModule from '../../__fixtures__/layout.tsx';
@@ -67,6 +69,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mock.module('brisa-project-internals', () => ({
       middleware,
       websocket,
+      actions,
       layoutModule,
       apiEndpoints,
     }));

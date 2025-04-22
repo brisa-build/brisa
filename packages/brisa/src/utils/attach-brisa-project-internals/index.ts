@@ -12,6 +12,11 @@ import { fileSystemRouter } from '@/utils/file-system-router';
  */
 export default function attachBrisaProjectInternalsPlugin() {
   const { BUILD_DIR, ROOT_DIR } = getConstants();
+  const actionsPath = getImportableFilepath('actions', BUILD_DIR);
+  const actionsExport = actionsPath
+    ? `export * as actions from '${actionsPath}';`
+    : 'export const actions = null;';
+
   const middlewarePath = getImportableFilepath('middleware', BUILD_DIR);
   const middlewareExport = middlewarePath
     ? `export * as middleware from '${middlewarePath}';`
@@ -62,7 +67,7 @@ export default function attachBrisaProjectInternalsPlugin() {
       build.onLoad(
         { filter: new RegExp(import.meta.filename) },
         ({ loader }) => ({
-          contents: `${pages.imports}${apiEndpoints.imports}${pages.exports}${apiEndpoints.exports}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}${cssExport}`,
+          contents: `${pages.imports}${apiEndpoints.imports}${pages.exports}${apiEndpoints.exports}${actionsExport}${middlewareExport}${i18nExport}${configExport}${webIntegrationsExport}${layoutExport}${websocketExport}${cssExport}`,
           loader,
         }),
       );
