@@ -15,9 +15,7 @@ import { getConstants } from '@/constants';
 import { boldLog } from '@/utils/log/log-color';
 import { normalizeHTML } from '@/helpers';
 import transferStoreService from '@/utils/transfer-store-service';
-
-// @ts-ignore
-import * as actions from '../../__fixtures__/actions/index.tsx';
+import * as actions from '../../__fixtures__/actions';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGE = 'http://locahost/es/somepage';

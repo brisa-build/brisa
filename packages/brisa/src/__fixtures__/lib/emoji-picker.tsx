@@ -9,7 +9,7 @@ class EmojiPicker extends HTMLElement {
   }
 
   render() {
-    this.shadowRoot.innerHTML = `
+    this.shadowRoot!.innerHTML = `
       <div class="emoji-picker">
         <button>😀</button>
         <button>😂</button>
