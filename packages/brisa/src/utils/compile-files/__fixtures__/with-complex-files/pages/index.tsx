@@ -1,4 +1,4 @@
-import type { RequestContext } from '@/types';
+import type { RequestContext, ResponseHeaders } from '@/types';
 
 export default async function Home({}, { i18n }: RequestContext) {
   return (

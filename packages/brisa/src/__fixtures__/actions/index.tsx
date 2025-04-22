@@ -59,7 +59,7 @@ export async function a3_6({ onAction7 }: any, req: any) {
     withAwait ? await onAction7('foo') : onAction7('foo');
     await req._waitActionCallPromises('a3_6');
   } catch (error) {
-    return new Response(error.message);
+    return new Response((error as Error).message);
   }
 }
 

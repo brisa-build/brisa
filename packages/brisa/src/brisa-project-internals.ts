@@ -53,5 +53,4 @@ export const websocket = WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null;
 export const cssFiles =
   (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [];
 
-// TODO:
-export const actions = null;
+export const actions = await importFileIfExists('actions', BUILD_DIR);

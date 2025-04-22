@@ -24,12 +24,10 @@ import {
   ENCRYPT_PREFIX,
 } from '@/utils/crypto';
 
-// @ts-ignore
-import * as middleware from '../../__fixtures__/middleware.ts';
-// @ts-ignore
-import * as layoutModule from '../../__fixtures__/layout.tsx';
-// @ts-ignore
-import * as websocket from '../../__fixtures__/websocket.ts';
+import * as actions from '@/__fixtures__/actions';
+import * as middleware from '@/__fixtures__/middleware';
+import * as layoutModule from '@/__fixtures__/layout';
+import * as websocket from '@/__fixtures__/websocket';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
@@ -67,6 +65,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mock.module('brisa-project-internals', () => ({
       middleware,
       websocket,
+      actions,
       layoutModule,
       apiEndpoints,
     }));

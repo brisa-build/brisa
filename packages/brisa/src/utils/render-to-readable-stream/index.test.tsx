@@ -842,8 +842,10 @@ describe('utils', () => {
     });
 
     it('should inject client i18n script if some web component consumes translations', () => {
+      const constants = getConstants();
+
       globalThis.mockConstants = {
-        ...getConstants(),
+        ...constants,
         I18N_CONFIG: {
           locales: ['en', 'es'],
           defaultLocale: 'en',
@@ -892,7 +894,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head>
               <script data-run data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
-              <script data-cfasync="false" src="/_brisa/pages/_rpc-0.2.11.js" async></script>
+              <script data-cfasync="false" src="/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>
             </head>
             <body>
               <script>window.r={"name":"/page-with-web-component","pathname":"/page-with-web-component","query":{},"params":{}}</script>
@@ -966,8 +968,10 @@ describe('utils', () => {
     });
 
     it('should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used', () => {
+      const constants = getConstants();
+
       globalThis.mockConstants = {
-        ...getConstants(),
+        ...constants,
         I18N_CONFIG: {
           locales: ['en', 'es'],
           defaultLocale: 'en',
@@ -1021,7 +1025,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head>
               <script data-run data-cfasync="false" src="/_brisa/pages/page-with-web-component-hash-en.js"></script>
-              <script data-cfasync="false" src="/_brisa/pages/_rpc-0.2.11.js" async></script>
+              <script data-cfasync="false" src="/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>
             </head>
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>
@@ -1034,8 +1038,10 @@ describe('utils', () => {
     });
 
     it('should inject client i18n INLINE script if some web component consumes translations AND overrideMessages is used with basePath', () => {
+      const constants = getConstants();
+
       globalThis.mockConstants = {
-        ...getConstants(),
+        ...constants,
         I18N_CONFIG: {
           locales: ['en', 'es'],
           defaultLocale: 'en',
@@ -1092,7 +1098,7 @@ describe('utils', () => {
           <html lang="en" dir="ltr">
             <head basepath="/test">
               <script data-run data-cfasync="false" src="/test/_brisa/pages/page-with-web-component-hash-en.js"></script>
-              <script data-cfasync="false" src="/test/_brisa/pages/_rpc-0.2.11.js" async></script>
+              <script data-cfasync="false" src="/test/_brisa/pages/_rpc-${constants.VERSION}.js" async></script>
             </head>
             <body>
               <script>window.i18nMessages={...window.i18nMessages,...({"clientOne":"foo"})}</script>

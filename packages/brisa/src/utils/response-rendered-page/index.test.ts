@@ -14,11 +14,8 @@ import extendRequestContext from '@/utils/extend-request-context';
 import responseRenderedPage, { routeToPrerenderedPagePath } from '.';
 import { getConstants } from '@/constants';
 import { Initiator } from '@/public-constants';
-
-// @ts-ignore
-import * as middleware from '../../__fixtures__/middleware.ts';
-// @ts-ignore
-import * as layoutModule from '../../__fixtures__/layout.tsx';
+import * as middleware from '@/__fixtures__/middleware';
+import * as layoutModule from '@/__fixtures__/layout';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');

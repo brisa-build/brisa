@@ -61,6 +61,7 @@ describe('attach-brisa-project-internals', () => {
       ${apiEndpointsPath.map(([name, route], i) => `allApiEndpoints["${name}"] = a${i + 1};`).join('\n')}
       export const apiEndpoints = allApiEndpoints;
 
+      export * as actions from '${BUILD_DIR}/actions/index.tsx';
       export * as middleware from '${BUILD_DIR}/middleware.ts';
       export * as i18n from '${BUILD_DIR}/i18n.ts';
       export * as config from '${BUILD_DIR}/brisa.config.ts';

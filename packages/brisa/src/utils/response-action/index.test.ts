@@ -5,6 +5,7 @@ import {
   beforeEach,
   afterEach,
   spyOn,
+  mock,
   jest,
 } from 'bun:test';
 import path from 'node:path';
@@ -14,6 +15,7 @@ import { getConstants } from '@/constants';
 import { boldLog } from '@/utils/log/log-color';
 import { normalizeHTML } from '@/helpers';
 import transferStoreService from '@/utils/transfer-store-service';
+import * as actions from '../../__fixtures__/actions';
 
 const FIXTURES = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGE = 'http://locahost/es/somepage';
@@ -26,6 +28,9 @@ describe('utils', () => {
       ...getConstants(),
       BUILD_DIR: FIXTURES,
     };
+    mock.module('brisa-project-internals', () => ({
+      actions,
+    }));
   });
   afterEach(() => {
     logMock.mockRestore();

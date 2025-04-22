@@ -1,3 +1,4 @@
+import type { ResponseHeaders } from '@/types';
 import { createContext } from '@/core';
 
 const context = createContext('foo');
@@ -10,7 +11,7 @@ export default async function SomePage() {
   );
 }
 
-export function responseHeaders(_, { headersSnapshot }) {
+export function responseHeaders(_: any, { headersSnapshot }: ResponseHeaders) {
   return headersSnapshot({
     'x-test': 'test',
   });
