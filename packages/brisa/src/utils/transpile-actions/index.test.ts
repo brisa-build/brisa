@@ -3640,6 +3640,91 @@ describe('utils', () => {
       expect(output).toBe(expected);
     });
 
+    it('should not clean the "return []" inside the arrow function action #851', () => {
+      const code = `
+        export default function Component({ destination }) {
+          const onAction = async () => {
+              if (!destination?.parentId) return [];
+          }
+
+          return <some-webcomponent onAction={onAction} />
+        }
+      `;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from "brisa/server";
+
+        function Component({destination}) {
+          const onAction = async () => {
+              if (!destination?.parentId) return [];
+          };
+
+          return jsxDEV("some-webcomponent", {onAction: (...args) => onAction(...args),"data-action-onaction": "a1_1","data-action": true}, undefined, false, undefined, this);
+        }
+        
+        Component._hasActions = true;
+
+        export async function a1_1({destination}, req) {
+          try {
+            const __action = (...args) => req._p(onAction(...args));
+            const onAction = async () => {
+              if (!destination?.parentId) return [];
+            };
+            await __action(...req.store.get("__params:a1_1"));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({req,error,actionId: "a1_1",component: __props => jsxDEV(Component, {destination, ...__props}, undefined, false, undefined, this)});
+          }
+        }
+      `);
+
+      expect(output).toBe(expected);
+    });
+
+    it('should not clean the "return []" inside the function action #851', () => {
+      const code = `
+        export default function Component({ destination }) {
+          async function onAction() {
+              if (!destination?.parentId) return [];
+          }
+
+          return <some-webcomponent onAction={onAction} />
+        }
+      `;
+
+      const output = buildActions(code);
+
+      const expected = normalizeHTML(`
+        import {resolveAction as __resolveAction} from "brisa/server";
+
+        function Component({destination}) {
+          async function onAction() {
+              if (!destination?.parentId) return [];
+          }
+
+          return jsxDEV("some-webcomponent", {onAction: (...args) => onAction(...args),"data-action-onaction": "a1_1","data-action": true}, undefined, false, undefined, this);
+        }
+        
+        Component._hasActions = true;
+
+        export async function a1_1({destination}, req) {
+          try {
+            const __action = (...args) => req._p(onAction(...args));
+            async function onAction() {
+              if (!destination?.parentId) return [];
+            }
+            await __action(...req.store.get("__params:a1_1"));
+            await req._waitActionCallPromises("a1_1");
+          } catch (error) {
+            return __resolveAction({req,error,actionId: "a1_1",component: __props => jsxDEV(Component, {destination, ...__props}, undefined, false, undefined, this)});
+          }
+        }
+      `);
+      expect(output).toBe(expected);
+    });
+
     it.todo(
       'should work mixing elements with element generators and components',
       () => {

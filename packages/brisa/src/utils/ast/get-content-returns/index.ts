@@ -1,4 +1,5 @@
 import type { ESTree } from 'meriyah';
+import { FN } from '@/utils/ast/constants';
 
 export default function getContentReturns(
   statements: ESTree.Statement[],
@@ -6,7 +7,7 @@ export default function getContentReturns(
   const returns = new Set<ESTree.Node>();
 
   JSON.stringify(statements, (k, v) => {
-    if (v?.type === 'CallExpression') return null;
+    if (FN.has(v?.type)) return null;
     if (v?.type === 'ReturnStatement') {
       returns.add(v);
     }
