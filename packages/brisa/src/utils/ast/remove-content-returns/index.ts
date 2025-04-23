@@ -15,6 +15,7 @@ export default function removeContentReturns(
     JSON.stringify(statements, function (k, v) {
       if (!returnNode.has(v)) return v;
 
+      // Note: "if (foo) return bar" is convered to "if (foo) {}" #851
       return this?.type === 'IfStatement' ? emptyBlockStatement : null;
     }),
     (k, v) => {
