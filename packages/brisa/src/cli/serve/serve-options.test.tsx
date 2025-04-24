@@ -57,15 +57,24 @@ async function testRequest(
   );
 }
 
+const CONSTANTS = getConstants();
 const __CRYPTO_KEY__ = process.env.__CRYPTO_KEY__;
 const __CRYPTO_IV__ = process.env.__CRYPTO_IV__;
+const MODULES = {
+  ...CONSTANTS.MODULES,
+  middleware,
+  websocket,
+  actions,
+  layoutModule,
+  apiEndpoints,
+} as any;
 
 describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
     // @ts-ignore - We need to test real server scenarios
     if (typeof window !== 'undefined') window = undefined;
     globalThis.mockConstants = {
-      ...(getConstants() ?? {}),
+      ...CONSTANTS,
       PAGES_DIR,
       BUILD_DIR,
       SRC_DIR: BUILD_DIR,
@@ -79,13 +88,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         basePath,
         idleTimeout: 30,
       },
-      MODULES: {
-        middleware,
-        websocket,
-        actions,
-        layoutModule,
-        apiEndpoints,
-      } as any,
+      MODULES,
     };
   });
 
@@ -165,6 +168,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       ...constants,
       IS_PRODUCTION: true,
       BUILD_DIR: '/some-path',
+      MODULES,
     };
 
     expect(
@@ -178,6 +182,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       ...constants,
       IS_PRODUCTION: true,
       PAGES_DIR: '/some-path',
+      MODULES,
     };
 
     expect(
@@ -193,6 +198,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       ...constants,
       IS_PRODUCTION: false,
       PAGES_DIR: '/some-path',
+      MODULES,
     };
 
     expect(
@@ -1497,6 +1503,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       HEADERS: {
         CACHE_CONTROL: 'public, max-age=31536000, immutable',
       },
+      MODULES,
     };
     const mockFile = spyOn(Bun, 'file').mockImplementation(
       () =>
