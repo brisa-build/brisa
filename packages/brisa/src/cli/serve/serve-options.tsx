@@ -22,7 +22,6 @@ import { Initiator } from '@/public-constants';
 import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
 import getReadableStreamFromPath from '@/utils/get-readable-stream-from-path';
 import getContentTypeFromPath from '@/utils/get-content-type-from-path';
-import { middleware, websocket, apiEndpoints } from 'brisa-project-internals';
 import getInitiator from '@/utils/get-initiator';
 import { handleSPARedirects } from '@/utils/hard-to-soft-redirect';
 import transferStoreService, {
@@ -45,6 +44,7 @@ export async function getServeOptions() {
     CONFIG,
     JS_RUNTIME,
     HEADERS: { CACHE_CONTROL },
+    MODULES,
   } = getConstants();
 
   if (IS_PRODUCTION && !fs.existsSync(BUILD_DIR)) {
@@ -63,6 +63,7 @@ export async function getServeOptions() {
   let pagesRouter = getRouteMatcher(PAGES_DIR, RESERVED_PAGES);
   let rootRouter = getRouteMatcher(BUILD_DIR);
 
+  const { middleware, websocket, apiEndpoints } = MODULES;
   const HOT_RELOAD_TOPIC = 'hot-reload';
   const PUBLIC_CLIENT_PAGE_SUFFIX = '/_brisa/pages/';
   const route404 = pagesRouter.reservedRoutes[PAGE_404];

@@ -68,6 +68,18 @@ export type ProjectConstants = {
   WEB_CONTEXT_PLUGINS: any[];
   LOCALES_SET: Set<string>;
   IS_STATIC_EXPORT: boolean;
+  MODULES: {
+    middleware?: any;
+    i18n?: any;
+    config?: any;
+    integrations?: any;
+    layoutModule?: any;
+    pages: Record<string, any>;
+    apiEndpoints: Record<string, any>;
+    websocket?: any;
+    cssFiles: string[];
+    actions: any;
+  };
 };
 
 /**
@@ -976,9 +988,9 @@ export type ResponseHeaders = {
    *
    * These headers are propagated between the `responseHeaders` of the middleware to the
    * `responseHeaders` of the layout, to finally the `responseHeaders` of the page.
-   * 
+   *
    * Example:
-   * 
+   *
    * ```ts
    * export function responseHeaders(request: RequestContext, { headersSnapshot }: ResponseHeaders) {
    *  const headers = headersSnapshot();
@@ -988,13 +1000,13 @@ export type ResponseHeaders = {
    * return headers;
    * }
    * ```
-   * 
+   *
    * Docs: https://brisa.build/building-your-application/routing/pages-and-layouts##response-headers-in-layouts-and-pages
    */
   headersSnapshot: (init?: HeadersInit) => Headers;
   /**
    * Status of the response (200, 404, 500, etc)
-   * 
+   *
    * Docs: https://brisa.build/building-your-application/routing/pages-and-layouts##response-headers-in-layouts-and-pages
    */
   responseStatus: number;

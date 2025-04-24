@@ -1,6 +1,6 @@
 import path from 'node:path';
 import importFileIfExists from '../import-file-if-exists';
-import { i18n, config, integrations, cssFiles } from 'brisa-project-internals';
+import getProjectInternals from 'brisa-project-internals';
 import type { InternalConstants, ProjectConstants } from '@/types';
 import type { BunPlugin } from 'bun';
 
@@ -21,6 +21,8 @@ export async function loadProjectConstants({
   ROOT_DIR,
   IS_BUILD_PROCESS,
 }: InternalConstants): Promise<ProjectConstants> {
+  const MODULES = await getProjectInternals();
+  const { i18n, config, integrations, cssFiles } = MODULES;
   const defaultConfig = {
     trailingSlash: false,
     assetPrefix: '',
@@ -75,6 +77,7 @@ export async function loadProjectConstants({
     WEB_CONTEXT_PLUGINS,
     LOCALES_SET,
     IS_STATIC_EXPORT,
+    MODULES,
   };
 }
 

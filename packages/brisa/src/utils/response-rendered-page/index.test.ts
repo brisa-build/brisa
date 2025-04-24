@@ -1,12 +1,4 @@
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  jest,
-  mock,
-} from 'bun:test';
+import { describe, it, expect, beforeEach, afterEach, jest } from 'bun:test';
 import path from 'node:path';
 
 import type { MatchedBrisaRoute, Translate } from '@/types';
@@ -23,10 +15,6 @@ const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 
 describe('utils', () => {
   beforeEach(async () => {
-    mock.module('brisa-project-internals', () => ({
-      middleware,
-      layoutModule,
-    }));
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
@@ -38,6 +26,10 @@ describe('utils', () => {
         locales: ['en', 'es'],
         defaultLocale: 'es',
       },
+      MODULES: {
+        middleware,
+        layoutModule,
+      } as any,
     };
   });
 

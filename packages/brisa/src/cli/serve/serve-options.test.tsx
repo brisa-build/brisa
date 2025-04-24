@@ -62,14 +62,6 @@ const __CRYPTO_IV__ = process.env.__CRYPTO_IV__;
 
 describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   beforeEach(async () => {
-    mock.module('brisa-project-internals', () => ({
-      middleware,
-      websocket,
-      actions,
-      layoutModule,
-      apiEndpoints,
-    }));
-
     // @ts-ignore - We need to test real server scenarios
     if (typeof window !== 'undefined') window = undefined;
     globalThis.mockConstants = {
@@ -87,6 +79,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         basePath,
         idleTimeout: 30,
       },
+      MODULES: {
+        middleware,
+        websocket,
+        actions,
+        layoutModule,
+        apiEndpoints,
+      } as any,
     };
   });
 
