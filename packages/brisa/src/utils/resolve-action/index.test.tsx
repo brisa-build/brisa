@@ -9,11 +9,19 @@ import SSRWebComponent, {
   AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
 } from '@/utils/ssr-web-component';
 import { normalizeHTML } from '@/helpers';
+import * as layoutModule from '@/__fixtures__/layout';
+import importFileIfExists from '@/utils/import-file-if-exists';
 
 const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 let mockLog: ReturnType<typeof spyOn>;
+
+const pages = new Proxy({} as Record<string, Promise<any>>, {
+  get(target, name: string) {
+    return importFileIfExists(name as any, PAGES_DIR);
+  },
+});
 
 const getReq = (url = 'http://localhost', ...params: any) =>
   extendRequestContext({
@@ -42,6 +50,10 @@ describe('utils', () => {
           locales: ['en', 'es'],
           defaultLocale: 'es',
         },
+        MODULES: {
+          layoutModule,
+          pages,
+        } as any,
       };
     });
 
