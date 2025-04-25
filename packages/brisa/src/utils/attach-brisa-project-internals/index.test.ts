@@ -7,7 +7,6 @@ import attachBrisaProjectInternalsPlugin from '.';
 const BUILD_DIR = join(import.meta.dirname, '..', '..', '__fixtures__');
 const API_DIR = join(BUILD_DIR, 'api');
 const PAGES_DIR = join(BUILD_DIR, 'pages');
-const DIR = join(import.meta.dirname, 'index.ts');
 
 // Pages
 const pagesPath = [
@@ -28,16 +27,7 @@ const apiEndpointsPath = [
 ];
 
 describe('attach-brisa-project-internals', () => {
-  beforeEach(() => {
-    globalThis.mockConstants = {
-      ...(getConstants() ?? {}),
-      BUILD_DIR,
-      ROOT_DIR: BUILD_DIR,
-      PAGES_DIR,
-    };
-  });
-
-  it('should export the middleware & i18n', () => {
+  it('should export all internals with default values when they does not exist', () => {
     const plugin = attachBrisaProjectInternalsPlugin();
     const onLoad = mock(() => {});
     const onResolve = mock(() => {});
@@ -47,28 +37,88 @@ describe('attach-brisa-project-internals', () => {
     const [filter, pluginFn] = onLoad.mock.calls[0] as any;
     const pluginContent = pluginFn({ loader: 'ts' });
 
-    expect(filter).toEqual({ filter: new RegExp(DIR) });
+    expect(filter).toEqual({ filter: /.*brisa-project-internals.*/ });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
+      const actions = null;
+      const middleware = null;
+      const i18n = null;
+      const config = {};
+      const integrations = null;
+      const layoutModule = null;
+      const websocket = null;
+      const cssFiles = [];
+      const pages = {};
+      const apiEndpoints = {};
+
+      export default function getProjectInternals() {
+        return {
+          actions,
+          middleware,
+          i18n,
+          config,
+          integrations,
+          layoutModule,
+          websocket,
+          cssFiles,
+          pages,
+          apiEndpoints,
+        }
+      }
+    `),
+    );
+  });
+
+  it('should export all internals with static imports', () => {
+    globalThis.mockConstants = {
+      ...(getConstants() ?? {}),
+      BUILD_DIR,
+      ROOT_DIR: BUILD_DIR,
+      PAGES_DIR,
+    };
+    const plugin = attachBrisaProjectInternalsPlugin();
+    const onLoad = mock(() => {});
+    const onResolve = mock(() => {});
+
+    plugin.setup({ onLoad, onResolve } as any);
+
+    const [filter, pluginFn] = onLoad.mock.calls[0] as any;
+    const pluginContent = pluginFn({ loader: 'ts' });
+
+    expect(filter).toEqual({ filter: /.*brisa-project-internals.*/ });
+    expect(normalizeHTML(pluginContent.contents)).toBe(
+      normalizeHTML(`
+      import * as actions from '${BUILD_DIR}/actions/index.tsx';
+      import * as middleware from '${BUILD_DIR}/middleware.ts';
+      import * as i18n from '${BUILD_DIR}/i18n.ts';
+      import * as config from '${BUILD_DIR}/brisa.config.ts';
+      import * as integrations from '${BUILD_DIR}/web-components/_integrations.tsx';
+      import * as layoutModule from '${BUILD_DIR}/layout.tsx';
+      import * as websocket from '${BUILD_DIR}/websocket.ts';
+      import { default as cssFiles } from '${BUILD_DIR}/css-files.js';
       ${pagesPath.map(([name, route], i) => `import * as p${i + 1} from "${route}";`).join('\n')}
       ${apiEndpointsPath.map(([name, route], i) => `import * as a${i + 1} from "${route}";`).join('\n')}
 
-      const allPages = {};
-      ${pagesPath.map(([name, route], i) => `allPages["${name}"] = p${i + 1};`).join('\n')}
-      export const pages = allPages;
+      const pages = {};
+      ${pagesPath.map(([name, route], i) => `pages["${name}"] = p${i + 1};`).join('\n')}
 
-      const allApiEndpoints = {};
-      ${apiEndpointsPath.map(([name, route], i) => `allApiEndpoints["${name}"] = a${i + 1};`).join('\n')}
-      export const apiEndpoints = allApiEndpoints;
+      const apiEndpoints = {};
+      ${apiEndpointsPath.map(([name, route], i) => `apiEndpoints["${name}"] = a${i + 1};`).join('\n')}
 
-      export * as actions from '${BUILD_DIR}/actions/index.tsx';
-      export * as middleware from '${BUILD_DIR}/middleware.ts';
-      export * as i18n from '${BUILD_DIR}/i18n.ts';
-      export * as config from '${BUILD_DIR}/brisa.config.ts';
-      export * as integrations from '${BUILD_DIR}/web-components/_integrations.tsx';
-      export * as layoutModule from '${BUILD_DIR}/layout.tsx';
-      export * as websocket from '${BUILD_DIR}/websocket.ts';
-      export { default as cssFiles } from '${BUILD_DIR}/css-files.js';
+      export default function getProjectInternals() {
+        return {
+          actions,
+          middleware,
+          i18n,
+          config,
+          integrations,
+          layoutModule,
+          websocket,
+          cssFiles,
+          pages,
+          apiEndpoints,
+        }
+      }
     `),
     );
   });

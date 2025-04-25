@@ -2,7 +2,6 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { getConstants } from '@/constants';
 import { logBuildError } from '../log/log-build';
-import getImportableFilepath from '../get-importable-filepath';
 import attachBrisaProjectInternalsPlugin from '@/utils/attach-brisa-project-internals';
 
 const SERVER_OUTPUTS = new Set(['bun', 'node', 'deno']);
@@ -43,7 +42,9 @@ export default async function compileServeInternalsIntoBuild() {
   const { BUILD_DIR, LOG_PREFIX, CONFIG, ROOT_DIR, IS_PRODUCTION, BRISA_DIR } =
     constants;
 
-  if (!IS_PRODUCTION) return;
+  const isServer = IS_PRODUCTION && SERVER_OUTPUTS.has(CONFIG.output ?? 'bun');
+
+  if (!isServer) return;
 
   const servePathname = path.join(
     BRISA_DIR!,
@@ -56,28 +57,13 @@ export default async function compileServeInternalsIntoBuild() {
   const runtimeName =
     JS_RUNTIME_NAME[CONFIG.output!] ?? JS_RUNTIME_NAME.default;
   const runtimeExec = JS_RUNTIME_CMD[CONFIG.output!] ?? JS_RUNTIME_CMD.default;
-  const entrypoints = [];
-  const configImportPath = getImportableFilepath('brisa.config', ROOT_DIR);
-  const isServer = IS_PRODUCTION && SERVER_OUTPUTS.has(CONFIG.output ?? 'bun');
   const serverOutPath = path.join(BUILD_DIR, 'server.js');
   const indexPath = path.join(BUILD_DIR, 'index.js');
-
-  if (configImportPath) {
-    entrypoints.push(configImportPath);
-  }
-
-  if (isServer) {
-    entrypoints.push(servePathname);
-  }
-
-  if (!entrypoints.length) {
-    return;
-  }
 
   const output = await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
     throw: false,
-    entrypoints,
+    entrypoints: [servePathname],
     outdir: BUILD_DIR,
     naming: {
       entry: '[name].[ext]',

@@ -1,17 +1,10 @@
-import {
-  describe,
-  it,
-  expect,
-  beforeEach,
-  afterEach,
-  jest,
-  mock,
-} from 'bun:test';
+import { describe, it, expect, beforeEach, afterEach, jest } from 'bun:test';
 import path from 'node:path';
 
 import type { MatchedBrisaRoute, Translate } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import responseRenderedPage, { routeToPrerenderedPagePath } from '.';
+import importFileIfExists from '@/utils/import-file-if-exists';
 import { getConstants } from '@/constants';
 import { Initiator } from '@/public-constants';
 import * as middleware from '@/__fixtures__/middleware';
@@ -21,12 +14,14 @@ const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const ASSETS_DIR = path.join(BUILD_DIR, 'public');
 
+const pages = new Proxy({} as Record<string, Promise<any>>, {
+  get(target, name: string) {
+    return importFileIfExists(name as any, PAGES_DIR);
+  },
+});
+
 describe('utils', () => {
   beforeEach(async () => {
-    mock.module('brisa-project-internals', () => ({
-      middleware,
-      layoutModule,
-    }));
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       PAGES_DIR,
@@ -38,6 +33,11 @@ describe('utils', () => {
         locales: ['en', 'es'],
         defaultLocale: 'es',
       },
+      MODULES: {
+        middleware,
+        layoutModule,
+        pages,
+      } as any,
     };
   });
 

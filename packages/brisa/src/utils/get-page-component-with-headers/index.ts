@@ -3,7 +3,6 @@ import type { MatchedBrisaRoute, RequestContext } from '@/types';
 import importFileIfExists from '@/utils/import-file-if-exists';
 import processPageRoute from '@/utils/process-page-route';
 import createResponseHeadersContext from '@/utils/create-response-headers-context';
-import { middleware } from 'brisa-project-internals';
 
 type Params = {
   req: RequestContext;
@@ -13,7 +12,8 @@ type Params = {
   headers?: Record<string, string>;
 };
 
-const { HEADERS, BUILD_DIR } = getConstants();
+const { HEADERS, BUILD_DIR, MODULES } = getConstants();
+const { middleware } = MODULES;
 
 export default async function getPageComponentWithHeaders({
   req,

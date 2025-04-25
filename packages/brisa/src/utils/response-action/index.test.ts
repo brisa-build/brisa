@@ -5,7 +5,6 @@ import {
   beforeEach,
   afterEach,
   spyOn,
-  mock,
   jest,
 } from 'bun:test';
 import path from 'node:path';
@@ -27,10 +26,10 @@ describe('utils', () => {
     globalThis.mockConstants = {
       ...getConstants(),
       BUILD_DIR: FIXTURES,
+      MODULES: {
+        actions,
+      } as any,
     };
-    mock.module('brisa-project-internals', () => ({
-      actions,
-    }));
   });
   afterEach(() => {
     logMock.mockRestore();

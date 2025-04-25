@@ -3,7 +3,6 @@ import dangerHTML from '@/utils/danger-html';
 import { LiveReloadScript } from '@/cli/dev-live-reload';
 import LoadLayout from '@/utils/load-layout';
 import type { MatchedBrisaRoute } from '@/types';
-import { layoutModule, pages } from 'brisa-project-internals';
 
 const Empty = () => null;
 
@@ -11,6 +10,8 @@ export default async function processPageRoute(
   route: MatchedBrisaRoute,
   error?: Error,
 ) {
+  const { MODULES } = getConstants();
+  const { pages, layoutModule } = MODULES;
   // TODO: Remove async-await after finish #628
   const module = await pages[route.name];
   const PageComponent = module?.default ?? Empty;
