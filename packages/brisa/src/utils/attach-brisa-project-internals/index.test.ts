@@ -28,16 +28,56 @@ const apiEndpointsPath = [
 ];
 
 describe('attach-brisa-project-internals', () => {
-  beforeEach(() => {
+  it('should export all internals with default values when they does not exist', () => {
+    const plugin = attachBrisaProjectInternalsPlugin();
+    const onLoad = mock(() => {});
+    const onResolve = mock(() => {});
+
+    plugin.setup({ onLoad, onResolve } as any);
+
+    const [filter, pluginFn] = onLoad.mock.calls[0] as any;
+    const pluginContent = pluginFn({ loader: 'ts' });
+
+    expect(filter).toEqual({ filter: new RegExp(DIR) });
+    expect(normalizeHTML(pluginContent.contents)).toBe(
+      normalizeHTML(`
+      const actions = null;
+      const middleware = null;
+      const i18n = null;
+      const config = {};
+      const integrations = null;
+      const layoutModule = null;
+      const websocket = null;
+      const cssFiles = [];
+      const pages = {};
+      const apiEndpoints = {};
+      
+      export default function getProjectInternals() {
+        return {
+          actions,
+          middleware,
+          i18n,
+          config,
+          integrations,
+          layoutModule,
+          websocket,
+          cssFiles,
+          pages,
+          apiEndpoints,
+        }
+      }
+    `),
+    );
+  });
+
+
+  it('should export all internals with static imports', () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),
       BUILD_DIR,
       ROOT_DIR: BUILD_DIR,
       PAGES_DIR,
     };
-  });
-
-  it('should export the middleware & i18n', () => {
     const plugin = attachBrisaProjectInternalsPlugin();
     const onLoad = mock(() => {});
     const onResolve = mock(() => {});

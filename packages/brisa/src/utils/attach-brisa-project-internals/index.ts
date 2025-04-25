@@ -5,7 +5,7 @@ import { getConstants } from '@/constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
 
 const toImport = (importString: string, from: string | null) =>
-  from ? `import ${importString} from '${from}'` : '';
+  from ? `import ${importString} from '${from}';` : '';
 
 /**
  * This plugin substitute the dynamic imports of packages/brisa/src/brisa-project-internals.ts to
@@ -30,14 +30,14 @@ export default function attachBrisaProjectInternalsPlugin() {
   const apiEndpoints = getApiEndpointsExport();
 
   const contents = `
-    ${toImport('* as actions', actionsPath)};
-    ${toImport('* as middleware', middlewarePath)};
-    ${toImport('* as i18n', i18nPath)};
-    ${toImport('* as config', configPath)};
-    ${toImport('* as integrations', webIntegrationsPath)};
-    ${toImport('* as layoutModule', layoutPath)};
-    ${toImport('* as websocket', websocketPath)};
-    ${toImport('{ default as cssFiles }', cssPath)};
+    ${toImport('* as actions', actionsPath)}
+    ${toImport('* as middleware', middlewarePath)}
+    ${toImport('* as i18n', i18nPath)}
+    ${toImport('* as config', configPath)}
+    ${toImport('* as integrations', webIntegrationsPath)}
+    ${toImport('* as layoutModule', layoutPath)}
+    ${toImport('* as websocket', websocketPath)}
+    ${toImport('{ default as cssFiles }', cssPath)}
     ${pages.imports}
     ${apiEndpoints.imports}
 
