@@ -23,6 +23,7 @@ export default async function getProjectInternals() {
   const WEBSOCKET_PATH = getImportableFilepath('websocket', BUILD_DIR);
 
   return {
+    actions: await importFileIfExists('actions', BUILD_DIR),
     middleware: await importFileIfExists('middleware', BUILD_DIR),
     i18n: await importFileIfExists('i18n', WORKSPACE),
     config: await importFileIfExists('brisa.config', ROOT_DIR),
@@ -31,6 +32,8 @@ export default async function getProjectInternals() {
       resolve(BUILD_DIR, 'web-components'),
     ),
     layoutModule: await importFileIfExists('layout', BUILD_DIR),
+    websocket: WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null,
+    cssFiles: (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [],
     // All dynamic pages (for dev)
     // TODO: This is going to be removed to be replaced as static also in DEV
     // (for now it's only static in PROD)
@@ -47,8 +50,5 @@ export default async function getProjectInternals() {
         return importFileIfExists(name as any, getConstants().WORKSPACE);
       },
     }),
-    websocket: WEBSOCKET_PATH ? await import(WEBSOCKET_PATH) : null,
-    cssFiles: (await importFileIfExists('css-files', BUILD_DIR))?.default ?? [],
-    actions: await importFileIfExists('actions', BUILD_DIR),
   } as BrisaConstants['MODULES'];
 }

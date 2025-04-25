@@ -50,25 +50,37 @@ describe('attach-brisa-project-internals', () => {
     expect(filter).toEqual({ filter: new RegExp(DIR) });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
+      import * as actions from '${BUILD_DIR}/actions/index.tsx';
+      import * as middleware from '${BUILD_DIR}/middleware.ts';
+      import * as i18n from '${BUILD_DIR}/i18n.ts';
+      import * as config from '${BUILD_DIR}/brisa.config.ts';
+      import * as integrations from '${BUILD_DIR}/web-components/_integrations.tsx';
+      import * as layoutModule from '${BUILD_DIR}/layout.tsx';
+      import * as websocket from '${BUILD_DIR}/websocket.ts';
+      import { default as cssFiles } from '${BUILD_DIR}/css-files.js';
       ${pagesPath.map(([name, route], i) => `import * as p${i + 1} from "${route}";`).join('\n')}
       ${apiEndpointsPath.map(([name, route], i) => `import * as a${i + 1} from "${route}";`).join('\n')}
 
-      const allPages = {};
-      ${pagesPath.map(([name, route], i) => `allPages["${name}"] = p${i + 1};`).join('\n')}
-      export const pages = allPages;
+      const pages = {};
+      ${pagesPath.map(([name, route], i) => `pages["${name}"] = p${i + 1};`).join('\n')}
 
-      const allApiEndpoints = {};
-      ${apiEndpointsPath.map(([name, route], i) => `allApiEndpoints["${name}"] = a${i + 1};`).join('\n')}
-      export const apiEndpoints = allApiEndpoints;
+      const apiEndpoints = {};
+      ${apiEndpointsPath.map(([name, route], i) => `apiEndpoints["${name}"] = a${i + 1};`).join('\n')}
 
-      export * as actions from '${BUILD_DIR}/actions/index.tsx';
-      export * as middleware from '${BUILD_DIR}/middleware.ts';
-      export * as i18n from '${BUILD_DIR}/i18n.ts';
-      export * as config from '${BUILD_DIR}/brisa.config.ts';
-      export * as integrations from '${BUILD_DIR}/web-components/_integrations.tsx';
-      export * as layoutModule from '${BUILD_DIR}/layout.tsx';
-      export * as websocket from '${BUILD_DIR}/websocket.ts';
-      export { default as cssFiles } from '${BUILD_DIR}/css-files.js';
+      export default function getProjectInternals() {
+        return {
+          actions,
+          middleware,
+          i18n,
+          config,
+          integrations,
+          layoutModule,
+          websocket,
+          cssFiles,
+          pages,
+          apiEndpoints,
+        }
+      }
     `),
     );
   });
