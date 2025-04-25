@@ -70,7 +70,6 @@ describe('attach-brisa-project-internals', () => {
     );
   });
 
-
   it('should export all internals with static imports', () => {
     globalThis.mockConstants = {
       ...(getConstants() ?? {}),

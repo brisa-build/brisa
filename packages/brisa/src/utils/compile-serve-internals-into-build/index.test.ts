@@ -13,7 +13,6 @@ import compileBrisaInternalsToDoBuildPortable from '.';
 
 const BUILD_DIR = path.join(import.meta.dirname, 'out');
 const BRISA_DIR = path.join(import.meta.dirname, '..', '..', '..');
-const CONFIG_DIR = path.join(import.meta.dirname, 'brisa.config.js');
 const PAGES_DIR = path.join(BUILD_DIR, 'pages');
 const mockConstants = {
   BUILD_DIR,
@@ -40,11 +39,9 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     mockLog.mockRestore();
     delete globalThis.mockConstants;
     fs.rmSync(BUILD_DIR, { recursive: true, force: true });
-    fs.rmSync(CONFIG_DIR, { force: true });
   });
 
   it('should do nothing if is not production', async () => {
-    fs.writeFileSync(CONFIG_DIR, '');
     globalThis.mockConstants = {
       ...mockConstants,
       IS_PRODUCTION: false,
@@ -100,15 +97,6 @@ describe('utils/compileServeInternalsIntoBuild', () => {
     expect(mockLog.mock.calls.flat().join()).toContain(
       'Bun.js Server compiled into build folder',
     );
-  });
-
-  it('should build brisa.config.js', async () => {
-    fs.writeFileSync(CONFIG_DIR, '');
-    await compileBrisaInternalsToDoBuildPortable();
-
-    fs.rmSync(CONFIG_DIR);
-    expect(fs.existsSync(path.join(BUILD_DIR, 'brisa.config.js'))).toBeTrue();
-    expect(fs.existsSync(path.join(BUILD_DIR, 'server.js'))).toBeTrue();
   });
 
   it('should create a package.json in Bun.js', async () => {
