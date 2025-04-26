@@ -42,7 +42,8 @@ const buildStandaloneFilePath = path.join(
   'index.js',
 );
 const serveFilepath = path.join(outPath, 'cli-dev', 'index.js');
-const serveFilepathProd = path.resolve(process.cwd(), 'build', 'server.js');
+const BUILD_DIR = path.resolve(process.cwd(), 'build');
+const serveFilepathProd = path.resolve(BUILD_DIR, 'server.js');
 const MOBILE_OUTPUTS = new Set(['android', 'ios']);
 const TAURI_OUTPUTS = new Set(['android', 'ios', 'desktop']);
 
@@ -132,6 +133,8 @@ async function main({
       let PORT = process.env.PORT ?? 3000; // default port
       let DEBUG_MODE = false; // default debug mode
 
+      cleanBuildFolder();
+
       for (let i = 3; i < process.argv.length; i++) {
         switch (process.argv[i]) {
           case '--skip-tauri':
@@ -189,6 +192,8 @@ async function main({
       const wcFiles = new Set<string>();
       const scFiles = new Set<string>();
       let env = 'PROD';
+
+      cleanBuildFolder();
 
       for (let i = 3; i < process.argv.length; i++) {
         switch (process.argv[i]) {
@@ -440,6 +445,16 @@ async function main({
     if (isMobile) {
       cp.spawnSync(BUNX_EXEC, ['tauri', OUTPUT, 'init'], options);
     }
+  }
+}
+
+// Note: This performs a full cleanup of the build folder at this level.
+// However, inside the build folder, the build/_brisa directory is preserved
+// to avoid breaking web component types during hot-reloading builds.
+// It's recommended to run a full cleanup before executing "bun run dev" or "bun run build".
+function cleanBuildFolder() {
+  if (fs.existsSync(BUILD_DIR)) {
+    fs.rmSync(BUILD_DIR, { force: true, recursive: true });
   }
 }
 
