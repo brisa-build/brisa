@@ -17,6 +17,36 @@ const absolutePath = url.pathToFileURL(
   path.resolve(import.meta.dirname, '../../../../server/node.js'),
 ).href;
 
+const PAGES_DIR = path.join(FIXTURES_DIR, 'js', 'pages');
+const BUILD_DIR = path.join(FIXTURES_DIR, 'js');
+const routes = {
+  '/': '/index.mjs',
+  '/slow-streaming': '/slow-streaming.mjs',
+  '/api/test': '/api/test.js',
+};
+const apiEndpoints = new Proxy(
+  {},
+  {
+    get(target, name) {
+      return import(path.join(BUILD_DIR, routes[name]));
+    },
+  },
+);
+const pages = new Proxy(
+  {},
+  {
+    get(target, name) {
+      return import(path.join(PAGES_DIR, routes[name]));
+    },
+  },
+);
+
+const MODULES = {
+  middleware: null,
+  pages,
+  apiEndpoints,
+};
+
 describe('Node.js handler', () => {
   beforeEach(() => {
     globalThis.mockConstants = undefined;
@@ -29,14 +59,15 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {},
       HEADERS: {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/';
@@ -60,9 +91,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       I18N_CONFIG: {
         locales: ['en', 'es'],
         defaultLocale: 'es',
@@ -73,6 +104,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/somepage';
@@ -94,9 +126,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {
         trailingSlash: true,
       },
@@ -104,6 +136,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/somepage';
@@ -128,9 +161,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       I18N_CONFIG: {
         locales: ['en', 'es'],
         defaultLocale: 'es',
@@ -143,6 +176,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/somepage';
@@ -167,14 +201,15 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {},
       HEADERS: {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/favicon.ico';
@@ -193,14 +228,15 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {},
       HEADERS: {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/not-found.ico';
@@ -215,14 +251,15 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {},
       HEADERS: {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/somepage/';
@@ -248,14 +285,15 @@ describe('Node.js handler', () => {
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
       WORKSPACE: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {},
       HEADERS: {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/api/test';
@@ -275,9 +313,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       I18N_CONFIG: {
         locales: ['en', 'es'],
         defaultLocale: 'es',
@@ -288,6 +326,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/api/test';
@@ -310,9 +349,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       I18N_CONFIG: {
         locales: ['en', 'es'],
         defaultLocale: 'es',
@@ -325,6 +364,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/api/test';
@@ -350,9 +390,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {
         trailingSlash: false,
       },
@@ -360,6 +400,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/slow-streaming';
@@ -398,9 +439,9 @@ describe('Node.js handler', () => {
       IS_SERVE_PROCESS: true,
       ROOT_DIR: FIXTURES_DIR,
       SRC_DIR: path.join(FIXTURES_DIR, 'js'),
-      BUILD_DIR: path.join(FIXTURES_DIR, 'js'),
+      BUILD_DIR,
       ASSETS_DIR: path.join(FIXTURES_DIR, 'public'),
-      PAGES_DIR: path.join(FIXTURES_DIR, 'js', 'pages'),
+      PAGES_DIR,
       CONFIG: {
         trailingSlash: true,
       },
@@ -408,6 +449,7 @@ describe('Node.js handler', () => {
         CACHE_CONTROL: 'no-cache, no-store, must-revalidate',
       },
       LOG_PREFIX: {},
+      MODULES,
     };
     const req = new http.IncomingMessage(new net.Socket());
     req.url = '/api/test?test=1';
