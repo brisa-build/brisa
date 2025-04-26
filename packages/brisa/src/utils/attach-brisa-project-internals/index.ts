@@ -73,6 +73,12 @@ export default function attachBrisaProjectInternalsPlugin() {
   return {
     name: 'attach-brisa-project-internals',
     setup(build) {
+      // Note: Without this, using build.onLoad alone with the /brisa-project-internals/ regex
+      // works correctly only when using a symlink. After creating a Tarball, however, it fails
+      // to correctly resolve the reference.
+      // To fix this, it's necessary to first use build.onResolve with this "trick" before onLoad.
+      // This ensures it works in both cases — with a symlink and after generating the Tarball.
+      // It's important to keep this structure and not "simplify" it, as simplifying would break Tarball usage.
       build.onResolve({ filter: /brisa-project-internals/ }, () => ({
         path: import.meta.filename,
       }));
