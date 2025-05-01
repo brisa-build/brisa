@@ -57,8 +57,6 @@ export default async function compileServeInternalsIntoBuild() {
   const runtimeName =
     JS_RUNTIME_NAME[CONFIG.output!] ?? JS_RUNTIME_NAME.default;
   const runtimeExec = JS_RUNTIME_CMD[CONFIG.output!] ?? JS_RUNTIME_CMD.default;
-  const serverOutPath = path.join(BUILD_DIR, 'server.js');
-  const indexPath = path.join(BUILD_DIR, 'index.js');
 
   const output = await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
@@ -72,6 +70,8 @@ export default async function compileServeInternalsIntoBuild() {
     plugins: [attachBrisaProjectInternalsPlugin()],
     // Note: for Deno we need "node" as target too
     target: isBun ? 'bun' : 'node',
+    // @ts-ignore - Allow files with the same name (it only exist one)
+    naming: 'server.js',
     minify: true,
     banner: [
       'process.env.IS_SERVE_PROCESS ??= true;',
@@ -84,10 +84,6 @@ export default async function compileServeInternalsIntoBuild() {
 
   if (!output.success) {
     logBuildError(`Error compiling the ${runtimeName} server`, output.logs);
-  }
-
-  if (fs.existsSync(indexPath)) {
-    fs.renameSync(indexPath, serverOutPath);
   }
 
   createBrisaModule(runtimeExec);
