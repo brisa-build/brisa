@@ -10,7 +10,7 @@
     "start": "brisa start"
   },
   "dependencies": {
-    "brisa": "0.2.12-canary.5.1"
+    "brisa": "0.2.12-canary.5.2"
   },
   "devDependencies": {
     "@types/bun": "latest",
