@@ -4,6 +4,7 @@ import getImportableFilepath from '@/utils/get-importable-filepath';
 import { getConstants } from '@/constants';
 import { fileSystemRouter } from '@/utils/file-system-router';
 
+const namespace = 'brisa-project-internals';
 const toImport = (importString: string, from: string | null) =>
   from ? `import ${importString} from '${from}';` : '';
 
@@ -79,16 +80,15 @@ export default function attachBrisaProjectInternalsPlugin() {
       // To fix this, it's necessary to first use build.onResolve with this "trick" before onLoad.
       // This ensures it works in both cases — with a symlink and after generating the Tarball.
       // It's important to keep this structure and not "simplify" it, as simplifying would break Tarball usage.
-      build.onResolve({ filter: /brisa-project-internals/ }, () => ({
-        path: import.meta.filename,
+      build.onResolve({ filter: /brisa-project-internals/ }, ({ path }) => ({
+        path,
+        namespace,
       }));
-      build.onLoad(
-        { filter: new RegExp(import.meta.filename) },
-        ({ loader }) => ({
-          contents,
-          loader,
-        }),
-      );
+
+      build.onLoad({ filter: /.*/, namespace }, ({ loader }) => ({
+        contents,
+        loader,
+      }));
     },
   } satisfies BunPlugin;
 }

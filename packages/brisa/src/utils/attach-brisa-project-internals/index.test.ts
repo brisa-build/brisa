@@ -7,7 +7,6 @@ import attachBrisaProjectInternalsPlugin from '.';
 const BUILD_DIR = join(import.meta.dirname, '..', '..', '__fixtures__');
 const API_DIR = join(BUILD_DIR, 'api');
 const PAGES_DIR = join(BUILD_DIR, 'pages');
-const DIR = join(import.meta.dirname, 'index.ts');
 
 // Pages
 const pagesPath = [
@@ -38,7 +37,10 @@ describe('attach-brisa-project-internals', () => {
     const [filter, pluginFn] = onLoad.mock.calls[0] as any;
     const pluginContent = pluginFn({ loader: 'ts' });
 
-    expect(filter).toEqual({ filter: new RegExp(DIR) });
+    expect(filter).toEqual({
+      filter: /.*/,
+      namespace: 'brisa-project-internals',
+    });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
       const actions = null;
@@ -86,7 +88,10 @@ describe('attach-brisa-project-internals', () => {
     const [filter, pluginFn] = onLoad.mock.calls[0] as any;
     const pluginContent = pluginFn({ loader: 'ts' });
 
-    expect(filter).toEqual({ filter: new RegExp(DIR) });
+    expect(filter).toEqual({
+      filter: /.*/,
+      namespace: 'brisa-project-internals',
+    });
     expect(normalizeHTML(pluginContent.contents)).toBe(
       normalizeHTML(`
       import * as actions from '${BUILD_DIR}/actions/index.tsx';

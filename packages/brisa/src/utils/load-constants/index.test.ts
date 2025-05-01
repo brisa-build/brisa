@@ -87,19 +87,7 @@ describe('utils -> load-constants', () => {
   });
 
   describe('loadProjectConstants', () => {
-    it('should NOT use CONFIG.external in serve process', async () => {
-      process.env.npm_package_json = undefined;
-      const result = await loadProjectConstants({
-        IS_PRODUCTION: false,
-        BUILD_DIR: 'build',
-        WORKSPACE: 'workspace',
-        ROOT_DIR: 'root',
-        IS_BUILD_PROCESS: false,
-      } as any);
-      expect(result.CONFIG.external).toBeEmpty();
-    });
-
-    it('should not use devDependencies from the package.json during the serve process', async () => {
+    it('should not use devDependencies from the package.json during the serve process (only Brisa internals)', async () => {
       process.env.npm_package_json = 'package.json';
       const result = await loadProjectConstants({
         IS_PRODUCTION: true,
@@ -108,7 +96,7 @@ describe('utils -> load-constants', () => {
         ROOT_DIR: 'root',
         IS_BUILD_PROCESS: false,
       } as any);
-      expect(result.CONFIG.external).toBeEmpty();
+      expect(result.CONFIG.external).toEqual(['brisa/macros', 'brisa/server']);
     });
 
     it('should lightningcss and @tailwindcss/oxide as CONFIG.external', async () => {
@@ -123,6 +111,8 @@ describe('utils -> load-constants', () => {
       expect(result.CONFIG.external).toEqual([
         'lightningcss',
         '@tailwindcss/oxide',
+        'brisa/macros',
+        'brisa/server',
       ]);
     });
 
@@ -139,6 +129,8 @@ describe('utils -> load-constants', () => {
         ...Object.keys(mockPackageJson.devDependencies),
         'lightningcss',
         '@tailwindcss/oxide',
+        'brisa/macros',
+        'brisa/server',
       ]);
     });
   });
