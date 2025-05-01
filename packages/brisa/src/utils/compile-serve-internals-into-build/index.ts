@@ -63,14 +63,10 @@ export default async function compileServeInternalsIntoBuild() {
     throw: false,
     entrypoints: [servePathname],
     outdir: BUILD_DIR,
-    naming: {
-      entry: '[name].[ext]',
-    },
     external: CONFIG.external,
     plugins: [attachBrisaProjectInternalsPlugin()],
     // Note: for Deno we need "node" as target too
     target: isBun ? 'bun' : 'node',
-    // @ts-ignore - Allow files with the same name (it only exist one)
     naming: 'server.js',
     minify: true,
     banner: [
