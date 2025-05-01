@@ -15,8 +15,6 @@ import { shouldTransferTranslatedPagePaths } from '@/utils/transfer-translated-p
 import { clientBuild } from '../client-build';
 import { getCSSLoader } from '@/utils/handle-css-files';
 
-const BRISA_DEPS = ['brisa/server'];
-
 export default async function compileFiles() {
   const {
     SRC_DIR,
@@ -61,9 +59,6 @@ export default async function compileFiles() {
     ).toString(),
   };
   const extendPlugins = CONFIG.extendPlugins ?? ((plugins) => plugins);
-  const external = CONFIG.external
-    ? [...CONFIG.external, ...BRISA_DEPS]
-    : BRISA_DEPS;
 
   if (middlewarePath) entrypoints.push(middlewarePath);
   if (layoutPath) entrypoints.push(layoutPath);
@@ -87,7 +82,7 @@ export default async function compileFiles() {
     // for the client build. FIXME: improve this to analyze each
     // server page including the chunks that the page needs.
     splitting: false,
-    external,
+    external: CONFIG.external,
     define,
     loader: getCSSLoader(),
     plugins: extendPlugins(

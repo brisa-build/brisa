@@ -7,13 +7,6 @@ import type { BunPlugin } from 'bun';
 const OS_CAN_LOAD_BALANCE =
   process.platform !== 'darwin' && process.platform !== 'win32';
 
-const staticExportOutputOption = new Set([
-  'static',
-  'desktop',
-  'android',
-  'ios',
-]);
-
 export async function loadProjectConstants({
   IS_PRODUCTION,
   BUILD_DIR,
@@ -34,16 +27,19 @@ export async function loadProjectConstants({
     idleTimeout: 30,
   };
 
+  const BRISA_DEPS = ['brisa/macros', 'brisa/server'];
   const defaultExternalDeps = IS_BUILD_PROCESS
-    ? [...getDevDeps(), 'lightningcss', '@tailwindcss/oxide']
-    : [];
+    ? [...getDevDeps(), 'lightningcss', '@tailwindcss/oxide', ...BRISA_DEPS]
+    : BRISA_DEPS;
   const WEB_CONTEXT_PLUGINS = integrations?.webContextPlugins ?? [];
   const I18N_CONFIG = i18n?.default;
   const CONFIG = {
     ...defaultConfig,
     ...(config?.default ?? {}),
   };
-  const IS_STATIC_EXPORT = staticExportOutputOption.has(CONFIG?.output);
+  const IS_STATIC_EXPORT = new Set(['static', 'desktop', 'android', 'ios']).has(
+    CONFIG?.output,
+  );
 
   // Remove trailing slash from pages
   if (I18N_CONFIG?.pages) {
