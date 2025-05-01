@@ -117,7 +117,7 @@
     "build:core-macros": "bun build --minify --target=bun --outdir=macros src/core/macros/index.ts && bun run build:bin",
     "build:core-client": "bun build --minify --outdir=client src/core/client/index.ts && bun run build:core-client-simplified && bun run build:bin",
     "build:core-client-simplified": "bun build --minify --outdir=client-simplified src/core/client/index.ts --define '__TRAILING_SLASH__=false' --define '__WEB_CONTEXT_PLUGINS__=false' --define '__BASE_PATH__=\"\"' --define '__ASSET_PREFIX__=\"\"' --define '__USE_LOCALE__=false' --define '__USE_PAGE_TRANSLATION__=false'",
-    "build:core-server": "bun build --minify --external brisa-project-internals --target=node --outdir=server src/core/server/index.ts src/core/server/node.ts src/core/server/deno.ts && bun run build:bin && cp src/types/server.d.ts server/index.d.ts && cp src/types/server.node.d.ts server/node.d.ts && cp src/types/server.deno.d.ts server/deno.d.ts",
+    "build:core-server": "bun build --minify --target=node --outdir=server src/core/server/index.ts src/core/server/node.ts src/core/server/deno.ts && bun run build:bin && cp src/types/server.d.ts server/index.d.ts && cp src/types/server.node.d.ts server/node.d.ts && cp src/types/server.deno.d.ts server/deno.d.ts",
     "build:core-test": "bun build --minify --target=bun --outdir=test src/core/test/index.ts && bun run build:bin && cp src/types/test.d.ts test/index.d.ts",
     "build:jsx-dev-runtime": "bun build --minify --target=bun --outdir=jsx-dev-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-dev-runtime/index.d.ts",
     "build:jsx-runtime": "bun build --minify --target=bun --outdir=jsx-runtime src/jsx-runtime/index.ts && cp src/types/index.d.ts jsx-runtime/index.d.ts",
