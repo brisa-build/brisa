@@ -72,6 +72,7 @@ export default async function compileServeInternalsIntoBuild() {
     plugins: [attachBrisaProjectInternalsPlugin()],
     // Note: for Deno we need "node" as target too
     target: isBun ? 'bun' : 'node',
+    minify: true,
     banner: [
       'process.env.IS_SERVE_PROCESS ??= true;',
       'process.env.IS_PROD ??= true;',
