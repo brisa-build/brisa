@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import compileAll from '@/utils/compile-all';
-import { getConstants } from '@/constants';
+import { getConstants, reinitConstants } from '@/constants';
 import byteSizeToString from '@/utils/byte-size-to-string';
 import { logTable, generateStaticExport } from './build-utils';
 import compileBrisaInternalsToDoBuildPortable from '@/utils/compile-serve-internals-into-build';
@@ -85,6 +85,7 @@ export default async function build() {
   if (IS_PRODUCTION && IS_STATIC_EXPORT && pagesSize) {
     log(LOG_PREFIX.INFO);
     log(LOG_PREFIX.WAIT, '📄 Generating static pages...');
+    await reinitConstants(); // #857
     [generated] = (await generateStaticExport()) ?? [];
 
     if (!generated) return process.exit(1);
