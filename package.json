@@ -1,6 +1,6 @@
 {
   "name": "brisa-monorepo",
-  "version": "0.2.12",
+  "version": "0.2.13-canary.1",
   "description": "The next-gen web framework.",
   "repository": {
     "type": "git",
