@@ -11,6 +11,22 @@ describe('utils', () => {
   describe('replace-ast-imports-to-absolute', () => {
     it('should not transform "brisa" and "brisa/server" imports', async () => {
       const code = `
+        import {renderPage} from 'brisa/server';
+        import {dangerHTML} from "brisa";
+      `;
+
+      const ast = parseCodeToAST(code);
+      const modifiedAst = await replaceAstImportsToAbsolute(
+        ast,
+        import.meta.url,
+      );
+      const result = normalizeHTML(generateCodeFromAST(modifiedAst));
+      const expected = normalizeHTML(code);
+
+      expect(result).toEqual(expected);
+    });
+    it('should not transform "brisa/macros" imports', async () => {
+      const code = `
         import {__prerender__macro, __resolveImportSync} from 'brisa/macros' with { type: "macro" };
         import dangerHTML from "@/utils/danger-html";
       `;

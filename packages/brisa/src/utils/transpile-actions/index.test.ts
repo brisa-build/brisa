@@ -17,10 +17,6 @@ function buildActions(code: string) {
   return normalizeHTML(transpileActions(modifiedCode));
 }
 
-const brisaServerFile = path
-  .join(import.meta.dirname, '..', '..', '..', 'server', 'index.js')
-  .replace(/\\/g, '\\\\');
-
 describe('utils', () => {
   afterEach(() => {
     globalThis.mockConstants = undefined;
@@ -2109,7 +2105,7 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {renderComponent} from "${brisaServerFile}";
+      import {renderComponent} from "brisa/server";
 
       function CounterServer({value = 0}) {
         function increment(v) {
@@ -2207,7 +2203,7 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {renderComponent} from "${brisaServerFile}";
+      import {renderComponent} from "brisa/server";
 
       function CounterServer({value = 0}) {
         function inc(v) {
@@ -2320,7 +2316,7 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {renderComponent} from "${brisaServerFile}";
+      import {renderComponent} from "brisa/server";
 
       function CounterServer({value = 0}) {
         const inc = v => {
@@ -2427,7 +2423,7 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {renderComponent} from "${brisaServerFile}";
+      import {renderComponent} from "brisa/server";
 
       function CounterServer({value = 0}) {
         function increment(v) {
@@ -2522,7 +2518,7 @@ describe('utils', () => {
 
       const expected = normalizeHTML(`
       import {resolveAction as __resolveAction} from "brisa/server";
-      import {renderComponent} from "${brisaServerFile}";
+      import {renderComponent} from "brisa/server";
 
       function CounterServer({value = 0}) {
         const increment = v => {
