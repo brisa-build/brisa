@@ -1,4 +1,3 @@
-import { getConstants } from '@/constants';
 import resolveImportSync from '@/utils/resolve-import-sync';
 import type { ESTree } from 'meriyah';
 import { fileURLToPath, pathToFileURL } from 'node:url';
