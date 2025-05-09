@@ -8,10 +8,10 @@ When working on a Brisa project, you may encounter scenarios where you need to i
 
 ## Common Installation
 
-For all types of libraries, including standalone, server components, and web components, you can use the `bun install` command to install them. This command fetches and installs the library, making it available for use throughout your project.
+For all types of libraries, including standalone, server components, and web components, you can use the `bun add` command to install them. This command fetches and installs the library, making it available for use throughout your project.
 
 ```bash
-bun install <library-name>
+bun add <library-name>
 ```
 
 ## Standalone Libraries

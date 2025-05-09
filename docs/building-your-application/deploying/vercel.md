@@ -15,7 +15,7 @@ To deploy to Vercel, use [adapter-vercel](https://github.com/brisa-build/brisa/b
 Install with:
 
 ```sh
-bun install -D brisa-adapter-vercel
+bun add -D brisa-adapter-vercel
 ```
 
 Then, add the adapter to your `brisa.config.ts`:

@@ -37,7 +37,7 @@ And that's it! You're all set to use **TailwindCSS** in your Brisa project.
 If you want to install TailwindCSS manually, you can do it by running:
 
 ```bash
-bun install tailwindcss@next postcss brisa-tailwindcss
+bun add tailwindcss@next postcss brisa-tailwindcss
 ```
 
 And then, you can add the integration in your `brisa.config.ts` file:

@@ -29,7 +29,7 @@ After the prompts, it will create a folder with your project name and install th
 To manually create a new Brisa app, install the required packages:
 
 ```sh
-bun install brisa@latest
+bun add brisa@latest
 ```
 
 Open your package.json file and add the following scripts:
