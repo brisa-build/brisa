@@ -22,9 +22,9 @@
   "devDependencies": {
     "brisa": "workspace:*"
   },
-  "packageManager": "bun@1.2.12",
+  "packageManager": "bun@1.2.13",
   "engines": {
-    "bun": ">= 1.2.12",
+    "bun": ">= 1.2.13",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
