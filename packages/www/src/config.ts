@@ -316,6 +316,10 @@ export default {
               link: '/building-your-application/building/bun-server',
             },
             {
+              text: 'Static Site App',
+              link: '/building-your-application/building/static-site-app',
+            },
+            {
               text: 'Node.js Server',
               link: '/building-your-application/building/node-server',
             },
