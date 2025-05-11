@@ -105,6 +105,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://kentcdodds.com"><img src="https://avatars.githubusercontent.com/u/1500684?v=4?s=100" width="100px;" alt="Kent C. Dodds"/><br /><sub><b>Kent C. Dodds</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=kentcdodds" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/0xflotus"><img src="https://avatars.githubusercontent.com/u/26602940?v=4?s=100" width="100px;" alt="0xflotus"/><br /><sub><b>0xflotus</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=0xflotus" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://rohitdev-psi.vercel.app/"><img src="https://avatars.githubusercontent.com/u/132741672?v=4?s=100" width="100px;" alt="Rohit Kumar Dey"/><br /><sub><b>Rohit Kumar Dey</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=rohits-web03" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://kekkon.nexus"><img src="https://avatars.githubusercontent.com/u/69618058?v=4?s=100" width="100px;" alt="Yuuki Rika"/><br /><sub><b>Yuuki Rika</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=yvvki" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
