@@ -4,6 +4,25 @@ When contributing to this repository, please first discuss the change you wish t
 
 Please note that we have a code of conduct, which should be followed in all interactions with the project.
 
+## Project Overview
+
+Brisa is a monorepo composed of multiple interdependent packages:
+
+|Package|Purpose|
+|---|---|
+|`brisa`|Core framework (SSR, routing, server actions, etc.)|
+|`create-brisa`|Project scaffolding CLI|
+|`brisa-adapter-vercel`|Deployment adapter for Vercel|
+|`brisa-tailwindcss`|Tailwind CSS v4 integration|
+|`brisa-pandacss`|Panda CSS integration|
+|`www`|Documentation website|
+
+Brisa supports multiple output targets: Node.js, Bun, static, desktop/mobile via Tauri. The default bundle size is **0 KB**, scaling minimally with features (e.g. 2kB for RPC, 3kB for web components).
+
+> [!TIP]
+>
+> We recommend you to visit [this page to learn more about Brisa's internals](https://deepwiki.com/brisa-build/brisa).
+
 ## Development Setup
 
 To set up your environment for contributing:
