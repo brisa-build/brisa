@@ -118,6 +118,12 @@ describe('Brisa CLI', () => {
     process.env.PORT = undefined;
   });
 
+  it('should exist the integration files (ensure the build script is correct) #862', () => {
+    expect(fs.existsSync(TAILWINDCSS_PATH)).toBeTrue();
+    expect(fs.existsSync(PANDACSS_PATH)).toBeTrue();
+    expect(fs.existsSync(MDX_PATH)).toBeTrue();
+  });
+
   it('should display the --help options', async () => {
     process.argv = ['bun', 'brisa', '--help'];
 

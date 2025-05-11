@@ -110,7 +110,7 @@
   "scripts": {
     "build": "bun run clean && bun run build:jsx-runtime && bun run build:jsx-dev-runtime && bun run build:core && bun run build:core-client && bun run build:core-server && bun run build:core-macros && bun run build:core-test && bun run build:core-compiler",
     "build:bin": "bun build --minify --target=bun --outdir=./ src/bin/index.ts && bun run build:cli-utils && bun run build:cli-serve-dev",
-    "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts && bun build --minify --target=node --outdir=out/cli/serve --external brisa-project-internals src/cli/serve/index.tsx && bun build --minify --target=node --outdir=out/cli src/cli/integrations/mdx/index.ts src/cli/integrations/tailwindcss/index.ts src/cli/integrations/pandacss/index.ts",
+    "build:cli-utils": "bun build --minify --target=bun --outdir=out/cli src/cli/build.ts src/cli/build-standalone/index.ts && bun build --minify --target=node --outdir=out/cli/serve --external brisa-project-internals src/cli/serve/index.tsx && bun build --minify --target=node --outdir=out/cli/integrations src/cli/integrations/mdx/index.ts src/cli/integrations/tailwindcss/index.ts src/cli/integrations/pandacss/index.ts",
     "build:cli-serve-dev": "bun build --minify --target=node --outdir=out/cli-dev src/cli/serve/index.tsx",
     "build:core": "bun build --minify --outdir=out/core src/core/index.ts && bun run build:bin && cp src/types/index.d.ts out/core/index.d.ts",
     "build:core-compiler": "cd scripts && bun run core-compiler-build.ts && cd .. && cp src/types/compiler.d.ts compiler/index.d.ts",
