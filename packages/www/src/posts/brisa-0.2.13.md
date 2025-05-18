@@ -1,10 +1,10 @@
 ---
-title: "Brisa 0.2.14-canary.1"
+title: "Brisa 0.2.14-canary.2"
 created: 05/11/2025
-description: "Brisa release notes for version 0.2.14-canary.1"
+description: "Brisa release notes for version 0.2.14-canary.2"
 author: Aral Roca
 author_site: https://x.com/aralroca
-cover_image: /images/blog-images/release-0.2.14-canary.1.webp
+cover_image: /images/blog-images/release-0.2.14-canary.2.webp
 ---
 
 This release continues refining the build system and internal tooling as we prepare for Brisa v0.3. Key improvements include major optimizations in server output size and fixes that improve reliability across builds and CLI utilities.
@@ -34,4 +34,4 @@ This release continues refining the build system and internal tooling as we prep
 
 ---
 
-**Full Changelog**: [github.com/brisa-build/brisa/compare/0.2.12...0.2.14-canary.1](https://github.com/brisa-build/brisa/compare/0.2.12...0.2.14-canary.1)
+**Full Changelog**: [github.com/brisa-build/brisa/compare/0.2.12...0.2.14-canary.2](https://github.com/brisa-build/brisa/compare/0.2.12...0.2.14-canary.2)
