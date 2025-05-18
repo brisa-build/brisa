@@ -47,7 +47,7 @@ export default async function compileFiles() {
   const entrypoints = [...pagesEntrypoints, ...apiEntrypoints];
   const webComponentsPerFile: Record<string, Record<string, string>> = {};
   const dependenciesPerFile = new Map<string, Set<string>>();
-  const actionsEntrypoints: string[] = [];
+  const actionsExports: string[] = [];
   const define = {
     __DEV__: (!IS_PRODUCTION).toString(),
     __BASE_PATH__: JSON.stringify(CONFIG.basePath ?? ''),
@@ -105,17 +105,18 @@ export default async function compileFiles() {
                     fileID,
                   });
                   if (result.hasActions) {
-                    const actionEntrypoint = join(
+                    const filename = `${fileID}.${loader}`;
+                    const actionEntrypointAbsPath = join(
                       BUILD_DIR,
                       'actions_raw',
-                      `${fileID}.${loader}`,
+                      filename,
                     );
 
-                    actionsEntrypoints.push(actionEntrypoint);
+                    actionsExports.push(`export * from './${filename}'`);
                     actionIdCount += 1;
                     actionWrites.push(
                       Bun.write(
-                        actionEntrypoint,
+                        actionEntrypointAbsPath,
                         transpileActions(result.code),
                       ),
                     );
@@ -145,9 +146,9 @@ export default async function compileFiles() {
 
   if (!success) return { success, logs, pagesSize: {} };
 
-  if (actionsEntrypoints.length) {
+  if (actionsExports.length) {
     const actionResult = await Promise.all(actionWrites).then(() =>
-      buildActions({ actionsEntrypoints, define }),
+      buildActions({ actionsExports, define }),
     );
     if (!actionResult.success) logs.push(...actionResult.logs);
   }

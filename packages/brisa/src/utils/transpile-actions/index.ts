@@ -11,7 +11,7 @@ import { jsx, jsxDEV } from '../ast/constants';
 import { getCSSLoader } from '@/utils/handle-css-files';
 
 type CompileActionsParams = {
-  actionsEntrypoints: string[];
+  actionsExports: string[];
   define: Record<string, string>;
 };
 
@@ -592,7 +592,7 @@ function wrapWithTypeCatch({
 }
 
 export async function buildActions({
-  actionsEntrypoints,
+  actionsExports,
   define,
 }: CompileActionsParams) {
   const { BUILD_DIR, IS_PRODUCTION, CONFIG, LOG_PREFIX } = getConstants();
@@ -600,10 +600,7 @@ export async function buildActions({
   const rawActionsDir = join(BUILD_DIR, 'actions_raw');
   const barrelFile = join(rawActionsDir, 'index.ts');
 
-  await Bun.write(
-    barrelFile,
-    actionsEntrypoints.map((p) => `export * from '${p}'`).join('\n'),
-  );
+  await Bun.write(barrelFile, actionsExports.join('\n'));
 
   const external = CONFIG.external ? [...CONFIG.external, 'brisa'] : ['brisa'];
 
