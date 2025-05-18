@@ -1,4 +1,5 @@
-import { writeFile, rm } from 'node:fs/promises';
+import { writeFile, rm, mkdir, exists } from 'node:fs/promises';
+import { dirname } from 'node:path'
 import { generateEntryPointCode } from '../generate-entrypoint-code';
 import { getTempPageName } from '../get-temp-page-name';
 
@@ -21,6 +22,12 @@ export async function writeTempEntrypoint({
     useContextProvider,
     integrationsPath,
   });
+
+  const dir = dirname(webEntrypoint);
+
+  if(!(await exists(dir))) {
+    await mkdir(dir, { recursive: true })
+  }
 
   await writeFile(webEntrypoint, code);
 
