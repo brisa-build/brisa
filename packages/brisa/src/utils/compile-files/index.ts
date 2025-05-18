@@ -105,17 +105,17 @@ export default async function compileFiles() {
                     fileID,
                   });
                   if (result.hasActions) {
-                    const actionEntrypoint = join(
+                    const actionEntrypointAbsPath = join(
                       BUILD_DIR,
                       'actions_raw',
                       `${fileID}.${loader}`,
                     );
 
-                    actionsEntrypoints.push(actionEntrypoint);
+                    actionsEntrypoints.push(`./${`${fileID}.${loader}`}`);
                     actionIdCount += 1;
                     actionWrites.push(
                       Bun.write(
-                        actionEntrypoint,
+                        actionEntrypointAbsPath,
                         transpileActions(result.code),
                       ),
                     );
