@@ -628,7 +628,7 @@ export async function buildActions({
     logBuildError('Failed to compile actions', res.logs);
   }
 
-  fs.rmSync(rawActionsDir, { recursive: true });
+  // fs.rmSync(rawActionsDir, { recursive: true });
 
   return res;
 }
