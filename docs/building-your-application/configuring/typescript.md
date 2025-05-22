@@ -17,6 +17,40 @@ bun create brisa
 
 By default `tsconfig.json` file is created, with the `@` path.
 
+**tsconfig.json**:
+
+```json
+{
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "baseUrl": "./src",
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "composite": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "noFallthroughCasesInSwitch": true,
+    "downlevelIteration": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "brisa",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "types": ["brisa"],
+    "paths": {
+      // Please, do not modify this path alias configuration.
+      // It's internally used in Brisa "types.ts" file to enable type-safe
+      "@/*": ["*"]
+    }
+  }
+}
+```
+
 > [!CAUTION]
 >
 > Please, do not modify this path alias configuration. It's internally used in Brisa "`types.ts`" file to enable type-safe. If you need a different one, add it.
