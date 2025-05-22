@@ -18,7 +18,11 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/brisa-tailwindcss"
   },
-  "files": ["index.ts", "index.d.ts", "libs.json"],
+  "files": [
+    "index.ts",
+    "index.d.ts",
+    "libs.json"
+  ],
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.4",
     "postcss": "8.5.3",
@@ -29,9 +33,9 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4"
   },
-  "packageManager": "bun@1.2.13",
+  "packageManager": "bun@1.2.14",
   "engines": {
-    "bun": ">= 1.2.13",
+    "bun": ">= 1.2.14",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
