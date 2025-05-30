@@ -29,9 +29,9 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4"
   },
-  "packageManager": "bun@1.2.14",
+  "packageManager": "bun@1.2.15",
   "engines": {
-    "bun": ">= 1.2.14",
+    "bun": ">= 1.2.15",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
