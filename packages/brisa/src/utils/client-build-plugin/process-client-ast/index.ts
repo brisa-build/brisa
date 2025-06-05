@@ -53,15 +53,6 @@ export default function processClientAst(ast: ESTree.Program, path = '') {
       return null;
     }
 
-    // Remove ".css" imports and log a warning
-    // https://github.com/oven-sh/bun/issues/8280
-    if (
-      value?.type === 'ImportDeclaration' &&
-      value?.source?.value.endsWith('.css')
-    ) {
-      return null;
-    }
-
     // Clean null values inside arrays
     if (Array.isArray(value)) return value.filter(Boolean);
 

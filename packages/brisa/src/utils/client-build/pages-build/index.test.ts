@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import fs from 'node:fs';
 import path from 'node:path';
-import clientPageBuild from '.';
+import clientPageBuild, { getOutputsPerFile } from '.';
 import { getConstants } from '@/constants';
 import getWebComponentsList from '@/utils/get-web-components-list';
 import type { BuildArtifact } from 'bun';
@@ -234,3 +234,13 @@ describe('client-build', () => {
     }
   });
 });
+
+describe('getOutputsPerFile', () => {
+  it('should not return .css files', async () => {
+      expect(getOutputsPerFile([{ path: '/some/example.js' }, { path: '/some/example.css' }] as any)).toEqual({
+        example: {
+          path: "/some/example.js"
+        }
+      } as any);
+  });
+}) 
