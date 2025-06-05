@@ -62,12 +62,12 @@ export default async function clientPageBuild(
 
 export function getOutputsPerFile(outputs: BuildArtifact[]) {
   return outputs
-  .filter((artifact) => !artifact.path.endsWith('.css'))
-  .reduce(
-    (acc, artifact) => {
-      acc[parse(artifact.path).name] = artifact;
-      return acc;
-    },
-    {} as Record<string, BuildArtifact>,
-  );
+    .filter((artifact) => !artifact.path.endsWith('.css'))
+    .reduce(
+      (acc, artifact) => {
+        acc[parse(artifact.path).name] = artifact;
+        return acc;
+      },
+      {} as Record<string, BuildArtifact>,
+    );
 }

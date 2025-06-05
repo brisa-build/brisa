@@ -237,10 +237,15 @@ describe('client-build', () => {
 
 describe('getOutputsPerFile', () => {
   it('should not return .css files', async () => {
-      expect(getOutputsPerFile([{ path: '/some/example.js' }, { path: '/some/example.css' }] as any)).toEqual({
-        example: {
-          path: "/some/example.js"
-        }
-      } as any);
+    expect(
+      getOutputsPerFile([
+        { path: '/some/example.js' },
+        { path: '/some/example.css' },
+      ] as any),
+    ).toEqual({
+      example: {
+        path: '/some/example.js',
+      },
+    } as any);
   });
-}) 
+});
