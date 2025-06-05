@@ -28,31 +28,6 @@ describe('utils', () => {
       );
     });
 
-    it('should remove ".css" imports and log a warning', () => {
-      const mockLog = spyOn(console, 'log');
-      const ast = parseCodeToAST(`
-        import './styles.css';
-        export default function Component() {
-          return jsx('div', null, 'Hello World');
-        }
-      `);
-
-      const res = processClientAST(ast);
-
-      const logs = mockLog.mock.calls.toString();
-      mockLog.mockRestore();
-
-      expect(toInline(generateCodeFromAST(res))).toBe(
-        normalizeHTML(`
-        export default function Component() {
-          return jsx('div', null, 'Hello World');
-        }
-      `),
-      );
-      expect(logs).toContain(
-        'Add this global import into the layout or the page.',
-      );
-    });
     it('should detect i18n when is declated and used to consume the locale', () => {
       const ast = parseCodeToAST(`  
         export default function Component({i18n}) {

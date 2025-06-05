@@ -43,13 +43,7 @@ export default async function clientPageBuild(
     return clientBuildDetails;
   }
 
-  const outputsPerFilename = outputs.reduce(
-    (acc, artifact) => {
-      acc[parse(artifact.path).name] = artifact;
-      return acc;
-    },
-    {} as Record<string, BuildArtifact>,
-  );
+  const outputsPerFilename = getOutputsPerFile(outputs);
 
   await Promise.all(
     clientBuildDetails.map(async (details) => {
@@ -64,4 +58,16 @@ export default async function clientPageBuild(
   );
 
   return clientBuildDetails;
+}
+
+export function getOutputsPerFile(outputs: BuildArtifact[]) {
+  return outputs
+    .filter((artifact) => !artifact.path.endsWith('.css'))
+    .reduce(
+      (acc, artifact) => {
+        acc[parse(artifact.path).name] = artifact;
+        return acc;
+      },
+      {} as Record<string, BuildArtifact>,
+    );
 }
