@@ -216,29 +216,16 @@ function addExtraChunk(
 
   if (!code) return 0;
 
-  if (!skipList && fs.existsSync(join(pagesClientPath, jsFilename))) {
-    const listPath = join(pagesClientPath, `${filename}.txt`);
-
-    writes.push(
-      Bun.write(
-        listPath,
-        `${fs.readFileSync(listPath).toString()}\n${pagePath.replace(BUILD_DIR, '')}`,
-      ),
-    );
-
-    return 0;
-  }
-
-  writes.push(Bun.write(join(pagesClientPath, jsFilename), code));
+  const listPath = join(pagesClientPath, `${filename}.txt`);
+  const mainFileSaved = !skipList && fs.existsSync(listPath);
 
   if (!skipList) {
-    writes.push(
-      Bun.write(
-        join(pagesClientPath, `${filename}.txt`),
-        pagePath.replace(BUILD_DIR, ''),
-      ),
-    );
+    fs.appendFileSync(listPath, `${pagePath.replace(BUILD_DIR, '')}\n`);
   }
+
+  if (mainFileSaved) return 0;
+
+  writes.push(Bun.write(join(pagesClientPath, jsFilename), code));
 
   if (IS_PRODUCTION) {
     const gzipUnsuspense = gzipSync(new TextEncoder().encode(code));
