@@ -1,6 +1,6 @@
 {
   "name": "brisa-adapter-vercel",
-  "version": "0.2.14-canary.4",
+  "version": "0.2.14",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
