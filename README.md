@@ -107,6 +107,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://rohitdev-psi.vercel.app/"><img src="https://avatars.githubusercontent.com/u/132741672?v=4?s=100" width="100px;" alt="Rohit Kumar Dey"/><br /><sub><b>Rohit Kumar Dey</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=rohits-web03" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://kekkon.nexus"><img src="https://avatars.githubusercontent.com/u/69618058?v=4?s=100" width="100px;" alt="Yuuki Rika"/><br /><sub><b>Yuuki Rika</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=yvvki" title="Documentation">📖</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/heygsc"><img src="https://avatars.githubusercontent.com/u/103993866?v=4?s=100" width="100px;" alt="heygsc"/><br /><sub><b>heygsc</b></sub></a><br /><a href="#infra-heygsc" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    </tr>
   </tbody>
 </table>
 
