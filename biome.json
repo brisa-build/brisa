@@ -1,8 +1,8 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
   "files": {
-    "include": ["packages", "scripts", "docs", "examples"],
-    "ignore": [
+    "includes": ["packages", "scripts", "docs", "examples"],
+    "experimentalScannerIgnores": [
       "**/out/*",
       "**/out-*/*",
       "**/build/*",
@@ -25,7 +25,6 @@
     "lineWidth": 80,
     "attributePosition": "auto"
   },
-  "organizeImports": { "enabled": true },
   "linter": {
     "enabled": true,
     "rules": {
