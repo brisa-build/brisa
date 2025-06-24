@@ -35,6 +35,7 @@ export default function wrapDefaultExportWithSSRWebComponent(
             type: 'ReturnStatement',
             argument: {
               type: 'CallExpression',
+              optional: false,
               callee: {
                 type: 'Identifier',
                 name: IS_PRODUCTION ? 'jsx' : 'jsxDEV',

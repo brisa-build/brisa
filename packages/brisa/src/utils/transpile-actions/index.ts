@@ -52,6 +52,7 @@ function addResolveActionImport(ast: ESTree.Program): ESTree.Program {
           type: 'Literal',
           value: 'brisa/server',
         },
+        attributes: [],
         specifiers: [
           {
             type: 'ImportSpecifier',
@@ -254,6 +255,7 @@ function createActionFn(info: ActionInfo): ESTree.ExportNamedDeclaration {
       generator: false,
     },
     specifiers: [],
+    attributes: [],
     source: null,
   };
 }
@@ -315,6 +317,7 @@ function getActionCall(
     expression: {
       type: 'AwaitExpression',
       argument: {
+        optional: false,
         type: 'CallExpression',
         callee: {
           type: 'Identifier',
@@ -326,6 +329,7 @@ function getActionCall(
           {
             type: 'SpreadElement',
             argument: {
+              optional: false,
               type: 'CallExpression',
               callee: {
                 type: 'MemberExpression',
@@ -371,6 +375,7 @@ function waitActionCallPromises(
       type: 'AwaitExpression',
       argument: {
         type: 'CallExpression',
+        optional: false,
         callee: {
           type: 'MemberExpression',
           object: {
@@ -464,6 +469,7 @@ function wrapWithTypeCatch({
                 type: 'ReturnStatement',
                 argument: {
                   type: 'CallExpression',
+                  optional: false,
                   callee: {
                     type: 'Identifier',
                     name: '__resolveAction',
@@ -525,6 +531,7 @@ function wrapWithTypeCatch({
                           },
                           value: {
                             type: 'ArrowFunctionExpression',
+                            generator: false,
                             params: [
                               {
                                 type: 'Identifier',
@@ -533,6 +540,7 @@ function wrapWithTypeCatch({
                             ],
                             body: {
                               type: 'CallExpression',
+                              optional: false,
                               callee: {
                                 type: 'Identifier',
                                 name: IS_PRODUCTION ? jsx : jsxDEV,
