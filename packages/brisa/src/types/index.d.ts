@@ -1220,6 +1220,27 @@ export type Configuration = {
   /**
    * Description:
    *
+   * The `minify` config property controls whether the output code should be minified.
+   * When enabled, this removes whitespace, shortens variable names, and performs other
+   * optimizations to reduce the bundle size.
+   *
+   * The default value is `true` in production mode and `false` in development mode.
+   *
+   * Example:
+   *
+   * ```ts
+   * minify: true // enable minification
+   * ```
+   *
+   * Docs:
+   *
+   * - [How to use `minify`](https://brisa.build/building-your-application/configuring/minify)
+   */
+  minify?: boolean;
+
+  /**
+   * Description:
+   *
    * The `extendPlugins` config property is used to add Bun/esbuild plugins
    * to the build process.
    *

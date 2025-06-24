@@ -210,6 +210,10 @@ export default {
               link: '/building-your-application/configuring/output-adapter',
             },
             {
+              text: 'Minify',
+              link: '/building-your-application/configuring/minify',
+            },
+            {
               text: 'Integrations',
               link: '/building-your-application/configuring/integrations',
             },
