@@ -540,6 +540,63 @@ describe('utils', () => {
       expect(logOutput).toContain(expected);
     });
 
+    it('should compile an app with minify=false #840', async () => {
+      const SRC_DIR = path.join(FIXTURES, 'with-suspense-in-layout');
+      const BUILD_DIR = path.join(SRC_DIR, 'out');
+      const PAGES_DIR = path.join(BUILD_DIR, 'pages');
+      const ASSETS_DIR = path.join(BUILD_DIR, 'public');
+      const TYPES = path.join(BUILD_DIR, '_brisa', 'types.ts');
+      const pagesClientPath = path.join(BUILD_DIR, 'pages-client');
+      const constants = getConstants();
+      globalThis.mockConstants = {
+        ...constants,
+        PAGES_DIR,
+        BUILD_DIR,
+        IS_PRODUCTION: true,
+        IS_DEVELOPMENT: false,
+        SRC_DIR,
+        ASSETS_DIR,
+        CONFIG: {
+          minify: false,
+        }
+      };
+
+      mockConsoleLog.mockImplementation(() => {});
+
+      const { success, logs } = await compileFiles();
+
+      expect(logs).toBeEmpty();
+      expect(success).toBe(true);
+
+      const files = fs
+        .readdirSync(BUILD_DIR)
+        .toSorted((a, b) => a.localeCompare(b));
+
+      const info = constants.LOG_PREFIX.INFO;
+
+      const logOutput = minifyText(
+        mockConsoleLog.mock.calls
+          .flat()
+          .join('\n')
+          .replace(/chunk-\S*/g, 'chunk-hash'),
+      );
+
+    // Without minify is 720 B and 1 kB instead of 452 B & 717 B (check the previous suspense test)
+      const expected = minifyText(`
+    ${info}
+    ${info}Route           | JS server | JS client (gz)  
+    ${info}----------------------------------------------
+    ${info}λ /pages/index  | 720 B     | ${greenLog('186 B')}  
+    ${info}Δ /layout       | 1 kB     |
+    ${info}
+    ${info}λ Server entry-points
+    ${info}Δ Layout
+    ${info}Φ JS shared by all
+    ${info}
+  `);
+      expect(logOutput).toContain(expected);
+    });
+
     it('should compile an app with a i18n client keys in the layout and not in the page', async () => {
       const SRC_DIR = path.join(FIXTURES, 'with-i18nkeys-in-layout');
       const BUILD_DIR = path.join(SRC_DIR, 'out');
