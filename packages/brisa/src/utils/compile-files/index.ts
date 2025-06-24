@@ -77,7 +77,7 @@ export default async function compileFiles() {
     sourcemap: IS_PRODUCTION ? undefined : 'inline',
     root: SRC_DIR,
     target: isBun ? 'bun' : 'node',
-    minify: IS_PRODUCTION,
+    minify: CONFIG.minify ?? IS_PRODUCTION,
     // splitting: false -> necessary to analyze the server pages
     // for the client build. FIXME: improve this to analyze each
     // server page including the chunks that the page needs.
