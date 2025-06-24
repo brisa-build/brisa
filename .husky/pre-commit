@@ -1,2 +1,2 @@
 bun run tsc:check
-bun run format --staged
+bun run format --staged --no-errors-on-unmatched
