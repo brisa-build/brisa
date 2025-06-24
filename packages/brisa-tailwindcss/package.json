@@ -1,6 +1,6 @@
 {
   "name": "brisa-tailwindcss",
-  "version": "0.2.14",
+  "version": "0.2.15-canary.1",
   "license": "MIT",
   "type": "module",
   "main": "./index.ts",
@@ -18,7 +18,11 @@
     "url": "git+https://github.com/brisa-build/brisa.git",
     "directory": "packages/brisa-tailwindcss"
   },
-  "files": ["index.ts", "index.d.ts", "libs.json"],
+  "files": [
+    "index.ts",
+    "index.d.ts",
+    "libs.json"
+  ],
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.10",
     "postcss": "8.5.6",
