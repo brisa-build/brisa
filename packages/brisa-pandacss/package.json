@@ -17,8 +17,8 @@
   },
   "files": ["index.ts", "index.d.ts"],
   "dependencies": {
-    "@pandacss/dev": "0.47.0",
-    "postcss": "8.4.47"
+    "@pandacss/dev": "0.54.0",
+    "postcss": "8.5.6"
   },
   "packageManager": "bun@1.2.17",
   "engines": {
