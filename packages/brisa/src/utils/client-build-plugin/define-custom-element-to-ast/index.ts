@@ -36,6 +36,7 @@ export default function defineCustomElementToAST(
       operator: '!',
       argument: {
         type: 'CallExpression',
+        optional: false,
         callee: {
           type: 'MemberExpression',
           object: {
@@ -64,6 +65,7 @@ export default function defineCustomElementToAST(
           type: 'ExpressionStatement',
           expression: {
             type: 'CallExpression',
+            optional: false,
             callee: {
               type: 'MemberExpression',
               object: {

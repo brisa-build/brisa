@@ -343,6 +343,7 @@ function wrapEffectWithDependencies(
 
     const callStatement: EffectNode = {
       type: 'CallExpression',
+      optional: false,
       callee: {
         type: 'Identifier',
         name: depName,
