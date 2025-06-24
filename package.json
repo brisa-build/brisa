@@ -55,7 +55,7 @@
     "pnpm": ">= 9.8.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "2.0.5",
     "husky": "9.1.7"
   }
 }
