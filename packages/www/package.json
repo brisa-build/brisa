@@ -36,9 +36,9 @@
     "@types/jsdom": "21.1.7",
     "sharp": "0.34.2"
   },
-  "packageManager": "bun@1.2.17",
+  "packageManager": "bun@1.2.18",
   "engines": {
-    "bun": ">= 1.2.17",
+    "bun": ">= 1.2.18",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
