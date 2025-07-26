@@ -33,9 +33,9 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.10"
   },
-  "packageManager": "bun@1.2.18",
+  "packageManager": "bun@1.2.19",
   "engines": {
-    "bun": ">= 1.2.18",
+    "bun": ">= 1.2.19",
     "npm": ">= 10.0.0",
     "yarn": ">= 3.0.0",
     "pnpm": ">= 9.8.0"
