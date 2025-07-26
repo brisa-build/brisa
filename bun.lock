@@ -10,14 +10,14 @@
     },
     "packages/adapter-vercel": {
       "name": "brisa-adapter-vercel",
-      "version": "0.2.14",
+      "version": "0.2.15-canary.1",
       "devDependencies": {
         "brisa": "workspace:*",
       },
     },
     "packages/brisa": {
       "name": "brisa",
-      "version": "0.2.14",
+      "version": "0.2.15-canary.1",
       "bin": {
         "brisa": "./index.js",
       },
@@ -29,7 +29,7 @@
       },
       "devDependencies": {
         "@happy-dom/global-registrator": "15.11.7",
-        "@types/bun": "1.2.17",
+        "@types/bun": "1.2.19",
         "@types/mime-types": "3.0.1",
         "brisa": "latest",
         "brisa-pandacss": "workspace:*",
@@ -40,7 +40,7 @@
     },
     "packages/brisa-pandacss": {
       "name": "brisa-pandacss",
-      "version": "0.2.14",
+      "version": "0.2.15-canary.1",
       "dependencies": {
         "@pandacss/dev": "0.54.0",
         "postcss": "8.5.6",
@@ -48,7 +48,7 @@
     },
     "packages/brisa-tailwindcss": {
       "name": "brisa-tailwindcss",
-      "version": "0.2.14",
+      "version": "0.2.15-canary.1",
       "devDependencies": {
         "@tailwindcss/postcss": "4.1.10",
         "postcss": "8.5.6",
@@ -62,7 +62,7 @@
     },
     "packages/create-brisa": {
       "name": "create-brisa",
-      "version": "0.2.14",
+      "version": "0.2.15-canary.1",
       "bin": {
         "create-brisa": "./create-brisa.cjs",
       },
@@ -72,7 +72,7 @@
     },
     "packages/www": {
       "name": "www",
-      "version": "0.2.14",
+      "version": "0.2.15-canary.1",
       "dependencies": {
         "@swc/wasm-web": "1.12.6",
         "brisa": "workspace:*",
@@ -330,7 +330,7 @@
 
     "@ts-morph/common": ["@ts-morph/common@0.25.0", "", { "dependencies": { "minimatch": "^9.0.4", "path-browserify": "^1.0.1", "tinyglobby": "^0.2.9" } }, "sha512-kMnZz+vGGHi4GoHnLmMhGNjm44kGtKUXGnOvrKmMwAuvNjM/PgKVGfUnL7IDvK7Jb2QQ82jq3Zmp04Gy+r3Dkg=="],
 
-    "@types/bun": ["@types/bun@1.2.17", "", { "dependencies": { "bun-types": "1.2.17" } }, "sha512-l/BYs/JYt+cXA/0+wUhulYJB6a6p//GTPiJ7nV+QHa8iiId4HZmnu/3J/SowP5g0rTiERY2kfGKXEK5Ehltx4Q=="],
+    "@types/bun": ["@types/bun@1.2.19", "", { "dependencies": { "bun-types": "1.2.19" } }, "sha512-d9ZCmrH3CJ2uYKXQIUuZ/pUnTqIvLDS0SK7pFmbx8ma+ziH/FRMoAq5bYpRG7y+w1gl+HgyNZbtqgMq4W4e2Lg=="],
 
     "@types/jquery": ["@types/jquery@3.5.32", "", { "dependencies": { "@types/sizzle": "*" } }, "sha512-b9Xbf4CkMqS02YH8zACqN1xzdxc3cO735Qe5AbSUFmyOiaWAbcpqh9Wna+Uk0vgACvoQHpWDg2rGdHkYPLmCiQ=="],
 
@@ -349,6 +349,8 @@
     "@types/mime-types": ["@types/mime-types@3.0.1", "", {}, "sha512-xRMsfuQbnRq1Ef+C+RKaENOxXX87Ygl38W1vDfPHRku02TgQr+Qd8iivLtAMcR0KF5/29xlnFihkTlbqFrGOVQ=="],
 
     "@types/node": ["@types/node@22.15.17", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw=="],
+
+    "@types/react": ["@types/react@19.1.8", "", { "dependencies": { "csstype": "^3.0.2" } }, "sha512-AwAfQ2Wa5bCx9WP8nZL2uMZWod7J7/JSplxbTmBQ5ms6QpqNYm672H0Vu9ZVKVngQ+ii4R/byguVEUZQyeg44g=="],
 
     "@types/sizzle": ["@types/sizzle@2.3.9", "", {}, "sha512-xzLEyKB50yqCUPUJkIsrVvoWNfFUbIZI+RspLWt8u+tIW/BetMBZtgV2LY/2o+tYH8dRvQ+eoPf3NdhQCcLE2w=="],
 
@@ -398,7 +400,7 @@
 
     "browserslist": ["browserslist@4.23.3", "", { "dependencies": { "caniuse-lite": "^1.0.30001646", "electron-to-chromium": "^1.5.4", "node-releases": "^2.0.18", "update-browserslist-db": "^1.1.0" }, "bin": { "browserslist": "cli.js" } }, "sha512-btwCFJVjI4YWDNfau8RhZ+B1Q/VLoUITrm3RlP6y1tYGWIOa+InuYiRGXUBXo8nA1qKmHMyLB/iVQg5TT4eFoA=="],
 
-    "bun-types": ["bun-types@1.2.17", "", { "dependencies": { "@types/node": "*" } }, "sha512-ElC7ItwT3SCQwYZDYoAH+q6KT4Fxjl8DtZ6qDulUFBmXA8YB4xo+l54J9ZJN+k2pphfn9vk7kfubeSd5QfTVJQ=="],
+    "bun-types": ["bun-types@1.2.19", "", { "dependencies": { "@types/node": "*" }, "peerDependencies": { "@types/react": "^19" } }, "sha512-uAOTaZSPuYsWIXRpj7o56Let0g/wjihKCkeRqUBhlLVM/Bt+Fj9xTo+LhC1OV1XDaGkz4hNC80et5xgy+9KTHQ=="],
 
     "bundle-n-require": ["bundle-n-require@1.1.2", "", { "dependencies": { "esbuild": "^0.25.1", "node-eval": "^2.0.0" } }, "sha512-bEk2jakVK1ytnZ9R2AAiZEeK/GxPUM8jvcRxHZXifZDMcjkI4EG/GlsJ2YGSVYT9y/p/gA9/0yDY8rCGsSU6Tg=="],
 
@@ -836,6 +838,8 @@
 
     "update-browserslist-db/escalade": ["escalade@3.2.0", "", {}, "sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA=="],
 
+    "www/@types/bun": ["@types/bun@1.2.17", "", { "dependencies": { "bun-types": "1.2.17" } }, "sha512-l/BYs/JYt+cXA/0+wUhulYJB6a6p//GTPiJ7nV+QHa8iiId4HZmnu/3J/SowP5g0rTiERY2kfGKXEK5Ehltx4Q=="],
+
     "@pandacss/core/lightningcss/detect-libc": ["detect-libc@1.0.3", "", { "bin": { "detect-libc": "./bin/detect-libc.js" } }, "sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg=="],
 
     "@pandacss/core/lightningcss/lightningcss-darwin-arm64": ["lightningcss-darwin-arm64@1.25.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-G4Dcvv85bs5NLENcu/s1f7ehzE3D5ThnlWSDwE190tWXRQCQaqwcuHe+MGSVI/slm0XrxnaayXY+cNl3cSricw=="],
@@ -863,5 +867,7 @@
     "search-engine-wc/brisa/diff-dom-streaming": ["diff-dom-streaming@0.6.1", "", {}, "sha512-zGhLBNF2MdNvndGc5HzEeC6/aMuIBBm7cv6GjFwBqwXFCGmgVOGBV139GsCBFpUHjc7lqaC1L9agiVbVMSLDdQ=="],
 
     "search-engine-wc/brisa/meriyah": ["meriyah@6.0.1", "", {}, "sha512-OyvYIOgpzXREySYJ1cqEb2pOKdeQMTfF9M8dRU6nC4hi/GXMmNpe9ssZCrSoTHazu05BSAoRBN/uYeco+ymfOg=="],
+
+    "www/@types/bun/bun-types": ["bun-types@1.2.17", "", { "dependencies": { "@types/node": "*" } }, "sha512-ElC7ItwT3SCQwYZDYoAH+q6KT4Fxjl8DtZ6qDulUFBmXA8YB4xo+l54J9ZJN+k2pphfn9vk7kfubeSd5QfTVJQ=="],
   }
 }
