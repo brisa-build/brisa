@@ -8,7 +8,7 @@
   "types": "./index.d.ts",
   "author": {
     "name": "Brisa Team",
-    "email": "contact@brisa.build.com"
+    "email": "contact@brisa.build"
   },
   "scripts": {
     "libs-json": "bun run scripts/generate-json-deps.ts"
