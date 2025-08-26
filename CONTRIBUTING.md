@@ -98,7 +98,7 @@ This Code of Conduct applies within project spaces and in public spaces when an 
 
 ### Enforcement
 
-Instances of unacceptable behavior may be reported by contacting the team at contact@brisa.build.com. All complaints will be reviewed and investigated with confidentiality. Maintainers not upholding the Code may face consequences.
+Instances of unacceptable behavior may be reported by contacting the team at contact@brisa.build. All complaints will be reviewed and investigated with confidentiality. Maintainers not upholding the Code may face consequences.
 
 ### Attribution
 
