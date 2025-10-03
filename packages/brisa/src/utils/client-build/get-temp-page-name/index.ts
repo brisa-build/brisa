@@ -1,7 +1,7 @@
 import { getConstants } from '@/constants';
-import { join, sep } from 'node:path';
+import { join,basename } from 'node:path';
 
-const REGEX = new RegExp(`${sep}|-|\\.[a-z]+$`, 'g');
+
 
 /**
  * Generates a temporary TypeScript file path for a given page.
@@ -22,13 +22,13 @@ const REGEX = new RegExp(`${sep}|-|\\.[a-z]+$`, 'g');
 export function getTempPageName(pagePath: string) {
   const { PAGES_DIR, BUILD_DIR } = getConstants();
 
-  const tempName = pagePath.replace(PAGES_DIR, '').replace(REGEX, resolveRegex);
+  // Always get relative path
+  let relativePath = pagePath.startsWith(PAGES_DIR)
+    ? pagePath.slice(PAGES_DIR.length)
+    : basename(pagePath);
 
-  return join(BUILD_DIR, '_brisa', `temp${tempName}.ts`);
-}
+  // Replace slashes, dots, dashes
+  const tempName = relativePath.replace(/[\\/.-]/g, '_');
 
-function resolveRegex(match: string) {
-  if (match === sep) return '-';
-  if (match === '-') return '_';
-  return '';
+  return join(BUILD_DIR, '_brisa', `temp${tempName}.ts`).replace(/\\/g, '/'); // Windows-safe
 }
