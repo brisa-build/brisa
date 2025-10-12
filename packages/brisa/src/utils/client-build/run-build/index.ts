@@ -18,9 +18,8 @@ export async function runBuild(
 
   return await Bun.build({
     // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false,
-    entrypoints,
-    root: SRC_DIR,
+    entrypoints: entrypoints.map((p) => p.replaceAll('\\', '/')),
+    root: SRC_DIR.replaceAll('\\', '/'),
     format: 'iife',
     target: 'browser',
     minify: IS_PRODUCTION,
