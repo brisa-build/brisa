@@ -109,6 +109,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/heygsc"><img src="https://avatars.githubusercontent.com/u/103993866?v=4?s=100" width="100px;" alt="heygsc"/><br /><sub><b>heygsc</b></sub></a><br /><a href="#infra-heygsc" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Atharva1723"><img src="https://avatars.githubusercontent.com/u/87201444?v=4?s=100" width="100px;" alt="Atharva Kulkarni"/><br /><sub><b>Atharva Kulkarni</b></sub></a><br /><a href="https://github.com/brisa-build/brisa/commits?author=Atharva1723" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
