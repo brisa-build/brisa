@@ -1,4 +1,4 @@
-import type { BunFile, ServerWebSocket } from 'bun';
+import type { BunFile, ServerWebSocket } from "bun";
 import {
   afterEach,
   beforeEach,
@@ -8,31 +8,31 @@ import {
   spyOn,
   mock,
   jest,
-} from 'bun:test';
-import { brotliDecompressSync, gunzipSync } from 'node:zlib';
-import path from 'node:path';
-import { getConstants } from '@/constants';
-import importFileIfExists from '@/utils/import-file-if-exists';
-import type { RequestContext } from '@/types';
-import { Initiator } from '@/public-constants';
-import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from '@/utils/ssr-web-component';
-import { getServeOptions } from './serve-options';
-import type { RequestContent } from '@/utils/transfer-store-service';
+} from "bun:test";
+import { brotliDecompressSync, gunzipSync } from "node:zlib";
+import path from "node:path";
+import { getConstants } from "@/constants";
+import importFileIfExists from "@/utils/import-file-if-exists";
+import type { RequestContext } from "@/types";
+import { Initiator } from "@/public-constants";
+import { AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL } from "@/utils/ssr-web-component";
+import { getServeOptions } from "./serve-options";
+import type { RequestContent } from "@/utils/transfer-store-service";
 import {
   ENCRYPT_NONTEXT_PREFIX,
   encrypt,
   ENCRYPT_PREFIX,
-} from '@/utils/crypto';
+} from "@/utils/crypto";
 
-import * as actions from '@/__fixtures__/actions';
-import * as middleware from '@/__fixtures__/middleware';
-import * as layoutModule from '@/__fixtures__/layout';
-import * as websocket from '@/__fixtures__/websocket';
+import * as actions from "@/__fixtures__/actions";
+import * as middleware from "@/__fixtures__/middleware";
+import * as layoutModule from "@/__fixtures__/layout";
+import * as websocket from "@/__fixtures__/websocket";
 
-const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
-const PAGES_DIR = path.join(BUILD_DIR, 'pages');
-const ASSETS_DIR = path.join(BUILD_DIR, 'public');
-const BASE_PATHS = ['', '/some-dir', '/es', '/some/dir'];
+const BUILD_DIR = path.join(import.meta.dir, "..", "..", "__fixtures__");
+const PAGES_DIR = path.join(BUILD_DIR, "pages");
+const ASSETS_DIR = path.join(BUILD_DIR, "public");
+const BASE_PATHS = ["", "/some-dir", "/es", "/some/dir"];
 
 const apiEndpoints = new Proxy({} as Record<string, Promise<any>>, {
   get(target, name: string) {
@@ -42,10 +42,10 @@ const apiEndpoints = new Proxy({} as Record<string, Promise<any>>, {
 
 async function testRequest(
   request: Request,
-  upgrade = false,
+  upgrade = false
 ): Promise<Response> {
   const serveOptions = await (
-    await import('./serve-options')
+    await import("./serve-options")
   ).getServeOptions();
 
   return (
@@ -53,7 +53,7 @@ async function testRequest(
     ((await serveOptions.fetch(request, {
       requestIP: () => {},
       upgrade: () => upgrade,
-    })) || new Response('', { status: 101 })) as Response
+    })) || new Response("", { status: 101 })) as Response
   );
 }
 
@@ -69,20 +69,20 @@ const MODULES = {
   apiEndpoints,
 } as any;
 
-describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
+describe.each(BASE_PATHS)("CLI: serve %s", (basePath: string) => {
   beforeEach(async () => {
     // @ts-ignore - We need to test real server scenarios
-    if (typeof window !== 'undefined') window = undefined;
+    if (typeof window !== "undefined") window = undefined;
     globalThis.mockConstants = {
       ...CONSTANTS,
       PAGES_DIR,
       BUILD_DIR,
       SRC_DIR: BUILD_DIR,
       ASSETS_DIR,
-      LOCALES_SET: new Set(['en', 'es']),
+      LOCALES_SET: new Set(["en", "es"]),
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
       },
       CONFIG: {
         basePath,
@@ -93,72 +93,72 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
   });
 
   afterEach(() => {
-    globalThis.__BASE_PATH__ = '';
+    globalThis.__BASE_PATH__ = "";
     process.env.__CRYPTO_KEY__ = __CRYPTO_KEY__;
     process.env.__CRYPTO_IV__ = __CRYPTO_IV__;
-    process.env.BRISA_BUILD_FOLDER = '';
+    process.env.BRISA_BUILD_FOLDER = "";
     globalThis.mockConstants = undefined;
     delete process.argv[1];
     jest.restoreAllMocks();
   });
 
-  it('should set the env variables when they are not set for a custom server when no argument neither process.argv[1]', async () => {
-    await (await import('./serve-options')).setUpEnvVars();
+  it("should set the env variables when they are not set for a custom server when no argument neither process.argv[1]", async () => {
+    await (await import("./serve-options")).setUpEnvVars();
 
     expect(process.env.__CRYPTO_KEY__).toBeDefined();
     expect(process.env.__CRYPTO_IV__).toBeDefined();
     expect(process.env.BRISA_BUILD_FOLDER).toBe(
-      path.join(process.cwd(), 'build'),
+      path.join(process.cwd(), "build")
     );
   });
 
-  it('should detect as isCLI false when process.argv[1] NOT include serve/index.js', async () => {
+  it("should detect as isCLI false when process.argv[1] NOT include serve/index.js", async () => {
     process.env.__CRYPTO_KEY__ = undefined;
     process.env.__CRYPTO_IV__ = undefined;
-    process.argv[1] = path.join('brisa', 'out', 'cli', 'build', 'index.js');
-    await (await import('./serve-options')).setUpEnvVars();
+    process.argv[1] = path.join("brisa", "out", "cli", "build", "index.js");
+    await (await import("./serve-options")).setUpEnvVars();
 
     expect(process.env.__CRYPTO_KEY__).toBeDefined();
     expect(process.env.__CRYPTO_IV__).toBeDefined();
     expect(process.env.BRISA_BUILD_FOLDER).toBe(
-      path.join(process.cwd(), 'build'),
+      path.join(process.cwd(), "build")
     );
   });
 
-  it('should set the env variables when they are not set for a custom server', async () => {
+  it("should set the env variables when they are not set for a custom server", async () => {
     process.env.__CRYPTO_KEY__ = undefined;
     process.env.__CRYPTO_IV__ = undefined;
-    await (await import('./serve-options')).setUpEnvVars(false);
+    await (await import("./serve-options")).setUpEnvVars(false);
 
     expect(process.env.__CRYPTO_KEY__).toBeDefined();
     expect(process.env.__CRYPTO_IV__).toBeDefined();
     expect(process.env.BRISA_BUILD_FOLDER).toBe(
-      path.join(process.cwd(), 'build'),
+      path.join(process.cwd(), "build")
     );
   });
 
-  it('should BRISA_BUILD_FOLDER env variable be defined always (to use prebuild)', async () => {
+  it("should BRISA_BUILD_FOLDER env variable be defined always (to use prebuild)", async () => {
     process.env.__CRYPTO_KEY__ = undefined;
     process.env.__CRYPTO_IV__ = undefined;
-    await (await import('./serve-options')).setUpEnvVars(true);
+    await (await import("./serve-options")).setUpEnvVars(true);
 
     expect(process.env.__CRYPTO_KEY__).not.toBeDefined();
     expect(process.env.__CRYPTO_IV__).not.toBeDefined();
     expect(process.env.BRISA_BUILD_FOLDER).toBe(
-      path.join(process.cwd(), 'build'),
+      path.join(process.cwd(), "build")
     );
   });
 
-  it('should detect as isCLI true when process.argv[1] include serve/index.js', async () => {
+  it("should detect as isCLI true when process.argv[1] include serve/index.js", async () => {
     process.env.__CRYPTO_KEY__ = undefined;
     process.env.__CRYPTO_IV__ = undefined;
-    process.argv[1] = path.join('brisa', 'out', 'cli', 'serve', 'index.js');
-    await (await import('./serve-options')).setUpEnvVars();
+    process.argv[1] = path.join("brisa", "out", "cli", "serve", "index.js");
+    await (await import("./serve-options")).setUpEnvVars();
 
     expect(process.env.__CRYPTO_KEY__).not.toBeDefined();
     expect(process.env.__CRYPTO_IV__).not.toBeDefined();
     expect(process.env.BRISA_BUILD_FOLDER).toBe(
-      path.join(process.cwd(), 'build'),
+      path.join(process.cwd(), "build")
     );
   });
 
@@ -167,12 +167,12 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     globalThis.mockConstants = {
       ...constants,
       IS_PRODUCTION: true,
-      BUILD_DIR: '/some-path',
+      BUILD_DIR: "/some-path",
       MODULES,
     };
 
     expect(
-      async () => await (await import('./serve-options')).getServeOptions(),
+      async () => await (await import("./serve-options")).getServeOptions()
     ).toThrowError('Not exist "build" yet. Please run "brisa build" first');
   });
 
@@ -181,14 +181,14 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     globalThis.mockConstants = {
       ...constants,
       IS_PRODUCTION: true,
-      PAGES_DIR: '/some-path',
+      PAGES_DIR: "/some-path",
       MODULES,
     };
 
     expect(
-      async () => await (await import('./serve-options')).getServeOptions(),
+      async () => await (await import("./serve-options")).getServeOptions()
     ).toThrowError(
-      `Not exist build/pages" directory. It's required to run "brisa start"`,
+      `Not exist build/pages" directory. It's required to run "brisa start"`
     );
   });
 
@@ -197,46 +197,46 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     globalThis.mockConstants = {
       ...constants,
       IS_PRODUCTION: false,
-      PAGES_DIR: '/some-path',
+      PAGES_DIR: "/some-path",
       MODULES,
     };
 
     expect(
-      async () => await (await import('./serve-options')).getServeOptions(),
+      async () => await (await import("./serve-options")).getServeOptions()
     ).toThrowError(
-      `Not exist src/pages" directory. It's required to run "brisa dev"`,
+      `Not exist src/pages" directory. It's required to run "brisa dev"`
     );
   });
 
-  it('should no fetch anything when server upgrades to websocket', async () => {
+  it("should no fetch anything when server upgrades to websocket", async () => {
     const upgrade = true;
     const response = await testRequest(
       new Request(`http:///localhost:1234${basePath}/somepage`),
-      upgrade,
+      upgrade
     );
 
     expect(response.status).toBe(101);
-    expect(response.text()).resolves.toBe('');
+    expect(response.text()).resolves.toBe("");
   });
 
-  it('should return 500 page if the middleware throws an error', async () => {
+  it("should return 500 page if the middleware throws an error", async () => {
     const response = await testRequest(
       // "throws-error" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?throws-error=1`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?throws-error=1`
+      )
     );
     const html = await response.text();
 
     expect(response.status).toBe(500);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Some internal error</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Some internal error <web-component></web-component></h1>',
+      "<h1>Some internal error <web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_500.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_500.tsx"></script>`
     );
   });
 
@@ -244,131 +244,131 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     const response = await testRequest(
       // "redirect" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?redirect=1`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?redirect=1`
+      )
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe('/es');
+    expect(response.headers.get("Location")).toBe("/es");
   });
 
-  it('should navigate when the middleware throws a navigate error', async () => {
+  it("should navigate when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/es/somepage`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/es/somepage`
+      )
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `http://localhost:1234${basePath}/es/somepage`,
+    expect(response.headers.get("Location")).toBe(
+      `http://localhost:1234${basePath}/es/somepage`
     );
   });
 
-  it('should navigate resolving i18n when the middleware throws a navigate error', async () => {
+  it("should navigate resolving i18n when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage`
+      )
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es/somepage`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage`);
   });
 
-  it('should navigate removing trailing slash when the middleware throws a navigate error', async () => {
+  it("should navigate removing trailing slash when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/es/somepage/`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/es/somepage/`
+      )
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `http://localhost:1234${basePath}/es/somepage`,
+    expect(response.headers.get("Location")).toBe(
+      `http://localhost:1234${basePath}/es/somepage`
     );
   });
 
-  it('should navigate removing trailing slash and adding i18n at the same time when the middleware throws a navigate error', async () => {
+  it("should navigate removing trailing slash and adding i18n at the same time when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage/`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=/somepage/`
+      )
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es/somepage`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage`);
   });
 
-  it('should navigate to an external url without i18n and trailing slash when the middleware throws a navigate error', async () => {
+  it("should navigate to an external url without i18n and trailing slash when the middleware throws a navigate error", async () => {
     const response = await testRequest(
       // "navigate" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=https://brisa.build/foo/`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?navigate=https://brisa.build/foo/`
+      )
     );
 
     expect(response.status).toBe(307);
-    expect(response.headers.get('Location')).toBe(
-      `https://brisa.build${basePath}/foo/`,
+    expect(response.headers.get("Location")).toBe(
+      `https://brisa.build${basePath}/foo/`
     );
   });
 
-  it('should return 404 page when the middleware throws a not found error', async () => {
+  it("should return 404 page when the middleware throws a not found error", async () => {
     const response = await testRequest(
       // "throws-not-found" parameter is managed by __fixtures__/middleware.tsx
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?throws-not-found=1`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?throws-not-found=1`
+      )
     );
     const html = await response.text();
 
     expect(response.status).toBe(404);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
   it("should return 404 page without redirect to the locale if the page doesn't exist with the defaultLocale", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/not-found-page`),
+      new Request(`http://localhost:1234${basePath}/not-found-page`)
     );
     const html = await response.text();
 
     expect(response.status).toBe(404);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
-  it('should return 404 error if the 404 page does not exist and the page does not exist', async () => {
+  it("should return 404 error if the 404 page does not exist and the page does not exist", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
-      PAGE_404: '',
+      PAGE_404: "",
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/not-found-page`),
+      new Request(`http://localhost:1234${basePath}/not-found-page`)
     );
     const text = await response.text();
 
     expect(response.status).toBe(404);
-    expect(text).toBe('Not found');
+    expect(text).toBe("Not found");
   });
 
   it("should return 404 page without redirect to the trailingSlash if the page doesn't exist", async () => {
@@ -380,19 +380,19 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/not-found-page`),
+      new Request(`http://localhost:1234${basePath}/es/not-found-page`)
     );
     const html = await response.text();
 
     expect(response.status).toBe(404);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
@@ -405,93 +405,91 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/not-found-page`),
+      new Request(`http://localhost:1234${basePath}/not-found-page`)
     );
     const html = await response.text();
 
     expect(response.status).toBe(404);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
-  it('should return 404 page', async () => {
+  it("should return 404 page", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/not-found-page`),
+      new Request(`http://localhost:1234${basePath}/es/not-found-page`)
     );
     const html = await response.text();
 
     expect(response.status).toBe(404);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
-  it('should return 404 page with a valid url but with the param _not-found in the query string and work with i18n', async () => {
-    const response = await testRequest(
-      new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component?_not-found=1`,
-      ),
-    );
-    const html = await response.text();
-
-    expect(response.status).toBe(404);
-    expect(html).toStartWith('<!DOCTYPE html>');
-    expect(html).toContain('<title id="title">Page not found</title>');
-    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
-    );
-    expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
-    );
-  });
-
-  it('should return 200 page with client page code', async () => {
+  it("should return 404 page with a valid url but with the param _not-found in the query string and work with i18n", async () => {
     const response = await testRequest(
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component?_not-found=1`
+      )
+    );
+    const html = await response.text();
+
+    expect(response.status).toBe(404);
+    expect(html).toStartWith("<!DOCTYPE html>");
+    expect(html).toContain('<title id="title">Page not found</title>');
+    expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
+    expect(html).toContain(
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
+    );
+    expect(html).toContain(
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
+    );
+  });
+
+  it("should return 200 page with client page code", async () => {
+    const response = await testRequest(
+      new Request(`http://localhost:1234${basePath}/es/page-with-web-component`)
     );
     const html = await response.text();
 
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`
     );
-    expect(html).toContain('<web-component></web-component>');
+    expect(html).toContain("<web-component></web-component>");
   });
 
-  it('should return 200 page with client page code using a hash', async () => {
+  it("should return 200 page with client page code using a hash", async () => {
     const response = await testRequest(
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component#hash`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component#hash`
+      )
     );
     const html = await response.text();
 
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`
     );
-    expect(html).toContain('<web-component></web-component>');
+    expect(html).toContain("<web-component></web-component>");
   });
 
-  it('should return 200 page with client page code using a hash and trailingSlash', async () => {
+  it("should return 200 page with client page code using a hash and trailingSlash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
@@ -501,51 +499,49 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
     const response = await testRequest(
       new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component/#hash`,
-      ),
+        `http://localhost:1234${basePath}/es/page-with-web-component/#hash`
+      )
     );
     const html = await response.text();
 
     expect(response.status).toBe(200);
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/page-with-web-component.tsx"></script>`
     );
-    expect(html).toContain('<web-component></web-component>');
+    expect(html).toContain("<web-component></web-component>");
   });
 
-  it('should return 404 page with client page code without the basePath', async () => {
+  it("should return 404 page with client page code without the basePath", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
-        basePath: '/incorrect',
+        basePath: "/incorrect",
       },
     };
     const response = await testRequest(
-      new Request(
-        `http://localhost:1234${basePath}/es/page-with-web-component`,
-      ),
+      new Request(`http://localhost:1234${basePath}/es/page-with-web-component`)
     );
     expect(response.status).toBe(404);
   });
 
-  it('should redirect the home to the correct locale', async () => {
+  it("should redirect the home to the correct locale", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}`),
+      new Request(`http://localhost:1234${basePath}`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es`);
   });
 
-  it('should redirect the home to the correct locale with parameters', async () => {
+  it("should redirect the home to the correct locale with parameters", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}?param=1`),
+      new Request(`http://localhost:1234${basePath}?param=1`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es?param=1`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es?param=1`);
   });
 
-  it('should redirect the /api/example to the trailingSlash with parameters', async () => {
+  it("should redirect the /api/example to the trailingSlash with parameters", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
@@ -555,15 +551,15 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       I18N_CONFIG: undefined,
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/api/example?param=1`),
+      new Request(`http://localhost:1234${basePath}/api/example?param=1`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `http://localhost:1234${basePath}/api/example/?param=1`,
+    expect(response.headers.get("Location")).toBe(
+      `http://localhost:1234${basePath}/api/example/?param=1`
     );
   });
 
-  it('should redirect the home to the correct locale and trailingSlash', async () => {
+  it("should redirect the home to the correct locale and trailingSlash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
@@ -572,13 +568,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/`),
+      new Request(`http://localhost:1234${basePath}/`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es/`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/`);
   });
 
-  it('should redirect the home to the correct locale and trailingSlash with params', async () => {
+  it("should redirect the home to the correct locale and trailingSlash with params", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
@@ -587,81 +583,81 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/?param=1`),
+      new Request(`http://localhost:1234${basePath}/?param=1`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es/?param=1`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/?param=1`);
   });
 
-  it('should redirect to the correct locale', async () => {
+  it("should redirect to the correct locale", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/somepage`),
+      new Request(`http://localhost:1234${basePath}/somepage`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es/somepage`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage`);
   });
 
-  it('should redirect to the correct browser locale', async () => {
+  it("should redirect to the correct browser locale", async () => {
     const req = new Request(`http://localhost:1234${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/en/somepage`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/en/somepage`);
   });
 
-  it('should redirect to the correct default locale of the subdomain', async () => {
+  it("should redirect to the correct default locale of the subdomain", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
-            protocol: 'https',
+          "en.test.com": {
+            defaultLocale: "en",
+            protocol: "https",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
-            protocol: 'http',
+          "es.test.com": {
+            defaultLocale: "es",
+            protocol: "http",
           },
         },
       },
     };
 
     const response = await testRequest(
-      new Request(`https://en.test.com${basePath}/somepage`),
+      new Request(`https://en.test.com${basePath}/somepage`)
     );
 
     const responseEs = await testRequest(
-      new Request(`https://es.test.com${basePath}/somepage`),
+      new Request(`https://es.test.com${basePath}/somepage`)
     );
 
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `https://en.test.com${basePath}/en/somepage`,
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage`
     );
     expect(responseEs.status).toBe(301);
-    expect(responseEs.headers.get('Location')).toBe(
-      `http://es.test.com${basePath}/es/somepage`,
+    expect(responseEs.headers.get("Location")).toBe(
+      `http://es.test.com${basePath}/es/somepage`
     );
   });
 
-  it('should redirect to the correct browser locale changing the subdomain', async () => {
+  it("should redirect to the correct browser locale changing the subdomain", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
+          "en.test.com": {
+            defaultLocale: "en",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
           },
         },
       },
@@ -669,33 +665,33 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`https://es.test.com${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `https://en.test.com${basePath}/en/somepage`,
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage`
     );
   });
 
-  it('should redirect to the correct browser locale changing the subdomain and the page route name', async () => {
+  it("should redirect to the correct browser locale changing the subdomain and the page route name", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
+          "en.test.com": {
+            defaultLocale: "en",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
           },
         },
         pages: {
-          '/somepage': {
-            en: '/somepage-en',
+          "/somepage": {
+            en: "/somepage-en",
           },
         },
       },
@@ -703,33 +699,33 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`https://es.test.com${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `https://en.test.com${basePath}/en/somepage-en`,
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage-en`
     );
   });
 
-  it('should redirect to the correct browser locale changing the subdomain and the page route name with hash', async () => {
+  it("should redirect to the correct browser locale changing the subdomain and the page route name with hash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
+          "en.test.com": {
+            defaultLocale: "en",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
           },
         },
         pages: {
-          '/somepage': {
-            en: '/somepage-en',
+          "/somepage": {
+            en: "/somepage-en",
           },
         },
       },
@@ -737,16 +733,16 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`https://es.test.com${basePath}/somepage#hash`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `https://en.test.com${basePath}/en/somepage-en#hash`,
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage-en#hash`
     );
   });
 
-  it('should redirect to the correct browser locale changing the subdomain, adding trailing slash and translating the route name', async () => {
+  it("should redirect to the correct browser locale changing the subdomain, adding trailing slash and translating the route name", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -755,19 +751,19 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         trailingSlash: true,
       },
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
+          "en.test.com": {
+            defaultLocale: "en",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
           },
         },
         pages: {
-          '/somepage': {
-            en: '/somepage-en',
+          "/somepage": {
+            en: "/somepage-en",
           },
         },
       },
@@ -775,28 +771,28 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`https://es.test.com${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `https://en.test.com${basePath}/en/somepage-en/`,
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage-en/`
     );
   });
 
-  it('should redirect to the correct browser locale without changing the subdomain in development', async () => {
+  it("should redirect to the correct browser locale without changing the subdomain in development", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
+          "en.test.com": {
+            defaultLocale: "en",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
           },
         },
       },
@@ -804,27 +800,27 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`http://localhost:1234${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/en/somepage`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/en/somepage`);
   });
 
-  it('should redirect to the correct browser locale and changing the subdomain in development', async () => {
+  it("should redirect to the correct browser locale and changing the subdomain in development", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
+          "en.test.com": {
+            defaultLocale: "en",
             dev: true,
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
             dev: true,
           },
         },
@@ -833,16 +829,16 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`http://localhost:1234${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `https://en.test.com${basePath}/en/somepage`,
+    expect(response.headers.get("Location")).toBe(
+      `https://en.test.com${basePath}/en/somepage`
     );
   });
 
-  it('should redirect to the correct browser locale changing the subdomain and trailingSlash', async () => {
+  it("should redirect to the correct browser locale changing the subdomain and trailingSlash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -851,15 +847,15 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         trailingSlash: true,
       },
       I18N_CONFIG: {
-        locales: ['en', 'es'],
-        defaultLocale: 'es',
+        locales: ["en", "es"],
+        defaultLocale: "es",
         domains: {
-          'en.test.com': {
-            defaultLocale: 'en',
-            protocol: 'http',
+          "en.test.com": {
+            defaultLocale: "en",
+            protocol: "http",
           },
-          'es.test.com': {
-            defaultLocale: 'es',
+          "es.test.com": {
+            defaultLocale: "es",
           },
         },
       },
@@ -867,16 +863,16 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const req = new Request(`http://es.test.com${basePath}/somepage`);
 
-    req.headers.set('Accept-Language', 'en-US,en;q=0.5');
+    req.headers.set("Accept-Language", "en-US,en;q=0.5");
 
     const response = await testRequest(req);
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `http://en.test.com${basePath}/en/somepage/`,
+    expect(response.headers.get("Location")).toBe(
+      `http://en.test.com${basePath}/en/somepage/`
     );
   });
 
-  it('should redirect with trailingSlash', async () => {
+  it("should redirect with trailingSlash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
@@ -885,15 +881,15 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/somepage`),
+      new Request(`http://localhost:1234${basePath}/es/somepage`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(
-      `http://localhost:1234${basePath}/es/somepage/`,
+    expect(response.headers.get("Location")).toBe(
+      `http://localhost:1234${basePath}/es/somepage/`
     );
   });
 
-  it('should redirect with locale and trailingSlash', async () => {
+  it("should redirect with locale and trailingSlash", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
@@ -902,35 +898,35 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       },
     };
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/somepage`),
+      new Request(`http://localhost:1234${basePath}/somepage`)
     );
     expect(response.status).toBe(301);
-    expect(response.headers.get('Location')).toBe(`${basePath}/es/somepage/`);
+    expect(response.headers.get("Location")).toBe(`${basePath}/es/somepage/`);
   });
 
-  it('should return a page with layout and i18n', async () => {
+  it("should return a page with layout and i18n", async () => {
     const response = await testRequest(
-      new Request(`http://localhost:1234${basePath}/es/somepage`),
+      new Request(`http://localhost:1234${basePath}/es/somepage`)
     );
     const html = await response.text();
     expect(response.status).toBe(200);
-    expect(html).toStartWith('<!DOCTYPE html>');
+    expect(html).toStartWith("<!DOCTYPE html>");
     expect(html).toContain('<html lang="es" dir="ltr">');
     expect(html).toContain('<title id="title">CUSTOM LAYOUT</title>');
-    expect(html).toContain('<h1>Some page</h1>');
+    expect(html).toContain("<h1>Some page</h1>");
   });
 
-  it('should be possible to fetch an api route GET', async () => {
+  it("should be possible to fetch an api route GET", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/es/api/example`),
+      new Request(`http:///localhost:1234${basePath}/es/api/example`)
     );
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json).toEqual({ hello: 'world' });
+    expect(json).toEqual({ hello: "world" });
   });
 
-  it('should be possible to fetch an api route GET from root', async () => {
+  it("should be possible to fetch an api route GET from root", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -938,15 +934,15 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
 
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/api`),
+      new Request(`http:///localhost:1234${basePath}/api`)
     );
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json).toEqual({ hello: 'world' });
+    expect(json).toEqual({ hello: "world" });
   });
 
-  it('should be possible to fetch an api route POST from root', async () => {
+  it("should be possible to fetch an api route POST from root", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -955,73 +951,73 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const response = await testRequest(
       new Request(`http:///localhost:1234${basePath}/api`, {
-        method: 'POST',
-        body: JSON.stringify({ hello: 'world' }),
-      }),
+        method: "POST",
+        body: JSON.stringify({ hello: "world" }),
+      })
     );
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json).toEqual({ hello: 'world' });
+    expect(json).toEqual({ hello: "world" });
   });
 
-  it('should be possible to fetch an api route GET from root (with i18n)', async () => {
+  it("should be possible to fetch an api route GET from root (with i18n)", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/es/api`),
+      new Request(`http:///localhost:1234${basePath}/es/api`)
     );
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json).toEqual({ hello: 'world' });
+    expect(json).toEqual({ hello: "world" });
   });
 
-  it('should be possible to fetch an api route POST from root (with i18n)', async () => {
+  it("should be possible to fetch an api route POST from root (with i18n)", async () => {
     const response = await testRequest(
       new Request(`http:///localhost:1234${basePath}/es/api`, {
-        method: 'POST',
-        body: JSON.stringify({ hello: 'world' }),
-      }),
+        method: "POST",
+        body: JSON.stringify({ hello: "world" }),
+      })
     );
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json).toEqual({ hello: 'world' });
+    expect(json).toEqual({ hello: "world" });
   });
 
-  it('should not be possible to fetch an api route GET without the correct basePath', async () => {
+  it("should not be possible to fetch an api route GET without the correct basePath", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
-        basePath: '/incorrect',
+        basePath: "/incorrect",
       },
     };
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/es/api/example`),
+      new Request(`http:///localhost:1234${basePath}/es/api/example`)
     );
     expect(response.status).toBe(404);
   });
 
-  it('should be possible to fetch an api route POST with a FormData', async () => {
+  it("should be possible to fetch an api route POST with a FormData", async () => {
     const body = new FormData();
 
-    body.append('name', 'Brisa');
-    body.append('email', 'test@brisa.com');
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
 
     const response = await testRequest(
       new Request(`http:///localhost:1234${basePath}/es/api/example`, {
-        method: 'POST',
+        method: "POST",
         body,
-      }),
+      })
     );
     const json = await response.json();
 
     expect(response.status).toBe(200);
-    expect(json).toEqual({ name: 'Brisa', email: 'test@brisa.com' });
+    expect(json).toEqual({ name: "Brisa", email: "test@brisa.com" });
   });
 
-  it('should return 404 page if the api route does not exist', async () => {
+  it("should return 404 page if the api route does not exist", async () => {
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/es/api/not-found`),
+      new Request(`http:///localhost:1234${basePath}/es/api/not-found`)
     );
     const html = await response.text();
 
@@ -1029,220 +1025,220 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
   it('should be possible to access to store variables from "x-s" store body', async () => {
-    const xs = [['foo', 'bar']];
+    const xs = [["foo", "bar"]];
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': xs,
+        "x-s": xs,
       }),
     };
     const req = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     ) as any;
     const res = await testRequest(req);
     const html = await res.text();
 
-    expect(req.store.get('foo')).toBe('bar');
+    expect(req.store.get("foo")).toBe("bar");
     expect(html).toContain(
-      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`
     );
   });
 
   it('should remove the field "x-s" from form-data (Brisa internal field)', async () => {
     const formData = new FormData();
-    formData.append('foo', 'bar');
+    formData.append("foo", "bar");
 
     // Should ignore the "x-s" field
-    formData.append('x-s', '[["foo", "bar"]]');
+    formData.append("x-s", '[["foo", "bar"]]');
 
     const options = {
-      method: 'POST',
+      method: "POST",
       body: formData,
     };
     const req = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     ) as any;
     const res = await testRequest(req);
     const html = await res.text();
 
-    expect(req.store.get('foo')).toBe('bar');
-    expect(res.headers.get('x-reset')).toBeEmpty();
+    expect(req.store.get("foo")).toBe("bar");
+    expect(res.headers.get("x-reset")).toBeEmpty();
     expect(html).toContain(
-      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`
     );
   });
 
   it('should form-data work with "x-s" store appended to the form-data"', async () => {
     const formData = new FormData();
-    formData.append('x-s', JSON.stringify([['foo', 'bar']]));
+    formData.append("x-s", JSON.stringify([["foo", "bar"]]));
 
     const options = {
-      method: 'POST',
+      method: "POST",
       body: formData,
     };
     const req = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     ) as any;
     const res = await testRequest(req);
     const html = await res.text();
 
-    expect(req.store.get('foo')).toBe('bar');
-    expect(res.headers.get('x-reset')).toBeEmpty();
+    expect(req.store.get("foo")).toBe("bar");
+    expect(res.headers.get("x-reset")).toBeEmpty();
     expect(html).toContain(
-      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`
     );
   });
 
   it('should decrypt the store variables from "x-s" store that starts with ENCRYPT_PREFIX', async () => {
-    const xs = [['sensitive-data', encrypt('foo')]];
+    const xs = [["sensitive-data", encrypt("foo")]];
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': xs,
+        "x-s": xs,
       }),
     };
     const request = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     ) as any;
     const response = await testRequest(request);
     const html = await response.text();
 
-    expect(request.store.get('sensitive-data')).toEqual('foo');
+    expect(request.store.get("sensitive-data")).toEqual("foo");
     expect(html).toContain(
-      `<script type="application/json" id="S">[["sensitive-data","${ENCRYPT_PREFIX}`,
+      `<script type="application/json" id="S">[["sensitive-data","${ENCRYPT_PREFIX}`
     );
   });
 
   it('should decrypt the store variables from "x-s" body that starts with ENCRYPT_NONTEXT_PREFIX', async () => {
-    const xs = [['sensitive-data', encrypt({ foo: 'bar' })]];
+    const xs = [["sensitive-data", encrypt({ foo: "bar" })]];
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': xs,
+        "x-s": xs,
       }),
     };
     const request = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     ) as any;
     const response = await testRequest(request);
     const html = await response.text();
 
-    expect(request.store.get('sensitive-data')).toEqual({ foo: 'bar' });
+    expect(request.store.get("sensitive-data")).toEqual({ foo: "bar" });
     expect(html).toContain(
-      `<script type="application/json" id="S">[["sensitive-data","${ENCRYPT_NONTEXT_PREFIX}`,
+      `<script type="application/json" id="S">[["sensitive-data","${ENCRYPT_NONTEXT_PREFIX}`
     );
   });
 
-  it('should emojis work inside store', async () => {
+  it("should emojis work inside store", async () => {
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': [['sensitive-data', '👍']],
+        "x-s": [["sensitive-data", "👍"]],
       }),
     };
     const request = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     ) as any;
     const response = await testRequest(request);
     const html = await response.text();
 
-    expect(request.store.get('sensitive-data')).toBe('👍');
+    expect(request.store.get("sensitive-data")).toBe("👍");
     expect(html).toContain(
-      `<script type="application/json" id="S">[["sensitive-data","👍"]]</script>`,
+      `<script type="application/json" id="S">[["sensitive-data","👍"]]</script>`
     );
   });
 
   it('should log and render an error if the decryption fails from "x-s" store body', async () => {
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': [
-          ['sensitive-data', ENCRYPT_NONTEXT_PREFIX + 'invalid-encrypted-data'],
+        "x-s": [
+          ["sensitive-data", ENCRYPT_NONTEXT_PREFIX + "invalid-encrypted-data"],
         ],
       }),
     };
-    const mockLog = spyOn(console, 'log');
+    const mockLog = spyOn(console, "log");
     const request = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     );
     const response = await testRequest(request);
     const html = await response.text();
 
     expect(response.status).toBe(200);
     expect(html).toContain(
-      `Error transferring client \\\"sensitive-data\\\" store to server store"`,
+      `Error transferring client \\\"sensitive-data\\\" store to server store"`
     );
     expect(mockLog).toHaveBeenCalled();
   });
 
-  it('should clear the context store', async () => {
+  it("should clear the context store", async () => {
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': [
-          ['context:0:1:0', 'foo'],
-          ['context:0:1:1', 'bar'],
-          ['foo', 'bar'],
+        "x-s": [
+          ["context:0:1:0", "foo"],
+          ["context:0:1:1", "bar"],
+          ["foo", "bar"],
         ],
       }),
     };
     const request = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     );
     const response = await testRequest(request);
     const html = await response.text();
 
     expect(response.status).toBe(200);
     expect(html).toContain(
-      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`
     );
   });
 
-  it('should clear the context store', async () => {
+  it("should clear the context store", async () => {
     const options = {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({
-        'x-s': [
-          ['context:0:1:0', 'foo'],
-          ['context:0:1:1', 'bar'],
-          ['foo', 'bar'],
+        "x-s": [
+          ["context:0:1:0", "foo"],
+          ["context:0:1:1", "bar"],
+          ["foo", "bar"],
         ],
       }),
     };
     const request = new Request(
       `http:///localhost:1234${basePath}/es/page-with-web-component`,
-      options,
+      options
     );
     const response = await testRequest(request);
     const html = await response.text();
 
     expect(response.status).toBe(200);
     expect(html).toContain(
-      `<script type="application/json" id="S">[["foo","bar"]]</script>`,
+      `<script type="application/json" id="S">[["foo","bar"]]</script>`
     );
   });
 
-  it('should return 404 page if the api route exist but the method does not', async () => {
+  it("should return 404 page if the api route exist but the method does not", async () => {
     const response = await testRequest(
       new Request(`http:///localhost:1234${basePath}/es/api/example`, {
-        method: 'PUT',
-      }),
+        method: "PUT",
+      })
     );
     const html = await response.text();
 
@@ -1250,14 +1246,14 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     expect(html).toContain('<title id="title">Page not found</title>');
     expect(html).not.toContain('<title id="title">CUSTOM LAYOUT</title>');
     expect(html).toContain(
-      '<h1>Page not found 404 es<web-component></web-component></h1>',
+      "<h1>Page not found 404 es<web-component></web-component></h1>"
     );
     expect(html).toContain(
-      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`,
+      `<script data-cfasync="false" async fetchpriority="high" src="${basePath}/_brisa/pages/_404.tsx"></script>`
     );
   });
 
-  it('should return an asset in gzip if the browser accept it', async () => {
+  it("should return an asset in gzip if the browser accept it", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -1266,29 +1262,29 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         assetCompression: true,
       },
     };
-    const textDecoder = new TextDecoder('utf-8');
+    const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'gzip',
+          "accept-encoding": "gzip",
         },
-      },
+      }
     );
     const response = await testRequest(req);
     const textBuffer = gunzipSync(new Uint8Array(await response.arrayBuffer()));
     const text = textDecoder.decode(textBuffer);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-encoding')).toBe('gzip');
-    expect(response.headers.get('vary')).toBe('Accept-Encoding');
-    expect(response.headers.get('content-type')).toBe(
-      'text/plain;charset=utf-8',
+    expect(response.headers.get("content-encoding")).toBe("gzip");
+    expect(response.headers.get("vary")).toBe("Accept-Encoding");
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8"
     );
-    expect(text).toBe('Some text :D');
+    expect(text).toBe("Some text :D");
   });
 
-  it('should not return in DEVELOPMENT an asset in gzip', async () => {
+  it("should not return in DEVELOPMENT an asset in gzip", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
@@ -1301,21 +1297,21 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'gzip',
+          "accept-encoding": "gzip",
         },
-      },
+      }
     );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-encoding')).toBe(null);
-    expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe(
-      'text/plain;charset=utf-8',
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8"
     );
   });
 
-  it('should not return in PRODUCTION an asset in zip when CONFIG.assetCompression is false', async () => {
+  it("should not return in PRODUCTION an asset in zip when CONFIG.assetCompression is false", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -1328,17 +1324,17 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'gzip',
+          "accept-encoding": "gzip",
         },
-      },
+      }
     );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-encoding')).toBe(null);
-    expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe(
-      'text/plain;charset=utf-8',
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8"
     );
   });
 
@@ -1351,31 +1347,31 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
         assetCompression: true,
       },
     };
-    const textDecoder = new TextDecoder('utf-8');
+    const textDecoder = new TextDecoder("utf-8");
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'br',
+          "accept-encoding": "br",
         },
-      },
+      }
     );
     const response = await testRequest(req);
     const textBuffer = brotliDecompressSync(
-      new Uint8Array(await response.arrayBuffer()),
+      new Uint8Array(await response.arrayBuffer())
     );
     const text = textDecoder.decode(textBuffer);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-encoding')).toBe('br');
-    expect(response.headers.get('vary')).toBe('Accept-Encoding');
-    expect(response.headers.get('content-type')).toBe(
-      'text/plain;charset=utf-8',
+    expect(response.headers.get("content-encoding")).toBe("br");
+    expect(response.headers.get("vary")).toBe("Accept-Encoding");
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8"
     );
-    expect(text).toBe('Some text :D');
+    expect(text).toBe("Some text :D");
   });
 
-  it('should not return in DEVELOPMENT an asset in brotli', async () => {
+  it("should not return in DEVELOPMENT an asset in brotli", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
@@ -1388,21 +1384,21 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'br',
+          "accept-encoding": "br",
         },
-      },
+      }
     );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-encoding')).toBe(null);
-    expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe(
-      'text/plain;charset=utf-8',
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8"
     );
   });
 
-  it('should not return in PRODUCTION an asset in brotli when CONFIG.assetCompression is false', async () => {
+  it("should not return in PRODUCTION an asset in brotli when CONFIG.assetCompression is false", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -1415,40 +1411,40 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'br',
+          "accept-encoding": "br",
         },
-      },
+      }
     );
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-encoding')).toBe(null);
-    expect(response.headers.get('vary')).toBe(null);
-    expect(response.headers.get('content-type')).toBe(
-      'text/plain;charset=utf-8',
+    expect(response.headers.get("content-encoding")).toBe(null);
+    expect(response.headers.get("vary")).toBe(null);
+    expect(response.headers.get("content-type")).toBe(
+      "text/plain;charset=utf-8"
     );
   });
 
-  it('should not return an asset with incorrect basePath', async () => {
+  it("should not return an asset with incorrect basePath", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       CONFIG: {
-        basePath: '/incorrect',
+        basePath: "/incorrect",
       },
     };
     const req = new Request(
       `http:///localhost:1234${basePath}/some-dir/some-text.txt`,
       {
         headers: {
-          'accept-encoding': 'gzip',
+          "accept-encoding": "gzip",
         },
-      },
+      }
     );
     const response = await testRequest(req);
     expect(response.status).toBe(404);
   });
 
-  it('should src/pages/user/[username].tsx dynamic page work', async () => {
+  it("should src/pages/user/[username].tsx dynamic page work", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -1458,13 +1454,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toBe(
-      'text/html; charset=utf-8',
+    expect(response.headers.get("content-type")).toBe(
+      "text/html; charset=utf-8"
     );
-    expect(response.text()).resolves.toContain('<div>user</div>');
+    expect(response.text()).resolves.toContain("<div>user</div>");
   });
 
-  it('should prefer src/public/user/static.js asset than src/pages/user/[username].tsx page', async () => {
+  it("should prefer src/public/user/static.js asset than src/pages/user/[username].tsx page", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -1474,13 +1470,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toBe(
-      'text/javascript;charset=utf-8',
+    expect(response.headers.get("content-type")).toBe(
+      "text/javascript;charset=utf-8"
     );
     expect(response.text()).resolves.toContain("console.log('from public')");
   });
 
-  it('should prefer src/public/user/static.js asset than src/pages/user/[username].tsx page (without .js ext)', async () => {
+  it("should prefer src/public/user/static.js asset than src/pages/user/[username].tsx page (without .js ext)", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: true,
@@ -1490,71 +1486,71 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     const response = await testRequest(req);
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toBe(
-      'text/javascript;charset=utf-8',
+    expect(response.headers.get("content-type")).toBe(
+      "text/javascript;charset=utf-8"
     );
     expect(response.text()).resolves.toContain("console.log('from public')");
   });
 
-  it('should cache client page code in production', async () => {
+  it("should cache client page code in production", async () => {
     globalThis.mockConstants = {
       ...getConstants(),
       IS_PRODUCTION: true,
       HEADERS: {
-        CACHE_CONTROL: 'public, max-age=31536000, immutable',
+        CACHE_CONTROL: "public, max-age=31536000, immutable",
       },
       MODULES,
     };
-    const mockFile = spyOn(Bun, 'file').mockImplementation(
+    const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
         ({
           text: (pathname: string) => Promise.resolve(pathname),
-        }) as BunFile,
+        } as BunFile)
     );
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/_brisa/pages/somepage`),
+      new Request(`http:///localhost:1234${basePath}/_brisa/pages/somepage`)
     );
 
     mockFile.mockRestore();
     expect(response.status).toBe(200);
-    expect(response.headers.get('cache-control')).toBe(
-      'public, max-age=31536000, immutable',
+    expect(response.headers.get("cache-control")).toBe(
+      "public, max-age=31536000, immutable"
     );
   });
 
-  it('should not cache client page code in development', async () => {
-    const mockFile = spyOn(Bun, 'file').mockImplementation(
+  it("should not cache client page code in development", async () => {
+    const mockFile = spyOn(Bun, "file").mockImplementation(
       () =>
         ({
           text: (pathname: string) => Promise.resolve(pathname),
-        }) as BunFile,
+        } as BunFile)
     );
     const response = await testRequest(
-      new Request(`http:///localhost:1234${basePath}/_brisa/pages/somepage`),
+      new Request(`http:///localhost:1234${basePath}/_brisa/pages/somepage`)
     );
 
     mockFile.mockRestore();
     expect(response.status).toBe(200);
-    expect(response.headers.get('cache-control')).toBe(
-      'no-store, must-revalidate',
+    expect(response.headers.get("cache-control")).toBe(
+      "no-store, must-revalidate"
     );
   });
 
   it('should subscribe to hotload when "open" the websocket connection in development', async () => {
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockSubscribe = mock(() => {});
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       subscribe: mockSubscribe,
     } as unknown as ServerWebSocket;
 
     socket.open(ws);
 
-    expect(mockSubscribe).toHaveBeenCalledWith('hot-reload');
+    expect(mockSubscribe).toHaveBeenCalledWith("hot-reload");
   });
 
   it('should NOT subscribe to hotload when "open" the websocket connection in production', async () => {
@@ -1564,13 +1560,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
 
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockSubscribe = mock(() => {});
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       subscribe: mockSubscribe,
     } as unknown as ServerWebSocket;
 
@@ -1581,36 +1577,36 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should call the "open" method of the websocket module', async () => {
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
-    const mockLog = spyOn(console, 'log');
+    const mockLog = spyOn(console, "log");
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       subscribe: () => {},
     } as unknown as ServerWebSocket;
 
     socket.open(ws);
 
-    expect(mockLog).toHaveBeenCalledWith('open');
+    expect(mockLog).toHaveBeenCalledWith("open");
   });
 
   it('should unsubscribe to hotload when "close" the websocket connection in development', async () => {
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockUnsubscribe = mock(() => {});
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       unsubscribe: mockUnsubscribe,
     } as unknown as ServerWebSocket;
 
     socket.close(ws);
 
-    expect(mockUnsubscribe).toHaveBeenCalledWith('hot-reload');
+    expect(mockUnsubscribe).toHaveBeenCalledWith("hot-reload");
   });
 
   it('should NOT unsubscribe to hotload when "close" the websocket connection in production', async () => {
@@ -1620,13 +1616,13 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
 
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
     const mockUnsubscribe = mock(() => {});
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       unsubscribe: mockUnsubscribe,
     } as unknown as ServerWebSocket;
 
@@ -1637,53 +1633,53 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
   it('should call the "close" method of the websocket module', async () => {
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
-    const mockLog = spyOn(console, 'log');
+    const mockLog = spyOn(console, "log");
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       unsubscribe: () => {},
     } as unknown as ServerWebSocket;
 
     socket.close(ws);
 
-    expect(mockLog).toHaveBeenCalledWith('close');
+    expect(mockLog).toHaveBeenCalledWith("close");
   });
 
   it('should call the "drain" method of the websocket module', async () => {
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
-    const mockLog = spyOn(console, 'log');
+    const mockLog = spyOn(console, "log");
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       subscribe: () => {},
     } as unknown as ServerWebSocket;
 
     socket.drain(ws);
 
-    expect(mockLog).toHaveBeenCalledWith('drain');
+    expect(mockLog).toHaveBeenCalledWith("drain");
   });
 
   it('should call the "message" method of the websocket module', async () => {
     const serverOptions = await (
-      await import('./serve-options')
+      await import("./serve-options")
     ).getServeOptions();
 
     const socket = serverOptions!.websocket;
-    const mockLog = spyOn(console, 'log');
+    const mockLog = spyOn(console, "log");
     const ws = {
-      data: { id: '1234' },
+      data: { id: "1234" },
       subscribe: () => {},
     } as unknown as ServerWebSocket;
 
-    socket.message(ws, 'hello test');
+    socket.message(ws, "hello test");
 
-    expect(mockLog).toHaveBeenCalledWith('message', 'hello test');
+    expect(mockLog).toHaveBeenCalledWith("message", "hello test");
   });
 
   it('should have req.initiator with "SERVER_ACTION" when is POST method and has x-action header', async () => {
@@ -1694,73 +1690,73 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       I18N_CONFIG: undefined,
     };
 
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(mockResponseAction.mock.calls[0][0].initiator).toBe(
-      Initiator.SERVER_ACTION,
+      Initiator.SERVER_ACTION
     );
   });
 
   it('should have req.initiator with "SERVER_ACTION" when is POST method and has x-action header and i18n', async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(mockResponseAction.mock.calls[0][0].initiator).toBe(
-      Initiator.SERVER_ACTION,
+      Initiator.SERVER_ACTION
     );
   });
 
-  it('should the response action receive the formData', async () => {
+  it("should the response action receive the formData", async () => {
     const mockResponseAction = mock(
-      (req: RequestContext, content: RequestContent) => {},
+      (req: RequestContext, content: RequestContent) => {}
     );
     const formData = new FormData();
-    formData.append('foo', 'bar');
-    formData.append('x-s', '[["some", "value"]]');
+    formData.append("foo", "bar");
+    formData.append("x-s", '[["some", "value"]]');
 
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext, content: RequestContent) =>
         mockResponseAction(req, content),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     const [req, reqContent] = mockResponseAction.mock.calls[0];
 
-    expect(req.store.get('some')).toBe('value');
+    expect(req.store.get("some")).toBe("value");
     expect(Array.from(reqContent.formData!.entries())).toEqual([
-      ['foo', 'bar'],
+      ["foo", "bar"],
     ]);
   });
 
@@ -1772,25 +1768,25 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
-        method: 'POST',
-        body: '{}',
-      }),
+        method: "POST",
+        body: "{}",
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.SPA_NAVIGATION);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.SPA_NAVIGATION);
   });
 
   it('should have req.initiator with "SPA_NAVIGATION" when the Page is POST method without x-action header and i18n', async () => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
-        method: 'POST',
-        body: '{}',
-      }),
+        method: "POST",
+        body: "{}",
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.SPA_NAVIGATION);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.SPA_NAVIGATION);
   });
 
   it('should have req.initiator with "INITIAL_REQUEST" when the Page is GET method', async () => {
@@ -1801,23 +1797,23 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
-        method: 'GET',
-      }),
+        method: "GET",
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.INITIAL_REQUEST);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.INITIAL_REQUEST);
   });
 
   it('should have req.initiator with "INITIAL_REQUEST" when the Page is GET method and i18n', async () => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
-        method: 'GET',
-      }),
+        method: "GET",
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.INITIAL_REQUEST);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.INITIAL_REQUEST);
   });
 
   it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint', async () => {
@@ -1827,35 +1823,35 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
     const body = new FormData();
 
-    body.append('name', 'Brisa');
-    body.append('email', 'test@brisa.com');
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
 
     const res = await testRequest(
       new Request(`http:///localhost:1234${basePath}/api/example`, {
-        method: 'POST',
+        method: "POST",
         body,
-      }),
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.API_REQUEST);
   });
 
   it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint and i18n', async () => {
     const body = new FormData();
 
-    body.append('name', 'Brisa');
-    body.append('email', 'test@brisa.com');
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
 
     const res = await testRequest(
       new Request(`http:///localhost:1234${basePath}/es/api/example`, {
-        method: 'POST',
+        method: "POST",
         body,
-      }),
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.API_REQUEST);
   });
 
   it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint with x-action header', async () => {
@@ -1865,155 +1861,155 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     };
     const body = new FormData();
 
-    body.append('name', 'Brisa');
-    body.append('email', 'test@brisa.com');
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
 
     const res = await testRequest(
       new Request(`http:///localhost:1234${basePath}/api/example`, {
-        method: 'POST',
+        method: "POST",
         body,
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.API_REQUEST);
   });
 
   it('should have req.initiator with "API_REQUEST" when is POST method and is an API endpoint with x-action header and i18n', async () => {
     const body = new FormData();
 
-    body.append('name', 'Brisa');
-    body.append('email', 'test@brisa.com');
+    body.append("name", "Brisa");
+    body.append("email", "test@brisa.com");
 
     const res = await testRequest(
       new Request(`http:///localhost:1234${basePath}/es/api/example`, {
-        method: 'POST',
+        method: "POST",
         body,
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     // Response x-initiator is the same as the requestContext.initiator (modified in the fixture)
-    expect(res.headers.get('x-initiator')).toBe(Initiator.API_REQUEST);
+    expect(res.headers.get("x-initiator")).toBe(Initiator.API_REQUEST);
   });
 
-  it('should NOT call responseAction method with GET and return 200 with the page', async () => {
+  it("should NOT call responseAction method with GET and return 200 with the page", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
     };
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(mockResponseAction).not.toHaveBeenCalled();
     expect(res.status).toBe(200);
-    expect(await res.text()).toContain('<h1>Some page</h1>');
+    expect(await res.text()).toContain("<h1>Some page</h1>");
   });
 
-  it('should call responseAction method when is an action', async () => {
+  it("should call responseAction method when is an action", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
     };
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(mockResponseAction).toHaveBeenCalled();
     expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBeEmpty();
   });
 
-  it('should call responseAction method when is an action and has i18n', async () => {
+  it("should call responseAction method when is an action and has i18n", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/es/somepage`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(mockResponseAction).toHaveBeenCalled();
-    expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBe('es');
+    expect(mockResponseAction.mock.calls[0][0].i18n.locale).toBe("es");
   });
 
-  it('should open the editor calling /__brisa_dev_file__ with file, line and column', async () => {
+  it("should open the editor calling /__brisa_dev_file__ with file, line and column", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
-      () => {},
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {}
     );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
-          'src/pages/somepage.tsx',
+          "src/pages/somepage.tsx"
         )}&line=1&column=1`,
-        { method: 'POST' },
-      ),
+        { method: "POST" }
+      )
     );
 
     expect(response.status).toBe(200);
-    expect(mockOpenInEditor).toHaveBeenCalledWith('src/pages/somepage.tsx', {
+    expect(mockOpenInEditor).toHaveBeenCalledWith("src/pages/somepage.tsx", {
       line: 1,
       column: 1,
     });
     mockOpenInEditor.mockRestore();
   });
 
-  it('should not call Bun.openInEditor in Node.js and return 404', async () => {
+  it("should not call Bun.openInEditor in Node.js and return 404", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
-      JS_RUNTIME: 'node',
+      JS_RUNTIME: "node",
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
-      () => {},
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {}
     );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
-          'src/pages/somepage.tsx',
+          "src/pages/somepage.tsx"
         )}&line=1&column=1`,
-        { method: 'POST' },
-      ),
+        { method: "POST" }
+      )
     );
 
     expect(response.status).toBe(404);
@@ -2021,23 +2017,23 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mockOpenInEditor.mockRestore();
   });
 
-  it('should not call Bun.openInEditor in Deno and return 404', async () => {
+  it("should not call Bun.openInEditor in Deno and return 404", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
-      JS_RUNTIME: 'deno',
+      JS_RUNTIME: "deno",
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
-      () => {},
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {}
     );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
-          'src/pages/somepage.tsx',
+          "src/pages/somepage.tsx"
         )}&line=1&column=1`,
-        { method: 'POST' },
-      ),
+        { method: "POST" }
+      )
     );
 
     expect(response.status).toBe(404);
@@ -2045,30 +2041,30 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mockOpenInEditor.mockRestore();
   });
 
-  it('should open the editor calling /__brisa_dev_file__ with internal brisa file from build with line and column', async () => {
+  it("should open the editor calling /__brisa_dev_file__ with internal brisa file from build with line and column", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
-      () => {},
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {}
     );
     const inputFile = encodeURIComponent(
-      '/_brisa/pages/index-595519026220381824.js',
+      "/_brisa/pages/index-595519026220381824.js"
     );
     const expectedFile = path.resolve(
       BUILD_DIR,
-      'pages-client',
-      'index-595519026220381824.js',
+      "pages-client",
+      "index-595519026220381824.js"
     );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${inputFile}&line=1&column=1`,
         {
-          method: 'POST',
-        },
-      ),
+          method: "POST",
+        }
+      )
     );
 
     expect(response.status).toBe(200);
@@ -2079,22 +2075,22 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mockOpenInEditor.mockRestore();
   });
 
-  it('should return 404 trying to open the editor calling /__brisa_dev_file__ with file, line and column with method GET', async () => {
+  it("should return 404 trying to open the editor calling /__brisa_dev_file__ with file, line and column with method GET", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       IS_PRODUCTION: false,
       IS_DEVELOPMENT: true,
     };
-    const mockOpenInEditor = spyOn(Bun, 'openInEditor').mockImplementation(
-      () => {},
+    const mockOpenInEditor = spyOn(Bun, "openInEditor").mockImplementation(
+      () => {}
     );
     const response = await testRequest(
       new Request(
         `http://localhost:1234/__brisa_dev_file__?file=${encodeURIComponent(
-          'src/pages/somepage.tsx',
+          "src/pages/somepage.tsx"
         )}&line=1&column=1`,
-        { method: 'GET' },
-      ),
+        { method: "GET" }
+      )
     );
 
     expect(response.status).toBe(404);
@@ -2102,7 +2098,7 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
     mockOpenInEditor.mockRestore();
   });
 
-  it('should work declarative shadow DOM on server actions when is form call without RPC', async () => {
+  it("should work declarative shadow DOM on server actions when is form call without RPC", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     globalThis.mockConstants = {
@@ -2110,27 +2106,27 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       I18N_CONFIG: undefined,
     };
 
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage?_aid=2`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(
       mockResponseAction.mock.calls[0][0].store.has(
-        AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
-      ),
+        AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL
+      )
     ).toBeFalse();
   });
 
-  it('should return a soft redirect from an action', async () => {
+  it("should return a soft redirect from an action", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
@@ -2140,36 +2136,36 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       new Request(
         `http://localhost:1234${basePath}/somepage?_aid=2&redirect=/`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'x-action': 'a1_1',
+            "x-action": "a1_1",
           },
-        },
-      ),
+        }
+      )
     );
 
     expect(res.status).toBe(200);
-    expect(res.headers.get('x-navigate')).toBe('/');
+    expect(res.headers.get("x-navigate")).toBe("/");
   });
 
-  it('should return a soft redirect from an action with i18n resolving the correct locale', async () => {
+  it("should return a soft redirect from an action with i18n resolving the correct locale", async () => {
     const res = await testRequest(
       new Request(
         `http://localhost:1234${basePath}/en/somepage?_aid=2&redirect=/`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'x-action': 'a1_1',
+            "x-action": "a1_1",
           },
-        },
-      ),
+        }
+      )
     );
 
     expect(res.status).toBe(200);
-    expect(res.headers.get('x-navigate')).toBe('/en');
+    expect(res.headers.get("x-navigate")).toBe("/en");
   });
 
-  it('should return a soft redirect from an SPA navigation', async () => {
+  it("should return a soft redirect from an SPA navigation", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
@@ -2177,72 +2173,72 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
 
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage?redirect=/`, {
-        method: 'POST',
-      }),
+        method: "POST",
+      })
     );
 
     expect(res.status).toBe(200);
-    expect(res.headers.get('x-navigate')).toBe('/');
+    expect(res.headers.get("x-navigate")).toBe("/");
   });
 
-  it('should return a soft redirect from an SPA Navigation with i18n resolving the correct locale', async () => {
+  it("should return a soft redirect from an SPA Navigation with i18n resolving the correct locale", async () => {
     const res = await testRequest(
       new Request(`http://localhost:1234${basePath}/en/somepage?redirect=/`, {
-        method: 'POST',
-      }),
+        method: "POST",
+      })
     );
 
     expect(res.status).toBe(200);
-    expect(res.headers.get('x-navigate')).toBe('/en');
+    expect(res.headers.get("x-navigate")).toBe("/en");
   });
 
-  it('should return a HARD redirect from an API endpoint', async () => {
+  it("should return a HARD redirect from an API endpoint", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
     };
 
     const res = await testRequest(
-      new Request(`http://localhost:1234${basePath}/api/example?redirect=/`),
+      new Request(`http://localhost:1234${basePath}/api/example?redirect=/`)
     );
 
     expect(res.status).toBe(301);
-    expect(res.headers.get('location')).toBe('/');
+    expect(res.headers.get("location")).toBe("/");
   });
 
-  it('should return a HARD redirect from an API endpoint with i18n resolving the correct locale', async () => {
+  it("should return a HARD redirect from an API endpoint with i18n resolving the correct locale", async () => {
     const res = await testRequest(
-      new Request(`http://localhost:1234${basePath}/en/api/example?redirect=/`),
+      new Request(`http://localhost:1234${basePath}/en/api/example?redirect=/`)
     );
 
     expect(res.status).toBe(301);
-    expect(res.headers.get('location')).toBe('/en');
+    expect(res.headers.get("location")).toBe("/en");
   });
 
-  it('should return a HARD redirect from an initial render', async () => {
+  it("should return a HARD redirect from an initial render", async () => {
     globalThis.mockConstants = {
       ...globalThis.mockConstants,
       I18N_CONFIG: undefined,
     };
 
     const res = await testRequest(
-      new Request(`http://localhost:1234${basePath}/somepage?redirect=/`),
+      new Request(`http://localhost:1234${basePath}/somepage?redirect=/`)
     );
 
     expect(res.status).toBe(301);
-    expect(res.headers.get('location')).toBe('/');
+    expect(res.headers.get("location")).toBe("/");
   });
 
-  it('should return a HARD redirect from an initial render with i18n resolving the correct locale', async () => {
+  it("should return a HARD redirect from an initial render with i18n resolving the correct locale", async () => {
     const res = await testRequest(
-      new Request(`http://localhost:1234${basePath}/en/somepage?redirect=/`),
+      new Request(`http://localhost:1234${basePath}/en/somepage?redirect=/`)
     );
 
     expect(res.status).toBe(301);
-    expect(res.headers.get('location')).toBe('/en');
+    expect(res.headers.get("location")).toBe("/en");
   });
 
-  it('should avoid declarative shadow DOM on server actions', async () => {
+  it("should avoid declarative shadow DOM on server actions", async () => {
     const mockResponseAction = mock((req: RequestContext) => {});
 
     globalThis.mockConstants = {
@@ -2250,27 +2246,27 @@ describe.each(BASE_PATHS)('CLI: serve %s', (basePath) => {
       I18N_CONFIG: undefined,
     };
 
-    mock.module('@/utils/response-action', () => ({
+    mock.module("@/utils/response-action", () => ({
       default: (req: RequestContext) => mockResponseAction(req),
     }));
 
     await testRequest(
       new Request(`http://localhost:1234${basePath}/somepage`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-action': 'a1_1',
+          "x-action": "a1_1",
         },
-      }),
+      })
     );
 
     expect(
       mockResponseAction.mock.calls[0][0].store.get(
-        AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL,
-      ),
+        AVOID_DECLARATIVE_SHADOW_DOM_SYMBOL
+      )
     ).toBeTrue();
   });
 
-  it('should return idleTimeout as 30 ', async () => {
+  it("should return idleTimeout as 30 ", async () => {
     const serverOptions = await getServeOptions();
     expect(serverOptions!.idleTimeout).toBe(30);
   });

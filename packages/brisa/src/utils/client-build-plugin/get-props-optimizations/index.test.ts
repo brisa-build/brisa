@@ -442,7 +442,7 @@ describe('AST', () => {
     ...WITH_DEFAULT_VALUES_FROM_OTHER_PROPS,
     ...WITH_DEFAULT_VALUES_FROM_EXTERNAL_IDENTIFIERS,
     ...WITH_RENAMED_PROPS_IN_NESTED_LEVEL,
-  ])('getPropsOptimizations', ({ param, expected }) => {
+  ])('getPropsOptimizations', ({ param, expected }: any) => {
     const expectedArrows = expected.map(normalizeHTML);
 
     it(`should transform ${param} to ${expectedArrows.join(', ')}`, () => {

@@ -5,7 +5,7 @@ import { GlobalRegistrator } from '@happy-dom/global-registrator';
 const BASE_PATHS = ['', '/some', '/some/other'];
 
 describe('utils', () => {
-  describe.each(BASE_PATHS)('navigate %s', (basePath) => {
+  describe.each(BASE_PATHS)('navigate %s', (basePath: string) => {
     describe('server side', () => {
       beforeEach(() => {
         globalThis.__BASE_PATH__ = basePath;

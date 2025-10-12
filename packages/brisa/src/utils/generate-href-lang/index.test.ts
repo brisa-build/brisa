@@ -21,7 +21,7 @@ describe('utils', () => {
     globalThis.mockConstants = undefined;
     console.warn = warn;
   });
-  describe.each(BASE_PATHS)('generateHrefLang %s', (basePath) => {
+  describe.each(BASE_PATHS)('generateHrefLang %s', (basePath: string) => {
     it('should generate the hreflang with the rest of locales', () => {
       globalThis.mockConstants = {
         ...getConstants(),

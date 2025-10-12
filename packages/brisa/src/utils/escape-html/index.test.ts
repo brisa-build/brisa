@@ -109,14 +109,14 @@ describe('utils', () => {
   describe('escapeHTML', () => {
     it.each(BATTERY_OF_TESTS)(
       `should escape %#/${BATTERY_OF_TESTS.length} as we expect`,
-      (input, expected) => {
+      (input: string, expected: string) => {
         expect(escapeHTML(input)).toBe(expected);
       },
     );
 
     it.each(BATTERY_OF_TESTS)(
       `should escape %#/${BATTERY_OF_TESTS.length} in the same way than Bun.escapeHTML`,
-      (input) => {
+      (input: string) => {
         expect(escapeHTML(input)).toBe(Bun.escapeHTML(input as any));
       },
     );

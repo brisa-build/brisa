@@ -6,7 +6,7 @@ import extendRequestContext from '@/utils/extend-request-context';
 const BASE_PATHS = ['', '/foo', '/foo/bar'];
 
 describe('utils', () => {
-  describe.each(BASE_PATHS)('redirectTrailingSlash %s', (basePath) => {
+  describe.each(BASE_PATHS)('redirectTrailingSlash %s', (basePath: string) => {
     afterEach(() => {
       globalThis.mockConstants = undefined;
     });

@@ -764,7 +764,7 @@ describe('utils', () => {
 
     it.each(SAME_AS_BUN_FILESYSTEMROUTER)(
       'should match: %s with Bun.FileSystemRouter',
-      (filePath) => {
+      (filePath: string) => {
         const options = {
           dir,
           fileExtensions: ['.tsx', '.js', '.jsx'],
@@ -792,7 +792,7 @@ describe('utils', () => {
       },
     );
 
-    it.each(SHOULD_RETURN_NULL)('should return null for: %s', (filePath) => {
+    it.each(SHOULD_RETURN_NULL)('should return null for: %s', (filePath: string) => {
       const options = {
         dir,
         fileExtensions: ['.tsx', '.js', '.jsx'],
@@ -805,7 +805,7 @@ describe('utils', () => {
 
     it.each(DIFFERENT_THAN_BUN_FILESYSTEMROUTER)(
       'should match: %s with some Bun.FileSystemRouter differences',
-      (filePath, expected) => {
+      (filePath: string, expected: any) => {
         const options = {
           dir,
           fileExtensions: ['.tsx', '.js', '.jsx'],
@@ -864,7 +864,7 @@ describe('utils', () => {
 
     it.each(BATTERY_OF_TESTS)(
       'should normalize the route %s',
-      (filePath, { dir, ext, result }) => {
+      (filePath: string, { dir, ext, result }: any) => {
         expect(normalizeRoute(filePath, dir, ext)).toBe(result);
       },
     );

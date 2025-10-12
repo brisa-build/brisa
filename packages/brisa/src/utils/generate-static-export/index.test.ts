@@ -25,7 +25,7 @@ const testGeneratedContentByIndex = (index: number, content: string) => {
   expect(mockWrite.mock.calls[index][1]).toBe(content);
 };
 
-describe.each(BASE_PATHS)('utils', (basePath) => {
+describe.each(BASE_PATHS)('utils', (basePath: string) => {
   function formatPath(...args: string[]) {
     const pathname = args.join(path.sep);
     const prefix = pathname[0] === path.sep ? '' : path.sep;
