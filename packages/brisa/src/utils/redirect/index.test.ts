@@ -17,7 +17,7 @@ describe('utils', () => {
     });
   });
 
-  describe.each(BASE_PATHS)('redirectFromUnnormalizedURL %s', (basePath) => {
+  describe.each(BASE_PATHS)('redirectFromUnnormalizedURL %s', (basePath: string) => {
     describe('WHEN trailingSlash is true and i18n is defined', () => {
       beforeEach(() => {
         globalThis.mockConstants = {

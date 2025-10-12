@@ -25,14 +25,14 @@ describe('utils / ast / jsx-helpers', () => {
   describe('isJSXIdentifier', () => {
     it.each(VALID_JSX_IDENTIFIERS)(
       'should return true for valid JSX identifier: %s',
-      (identifier) => {
+      (identifier: string) => {
         expect(isJSXIdentifier(identifier)).toBeTrue();
       },
     );
 
     it.each(INVALID_JSX_IDENTIFIERS)(
       'should return false for invalid JSX identifier: %s',
-      (identifier) => {
+      (identifier: string) => {
         expect(isJSXIdentifier(identifier)).toBeFalse();
       },
     );

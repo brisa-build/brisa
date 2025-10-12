@@ -969,7 +969,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between props.foo and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component(props, { state }) {
             const example = state(props.foo);
@@ -1005,7 +1005,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between props.foo and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component(props, { state }) {
             const example = state(props.foo);
@@ -1039,7 +1039,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between destructuring props.foo and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component({...props}, { state }) {
             const example = state(props.foo);
@@ -1075,7 +1075,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between destructuring props.foo and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component({...props}, { state }) {
             const example = state(props.foo);
@@ -1109,7 +1109,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between {foo} props and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component({foo}, { state }) {
             const example = state(foo);
@@ -1145,7 +1145,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between {foo} props and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component({foo}, { state }) {
             const example = state(foo);
@@ -1179,7 +1179,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between {foo="bar"} props and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component({foo="bar"}, { state }) {
             const example = state(foo);
@@ -1216,7 +1216,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between {foo="bar"} props and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component({foo="bar"}, { state }) {
             const example = state(foo);
@@ -1251,7 +1251,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between {foot: foo} props and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component({foot: foo}, { state }) {
             const example = state(foo);
@@ -1287,7 +1287,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between {foot: foo} props and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component({foot: foo}, { state }) {
             const example = state(foo);
@@ -1321,7 +1321,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between {foot: {foo}} props and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component({foot: {foo}}, { state }) {
             const example = state(foo);
@@ -1358,7 +1358,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between {foot: {foo}} props and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component({foot: {foo}}, { state }) {
             const example = state(foo);
@@ -1393,7 +1393,7 @@ describe('utils', () => {
 
       it.each(VARS)(
         'should not conflict between renamed props in a var and %s variable',
-        (varType) => {
+        (varType: string) => {
           const code = `
           export default function Component(props, { state }) {
             const foo = props.bar;
@@ -1431,7 +1431,7 @@ describe('utils', () => {
 
       it.each(PARAMS)(
         'should not conflict between {renamed props in a var and %s param',
-        (param) => {
+        (param: string) => {
           const code = `
           export default function Component(props, { state }) {
             const foo = props.bar;

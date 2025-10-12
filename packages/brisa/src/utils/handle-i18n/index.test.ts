@@ -8,7 +8,7 @@ const BUILD_DIR = path.join(import.meta.dir, '..', '..', '__fixtures__');
 const pagesDir = path.join(BUILD_DIR, 'pages');
 const BASE_PATHS = ['', '/foo', '/foo/bar'];
 
-describe.each(BASE_PATHS)('handleI18n util %s', (basePath) => {
+describe.each(BASE_PATHS)('handleI18n util %s', (basePath: string) => {
   describe('without trailing slash', () => {
     beforeEach(() => {
       globalThis.mockConstants = {
