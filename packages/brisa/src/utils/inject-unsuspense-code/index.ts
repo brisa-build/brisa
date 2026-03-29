@@ -3,17 +3,19 @@ import path from 'node:path';
 
 // Should be used via macro
 export async function injectUnsuspenseCode() {
-  const { success, logs, outputs } = await Bun.build({
-    // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false,
-    entrypoints: [path.join(import.meta.dir, 'unsuspense.ts')],
-    target: 'browser',
-    minify: true,
-  });
+  const entrypoint = path.join(import.meta.dir, 'unsuspense.ts');
+  const result = Bun.spawnSync([
+    'bun',
+    'build',
+    entrypoint,
+    '--target',
+    'browser',
+    '--minify',
+  ]);
 
-  if (!success) {
-    logBuildError('Failed to compile unsuspense code', logs);
+  if (result.exitCode !== 0) {
+    logBuildError('Failed to compile unsuspense code', []);
   }
 
-  return (await outputs?.[0]?.text?.()) ?? '';
+  return result.stdout.toString();
 }

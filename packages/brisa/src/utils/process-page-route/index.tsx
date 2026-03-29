@@ -11,7 +11,7 @@ export default async function processPageRoute(
   error?: Error,
 ) {
   const { MODULES } = getConstants();
-  const { pages, layoutModule } = MODULES;
+  const { pages, layoutModule } = MODULES ?? {};
   // TODO: Remove async-await after finish #628
   const module = await pages[route.name];
   const PageComponent = module?.default ?? Empty;

@@ -18,23 +18,25 @@ export async function injectRPCLazyCode() {
 }
 
 async function buildRPC(file: string, isStatic = false) {
-  const { success, logs, outputs } = await Bun.build({
-    // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false,
-    entrypoints: [path.join(import.meta.dir, file)],
-    target: 'browser',
-    minify: true,
-    define: {
-      __RPC_LAZY_FILE__: `'/_brisa/pages/_rpc-lazy-${constants.VERSION}.js'`,
-      __IS_STATIC__: isStatic.toString(),
-    },
-  });
+  const entrypoint = path.join(import.meta.dir, file);
+  const result = Bun.spawnSync([
+    'bun',
+    'build',
+    entrypoint,
+    '--target',
+    'browser',
+    '--minify',
+    '--define',
+    `__RPC_LAZY_FILE__='/_brisa/pages/_rpc-lazy-${constants.VERSION}.js'`,
+    '--define',
+    `__IS_STATIC__=${isStatic.toString()}`,
+  ]);
 
-  if (!success) {
-    logBuildError('Failed to compile RPC code', logs);
+  if (result.exitCode !== 0) {
+    logBuildError('Failed to compile RPC code', []);
   }
 
-  const code = (await outputs?.[0]?.text?.()) ?? '';
+  const code = result.stdout.toString();
 
   return `(()=>{${code}})()`;
 }

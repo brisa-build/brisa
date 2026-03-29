@@ -1,4 +1,4 @@
-import { getConstants } from '@/constants';
+import defaultConstants, { getConstants } from '@/constants';
 import type { MatchedBrisaRoute } from '@/types';
 import extendRequestContext from '@/utils/extend-request-context';
 import getPageComponentWithHeaders from '@/utils/get-page-component-with-headers';
@@ -18,11 +18,12 @@ describe('utils', () => {
   describe('getPageComponentWithHeaders', () => {
     beforeEach(async () => {
       globalThis.mockConstants = {
-        ...(getConstants() ?? {}),
+        ...defaultConstants,
         PAGES_DIR,
         BUILD_DIR,
         SRC_DIR: BUILD_DIR,
         ASSETS_DIR,
+        WORKSPACE: BUILD_DIR,
         LOCALES_SET: new Set(['en', 'es']),
         I18N_CONFIG: {
           locales: ['en', 'es'],

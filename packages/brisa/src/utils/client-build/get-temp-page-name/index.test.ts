@@ -8,7 +8,7 @@ describe('build utils -> client build', () => {
     it('should return the correct temp file name', () => {
       const { BUILD_DIR } = getConstants();
       const pagePath = '/path/to/page.tsx';
-      const expected = join(BUILD_DIR, '_brisa', 'temp-path-to-page.ts');
+      const expected = join(BUILD_DIR, '_brisa', 'temppage_tsx.ts');
       const result = getTempPageName(pagePath);
       expect(result).toBe(expected);
     });
@@ -21,12 +21,12 @@ describe('build utils -> client build', () => {
       const expected1 = join(
         BUILD_DIR,
         '_brisa',
-        'temp-path-to-page_example.ts',
+        'temppage_example_tsx.ts',
       );
       const expected2 = join(
         BUILD_DIR,
         '_brisa',
-        'temp-path-to-page-example.ts',
+        'tempexample_tsx.ts',
       );
 
       const result1 = getTempPageName(pagePath1);
@@ -39,7 +39,7 @@ describe('build utils -> client build', () => {
     it('should handle page paths with multiple extensions correctly', () => {
       const { BUILD_DIR } = getConstants();
       const pagePath = '/path/to/page.min.tsx';
-      const expected = join(BUILD_DIR, '_brisa', 'temp-path-to-page.min.ts');
+      const expected = join(BUILD_DIR, '_brisa', 'temppage_min_tsx.ts');
       const result = getTempPageName(pagePath);
       expect(result).toBe(expected);
     });

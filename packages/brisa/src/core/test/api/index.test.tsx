@@ -484,6 +484,7 @@ describe('test api', () => {
         BUILD_DIR,
         SRC_DIR: BUILD_DIR,
         ASSETS_DIR,
+        WORKSPACE: BUILD_DIR,
       };
     });
 

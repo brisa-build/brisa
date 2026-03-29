@@ -74,6 +74,7 @@ describe('compileAssets', () => {
 
   it('should not compress fixtures assets in development and neither create the sitemap.xml', async () => {
     const log = spyOn(console, 'log');
+    log.mockClear();
     globalThis.mockConstants!.IS_PRODUCTION = false;
     await compileAssets();
     expect(
@@ -82,7 +83,7 @@ describe('compileAssets', () => {
 
     expect(log).toHaveBeenCalledTimes(1);
     expect(log.mock.calls.toString()).toContain('sitemap.xml generated in');
-    log.mockClear();
+    log.mockRestore();
   });
 
   it('should not compress fixtures assets if assetCompression is false', async () => {

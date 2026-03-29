@@ -38,7 +38,7 @@ describe('create-brisa', () => {
   it('should exit and display an error if the folder exists', async () => {
     fs.mkdirSync('out');
     const projectName = 'out/foo';
-    const res = await $`echo "${projectName}" | bun run ${CREATE_BRISA_PATH}`;
+    const res = await $`echo "${projectName}" | bun run ${CREATE_BRISA_PATH}`.nothrow();
 
     expect(res.stderr.toString()).toBe('Error: out folder already exists\n');
   });
