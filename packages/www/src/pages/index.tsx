@@ -360,6 +360,17 @@ export default function Homepage() {
           <div class="code" style={{ flex: 1, maxWidth: '450px' }}>
             <h2>💝 Sponsors</h2>
             <p>
+              Sponsored by{' '}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                title="Kitmul"
+                href="https://kitmul.com/en"
+              >
+                Kitmul
+              </a>
+            </p>
+            <p>
               <i>
                 Take a look at our{' '}
                 <a

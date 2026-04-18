@@ -77,6 +77,10 @@ See [Contributing Guide](CONTRIBUTING.md) and please follow our [Code of Conduct
 
 Come join the [Discord community channel~](https://discord.gg/MsE9RN3FU4)
 
+## Sponsors
+
+Sponsored by [Kitmul](https://kitmul.com/en)
+
 ## License
 
 MIT
