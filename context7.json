@@ -1,0 +1,8 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Brisa",
+  "description": "The Web Platform Framework.",
+  "branch": "canary",
+  "folders": ["docs"],
+  "excludeFolders": [".github", "examples", "scripts", "node_modules"]
+}
