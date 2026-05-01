@@ -79,7 +79,7 @@ Come join the [Discord community channel~](https://discord.gg/MsE9RN3FU4)
 
 ## Sponsors
 
-Sponsored by [Kitmul](https://kitmul.com/en)
+Sponsored by [Kitmul](https://kitmul.com/en) and [Viatsy](https://viatsy.com/)
 
 ## License
 
