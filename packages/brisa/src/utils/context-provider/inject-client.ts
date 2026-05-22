@@ -1,39 +1,14 @@
 import path from 'node:path';
-import clientBuildPlugin from '@/utils/client-build-plugin';
 import { logBuildError } from '@/utils/log/log-build';
 
 // Should be used via macro
 export async function injectClientContextProviderCode() {
-  const pathname = path.join(import.meta.dir, 'client.tsx');
-  const internalComponentId = '__BRISA_CLIENT__contextProvider';
+  const scriptPath = path.join(import.meta.dir, 'build-inject-client.ts');
+  const result = Bun.spawnSync(['bun', 'run', scriptPath]);
 
-  const { success, logs, outputs } = await Bun.build({
-    // TODO: adapt to Bun > 1.2 (for now this is to force the old behavior)
-    throw: false,
-    entrypoints: [pathname],
-    target: 'browser',
-    external: ['brisa'],
-    plugins: [
-      {
-        name: 'context-provider-transformer',
-        setup(build) {
-          build.onLoad({ filter: /.*/ }, async ({ path, loader }) => ({
-            contents: clientBuildPlugin(
-              // TODO: use Bun.file(path).text() when Bun fix this issue:
-              // https://github.com/oven-sh/bun/issues/7611
-              await Bun.readableStreamToText(Bun.file(path).stream()),
-              internalComponentId,
-            ),
-            loader,
-          }));
-        },
-      },
-    ],
-  });
-
-  if (!success) {
-    logBuildError('Failed to compile client context provider', logs);
+  if (result.exitCode !== 0) {
+    logBuildError('Failed to compile client context provider', []);
   }
 
-  return (await outputs?.[0]?.text?.()) ?? '';
+  return result.stdout.toString();
 }

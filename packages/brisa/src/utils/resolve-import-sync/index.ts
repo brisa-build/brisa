@@ -25,29 +25,33 @@ export default function resolveImportSync(id: string, parent?: string) {
         : undefined,
     });
   } catch (e) {
-    // Note: this is tested on packages/brisa/src/cli/serve/node-serve/handler.node-test.js with .mjs files
-    if (!isBun) {
-      for (const extension of extensions) {
-        const filePath = path.join(parent ?? '', id + extension);
-        const fileWithIndexPath = path.join(
-          parent ?? '',
-          id,
-          'index' + extension,
-        );
+    // Bun caches module resolution failures, so if a file is deleted and
+    // recreated (as happens during build), createRequire().resolve() and
+    // Bun.resolveSync() may return stale cached failures. Use filesystem
+    // checks as fallback to bypass the cache.
+    for (const extension of extensions) {
+      const filePath = path.join(parent ?? '', id + extension);
+      const fileWithIndexPath = path.join(
+        parent ?? '',
+        id,
+        'index' + extension,
+      );
 
-        if (fs.existsSync(filePath)) return filePath;
-        if (fs.existsSync(fileWithIndexPath)) return fileWithIndexPath;
-      }
-
-      throw e;
+      if (fs.existsSync(filePath)) return filePath;
+      if (fs.existsSync(fileWithIndexPath)) return fileWithIndexPath;
     }
-    // This resolves "exports" inside the package.json of dependencies in Bun runtime
-    // Issue: https://github.com/brisa-build/brisa/issues/434
-    // This error only happens in Build-time, so Bun.js:
-    // Related Bun issue: https://github.com/oven-sh/bun/issues/4668
-    return Bun.resolveSync(
-      id,
-      parent ? path.dirname(parent) : import.meta.dirname,
-    );
+
+    if (isBun) {
+      // This resolves "exports" inside the package.json of dependencies in Bun runtime
+      // Issue: https://github.com/brisa-build/brisa/issues/434
+      // This error only happens in Build-time, so Bun.js:
+      // Related Bun issue: https://github.com/oven-sh/bun/issues/4668
+      return Bun.resolveSync(
+        id,
+        parent ? path.dirname(parent) : import.meta.dirname,
+      );
+    }
+
+    throw e;
   }
 }

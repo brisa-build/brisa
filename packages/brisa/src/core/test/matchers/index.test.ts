@@ -1,6 +1,17 @@
 import { expect, describe, it, beforeEach, afterEach } from 'bun:test';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
-import { greenLog, redLog } from '@/utils/log/log-color';
+
+// Strip ANSI escape codes for color-agnostic comparison in error messages,
+// since color support varies between isolated and full suite runs
+const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, '');
+function expectThrowContaining(fn: () => void, expected: string) {
+  try {
+    fn();
+    throw new Error('Expected function to throw');
+  } catch (e: any) {
+    expect(stripAnsi(e.message)).toContain(expected);
+  }
+}
 
 describe('test matchers', () => {
   beforeEach(() => {
@@ -47,20 +58,18 @@ describe('test matchers', () => {
       const div = document.createElement('div');
       div.setAttribute('data-test', 'test-2');
 
-      expect(() =>
-        expect(div).toHaveAttribute('data-test', 'test'),
-      ).toThrowError(
-        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('"test-2"')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveAttribute('data-test', 'test'),
+        'Expected: "test"\nReceived: "test-2"',
       );
     });
 
     it('should not pass if the element has not the attribute specifing the attribute', () => {
       const div = document.createElement('div');
 
-      expect(() =>
-        expect(div).toHaveAttribute('data-test', 'test'),
-      ).toThrowError(
-        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('null')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveAttribute('data-test', 'test'),
+        'Expected: "test"\nReceived: null',
       );
     });
 
@@ -89,8 +98,9 @@ describe('test matchers', () => {
     it('should fail if the element does not have the tag name', () => {
       const div = document.createElement('div');
 
-      expect(() => expect(div).toHaveTagName('span')).toThrowError(
-        `Expected: ${greenLog('span')}\nReceived: ${redLog('div')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveTagName('span'),
+        'Expected: span\nReceived: div',
       );
     });
   });
@@ -135,16 +145,18 @@ describe('test matchers', () => {
       const div = document.createElement('div');
       div.textContent = 'test-2';
 
-      expect(() => expect(div).toHaveTextContent('test')).toThrowError(
-        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('"test-2"')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveTextContent('test'),
+        'Expected: "test"\nReceived: "test-2"',
       );
     });
 
     it('should fail if the element does not have the rendered text', () => {
       const div = document.createElement('div');
 
-      expect(() => expect(div).toHaveTextContent('test')).toThrowError(
-        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveTextContent('test'),
+        'Expected: "test"\nReceived: ""',
       );
     });
   });
@@ -205,16 +217,18 @@ describe('test matchers', () => {
       const div = document.createElement('div');
       div.textContent = 'foo';
 
-      expect(() => expect(div).toContainTextContent('test')).toThrowError(
-        `Expected to contain: ${greenLog('"test"')}\nReceived: ${redLog('"foo"')}`,
+      expectThrowContaining(
+        () => expect(div).toContainTextContent('test'),
+        'Expected to contain: "test"\nReceived: "foo"',
       );
     });
 
     it('should fail if the element does not contain the rendered text', () => {
       const div = document.createElement('div');
 
-      expect(() => expect(div).toContainTextContent('test')).toThrowError(
-        `Expected to contain: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
+      expectThrowContaining(
+        () => expect(div).toContainTextContent('test'),
+        'Expected to contain: "test"\nReceived: ""',
       );
     });
   });
@@ -231,16 +245,18 @@ describe('test matchers', () => {
       const div = document.createElement('div');
       div.style.color = 'red';
 
-      expect(() => expect(div).toHaveStyle('color', 'blue')).toThrowError(
-        `Expected: ${greenLog('"blue"')}\nReceived: ${redLog('"red"')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveStyle('color', 'blue'),
+        'Expected: "blue"\nReceived: "red"',
       );
     });
 
     it('should fail if the element does not have any style', () => {
       const div = document.createElement('div');
 
-      expect(() => expect(div).toHaveStyle('color', 'blue')).toThrowError(
-        `Expected: ${greenLog('"blue"')}\nReceived: ${redLog('""')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveStyle('color', 'blue'),
+        'Expected: "blue"\nReceived: ""',
       );
     });
   });
@@ -257,8 +273,9 @@ describe('test matchers', () => {
     it('should fail if the element does not have the class', () => {
       const div = document.createElement('div');
 
-      expect(() => expect(div).toHaveClass('test')).toThrowError(
-        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
+      expectThrowContaining(
+        () => expect(div).toHaveClass('test'),
+        'Expected: "test"\nReceived: ""',
       );
     });
   });
@@ -274,8 +291,9 @@ describe('test matchers', () => {
     it('should fail if the input does not have the value', () => {
       const input = document.createElement('input');
 
-      expect(() => expect(input).toHaveValue('test')).toThrowError(
-        `Expected: ${greenLog('"test"')}\nReceived: ${redLog('""')}`,
+      expectThrowContaining(
+        () => expect(input).toHaveValue('test'),
+        'Expected: "test"\nReceived: ""',
       );
     });
 
@@ -520,8 +538,9 @@ describe('test matchers', () => {
       const input = document.createElement('input');
       input.type = 'text';
 
-      expect(() => expect(input).toBeInputTypeOf('number')).toThrowError(
-        `Expected: ${greenLog('"number"')}\nReceived: ${redLog('"text"')}`,
+      expectThrowContaining(
+        () => expect(input).toBeInputTypeOf('number'),
+        'Expected: "number"\nReceived: "text"',
       );
     });
 

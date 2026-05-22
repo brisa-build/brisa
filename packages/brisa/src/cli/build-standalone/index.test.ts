@@ -27,7 +27,7 @@ describe('cli/buildStandalone', () => {
   afterEach(() => {
     mockLog.mockRestore();
     mockProcessExit.mockRestore();
-    fs.rmSync(BUILD_DIR, { recursive: true });
+    fs.rmSync(BUILD_DIR, { recursive: true, force: true });
   });
 
   it('should log "No standalone components provided" when no components are provided', async () => {
